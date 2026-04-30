@@ -93,6 +93,24 @@
 % NEW: Notation for policy-specific sup-norms
 \newcommand{\supnorm}[2]{\left\| #1 \right\|_{\infty,#2}}
 
+% ========================================
+% Collaborative comments (OFF by default for anonymous submission)
+% ========================================
+\newif\ifcomments
+\commentsfalse % SUBMISSION: keep OFF (set \commentstrue only for internal drafts)
+\ifcomments
+  \PackageWarningNoLine{main}{COMMENTS ARE ENABLED. Set commentsfalse before submission.}
+  \newcommand{\gopesh}[1]{{\color{red}\small[Gopesh: #1]}}
+  \newcommand{\bahram}[1]{{\color{blue}\small[Bahram: #1]}}
+  \newcommand{\houssam}[1]{{\color{green}\small[Houssam: #1]}}
+  \newcommand{\brett}[1]{{\color{Mulberry}\small[Brett: #1]}}
+\else
+  \newcommand{\gopesh}[1]{}
+  \newcommand{\bahram}[1]{}
+  \newcommand{\houssam}[1]{}
+  \newcommand{\brett}[1]{}
+\fi
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % TITLE & AUTHOR
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -806,12 +824,12 @@ Figure~\ref{fig:finite_mdp_certificate_main} shows two checks. Left: for $\gamma
 \centering
 \begin{subfigure}[t]{0.48\textwidth}
 \centering
-\includegraphics[width=\linewidth]{results/finite_mdp_certificate/fig_value_decomposition.pdf}
+\includegraphics[width=\linewidth]{results/finite_mdp_certificate/fig_value_decomposition.png}
 \caption{Value-error decomposition.}
 \end{subfigure}\hfill
 \begin{subfigure}[t]{0.48\textwidth}
 \centering
-\includegraphics[width=\linewidth]{results/finite_mdp_certificate/fig_cpi_certificate.pdf}
+\includegraphics[width=\linewidth]{results/finite_mdp_certificate/fig_cpi_certificate.png}
 \caption{CPI certificate.}
 \end{subfigure}
 \caption{Finite-MDP certificate diagnostic ($|\mathcal S|{=}64$, $|\mathcal A|{=}4$). Left: value error $\|U_n-V^\pi\|_\infty$ decays with evaluator depth $n$ and stays below the decomposition bound; larger $L_z$ slows the decay. Right: for $\pi_\alpha=(1-\alpha)\pi+\alpha\pi_{\mathrm{cand}}$, the surrogate gap (blue) stays below both the decomposition-based CPI penalty (red) and the tighter $\varepsilon_{A,\mathrm{cand}}$ penalty (green); log scale. All quantities are computed exactly by finite-state dynamic programming.}
