@@ -1,0 +1,19 @@
+\begin{table}[t]
+\caption{Projection-free dial range test via inference-time scaling.
+Single checkpoint with \emph{proj.\ off}, value-head spectral normalization disabled, 100 eval samples at $8\times$ depth mismatch.
+The achieved $L^{\mathrm{pre}}_z$ proxy spans $\approx 0.52$--$0.95$.}
+\label{tab:exp4_projection_free_dial}
+\centering
+\small
+\begin{tabular}{@{}cccc@{}}
+\toprule
+Scale & $L^{\mathrm{pre}}_z$ & $\Delta_V$@8$\times$ & Argmax@8$\times$ \\
+\midrule
+1.00 & 0.9483 & 0.5663 & 0.6600 \\
+0.90 & 0.7192 & 0.4918 & 0.6600 \\
+0.80 & 0.5876 & 0.4174 & 0.7000 \\
+0.70 & 0.5195 & 0.4389 & 0.7400 \\
+0.60 & 0.5212 & 0.6385 & 0.6900 \\
+\bottomrule
+\end{tabular}
+\end{table}

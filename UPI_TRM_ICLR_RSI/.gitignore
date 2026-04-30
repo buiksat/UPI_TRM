@@ -1,0 +1,5 @@
+# Local scratch / session logs (do not commit)
+scripts/scratch.md
+scripts/scratch*.md
+
+

@@ -1,0 +1,117 @@
+{
+  "command": [
+    "/data/repos/fbsource/buck-out/v2/art/fbcode/a6c46ee97e1bf53f/buiksat_trm/__episodic_z_hard_suite_diagnostics__/episodic_z_hard_suite_diagnostics#link-tree/runtime/bin/episodic_z_hard_suite_diagnostics#native-main#platform-runtime#python#py_version_3_12",
+    "/home/buiksat/UPI_TRM/UPI_TRM_NIPS/experiments/finite_mdp_certificate.py",
+    "--seed",
+    "0",
+    "--outdir",
+    "/home/buiksat/UPI_TRM/UPI_TRM_NIPS/results/episodic_z_validation"
+  ],
+  "cpi_curve_rows": 21,
+  "diagnostics_6_to_9_validation": {
+    "L_V": {
+      "abs_error": 0.0,
+      "expected": 1.0,
+      "measured": 1.0,
+      "rel_error": 0.0
+    },
+    "epsilon": 0.0001,
+    "projection_free_cases": [
+      {
+        "L_z": 0.2,
+        "L_z_post": {
+          "abs_error": 0.0,
+          "expected": 0.2,
+          "measured": 0.2,
+          "rel_error": 0.0
+        },
+        "projection_active_rate": {
+          "abs_error": 0.0,
+          "expected": 0.0,
+          "measured": 0.0,
+          "rel_error": 0.0
+        },
+        "rho_R": {
+          "abs_error": 0.0,
+          "expected": "inf",
+          "measured": "inf",
+          "rel_error": 0.0
+        }
+      },
+      {
+        "L_z": 0.5,
+        "L_z_post": {
+          "abs_error": 0.0,
+          "expected": 0.5,
+          "measured": 0.5,
+          "rel_error": 0.0
+        },
+        "projection_active_rate": {
+          "abs_error": 0.0,
+          "expected": 0.0,
+          "measured": 0.0,
+          "rel_error": 0.0
+        },
+        "rho_R": {
+          "abs_error": 0.0,
+          "expected": "inf",
+          "measured": "inf",
+          "rel_error": 0.0
+        }
+      },
+      {
+        "L_z": 0.8,
+        "L_z_post": {
+          "abs_error": 0.0,
+          "expected": 0.8,
+          "measured": 0.8,
+          "rel_error": 0.0
+        },
+        "projection_active_rate": {
+          "abs_error": 0.0,
+          "expected": 0.0,
+          "measured": 0.0,
+          "rel_error": 0.0
+        },
+        "rho_R": {
+          "abs_error": 0.0,
+          "expected": "inf",
+          "measured": "inf",
+          "rel_error": 0.0
+        }
+      },
+      {
+        "L_z": 0.95,
+        "L_z_post": {
+          "abs_error": 0.0,
+          "expected": 0.95,
+          "measured": 0.95,
+          "rel_error": 0.0
+        },
+        "projection_active_rate": {
+          "abs_error": 0.0,
+          "expected": 0.0,
+          "measured": 0.0,
+          "rel_error": 0.0
+        },
+        "rho_R": {
+          "abs_error": 0.0,
+          "expected": "inf",
+          "measured": "inf",
+          "rel_error": 0.0
+        }
+      }
+    ],
+    "sign_convention": "gap = lhs - rhs; negative means certificate slack"
+  },
+  "gap_sign_convention": "gap = lhs - rhs; negative means certificate slack",
+  "max_advantage_gap": -1.4234227041682668,
+  "max_cpi_decomp_gap": 0.0,
+  "max_cpi_exact_gap": 0.0,
+  "max_decomposition_gap": -0.29431646016913926,
+  "max_residual_gap": -0.2943164601691103,
+  "output_dir": "/home/buiksat/UPI_TRM/UPI_TRM_NIPS/results/episodic_z_validation",
+  "paper_root": "/home/buiksat/UPI_TRM/UPI_TRM_NIPS",
+  "row_count": 101,
+  "value_curve_rows": 80
+}

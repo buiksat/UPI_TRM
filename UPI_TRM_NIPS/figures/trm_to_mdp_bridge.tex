@@ -1,0 +1,53 @@
+\begin{tikzpicture}[
+  >=Stealth,
+  font=\small,
+  panel/.style={draw, rounded corners=3pt, line width=0.5pt, inner sep=6pt, align=left},
+  leftpanel/.style={panel, fill=orange!10, text width=4.5cm},
+  rightpanel/.style={panel, fill=blue!8, text width=4.9cm},
+  flow/.style={->, thick, black},
+  map/.style={->, thick, black},
+  note/.style={font=\scriptsize, align=center, text width=2.0cm, text=black}
+]
+
+\node[font=\bfseries\small] at (-2.8, 2.85) {Original TRM};
+\node[font=\bfseries\small] at (4.6, 2.85) {Plan-space MDP view};
+\draw[dashed, gray!60] (0.9, -3.0) -- (0.9, 3.1);
+
+\node[leftpanel] (inner) at (-2.8, 1.25) {%
+\textbf{Inner refinement}\\[-1pt]
+Refine latent state from input $x$ and plan $y_t$.\\[2pt]
+{\centering $z^{(k+1)} = f_\theta(z^{(k)}, y_t, x)$\par}
+};
+
+\node[leftpanel] (outer) at (-2.8, -1.85) {%
+\textbf{Outer refinement}\\[-1pt]
+Iterate the inner refinement across multiple passes of $f_\theta$, continuously refining the current answer $y_t$.
+};
+
+\draw[flow] (inner.south) -- node[right, note] {latent\\drives $y_t$} (outer.north);
+
+\node[rightpanel] (eval) at (4.6, 1.25) {%
+\textbf{Internal evaluator}\\[-1pt]
+Unroll the evaluator for depth $n$.\\[2pt]
+{\centering
+$\begin{aligned}
+z^{(k+1)} &= (\Pi_R \circ f_\theta)(z^{(k)}, y_t, x)\\
+U_n(s_t) &= V_\psi(z_t^{(n)},x)
+\end{aligned}$\par
+}
+};
+
+\node[rightpanel] (mdp) at (4.6, -1.85) {%
+\textbf{Plan-space MDP}\\[-1pt]
+State: $s_t=(x,y_t)$\\
+Action: edit $a_t$\\
+Transition: $y_{t+1}=\mathrm{edit}(y_t,a_t;x)$\\
+Reward: checker score $c(x,y_t)$
+};
+
+\draw[flow] (eval.south) -- node[right, note] {policy uses\\$U_n$} (mdp.north);
+
+\draw[map] (inner.east) -- node[above, note] {inner loop\\$\mapsto$ evaluator depth} (eval.west);
+\draw[map] (outer.east) -- node[below, note] {outer refinement\\$\mapsto$ edit MDP} (mdp.west);
+
+\end{tikzpicture}

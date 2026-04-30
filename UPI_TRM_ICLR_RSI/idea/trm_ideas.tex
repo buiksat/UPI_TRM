@@ -1,0 +1,78 @@
+\documentclass[11pt,article]{article}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{graphicx}
+
+% Code listing settings
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    language=Python,
+    commentstyle=\color{gray},
+    keywordstyle=\color{blue},
+    stringstyle=\color{red},
+    showstringspaces=false,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    backgroundcolor=\color{gray!10}
+}
+
+% Title
+\title{\textbf{TRM Improvement with RL for ARC-2}}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{RL-style iteration or energy/proximal view}
+
+
+\subsection{Two equivalent approaches}
+
+\subsubsection{Unrolled policy iteration}
+
+\begin{itemize}
+    \item View $y$ as the policy (the current plan/solution) and $z$ as the value/belief summarizing consequences.
+    \item The inner update $z \leftarrow f(z, y, x)$ approximates policy evaluation; the outer $y \leftarrow g(y, z, x)$ approximates policy improvement.
+    \item \textbf{Bellman-residual loss on $z$}: supervise $f$ to be a contraction toward targets derived from a short rollout/checker.
+    \item \textbf{Stability tool}: bound the Lipschitz constant of $f$ via spectral norm / weight normalization $\rightarrow$ guarantees on convergence as $n$ grows.
+\end{itemize}
+
+\subsubsection{Learned proximal operator}
+
+\begin{itemize}
+    \item Define a learnable energy $E_\theta(y, z; x)$. Update:
+    \[
+    z_{t+1} \approx \text{prox}_{\alpha R}\big(z_t - \alpha \nabla_z E_\theta(y_t, z_t; x)\big)
+    \]
+    (prox implemented as a tiny residual MLP with nonexpansiveness enforced).
+    
+    \item \textbf{Lyapunov}: train $E$ so $\Delta E \le -c\|z_{t+1}-z_t\|^2$. Add a penalty if energy increases.
+    
+    \item \textbf{Tuning handles}: step size $\alpha$ and nonexpansive prox give us a principled way to pick safe $n,T$ without blowups.
+\end{itemize}
+
+\subsection{Practical constraints}
+
+\begin{itemize}
+    \item Enforce nonexpansiveness with spectral norm ($\le 1$) and 1-Lipschitz activations (e.g., GroupSort or clamp-tanh for the prox block), or add a Jacobian penalty on $f$.
+    \item Add a small gradient-step gate $z \leftarrow z + \beta \Delta z$ with $\beta\in(0,1]$ learned but clipped; this is a learnable step size.
+\end{itemize}
+
+\subsection{Why it helps}
+
+We stop guessing $n,T$ and layer counts; the math gives guardrails. It often explains why tiny nets + many recursions beat deep nets in small-data regimes: recursion reuses parameters under a stable dynamical system.
+
+
+
+\end{document}

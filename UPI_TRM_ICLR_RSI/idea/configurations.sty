@@ -1,0 +1,115 @@
+% configurations.sty - Custom LaTeX configuration package
+\ProvidesPackage{configurations}
+
+% ========================================
+% Package imports
+% ========================================
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{bm}
+\usepackage{bbm}
+\usepackage[numbers]{natbib}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{hyperref}
+\usepackage[dvipsnames]{xcolor}
+
+% ========================================
+% Mathematical operators
+% ========================================
+\DeclareMathOperator{\cl}{cl}
+\DeclareMathOperator{\kl}{KL}
+\DeclareMathOperator{\ema}{EMA}
+
+% ========================================
+% Number sets and spaces
+% ========================================
+\newcommand{\E}{\mathbb{E}}        % Expectation
+\newcommand{\R}{\mathbb{R}}        % Real numbers
+% Aliases for compatibility
+\newcommand{\Ex}{\E}
+\newcommand{\Real}{\R}
+\renewcommand{\real}{\R}
+
+% ========================================
+% Vectors and matrices
+% ========================================
+\renewcommand{\vec}{\bm}           % Bold vector notation
+\newcommand{\one}{\bm{1}}          % Vector of ones
+\newcommand{\zero}{\bm{0}}         % Vector of zeros
+\newcommand{\eye}{\bm{I}}          % Identity matrix
+\newcommand{\1}{\mathbbm{1}}       % Indicator function
+\renewcommand{\*}[1]{{\pmb{#1}}}   % Bold symbol
+
+% ========================================
+% Norms, brackets, and operations
+% ========================================
+\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
+\newcommand{\abs}[1]{\left\lvert #1 \right\rvert}
+\newcommand{\braces}[1]{\left\{ #1 \right\}}
+\newcommand{\parens}[1]{\left( #1 \right\}}
+\newcommand{\ip}[2]{\left\langle #1,#2\right\rangle}  % Inner product
+
+% ========================================
+% Special notation and symbols
+% ========================================
+\newcommand{\opt}{^{\star}}         % Optimal/star superscript
+\renewcommand{\ss}{:\;}             % Spaced colon
+\newcommand{\sg}{\operatorname{sg}} % Stop-gradient operator
+
+% ========================================
+% Divergences and distances
+% ========================================
+\newcommand{\KL}{\mathrm{D}_{\mathrm{KL}}}  % KL divergence
+\newcommand{\TV}{\mathrm{D}_{\mathrm{TV}}}  % Total variation
+\newcommand{\Lip}{\mathrm{Lip}}             % Lipschitz constant
+
+% ========================================
+% Calligraphic sets (for RL/MDP notation)
+% ========================================
+\newcommand{\states}{\mathcal{S}}   % State space
+\newcommand{\actions}{\mathcal{A}}  % Action space
+\newcommand{\pset}{\mathcal{P}}     % Probability set
+\newcommand{\RR}{\mathcal{R}}       % Reward set
+
+% TRM-specific notation
+\newcommand{\XX}{\mathcal{X}}       % Input space
+\newcommand{\YY}{\mathcal{Y}}       % Plan/output space
+\newcommand{\ZZ}{\mathcal{Z}}       % Latent space
+\newcommand{\SSS}{\mathcal{S}}      % Meta-state space
+\newcommand{\AAc}{\mathcal{A}}      % Edit action space
+
+% ========================================
+% Theorem environments
+% ========================================
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{hypothesis}[theorem]{Hypothesis}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{observation}[theorem]{Observation}
+
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% ========================================
+% Collaborative comments
+% ========================================
+% Uncomment the appropriate lines to enable/disable comments
+\newcommand{\gopesh}[1]{{\color{red} #1}}
+\newcommand{\bahram}[1]{{\color{blue} #1}}
+\newcommand{\houssam}[1]{{\color{green} #1}}
+\newcommand{\bret}[1]{{\color{Mulberry} #1}}
+
+% To disable comments in final version:
+%\renewcommand{\gopesh}[1]{}
+%\renewcommand{\bahram}[1]{}
+%\renewcommand{\houssam}[1]{}
+%\renewcommand{\bret}[1]{}
+
+\endinput

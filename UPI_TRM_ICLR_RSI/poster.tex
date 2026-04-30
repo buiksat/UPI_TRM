@@ -1,0 +1,447 @@
+% UPI-TRM ICLR 2026 Workshop Poster
+% Portrait, 61cm x 91cm (24in x 36in)
+\documentclass[20pt, a1paper, portrait]{tikzposter}
+
+\setlength{\paperwidth}{24in}
+\setlength{\paperheight}{36in}
+\makeatletter
+\setlength{\TP@visibletextwidth}{22in}
+\setlength{\TP@visibletextheight}{34.5in}
+\setlength{\TP@blockverticalspace}{8mm}
+\makeatother
+
+% Disable tikzposter watermark
+\tikzposterlatexaffectionproofoff
+
+% ── Packages ──
+\usepackage{amsmath, amssymb, mathtools}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, calc, decorations.pathreplacing}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+% Suppress minor line-breaking issues
+\emergencystretch=2em
+
+% ── Macros ──
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
+
+% ── Colors: navy/blue/orange palette (color-blind safe) ──
+\definecolor{TRMBlue}{HTML}{3498DB}
+\definecolor{KnobGray}{HTML}{7F8C8D}
+\definecolor{AccentGreen}{HTML}{27AE60}
+\definecolor{AccentOrange}{HTML}{E67E22}
+\definecolor{HeaderBG}{HTML}{1A2740}
+\definecolor{EqBoxBG}{HTML}{EBF5FB}
+\definecolor{ResultGold}{HTML}{F39C12}
+\definecolor{NavyDark}{HTML}{2C3E50}
+\definecolor{HeroBG}{HTML}{FDF2E9}
+\definecolor{HeroBorder}{HTML}{E67E22}
+% Color-blind safe bar chart colors
+\definecolor{BarNoContr}{HTML}{E74C3C}
+\definecolor{BarContr}{HTML}{2980B9}
+
+\colorlet{EqBoxBGcolor}{EqBoxBG}
+\colorlet{TRMBlueBorder}{TRMBlue}
+\colorlet{OrangeBorder}{AccentOrange}
+\colorlet{GreenLight}{AccentGreen!8!white}
+\colorlet{GreenBorder}{AccentGreen}
+\colorlet{BlueLight}{TRMBlue!8!white}
+\colorlet{OrangeLight}{AccentOrange!8!white}
+\colorlet{HeaderLight}{HeaderBG!8!white}
+\colorlet{HeaderBorder}{HeaderBG}
+\colorlet{HeroBGcolor}{HeroBG}
+\colorlet{HeroBordercolor}{HeroBorder}
+
+% ── Theme ──
+\usetheme{Default}
+
+\definecolorstyle{UPIStyle}{
+  \definecolor{colorOne}{HTML}{1A2740}
+  \definecolor{colorTwo}{HTML}{2C3E50}
+  \definecolor{colorThree}{HTML}{3498DB}
+}{
+  \colorlet{backgroundcolor}{white}
+  \colorlet{framecolor}{colorTwo}
+  \colorlet{titlefgcolor}{white}
+  \colorlet{titlebgcolor}{colorOne}
+  \colorlet{blocktitlebgcolor}{colorTwo}
+  \colorlet{blocktitlefgcolor}{white}
+  \colorlet{blockbodybgcolor}{white}
+  \colorlet{blockbodyfgcolor}{black}
+}
+\usecolorstyle{UPIStyle}
+
+\defineblockstyle{UPIBlock}{
+  titlewidthscale=1.0, bodywidthscale=1.0, titleleft,
+  titleoffsetx=0pt, titleoffsety=0pt,
+  bodyoffsetx=0pt, bodyoffsety=0pt, bodyverticalshift=0pt,
+  roundedcorners=8, linewidth=1.5pt,
+  titleinnersep=4mm, bodyinnersep=5mm
+}{
+  \draw[color=framecolor, fill=blocktitlebgcolor,
+        rounded corners=\blockroundedcorners]
+    (blocktitle.south west) rectangle (blocktitle.north east);
+  \draw[color=framecolor, fill=blockbodybgcolor,
+        rounded corners=\blockroundedcorners]
+    (blockbody.south west) rectangle (blockbody.north east);
+}
+\useblockstyle{UPIBlock}
+
+% ── Title ──
+\title{\textsf{\textbf{Unrolled Policy Iteration for Tiny Recursive Models}}}
+\author{\textsf{Bahram Behzadian$^{*1}$\enspace
+  Brett Daley$^{*1}$\enspace
+  Gopeshh Subbaraj$^{2}$\enspace
+  Houssam Nassif$^{1}$}}
+\institute{\textsf{$^{1}$Meta\qquad
+  $^{2}$Mila -- Quebec AI Institute\qquad
+  $^{*}$Equal contribution}}
+
+\begin{document}
+
+\maketitle[width=21in, innersep=8mm, titletoblockverticalspace=16mm]
+
+% ═══════════════════════════════════
+% HERO CALLOUT — the hook
+% ═══════════════════════════════════
+\block{}{
+\coloredbox[bgcolor=HeroBGcolor,
+            framecolor=HeroBordercolor,
+            linewidth=3pt]{
+\begin{center}
+\large
+\textbf{Checker-only UPI--TRM solves 9$\times$9 Sudoku where PPO/A2C/DQN score 0\%.}\\[2pt]
+\textbf{33$\times$ lower policy drift at 8$\times$ depth mismatch under inner-loop contraction.}
+\end{center}
+}
+}
+
+% ═══════════════════════════════════
+% ARCHITECTURE DIAGRAM — simplified to avoid overlaps
+% ═══════════════════════════════════
+\block{}{
+\vspace{-4mm}
+\begin{center}
+\begin{tikzpicture}[
+    x=1cm, y=1cm,
+    mainbox/.style={draw, rounded corners=5pt,
+        minimum height=1.2cm,
+        font=\small, align=center,
+        thick, line width=0.6pt},
+    statebox/.style={mainbox, fill=TRMBlue!12,
+        draw=TRMBlue!75!black, text width=3.2cm},
+    evalbox/.style={mainbox, fill=AccentGreen!12,
+        draw=AccentGreen!70!black, text width=6.6cm},
+    policybox/.style={mainbox, fill=AccentOrange!12,
+        draw=AccentOrange!70!black, text width=5.2cm},
+    advbox/.style={mainbox, fill=TRMBlue!8,
+        draw=TRMBlue!75!black, text width=4.6cm},
+    chip/.style={draw=black!30, fill=gray!6,
+        rounded corners=3pt, font=\small, inner sep=4pt},
+    arrow/.style={-{Stealth[scale=0.85]}, semithick,
+        shorten >=2pt, shorten <=2pt},
+    dataarrow/.style={arrow, TRMBlue!80!black},
+    feedarrow/.style={arrow, AccentGreen!70!black},
+    gradarrow/.style={arrow, AccentOrange!80!black},
+]
+\node[statebox] (state) at (0,0)
+  {\textbf{State / Plan}\\$s_t=(x,y_t)$};
+\node[evalbox] (eval) at (8.6,0)
+  {\textbf{Checker + Evaluator}\\
+   $z^{(t+1)}\!=\!(\Pi_R\!\circ\!f_\theta)(z^{(t)},y,x)$\\
+   $U_n\!=\!V_\psi(z^{(n)},x)$;\enspace $r_t\!=\!c(x,y_t)$};
+\node[advbox] (adv) at (18.6,0)
+  {\textbf{Centered Advantage}\\
+   $\hat A\!=\!\hat Q-\E_\pi[\hat Q]$};
+\node[policybox] (policy) at (28.4,0)
+  {\textbf{Conservative Update}\\
+   $\pi_{\mathrm{new}}\!=\!(1\!-\!\alpha)\pi
+   \!+\!\alpha\pi_{\mathrm{cand}}$};
+\draw[dataarrow] (state.east) --
+  node[midway, above=4pt, fill=white,
+    inner sep=1pt, font=\small]{$(x,y_t)$}
+  (eval.west);
+\draw[feedarrow] (eval.east) --
+  node[midway, above=4pt, fill=white,
+    inner sep=1pt, font=\small]{$r_t,\;U_n$}
+  (adv.west);
+\draw[gradarrow] (adv.east) --
+  node[midway, above=4pt, fill=white,
+    inner sep=1pt, font=\small]{$\hat A$}
+  (policy.west);
+\node[chip, fill=TRMBlue!8] at (8.6,-2.0)
+  {\textcolor{TRMBlue}{\textbf{TRM dials:}}
+   $L_z,\ n,\ R$};
+\node[chip] at (28.4,-2.0)
+  {\textbf{Knobs:} $K,\ \alpha$};
+\end{tikzpicture}
+\end{center}
+\vspace{-5mm}
+{\small Checker feedback and the $n$-step unrolled evaluator produce the advantage signal; the conservative update edits the plan and repeats.}
+}
+
+% ═══════════════════════════════════
+% TWO-COLUMN BODY
+% ═══════════════════════════════════
+\begin{columns}
+
+% ── LEFT ──
+\column{0.5}
+
+\block{Motivation}{
+\textbf{Tiny Recursive Models (TRMs)} solve reasoning
+tasks by iteratively editing a candidate plan---but
+require ground-truth supervision.
+
+\medskip
+\textbf{Can we train from checker feedback alone?}
+(e.g., ``does this Sudoku satisfy constraints?'')
+
+\medskip
+\textbf{Challenge:} The evaluator is \textbf{approximate}
+(limited capacity) and \textbf{truncated} (finite
+depth~$n$). How does truncation interact with policy
+improvement?
+
+\medskip
+\textbf{Key idea:} Formalize plan editing as a
+\textbf{discounted MDP}; analyze via policy iteration
+with a compute-truncated value oracle.
+}
+
+\block{Plan-Space MDP \& Dials}{
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{@{}ll@{}}
+\textbf{State} & $s\!=\!(x,y)$: instance + plan \\
+\textbf{Action} & $y'\!=\!\mathrm{edit}(y,a;x)$ \\
+\textbf{Reward} & Checker $c(x,y)$ + shaping \\
+\end{tabular}
+
+\medskip
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Type} & \textbf{Param} & \textbf{Controls} \\
+\midrule
+\textcolor{TRMBlue}{\textbf{TRM}} & $L_z\!<\!1$
+  & Contraction \\
+\textcolor{TRMBlue}{\textbf{Dials}} & $n$
+  & Unroll depth \\
+  & $R$ & Projection radius \\
+\midrule
+\textcolor{KnobGray}{\textbf{Std}} & $K$
+  & Bootstrap horizon \\
+\textcolor{KnobGray}{\textbf{Knobs}} & $\alpha$
+  & Mixture weight \\
+\bottomrule
+\end{tabular}
+\end{center}
+}
+
+\block{Value-Error Decomposition}{
+\coloredbox[bgcolor=EqBoxBGcolor,
+            framecolor=TRMBlueBorder,
+            linewidth=2pt]{
+{\small
+\textbf{Proposition (simplified).} Under contraction
+($L_z\!<\!1$), over the advantage-evaluation closure:
+\[
+\|U_n \!-\! V^\pi\|_{\infty,\pi}
+\le
+\underbrace{\frac{\varepsilon_{\mathrm{res}}^*}
+  {1\!-\!\gamma^K}}_{\text{architectural}}
++\;
+\underbrace{L_V\frac{L_z^n}
+  {1\!-\!L_z}C_z}_{\text{truncation}}
+\]
+}
+\smallskip
+{\small Truncation bias decays \textbf{geometrically}
+as $L_z^n$.}
+}
+}
+
+\block{Conservative Improvement}{
+\coloredbox[bgcolor=EqBoxBGcolor,
+            framecolor=OrangeBorder,
+            linewidth=2pt]{
+{\small
+\textbf{Theorem (ideal exact-centering case).} For
+$\pi_{\mathrm{new}}\!=\!(1\!-\!\alpha)\pi
+\!+\!\alpha\pi_{\mathrm{cand}}$:
+\[
+\eta(\pi_{\mathrm{new}})
+\ge
+\widehat{L}_\pi(\pi_{\mathrm{new}})
+\!-\!\frac{\alpha\varepsilon_{A,\mathrm{cand}}}
+  {1\!-\!\gamma}
+\!-\!\frac{2\varepsilon_{\mathrm{CPI}}
+  \gamma\alpha^2}{(1\!-\!\gamma)^2}
+\]
+}
+\smallskip
+{\small Exact centering makes evaluation error scale with
+$\alpha$; with GAE, an added centering-defect term
+$\varepsilon_{\mathrm{cent}}$ appears.}
+}
+}
+
+\makeatletter
+\global\advance\TP@blocktop by -12mm
+\makeatother
+
+\block{Main Contributions}{
+\small
+\textbf{1. Checker-only UPI--TRM}\\[-1pt]
+Learns plan edits from checker feedback and rewards,
+without expert trajectories.\\[6pt]
+\textbf{2. Value-error decomposition}\\[-1pt]
+Separates architectural residual from geometric
+truncation bias $O(L_z^n)$.\\[6pt]
+\textbf{3. Conservative improvement}\\[-1pt]
+With exact statewise centering, CPI evaluation error is
+linear in $\alpha$.
+\vspace{8mm}
+}
+
+% ── RIGHT ──
+\column{0.5}
+
+\block{UPI--TRM Algorithm}{
+\coloredbox[bgcolor=GreenLight,
+            framecolor=GreenBorder,
+            linewidth=1.5pt]{
+\textbf{1.\;Value Regression:}
+$K$-step bootstrap,
+min $(U_n(s)\!-\!\mathrm{sg}(G^{(K)}))^2$
+}
+\vspace{2mm}
+\coloredbox[bgcolor=BlueLight,
+            framecolor=TRMBlueBorder,
+            linewidth=1.5pt]{
+\textbf{2.\;Advantage Estimation:}
+$\widehat{A}\!=\!\widehat{Q}
+\!-\!\E_\pi[\widehat{Q}]$\enspace
+(statewise centered)
+}
+\vspace{2mm}
+\coloredbox[bgcolor=OrangeLight,
+            framecolor=OrangeBorder,
+            linewidth=1.5pt]{
+\textbf{3.\;Conservative Update:}
+$\pi_{\mathrm{new}}\!=\!(1\!-\!\alpha)\pi
+\!+\!\alpha\pi_{\mathrm{cand}}$,
+distill to $\pi_\phi$
+}
+}
+
+\block{4$\times$4 Sudoku Feasibility}{
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+\textbf{Setting} & \textbf{UPI--TRM}
+  & \textbf{PPO/A2C/DQN} \\
+\midrule
+Easy (1--4 empties) & 90.7--93.3\% & 52\% (random) \\
+Hard (6--8 empties) & 48--57\% & \textbf{0\%} \\
+\bottomrule
+\end{tabular}
+\end{center}
+\vspace{1mm}
+{\small 5k--20k steps, 3 seeds. Ranges denote
+contraction-on to no-contraction results; on hard
+instances, 11 tuned baseline configs all score 0\%.}
+}
+
+\block{Depth-Mismatch Stability}{
+$n_{\mathrm{train}}\!=\!2$, eval at $8\times$ mismatch
+(both conditions use $R\!=\!10$; projection alone gives
+$6$--$10\times$ $\Delta_V$ reduction):
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+& $\Delta_V\!\downarrow$ & $\Delta_\pi\!\downarrow$
+& Argmax$\!\uparrow$ \\
+\midrule
+No Contr. & 0.156 & 0.0063 & 96.0\% \\
+Contr.\ ($L_z\!=\!0.9$)
+  & \textbf{0.038} & \textbf{0.0002}
+  & \textbf{99.0\%} \\
+\midrule
+\textbf{Gain}
+& \textcolor{TRMBlue}{\textbf{4.1$\times$}}
+& \textcolor{TRMBlue}{\textbf{33$\times$}}
+& --- \\
+\bottomrule
+\end{tabular}
+\end{center}
+\vspace{2mm}
+\coloredbox[bgcolor=BlueLight,
+            framecolor=TRMBlueBorder,
+            linewidth=1.2pt]{
+\small \textbf{Takeaway:} Contraction lowers drift at
+every tested mismatch depth; at $8\times$, it cuts
+$\Delta_V$ by \textbf{4.1$\times$} and $\Delta_\pi$ by
+\textbf{33$\times$}.
+}
+}
+
+\block{9$\times$9 Sudoku Results}{
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Method} & \textbf{Success}
+& \textbf{Score} & \textbf{$\Delta$} \\
+\midrule
+\textbf{UPI--TRM}
+& \textcolor{TRMBlue}{\textbf{4.0$\pm$4.0\%}}
+& \textcolor{TRMBlue}{\textbf{53.3$\pm$1.1}}
+& \textcolor{TRMBlue}{\textbf{+26.5}} \\
+A2C & 0.0$\pm$0.0\% & 31.9$\pm$0.4 & +5.1 \\
+DQN & 0.0$\pm$0.0\% & 29.5$\pm$0.3 & +2.7 \\
+PPO & 0.0$\pm$0.0\% & 28.2$\pm$1.5 & +2.2 \\
+\bottomrule
+\end{tabular}
+\end{center}
+{\small 81 cells, 729 actions, 50k steps,
+mean$\pm$std over 3 seeds.
+UPI--TRM is the \textbf{only method solving any puzzles};
+baselines cannot propagate constraints across the 81-step horizon.}
+}
+
+\block{Takeaways}{
+{\small
+\textbf{(1)} $L_z$, $n$, $R$ are stability dials:
+truncation bias decays as $L_z^n$.
+\textbf{(2)} Conservative $\alpha$ limits sensitivity
+to imperfect evaluation.
+\textbf{(3)} UPI--TRM solves from checker feedback alone;
+PPO/A2C/DQN get 0\%.}
+
+\medskip
+{\small \textbf{Contact:} buiksat@meta.com}
+}
+
+\end{columns}
+
+\end{document}

@@ -1,0 +1,230 @@
+
+\documentclass[11pt]{article}
+\usepackage{configurations}
+
+\title{Unrolled Policy Iteration for Tiny Recursive Models:\\
+Contraction, Bootstrapped Bellman Training, and Conservative Improvement}
+\author{Anonymous}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We cast Tiny Recursive Models (TRM)---which alternate inner latent updates and outer answer edits---as \emph{unrolled policy iteration}. The inner update $z\!\leftarrow\!f_\theta(z,y,x)$ plays the role of approximate policy evaluation, while the outer update $y\!\leftarrow\!g_\phi(y,z,x)$ performs policy improvement over \emph{edits} to the plan $y$. Our contributions are:
+(i) a formal meta--MDP over plans; (ii) a stable, bootstrapped Bellman objective on an evaluator $V_\psi(z,x)$ using short rollouts and a target network; (iii) a stability tool: spectral/Lipschitz control of $f_\theta$ that guarantees inner-loop convergence as the number of unrolled evaluation steps grows; and (iv) monotone improvement guarantees for conservative edit policies (CPI/TRPO style) that explicitly account for evaluation error from finite unrolling and function approximation. The results yield actionable dials ($L_z,K,n,\delta$) with clear effects on stability and improvement.
+\end{abstract}
+
+\section{Motivation and setup}
+\paragraph{TRM in brief.}
+TRM performs $n$ inner updates of a latent $z\!\in\!\ZZ$ via a small network $f_\theta$, then updates an answer $y\!\in\!\YY$ via $g_\phi$, potentially repeating for $N_{\text{sup}}$ supervised steps. Empirically, recursion with deep supervision has shown strong generalization on symbolic tasks with small models~\citep{TRM2025}. We provide an RL lens and guarantees.
+
+\paragraph{Meta--MDP over plans.}
+Let $x\!\in\!\XX$ be an instance. A \emph{meta--state} is $s\!=\!(x,y)$ with current plan $y\!\in\!\YY$. An \emph{edit action} $a\!\in\!\mathcal{A}(y)$ transforms $y$ deterministically to $y'\!=\!\mathrm{edit}(y,a;x)$ (masking can restrict $\mathcal{A}(y)$). A task-specific \emph{checker} emits reward $r(s,a)\!\in\!\R$ (e.g., improvement in constraint satisfaction or pixel accuracy). With discount $\gamma\!\in\!(0,1)$, this defines a discounted MDP $(\SSS,\mathcal{A},P,r,\gamma)$ with $\SSS=\XX\times\YY$ and $P$ induced by the edit mechanism.\footnote{Our analysis does not require deterministic rewards; we allow stochastic rewards/transitions in the expectations.}
+
+\paragraph{TRM as unrolled policy iteration.}
+We maintain an internal \emph{evaluator state} $z\!\in\!\ZZ$ and a value head $V_\psi:\ZZ\times\XX\to\R$. The inner update
+\begin{equation}
+    z^{(t+1)} \;=\; f_\theta\!\bigl(z^{(t)},\,y,\,x\bigr),\qquad t=0,1,\dots,n-1
+    \label{eq:inner}
+\end{equation}
+approximates policy evaluation for the current plan $y$, while the outer update
+\begin{equation}
+    y' \;=\; g_\phi\!\bigl(y,\,z^{(n)},\,x\bigr)
+    \label{eq:outer}
+\end{equation}
+performs policy improvement (optionally via a stochastic edit policy $\pi_\phi(a\mid y,z,x)$). Training combines supervised losses on $y$ with RL losses on $(V_\psi,\pi_\phi)$.
+
+\section{Operators and training objectives}
+
+\subsection{Bellman operators on the meta--MDP}
+Fix a (stochastic) edit policy $\pi(\cdot|s)$. The Bellman operator acts on $V:\SSS\to\R$ as
+\begin{equation}
+   (\mathcal{T}^\pi V)(s)\;=\;\E\!\left[r(s,a)\;+\;\gamma\,V(s') \;\middle|\; a\!\sim\!\pi(\cdot|s),\, s'\!\sim\!P(\cdot|s,a)\right].
+\end{equation}
+For $K\!\ge\!1$, define the $K$-step operator
+\begin{equation}
+ (\mathcal{T}^\pi_K V)(s)\;=\;\E\!\left[\sum_{k=0}^{K-1}\gamma^k r_k\;+\;\gamma^K V(s_K)\right],
+ \label{eq:Kstep}
+\end{equation}
+where $(s_k,a_k,r_k)$ is the $k$-step rollout from $s$ under $\pi$.
+
+\begin{lemma}[Contraction of $\mathcal{T}^\pi_K$]\label{lem:Kstep_contraction}
+If $\gamma\in(0,1)$, then $\mathcal{T}^\pi_K$ is a $\gamma^K$-contraction in the sup norm:
+$\|\mathcal{T}^\pi_K V-\mathcal{T}^\pi_K W\|_\infty \le \gamma^K \|V-W\|_\infty$.
+Moreover, the unique fixed point is $V^\pi$.
+\end{lemma}
+\begin{proof}[Sketch]
+Write $\mathcal{T}^\pi_K V=\sum_{k=0}^{K-1}\gamma^k R_k+\gamma^K P_\pi^K V$. Then
+$\|\gamma^K P_\pi^K(V-W)\|_\infty\le \gamma^K\|V-W\|_\infty$. Banach's theorem yields uniqueness.
+\end{proof}
+
+\paragraph{Discounted occupancy.}
+Let $d_\pi$ denote the \emph{normalized} discounted state distribution:
+$d_\pi(s)=(1-\gamma)\sum_{t\ge 0}\gamma^t\,\mathbb{P}(s_t=s\mid \pi)$.
+We use expectations $\E_{s\sim d_\pi}[\cdot]$ below.
+
+\subsection{Bootstrapped Bellman training on $z$ via short rollouts}
+Let $z^{(n)}(s)$ be the inner iterate after $n$ steps in~\eqref{eq:inner}, and let $U_n(s)\!:=\!V_\psi\!\bigl(z^{(n)}(s),x\bigr)$ approximate $V^\pi(s)$ for $s=(x,y)$. Using $K$-step returns with a slowly moving target network ($\bar\psi$) and a stop-gradient operator $\sg(\cdot)$ on the target, we minimize the MSE
+\begin{equation}
+\mathcal{L}_{\mathrm{BR}}(\psi)\;=\;\E_{s}\!\left[\;U_n(s)\;-\;\sg\!\Bigl(\textstyle\sum_{k=0}^{K-1}\gamma^k r_k+\gamma^K\, V_{\bar\psi}\!\bigl(z^{(n)}(s_K),x_K\bigr)\Bigr)\;\right]^2.
+\label{eq:BR}
+\end{equation}
+The target network is updated by EMA: $\bar\psi \leftarrow \tau\bar\psi + (1-\tau)\psi$.
+
+\begin{remark}[Target networks and ``double sampling'']
+Eq.~\eqref{eq:BR} is a \emph{bootstrapped MSE} with a frozen (slow) target, not the residual-gradient objective of \citet{Baird1995Residual}. The stop-gradient $\sg$ treats the bootstrap as a label, which avoids the classical double-sampling pathology of squared Bellman residuals in the stochastic setting; short modelled rollouts further stabilize targets.
+\end{remark}
+
+\subsection{Conservative policy improvement over edits}
+Let $\pi_\phi(a|s)$ be a stochastic edit policy and $A^\pi(s,a)=Q^\pi(s,a)-V^\pi(s)$ the advantage. We use the standard local surrogate
+\begin{equation}
+L_\pi(\pi') \;=\; \eta(\pi) + \frac{1}{1-\gamma}\,\E_{s\sim d_\pi,\,a\sim\pi'(\cdot|s)}\!\bigl[A^\pi(s,a)\bigr].
+\label{eq:surrogate}
+\end{equation}
+A CPI/TRPO-style step either mixes $\pi$ and an improved $\pi_0$ via $\pi_{\text{new}}=(1-\alpha)\pi+\alpha\pi_0$ or constrains $\KL(\pi(\cdot|s)\,\|\,\pi'(\cdot|s))\le \delta$ on average. The canonical mixture bound is
+\begin{equation}
+\eta(\pi_{\text{new}})\;\ge\; L_\pi(\pi_{\text{new}})\;-\;\frac{2\epsilon\,\gamma}{(1-\gamma)^2}\,\alpha^2,
+\qquad \epsilon \triangleq \max_{s}\E_{a\sim\pi_0(\cdot|s)}\bigl|A^\pi(s,a)\bigr|.
+\label{eq:cpi_bound}
+\end{equation}
+Under a KL trust region, analogous bounds hold by relating KL to total variation (e.g., Pinsker).
+
+\section{Stability tool: contraction of the inner evaluator}
+We require that the inner map is a contraction in $z$.
+
+\begin{assumption}[Uniform contraction in $z$ and completeness]\label{ass:Lip}
+The metric space $(\ZZ,\norm{\cdot})$ is complete. There exists $L_z\in(0,1)$ such that for all $(x,y)\in\XX\times\YY$ and all $z,z'\in\ZZ$,
+\begin{equation}
+\norm{f_\theta(z,y,x)-f_\theta(z',y,x)} \;\le\; L_z\,\norm{z-z'}.
+\end{equation}
+\end{assumption}
+
+\begin{remark}[How to enforce Assumption~\ref{ass:Lip}]
+Assumption~\ref{ass:Lip} is the standard Banach contraction condition:
+on a complete metric space $(\ZZ,\|\cdot\|)$, a uniformly $L_z$-Lipschitz
+map in $z$ with $L_z<1$ has a unique fixed point for each $(x,y)$ and the
+iteration $z^{(t+1)}=f_\theta(z^{(t)},y,x)$ converges linearly
+(\cite{Denardo1967}). In neural implementations, using 1-Lipschitz
+nonlinearities and bounding the product of spectral norms on the $z\!\to\!z$
+path ensures $\Lip_z(f_\theta)<1$ (e.g., via spectral normalization;
+\cite{Miyato2018}). We treat $L_z$ as a tunable stability dial, estimated
+or upper-bounded during training.
+\end{remark}
+
+\begin{proposition}[Existence, uniqueness, and linear convergence of $z^*$]\label{prop:banach}
+Under Assumption~\ref{ass:Lip}, for each $(x,y)$ the map $T_{x,y}(z)=f_\theta(z,y,x)$ has a unique fixed point $z^*(x,y)$ and the inner iteration~\eqref{eq:inner} converges linearly:
+\begin{equation}
+\norm{z^{(t)} - z^*(x,y)} \;\le\; L_z^{\,t}\,\norm{z^{(0)} - z^*(x,y)}.
+\end{equation}
+In particular, the bias due to finite unrolling is bounded by
+$\norm{z^{(n)}-z^*}\le \frac{L_z^{\,n}}{1-L_z}\,\norm{z^{(1)}-z^{(0)}}$.
+\end{proposition}
+
+\paragraph{Spectral/Lipschitz control.}
+If $f_\theta$ is a composition of 1-Lipschitz activations (e.g., ReLU) and linear layers $(W_\ell)_{\ell=1}^L$, then
+$\Lip(f_\theta)\le\prod_{\ell=1}^L \|W_\ell\|_2$.
+Enforcing spectral normalization $\|W_\ell\|_2\le s_\ell$ with $\prod_\ell s_\ell<1$ guarantees Assumption~\ref{ass:Lip}. The Lipschitz of the value head in $z$ is also a useful dial: if $\abs{V_\psi(z,x)-V_\psi(z',x)}\le L_V\norm{z-z'}$, then smaller $L_V$ directly tightens finite-unrolling error terms below.
+
+\section{Error bounds and improvement guarantees}
+
+\subsection{Bellman residual control and finite unrolling}
+Define the \emph{used} value function $U_n(s)=V_\psi(z^{(n)}(s),x)$ and the \emph{fixed-point} value $U_*(s)=V_\psi(z^*(s),x)$.
+
+\begin{proposition}[Two useful error bounds]\label{prop:error_bounds}
+For any $K\ge 1$ and $\gamma\in(0,1)$:
+\begin{enumerate}
+\item[\textbf{(A)}] \textbf{Sharp bound at the used function.}
+\begin{equation}
+\|U_n - V^\pi\|_\infty \;\le\; \frac{1}{1-\gamma^K}\,\bigl\|U_n-\mathcal T_K^\pi U_n\bigr\|_\infty.
+\label{eq:boundA}
+\end{equation}
+\item[\textbf{(B)}] \textbf{Separated sources (fixed-point residual + unrolling).}
+If $V_\psi(\cdot,x)$ is $L_V$-Lipschitz in $z$,
+\begin{equation}
+\|U_n - V^\pi\|_\infty
+\;\le\; \frac{1}{1-\gamma^K}\,\bigl\|U_*-\mathcal T_K^\pi U_*\bigr\|_\infty
+\;+\; L_V\,\sup_{(x,y)}\|z^{(n)}(x,y)-z^*(x,y)\|.
+\label{eq:boundB}
+\end{equation}
+\end{enumerate}
+\end{proposition}
+\begin{remark}
+Eq.~\eqref{eq:boundA} ties training directly to the BR loss in Eq.~\eqref{eq:BR} (evaluate the residual at $U_n$). Eq.~\eqref{eq:boundB} attributes error to (i) the fixed-point residual (modeling/approximation) and (ii) finite unrolling; by Prop.~\ref{prop:banach}, the second term decays geometrically in $n$ when $L_z<1$.
+\end{remark}
+
+\subsection{Conservative improvement under evaluation error}
+Let $\widehat{A}(s,a)$ be an estimator of $A^\pi(s,a)$ based on $V_\psi$ (e.g., $\lambda$-returns or $K$-step TD). Suppose we have a uniform error bound
+$\abs{\widehat{A}(s,a)-A^\pi(s,a)}\le \varepsilon_A$.
+
+\begin{assumption}[Centered estimator]\label{ass:centered}
+$\E_{a\sim\pi(\cdot|s)}\bigl[\widehat{A}(s,a)\bigr]=0$ for all $s$ (e.g., by defining $\widehat A(s,a)=\widehat Q(s,a)-\sum_b \pi(b|s)\widehat Q(s,b)$).
+\end{assumption}
+
+\begin{theorem}[Monotone improvement up to evaluation error]\label{thm:monotone_with_error}
+Let $\pi_{\text{new}}=(1-\alpha)\pi+\alpha\pi_0$. Under $\gamma\in(0,1)$ and Assumption~\ref{ass:centered},
+\begin{equation}
+\eta(\pi_{\text{new}})\;\ge\; \widehat{L}_\pi(\pi_{\text{new}})
+\;-\;\frac{\alpha}{1-\gamma}\,\varepsilon_A
+\;-\;\frac{2\epsilon\,\gamma}{(1-\gamma)^2}\,\alpha^2,
+\qquad \epsilon \triangleq \max_{s}\E_{a\sim\pi_0(\cdot|s)}\abs{A^\pi(s,a)}.
+\label{eq:main_theorem}
+\end{equation}
+In particular, if $\widehat{L}_\pi(\pi_{\text{new}})$ exceeds the two penalties on the right-hand side, the true return improves.
+\end{theorem}
+\begin{proof}[Sketch]
+Start from~\eqref{eq:cpi_bound} and add/subtract $\widehat{A}$. The linear term introduces a bias bounded by $\frac{\alpha}{1-\gamma}\varepsilon_A$ under centering; the quadratic CPI penalty remains governed by the true $A^\pi$ via $\epsilon$.
+\end{proof}
+
+\begin{remark}[Without centering]
+If Assumption~\ref{ass:centered} does not hold, a conservative variant is
+\[
+\eta(\pi_{\text{new}})\;\ge\; \widehat{L}_\pi(\pi_{\text{new}})
+\;-\;\frac{1}{1-\gamma}\,\varepsilon_A
+\;-\;\frac{2\epsilon\,\gamma}{(1-\gamma)^2}\,\alpha^2,
+\]
+i.e., the linear penalty no longer scales with $\alpha$.
+\end{remark}
+
+\begin{remark}[Relating $\varepsilon_A$ to training dials]
+By Prop.~\ref{prop:error_bounds}, $\varepsilon_A$ can be bounded in terms of (i) the BR objective value (via Eq.~\eqref{eq:boundA} or \eqref{eq:boundB}) and (ii) the inner contraction dial $L_z$ and unrolling budget $n$. Spectral control (smaller $L_z$), larger $n$, and larger $K$ (tighter contraction factor $\gamma^K$) reduce these terms.
+\end{remark}
+
+\section{Algorithmic template}
+\begin{algorithm}[H]
+\caption{Unrolled Policy Iteration for TRM (single interaction step)}
+\label{alg:upi}
+\begin{algorithmic}[1]
+\State \textbf{Input:} instance $x$, current plan $y$, latent $z$, discount $\gamma$, inner steps $n$, rollout horizon $K$, temperature/entropy coeff.\ $\beta$.
+\State \textbf{Inner evaluation:} $z \leftarrow f_\theta^{\circ n}(z,y,x)$ \Comment{$n$ compositions}
+\State \textbf{Policy improvement:} sample edit $a\sim\pi_\phi(\cdot\mid y,z,x)$; apply $y'\leftarrow \mathrm{edit}(y,a;x)$; receive $r$ and next state $s'=(x,y')$.
+\State \textbf{$K$-step targets:} roll out $(s_k,a_k,r_k)_{k=0}^{K-1}$ under $\pi_\phi$; compute
+\[
+G^{(K)}=\sum_{k=0}^{K-1}\gamma^k r_k+\gamma^K V_{\bar\psi}\!\bigl(z^{(n)}(s_K),x_K\bigr).
+\]
+\State \textbf{Losses:}
+\begin{align*}
+\mathcal{L}_{\mathrm{BR}}(\psi) &= \bigl(V_\psi(z^{(n)}(s),x)-\sg\big(G^{(K)}\big)\bigr)^2,\\
+\mathcal{L}_{\pi}(\phi) &= -\,\widehat{A}(s,a)\,\log \pi_\phi(a\mid y,z,x)\;-\;\beta\,\mathcal{H}\!\left[\pi_\phi(\cdot\mid y,z,x)\right],\\
+\mathcal{R}_{\mathrm{Lip}}(\theta,\psi) &= \sum_{\ell}\bigl(\|W_\ell\|_2 - s_\ell\bigr)_+ \quad\text{(for both $f_\theta$ and, optionally, $V_\psi$)},\\
+\mathcal{L}_{\mathrm{sup}}(\phi) &\;\text{if labels for } y \text{ are available.}
+\end{align*}
+\State \textbf{Update:} minimize $\alpha_{\mathrm{BR}}\mathcal{L}_{\mathrm{BR}}+\alpha_{\pi}\mathcal{L}_{\pi}+\alpha_{\mathrm{Lip}}\mathcal{R}_{\mathrm{Lip}}+\alpha_{\mathrm{sup}}\mathcal{L}_{\mathrm{sup}}$, with a conservative step on $\pi_\phi$ (e.g., mixture update or $\KL$ trust region / clipping).
+\end{algorithmic}
+\end{algorithm}
+
+\section{Discussion: residuals vs.\ bootstrapped MSE}
+Classical residual-gradient methods minimize a squared Bellman residual but suffer from the “double sampling’’ issue in stochastic settings~\citep{Baird1995Residual,SuttonBarto2018}.
+Our training uses a \emph{bootstrapped MSE} with a target network (Eq.~\eqref{eq:BR}); the stop-gradient makes the bootstrap act like a label during backprop, and the EMA target ensures smooth label evolution. Short rollouts provide low-variance targets; Eq.~\eqref{eq:boundA}/\eqref{eq:boundB} shows why reducing the residual at the used function (or at $z^*$) is theoretically meaningful.
+
+\section{Related work}
+\textbf{Recursive reasoning with tiny networks.} TRM shows that tiny networks with recursive latent updates and deep supervision can match or beat much larger models on symbolic tasks~\citep{TRM2025}.\\
+\textbf{Conservative improvement.} Our guarantee follows CPI~\citep{KakadeLangford2002} and TRPO~\citep{Schulman2015TRPO}.\\
+\textbf{Residual learning and contraction.} Residual/Bellman-error methods~\citep{Baird1995Residual,SuttonBarto2018} and contraction arguments in dynamic programming~\citep{Denardo1967} underpin the evaluation side; spectral normalization supplies an implementable Lipschitz bound~\citep{Miyato2018}.
+
+\section{Conclusion}
+Unrolled policy iteration provides a principled lens on TRM: inner contraction (via spectral control) guarantees stable evaluation as $n$ grows; $K$-step, target-network training makes evaluation consistent; and conservative edit policies deliver monotone improvement up to explicit evaluation error. The theory turns into practical dials ($L_z,K,n,\delta$) with predictable effects on stability and improvement.
+
+\bibliographystyle{plainnat}
+\bibliography{trm_rl}
+\end{document}

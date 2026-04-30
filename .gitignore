@@ -1,0 +1,149 @@
+# LaTeX auxiliary files
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.synctex.gz
+*.synctex(busy)
+*.pdfsync
+
+# LaTeX intermediate files
+*.dvi
+*.ps
+*.eps
+
+# Bibliography auxiliary
+*.run.xml
+*.bcf
+*-blx.bib
+
+# Build directories
+_minted*/
+auto/
+
+# PDF files
+*.pdf
+
+# Paper figures (we do want to commit some PDFs)
+!UPI_TRM_ICML/figures/*.pdf
+!UPI_TRM_ICLR_RSI/figures/*.pdf
+!UPI_TRM_NIPS/figures/fig_exp1_unroll_sensitivity_main.pdf
+!UPI_TRM_NIPS/figures/fig_exp1_unroll_sensitivity_appendix.pdf
+!UPI_TRM_NIPS/figures/fig_exp1_radius_sweep_appendix.pdf
+!UPI_TRM_NIPS/figures/fig_exp2_dial_does_not_control_Lz.pdf
+!UPI_TRM_NIPS/figures/fig_exp2_projection_is_primary_stabilizer.pdf
+!UPI_TRM_NIPS/figures/fig_exp5_L_vs_metrics.pdf
+!UPI_TRM_NIPS/figures/table3_hard_controlled_curves.pdf
+!UPI_TRM_NIPS/figures/table3_hard_controlled_2x2_bar.pdf
+
+# Latexmk
+*.latexmk
+
+# hyperref
+*.brf
+
+# natbib
+*.nav
+*.snm
+*.vrb
+
+# makeindex
+*.idx
+*.ilg
+*.ind
+
+# minitoc
+*.maf
+*.mlf
+*.mlt
+*.mtc*
+
+# nomencl
+*.nlo
+*.nls
+
+# glossaries
+*.acn
+*.acr
+*.alg
+*.glg
+*.glo
+*.gls
+*.glsdefs
+
+# gnuplottex
+*-gnuplottex-*
+
+# changes
+*.soc
+
+# comment.sty
+*.cut
+
+# easy-todo
+*.lod
+
+# endnotes
+*.ent
+
+# feynmf/feynmp
+*.mf
+*.mp
+*.t[1-9]
+*.t[1-9][0-9]
+*.tfm
+
+# listings
+*.lol
+
+# makeidx
+*.ist
+
+# siunitx
+*.siunitx
+
+# splitindex
+*.splitidx
+
+# todonotes
+*.tdo
+
+# WinEdt
+*.bak
+
+# texpad
+.texpadtmp
+
+# macOS
+.DS_Store
+
+# Python virtual environments
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+
+# Local git backups (e.g. from re-init)
+.git.backup/
+.git.bak/
+
+# Editor backup files
+*~
+\#*\#
+.#*
+
+# Bulk run artifacts (do not track in git; keep audit-trail markdown only)
+# Per-seed training stdout
+UPI_TRM_NIPS/results/episodic_z_hard_suite_20k_seed41_50/logs/
+# Per-seed diagnostic JSONs and diagnostic-pass logs
+UPI_TRM_NIPS/results/episodic_z_hard_suite_20k_seed41_50/diagnostics/
+UPI_TRM_NIPS/results/episodic_z_hard_suite_20k_seed41_50/diagnostic_logs/
+# Per-seed checkpoints if ever staged here
+UPI_TRM_NIPS/results/episodic_z_hard_suite_20k_seed41_50/checkpoints/
