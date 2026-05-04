@@ -100,15 +100,15 @@
 \commentsfalse % SUBMISSION: keep OFF (set \commentstrue only for internal drafts)
 \ifcomments
   \PackageWarningNoLine{main}{COMMENTS ARE ENABLED. Set commentsfalse before submission.}
-  \newcommand{\gopesh}[1]{{\color{red}\small[Gopesh: #1]}}
-  \newcommand{\bahram}[1]{{\color{blue}\small[Bahram: #1]}}
-  \newcommand{\houssam}[1]{{\color{green}\small[Houssam: #1]}}
-  \newcommand{\brett}[1]{{\color{Mulberry}\small[Brett: #1]}}
+  \newcommand{\revA}[1]{{\color{red}\small[A: #1]}}
+  \newcommand{\revB}[1]{{\color{blue}\small[B: #1]}}
+  \newcommand{\revC}[1]{{\color{green}\small[C: #1]}}
+  \newcommand{\revD}[1]{{\color{Mulberry}\small[D: #1]}}
 \else
-  \newcommand{\gopesh}[1]{}
-  \newcommand{\bahram}[1]{}
-  \newcommand{\houssam}[1]{}
-  \newcommand{\brett}[1]{}
+  \newcommand{\revA}[1]{}
+  \newcommand{\revB}[1]{}
+  \newcommand{\revC}[1]{}
+  \newcommand{\revD}[1]{}
 \fi
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -975,11 +975,6 @@ Random (masked uniform) & 52.0 \\
 \end{tabular*}
 \end{table}
 
-\subsection{Feasibility Results and Harder Suite}
-
-The harder 4$\times$4 Sudoku suite (6--8 empties) is detailed in Appendix~\ref{app:harder_sudoku_detailed}.
-
-
 \subsection{Isolation Study: Detailed Tables}
 \label{app:exp1_tables}
 
@@ -1059,7 +1054,7 @@ The dial does not control achieved $L_z$. Figure~\ref{fig:exp2_dial_does_not_con
 \IfFileExists{figures/fig_exp2_dial_does_not_control_Lz.pdf}{%
 \includegraphics[width=0.85\linewidth]{figures/fig_exp2_dial_does_not_control_Lz.pdf}%
 }{%
-\missingfigurebox{Figure asset not bundled in this repo snapshot. See Table~\ref{tab:exp2_dial_failure} for the numeric results discussed here.}%
+\missingfigurebox{Figure unavailable; numeric results are in Table~\ref{tab:exp2_dial_failure}.}%
 }
 \caption{The contraction ``dial'' ($L_z^{\mathrm{target}}$) does not meaningfully control achieved $\hat L_z^{\mathrm{post}}$: all four settings land in a narrow $0.219$--$0.242$ band. The ordering of dial values does not produce monotonic stability. All conditions: value-head spectral norm disabled, projection $R{=}10$. \emph{No monotonic stability-dial claim is supported.}}
 \label{fig:exp2_dial_does_not_control_Lz}
@@ -1074,7 +1069,7 @@ Projection, separately, is a major stabilizer. Figure~\ref{fig:exp2_projection_s
 \IfFileExists{figures/fig_exp2_projection_is_primary_stabilizer.pdf}{%
 \includegraphics[width=0.85\linewidth]{figures/fig_exp2_projection_is_primary_stabilizer.pdf}%
 }{%
-\missingfigurebox{Figure asset not bundled in this repo snapshot. See Table~\ref{tab:exp2_projection_stabilizer} for the numeric results discussed here.}%
+\missingfigurebox{Figure unavailable; numeric results are in Table~\ref{tab:exp2_projection_stabilizer}.}%
 }
 \caption{Projection ($R{=}10$ vs.\ \emph{proj.\ off}, where \emph{proj.\ off} denotes $\Pi_R=\mathrm{Id}$) is a major stabilizer: $\Delta_V$ improves $6$--$10\times$; argmax agreement improves $8$--$10$~pp. All conditions: value-head spectral norm disabled, $z\!\to\!z$ contraction ON ($L_z{=}0.9$). When projection is active 100\%, it can dominate stability effects.}
 \label{fig:exp2_projection_stabilizer}
@@ -1131,7 +1126,7 @@ Figure~\ref{fig:exp5_L_vs_metrics} shows achieved $\hat L^{\mathrm{pre}}_z$ vs.\
 \IfFileExists{figures/fig_exp5_L_vs_metrics.pdf}{%
 \includegraphics[width=0.85\linewidth]{figures/fig_exp5_L_vs_metrics.pdf}%
 }{%
-\missingfigurebox{Figure asset not bundled in this repo snapshot. See Table~\ref{tab:exp5-tradeoff} for the numeric results discussed here.}%
+\missingfigurebox{Figure unavailable; numeric results are in Table~\ref{tab:exp5-tradeoff}.}%
 }
 \caption{Achieved $\hat L^{\mathrm{pre}}_z$ (x-axis) vs.\ argmax agreement [\%] ($n{=}2 \to 16$, left y-axis, blue) and task success [\%] (right y-axis, green). Scale annotations show $s$. \textbf{Note:} Success rates use matched compute ($n{=}2$, proj.\ off); Table~\ref{tab:upi_success_only} uses $n{=}2$ with mixed projection settings (see text).}
 \label{fig:exp5_L_vs_metrics}
@@ -1659,6 +1654,80 @@ This follows by adding and subtracting $U_n$ inside $U_*-\mathcal{T}^\pi_K U_*$ 
 \label{eq:residual_bridge_trunc}
 \end{equation}
 \end{remark}
+
+\section{Advantage estimation and bounds}
+\label{app:adv_bounds}
+
+\begin{align}
+\widehat Q_V(s,a) &= \E_{s'}[r(s,a,s') + \gamma V(s')], \\
+\widehat A_V(s,a) &= \widehat Q_V(s,a) -
+\E_{b\sim\pi(\cdot|s)}[\widehat Q_V(s,b)].
+\label{eq:Ahat_def_app}
+\end{align}
+
+\begin{remark}[Centering and baseline computation]
+\label{rem:baseline_app}
+The linear-in-$\alpha$ $\varepsilon_{A,\mathrm{cand}}$ term in Theorem~\ref{thm:monotone_with_error}
+relies on the \emph{statewise centering} property
+\[
+\E_{a\sim\pi(\cdot\mid s)}[\widehat A(s,a)] = 0 \qquad \text{for all } s.
+\]
+This holds identically when $\widehat A$ is defined as in~\eqref{eq:Ahat_def_app} with the baseline computed exactly as
+$B_V(s)=\E_{b\sim\pi(\cdot\mid s)}[\widehat Q_V(s,b)]$ (e.g., by summation over a finite action space).
+
+If the baseline is approximated, centering may fail. We quantify this by the \emph{centering defect}
+\[
+\varepsilon_{\mathrm{cent}}
+:=
+\sup_{s\in\mathcal{R}_\pi}\left|\E_{a\sim\pi(\cdot\mid s)}[\widehat A(s,a)]\right|.
+\]
+Theorem~\ref{thm:monotone_with_error} corresponds to the ideal case $\varepsilon_{\mathrm{cent}}=0$.
+\end{remark}
+
+\begin{lemma}[Value to one-step advantage error]
+\label{lem:A_error_app}
+Let $\mathcal{R}_{\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}$ be the advantage-evaluation closure from Definition~\ref{def:adv_closure},
+and let $\delta_V := \sup_{s\in \mathcal{R}_{\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}} |V(s)-V^\pi(s)|$.
+Then for all $(s,a)$ with $s\in\mathcal{R}_\pi$ and $a\in \mathrm{supp}(\pi(\cdot|s))\cup\mathrm{supp}(\pi_{\mathrm{cand}}(\cdot|s))$,
+\[
+|\widehat A_V(s,a) - A^\pi(s,a)| \le 2\gamma\,\delta_V.
+\]
+\end{lemma}
+
+The factor $2\gamma$ is tight worst-case (error appears in both $Q$ and baseline).
+In practice, errors in $\widehat Q_V(s,a)$ and the baseline $\E_\pi[\widehat Q_V]$ often have the same sign and partially cancel.
+\begin{remark}[Extensions to $K$-step and GAE-style advantages]
+\label{rem:A_error_kstep_app}
+Lemma~\ref{lem:A_error_app} is stated for the \emph{one-step} estimator~\eqref{eq:Ahat_def_app}, hence the factor $2\gamma$.
+If instead one defines a $K$-step action-value estimate
+\begin{equation*}
+\widehat Q_V^{(K)}(s,a) :=
+\E\biggl[\sum_{t=0}^{K-1}\gamma^t r_t + \gamma^K V(s_K) \biggm| s_0=s, a_0=a, \pi\biggr],
+\end{equation*}
+and the corresponding centered advantage
+$\widehat A_V^{(K)}(s,a):=\widehat Q_V^{(K)}(s,a)-\E_{b\sim\pi(\cdot|s)}[\widehat Q_V^{(K)}(s,b)]$
+(with the baseline computed exactly), then the same argument yields
+\[
+|\widehat A_V^{(K)}(s,a)-A^\pi(s,a)| \le 2\gamma^K\,\delta_V.
+\]
+In practice we may use $\lambda$-return / GAE-style estimators (weighted mixtures of multi-step returns), which admit analogous bounds with a coefficient depending on $(\gamma,\lambda)$; throughout, we absorb such estimator-dependent constants into the uniform advantage error parameter $\varepsilon_A$ in Assumption~\ref{ass:Ahat_error_bound}.
+\end{remark}
+
+\begin{corollary}[Advantage error in terms of theorem parameters]
+\label{cor:epsA_dials_app}
+Under Assumptions~\ref{ass:Lip} and~\eqref{eq:LV_def}, combining Proposition~\ref{prop:error_bounds} with Lemma~\ref{lem:A_error_app} yields:
+\begin{align}
+\varepsilon_A
+&\le
+\underbrace{\frac{2\gamma\,\varepsilon_{\mathrm{res}}^*}{1-\gamma^K}}_{\text{architectural}}
++
+\underbrace{2\gamma\,L_V\,\frac{L_z^{\,n}}{1-L_z}\,C_z}_{\text{unrolling}}.
+\label{eq:epsA_dials_app}
+\end{align}
+Here $\varepsilon_A$ bounds the advantage error on $\mathcal{R}_\pi$ for actions
+$a\in \mathrm{supp}(\pi(\cdot|s))\cup\mathrm{supp}(\pi_{\mathrm{cand}}(\cdot|s))$,
+and the intermediate value-error quantity in Lemma~\ref{lem:A_error_app} is taken over the advantage-evaluation closure $\mathcal{R}_{\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}$ (Definition~\ref{def:adv_closure}).
+\end{corollary}
 
 \section{Proofs}
 \label{app:proofs}
@@ -2203,80 +2272,6 @@ The key differences:
 \item \textbf{Episodic-$z$ vs.\ persistent-$z$}: We analyze both; the original TRM is persistent-$z$.
 \item \textbf{Halting}: The original TRM uses an adaptive halting mechanism; our analysis fixes $n$ for tractability and treats $n$ as an analysis parameter rather than a learned quantity.
 \end{enumerate}
-\section{Advantage estimation and bounds}
-\label{app:adv_bounds}
-
-\begin{align}
-\widehat Q_V(s,a) &= \E_{s'}[r(s,a,s') + \gamma V(s')], \\
-\widehat A_V(s,a) &= \widehat Q_V(s,a) -
-\E_{b\sim\pi(\cdot|s)}[\widehat Q_V(s,b)].
-\label{eq:Ahat_def_app}
-\end{align}
-
-\begin{remark}[Centering and baseline computation]
-\label{rem:baseline_app}
-The linear-in-$\alpha$ $\varepsilon_{A,\mathrm{cand}}$ term in Theorem~\ref{thm:monotone_with_error}
-relies on the \emph{statewise centering} property
-\[
-\E_{a\sim\pi(\cdot\mid s)}[\widehat A(s,a)] = 0 \qquad \text{for all } s.
-\]
-This holds identically when $\widehat A$ is defined as in~\eqref{eq:Ahat_def_app} with the baseline computed exactly as
-$B_V(s)=\E_{b\sim\pi(\cdot\mid s)}[\widehat Q_V(s,b)]$ (e.g., by summation over a finite action space).
-
-If the baseline is approximated, centering may fail. We quantify this by the \emph{centering defect}
-\[
-\varepsilon_{\mathrm{cent}}
-:=
-\sup_{s\in\mathcal{R}_\pi}\left|\E_{a\sim\pi(\cdot\mid s)}[\widehat A(s,a)]\right|.
-\]
-Theorem~\ref{thm:monotone_with_error} corresponds to the ideal case $\varepsilon_{\mathrm{cent}}=0$.
-\end{remark}
-
-\begin{lemma}[Value to one-step advantage error]
-\label{lem:A_error_app}
-Let $\mathcal{R}_{\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}$ be the advantage-evaluation closure from Definition~\ref{def:adv_closure},
-and let $\delta_V := \sup_{s\in \mathcal{R}_{\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}} |V(s)-V^\pi(s)|$.
-Then for all $(s,a)$ with $s\in\mathcal{R}_\pi$ and $a\in \mathrm{supp}(\pi(\cdot|s))\cup\mathrm{supp}(\pi_{\mathrm{cand}}(\cdot|s))$,
-\[
-|\widehat A_V(s,a) - A^\pi(s,a)| \le 2\gamma\,\delta_V.
-\]
-\end{lemma}
-
-The factor $2\gamma$ is tight worst-case (error appears in both $Q$ and baseline).
-In practice, errors in $\widehat Q_V(s,a)$ and the baseline $\E_\pi[\widehat Q_V]$ often have the same sign and partially cancel.
-\begin{remark}[Extensions to $K$-step and GAE-style advantages]
-\label{rem:A_error_kstep_app}
-Lemma~\ref{lem:A_error_app} is stated for the \emph{one-step} estimator~\eqref{eq:Ahat_def_app}, hence the factor $2\gamma$.
-If instead one defines a $K$-step action-value estimate
-\begin{equation*}
-\widehat Q_V^{(K)}(s,a) :=
-\E\biggl[\sum_{t=0}^{K-1}\gamma^t r_t + \gamma^K V(s_K) \biggm| s_0=s, a_0=a, \pi\biggr],
-\end{equation*}
-and the corresponding centered advantage
-$\widehat A_V^{(K)}(s,a):=\widehat Q_V^{(K)}(s,a)-\E_{b\sim\pi(\cdot|s)}[\widehat Q_V^{(K)}(s,b)]$
-(with the baseline computed exactly), then the same argument yields
-\[
-|\widehat A_V^{(K)}(s,a)-A^\pi(s,a)| \le 2\gamma^K\,\delta_V.
-\]
-In practice we may use $\lambda$-return / GAE-style estimators (weighted mixtures of multi-step returns), which admit analogous bounds with a coefficient depending on $(\gamma,\lambda)$; throughout, we absorb such estimator-dependent constants into the uniform advantage error parameter $\varepsilon_A$ in Assumption~\ref{ass:Ahat_error_bound}.
-\end{remark}
-
-\begin{corollary}[Advantage error in terms of theorem parameters]
-\label{cor:epsA_dials_app}
-Under Assumptions~\ref{ass:Lip} and~\eqref{eq:LV_def}, combining Proposition~\ref{prop:error_bounds} with Lemma~\ref{lem:A_error_app} yields:
-\begin{align}
-\varepsilon_A
-&\le
-\underbrace{\frac{2\gamma\,\varepsilon_{\mathrm{res}}^*}{1-\gamma^K}}_{\text{architectural}}
-+
-\underbrace{2\gamma\,L_V\,\frac{L_z^{\,n}}{1-L_z}\,C_z}_{\text{unrolling}}.
-\label{eq:epsA_dials_app}
-\end{align}
-Here $\varepsilon_A$ bounds the advantage error on $\mathcal{R}_\pi$ for actions
-$a\in \mathrm{supp}(\pi(\cdot|s))\cup\mathrm{supp}(\pi_{\mathrm{cand}}(\cdot|s))$,
-and the intermediate value-error quantity in Lemma~\ref{lem:A_error_app} is taken over the advantage-evaluation closure $\mathcal{R}_{\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}$ (Definition~\ref{def:adv_closure}).
-\end{corollary}
-
 \section{Ethics and Broader Impact}
 \label{app:ethics_broader}
 
@@ -2291,7 +2286,7 @@ The methodological contribution is to separate internal evaluator depth from out
 \begin{enumerate}[leftmargin=*,itemsep=0.35em,topsep=0.35em]
 \item \textbf{Claims.} \answerYes[Stated in the abstract, \Cref{sec:intro}, and \Cref{sec:experiments}; summarized in \Cref{sec:conclusion}.]
 
-\item \textbf{Limitations.} \answerYes[The limitations paragraph in \Cref{sec:conclusion} lists the main empirical and theoretical limits: the 3-seed 9$\times$9 sweep is not reported as a result, $L_V$ is only locally estimated, centering is approximate when not done by exact summation, and sup-norm residuals are not measured.]
+\item \textbf{Limitations.} \answerYes[\Cref{sec:conclusion} discusses the main limitations: the bound's constants are too loose to certify Sudoku-scale improvement, the persistent-$z$ corollary depends on a slow-drift condition we do not verify for Sudoku, environment interactions are not equalized in the headline comparison, the projection effect cannot be assigned to a single term in the projection-aware bound, $L_V$ is only locally estimated, and the linear-$\alpha$ tightening requires exact baseline summation.]
 
 \item \textbf{Theory assumptions and proofs.} \answerYes[Assumptions are stated in the main text (Assumptions~\ref{ass:Lip} and~\ref{ass:Ahat_error_bound}); proofs and extensions are in \Cref{app:persistent_latent,app:cpi_derivation,app:proofs,app:adv_bounds}.]
 
@@ -2301,7 +2296,7 @@ The methodological contribution is to separate internal evaluator depth from out
 
 \item \textbf{Experimental details.} \answerYes[Task protocols, action space, training budgets, seeds, summary statistics, and evaluation conditions are in \Cref{sec:experiments,app:implementation}. \Cref{app:implementation} also notes the single-device execution pattern used for the reported runs.]
 
-\item \textbf{Experiment statistical significance.} \answerYes[Tables~\ref{tab:hard_suite_anchor} and~\ref{tab:controlled_2x2_main_body} report mean$\pm$std over 10 seeds; the controlled $2\times 2$ contraction main effect is reported with $p\approx 0.6$ at 10 seeds (Sections~\ref{sec:harder_puzzles},~\ref{app:controlled_2x2}).]
+\item \textbf{Experiment statistical significance.} \answerYes[Tables~\ref{tab:hard_suite_anchor} and~\ref{tab:controlled_2x2_main_body} report mean$\pm$std over 10 seeds. The headline UPI--TRM vs.\ TRM+PPO gap is significant under Welch's $t$-test ($p\approx 7.3\times 10^{-4}$), with consistent bootstrap and permutation robustness checks (\Cref{sec:harder_puzzles}, \Cref{app:headline_significance}). The controlled $2\times 2$ contraction main effect is $p\approx 0.6$ at 10 seeds (\Cref{sec:harder_puzzles}, \Cref{app:controlled_2x2}).]
 
 \item \textbf{Experiments compute resources.} \answerYes[See \Cref{app:implementation}: each reported run uses a single device; wall-clock and environment-interaction counts are not equalized across the rows of Table~\ref{tab:hard_suite_anchor} (Appendix~\ref{app:equalized_baselines}).]
 
