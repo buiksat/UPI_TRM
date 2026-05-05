@@ -273,7 +273,7 @@ Under Assumption~\ref{ass:Lip} and a Lipschitz value head $|V_\psi(z,x)-V_\psi(z
 \end{align}
 \end{proposition}
 
-The first term is a fixed-point Bellman residual; the second is finite-unrolling bias decaying geometrically in $n$. Under $\|z_{\mathrm{init}}\|_2\le R$ with $\mathcal{Z}_{\mathrm{inv}}=B_R$, projection gives $C_z\le 2R$ (Remark~\ref{rem:finite_R_Cz}).
+The first term is a fixed-point Bellman residual; the second is finite-unrolling bias that decays geometrically in $n$. Under $\|z_{\mathrm{init}}\|_2\le R$ with $\mathcal{Z}_{\mathrm{inv}}=B_R$, projection gives $C_z\le 2R$ (Remark~\ref{rem:finite_R_Cz}).
 
 A projection-active specialization makes the role of $R$ explicit. When projection is active (that is, $\|f_\theta(z,y,x)\|_2\ge\rho_R>R$ for all $z\in B_R$ and relevant $(x,y)$), $\Pi_R$ also contracts the evaluator. Proposition~\ref{prop:proj_sat_contraction} gives
 \begin{equation}
@@ -394,7 +394,7 @@ Then:
 where $\varepsilon_{\mathrm{CPI}} \triangleq \sup_s\bigl|\E_{a\sim\pi_{\mathrm{cand}}(\cdot\mid s)}A^\pi(s,a)\bigr|$.
 \end{theorem}
 
-The linear-in-$\alpha$ contribution $\alpha\varepsilon_{A,\mathrm{cand}}/(1-\gamma)$, instead of the naive $\varepsilon_A/(1-\gamma)$, needs the exact-centering condition~\eqref{eq:centering_condition}. That holds deterministically only when the baseline expectation in $\widehat A$ is computed by exact summation over the action space, as in the discrete-action setting of Algorithm~\ref{alg:upi}. For sampling-based or learned baselines the bound falls back to Corollary~\ref{cor:cpi_centering_defect}.
+The linear-in-$\alpha$ contribution $\alpha\varepsilon_{A,\mathrm{cand}}/(1-\gamma)$, instead of the naive $\varepsilon_A/(1-\gamma)$, requires the exact-centering condition~\eqref{eq:centering_condition}. That holds deterministically only when the baseline expectation in $\widehat A$ is computed by exact summation over the action space, as in the discrete-action setting of Algorithm~\ref{alg:upi}. For sampling-based or learned baselines the bound falls back to Corollary~\ref{cor:cpi_centering_defect}.
 
 The constants split into estimable and assumed (Table~\ref{tab:diagnostics}): $\hat L_z^{\mathrm{post}}$, $\hat\rho_R$, $\hat C_z$, $\hat L_V$, and $\hat\varepsilon_{\mathrm{cent}}$ admit finite-difference or batch proxies. The architectural residual $\varepsilon_{\mathrm{res}}^*$ is a sup-norm over the advantage closure that we do not estimate uniformly; the held-out finite-batch residual upper-bounds it only up to the truncation gap (Remark~\ref{rem:residual_bridge}). On the theory-aligned episodic-$z$ hard-suite rerun, the predicted CPI penalty is non-finite on 2/10 seeds at every $\alpha$ (Table~\ref{tab:episodic_z_penalty}). At this scale, the bound functions as a structural decomposition; its constants are not calibrated enough to predict Sudoku-scale improvement.
 
