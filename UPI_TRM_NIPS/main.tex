@@ -143,8 +143,8 @@ We validate the decomposition at two scales. A controlled finite-MDP experiment,
 
 \textbf{Contributions.}
 \begin{itemize}[leftmargin=1.2em,topsep=0pt,itemsep=2pt]
-\item A finite-depth evaluator-error decomposition for TRM-style recurrent models, splitting depth-$n$ value error into a fixed-point Bellman-residual term and a truncation term decaying as $L_z^n/(1-L_z)$ (Proposition~\ref{prop:error_bounds}, Corollary~\ref{cor:epsA_dials}).
-\item A CPI penalty with explicit $(L_z,n,K,\alpha,R)$ dependence (Theorem~\ref{thm:monotone_with_error}, Corollary~\ref{cor:cpi_dials_main}), connecting recurrent depth and projection geometry to the safe-improvement bound.
+\item A finite-depth evaluator-error decomposition for TRM-style recurrent models that splits depth-$n$ value error into a fixed-point Bellman-residual term and a truncation term that decays as $L_z^n/(1-L_z)$ (Proposition~\ref{prop:error_bounds}, Corollary~\ref{cor:epsA_dials}).
+\item A CPI penalty with explicit $(L_z,n,K,\alpha,R)$ dependence (Theorem~\ref{thm:monotone_with_error}, Corollary~\ref{cor:cpi_dials_main}) that links recurrent depth and projection geometry to the safe-improvement bound.
 \item UPI--TRM, an unrolled policy-iteration algorithm that meets the centering and projection conditions of the bound via exact baseline summation and a Euclidean projection.
 \item A finite-MDP verification, where all relevant quantities are exactly computable, that confirms the residual-to-value, value-to-advantage, and CPI inequalities with no violations.
 \item Empirical evidence on hard $4\times 4$ Sudoku, where persistent-$z$ UPI--TRM outperforms the closest architecture-matched PPO baseline, with a controlled $2\times 2$ ablation that identifies projection as the dominant mechanism.
