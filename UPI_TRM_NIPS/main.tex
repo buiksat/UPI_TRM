@@ -173,21 +173,19 @@ Sequence-model RL ranges from architecture-level planning~\citep{Tamar2016VIN} a
 \label{sec:setup}
 
 
-The original TRM, given input $x$ and plan $y_t$, runs an inner loop that updates a latent $z^{(k+1)} = f_\theta(z^{(k)}, y_t, x)$. After $n$ steps it reads out a refined prediction from a task head trained on checker-labeled puzzles~\citep{TRM2025}. UPI--TRM keeps $f_\theta$ but replaces the task head with two pieces: an optional projection $\Pi_R$ that keeps latents inside a radius-$R$ ball (Assumption~\ref{ass:Lip}, Eq.~\ref{eq:projection}),
+The original TRM, given input $x$ and plan $y_t$, runs an inner loop that updates a latent $z^{(k+1)} = f_\theta(z^{(k)}, y_t, x)$. After $n$ steps it reads out a refined prediction from a task head trained on checker-labeled puzzles~\citep{TRM2025}. UPI--TRM keeps $f_\theta$ but replaces the task head with two pieces. The first is an optional projection $\Pi_R$ that keeps latents inside a radius-$R$ ball (Assumption~\ref{ass:Lip}, Eq.~\ref{eq:projection}), so the projected update is
 \(
-z^{(k+1)} = (\Pi_R \circ f_\theta)(z^{(k)}, y_t, x),
+z^{(k+1)} = (\Pi_R \circ f_\theta)(z^{(k)}, y_t, x).
 \)
-and a scalar value head $V_\psi$ producing the unrolled evaluator output $U_n(s_t)=V_\psi(z_t^{(n)},x)$ with $s_t=(x,y_t)$, which scores candidate plans in the outer CPI loop.
+The second is a scalar value head $V_\psi$ that produces the unrolled evaluator output $U_n(s_t)=V_\psi(z_t^{(n)},x)$ with $s_t=(x,y_t)$, which scores candidate plans in the outer CPI loop.
 
-In the plan-space MDP the external state is $s_t=(x,y_t)$, the action is an edit $a_t$, and the transition is $y_{t+1}=\mathrm{edit}(y_t,a_t;x)$. A checker score $c(x,y)$ supplies reward, optionally via potential shaping~\citep{Ng1999Shaping} $r=r_0+\gamma\Phi(s')-\Phi(s)$ with $\Phi=c$. The latent $z$ is \emph{not} part of the environment state in our primary analysis; it is internal computation used to evaluate $s_t$. The resulting process is a discounted MDP $(\mathcal S,\mathcal A,P,r,\rho,\gamma)$ with $\gamma\in(0,1)$ and $K\ge 1$. Rewards are bounded and policies measurable; for finite Sudoku this holds automatically, otherwise all suprema are essential suprema on the stated closure sets.
+In the plan-space MDP the external state is $s_t=(x,y_t)$, the action is an edit $a_t$, and the transition is $y_{t+1}=\mathrm{edit}(y_t,a_t;x)$. A checker score $c(x,y)$ supplies reward, optionally via potential shaping~\citep{Ng1999Shaping} $r=r_0+\gamma\Phi(s')-\Phi(s)$ with $\Phi=c$. The latent $z$ is \emph{not} part of the environment state in our primary analysis; it is internal computation used to evaluate $s_t$. The resulting process is a discounted MDP $(\mathcal S,\mathcal A,P,r,\rho,\gamma)$ with $\gamma\in(0,1)$ and $K\ge 1$. Rewards are bounded and policies measurable; for finite Sudoku this holds automatically, otherwise all suprema are essential suprema on the stated closure sets. Increasing $n$ spends more computation inside one state evaluation but does not change the environment horizon or search depth, so the analysis tracks evaluator truncation error inside a fixed external MDP.
 
 \textbf{Episodic-$z$ vs.\ persistent-$z$.}
 In \emph{episodic-$z$}, the latent is reinitialized from the current plan at each edit step, so $(x,y)$ remains a Markov state; this is the primary theory setting. In \emph{persistent-$z$}, the latent is carried across edits, matching the original TRM. With persistent latents the next-state distribution depends jointly on $(x,y,z)$, since the same plan paired with a different carried latent can produce a different next plan after another inner unroll. Treating $(x,y)$ as the state in this regime is a non-Markov approximation. Our persistent-$z$ corollary (Appendix~\ref{app:persistent_latent}) lifts the analysis to the augmented state $\bar s=(x,y,z)$ and replaces the truncation term with a drift term that is small only under a slow-drift assumption on $z$. The hard 4$\times$4 experiment uses persistent-$z$, but we do not empirically verify the slow-drift condition for Sudoku.
 
-Increasing $n$ spends more computation inside one state evaluation. The environment horizon and search depth are unchanged; the analysis tracks evaluator truncation error inside a fixed external MDP.
-
 \textbf{Notation.}
-$z^*$ denotes the latent fixed point, $U_*(s)=V_\psi(z^*(s),x)$ the ideal latent value, and $\|f\|_{\infty,\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}:=\sup_{s\in\mathcal{R}_{\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}\cup\{s_{\mathrm{abs}}\}}|f(s)|$ the sup-norm over the advantage-evaluation closure used by CPI, which contains states reachable under $\pi$ and their one-step successors under $\pi$ and $\pi_{\mathrm{cand}}$, together with the absorbing state $s_{\mathrm{abs}}$ (Appendix~\ref{app:adv_closure_full}; full notation in Appendix~\ref{app:notation}).
+$z^*$ denotes the latent fixed point and $U_*(s)=V_\psi(z^*(s),x)$ the ideal latent value. We write $\|f\|_{\infty,\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}:=\sup_{s\in\mathcal{R}_{\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}\cup\{s_{\mathrm{abs}}\}}|f(s)|$ for the sup-norm over the advantage-evaluation closure used by CPI, where $\mathcal{R}_{\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}$ contains states reachable under $\pi$ and their one-step successors under $\pi$ and $\pi_{\mathrm{cand}}$, together with the absorbing state $s_{\mathrm{abs}}$ (Appendix~\ref{app:adv_closure_full}; full notation in Appendix~\ref{app:notation}).
 
 \section{UPI--TRM Algorithm}
 \label{sec:algorithm}
@@ -213,7 +211,9 @@ Algorithm~\ref{alg:upi} alternates three phases: collect edit trajectories, fit 
 \end{algorithmic}
 \end{algorithm}
 
-The cleanest match to the main theorem uses episodic-$z$, exact baseline summation over the discrete action space, the explicit mixture, and no distillation. Persistent-$z$ is handled in Appendix~\ref{app:persistent_latent}; approximate centering pays the Corollary~\ref{cor:cpi_centering_defect} defect. Under the initialization condition in Appendix~\ref{app:implementation}, $C_z\le 2R$.
+The configuration covered by Theorem~\ref{thm:monotone_with_error} uses episodic-$z$, exact baseline summation over the discrete action space, the explicit mixture step, and no distillation. We use the explicit $(1-\alpha)\pi+\alpha\pi_{\mathrm{cand}}$ mixture rather than a clipped surrogate or trust-region update because the linear-in-$\alpha$ tightening in Theorem~\ref{thm:monotone_with_error} requires the exact mixture form. Exact baseline summation is feasible because the action space is a small discrete edit set; tasks with continuous or combinatorial action spaces would require a learned baseline and incur the Corollary~\ref{cor:cpi_centering_defect} centering defect.
+
+Persistent-$z$ is handled in Appendix~\ref{app:persistent_latent}, and the initialization condition in Appendix~\ref{app:implementation} gives $C_z\le 2R$. Per update, the dominant cost is $O(T \cdot |\mathcal A| \cdot n)$ inner-evaluator unrolls: $T$ states per trajectory, $|\mathcal A|$ unrolls each for exact baseline summation, and depth $n$ per unroll.
 
 
 
