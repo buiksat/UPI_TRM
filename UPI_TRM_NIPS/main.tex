@@ -2291,37 +2291,87 @@ The methodological contribution is to separate internal evaluator depth from out
 \section*{NeurIPS Paper Checklist}
 \small
 \begin{enumerate}[leftmargin=*,itemsep=0.35em,topsep=0.35em]
-\item \textbf{Claims.} \answerYes[Stated in the abstract, \Cref{sec:intro}, and \Cref{sec:experiments}; summarized in \Cref{sec:conclusion}.]
 
-\item \textbf{Limitations.} \answerYes[\Cref{sec:conclusion} discusses the main limitations: the bound's constants are too loose to certify Sudoku-scale improvement, the persistent-$z$ corollary depends on a slow-drift condition we do not verify for Sudoku, environment interactions are not equalized in the headline comparison, the projection effect cannot be assigned to a single term in the projection-aware bound, $L_V$ is only locally estimated, and the linear-$\alpha$ tightening requires exact baseline summation.]
+\item {\bf Claims}
+    \item[] Question: Do the main claims made in the abstract and introduction accurately reflect the paper's contributions and scope?
+    \item[] Answer: \answerYes{}
+    \item[] Justification: The abstract and \Cref{sec:intro} state the contribution as a finite-depth recurrent-evaluator error decomposition propagated through CPI with explicit $(L_z,n,K,\alpha,R)$ dependence; \Cref{sec:experiments} reports the Sudoku evidence and \Cref{sec:conclusion} summarizes scope.
 
-\item \textbf{Theory assumptions and proofs.} \answerYes[Assumptions are stated in the main text (Assumptions~\ref{ass:Lip} and~\ref{ass:Ahat_error_bound}); proofs and extensions are in \Cref{app:persistent_latent,app:cpi_derivation,app:proofs,app:adv_bounds}.]
+\item {\bf Limitations}
+    \item[] Question: Does the paper discuss the limitations of the work performed by the authors?
+    \item[] Answer: \answerYes{}
+    \item[] Justification: \Cref{sec:intro} has a \textbf{Scope.} paragraph and \Cref{sec:conclusion} restates the limits: the bound's constants are too loose to certify Sudoku-scale improvement, the persistent-$z$ corollary depends on a slow-drift condition we do not verify for Sudoku, environment interactions are not equalized in the headline comparison, the projection effect cannot be assigned to a single term in the projection-aware bound, $L_V$ is only locally estimated, and the linear-$\alpha$ tightening requires exact baseline summation.
 
-\item \textbf{Experimental result reproducibility.} \answerYes[The experiments section fixes evaluation protocols, seed counts, and training budgets; the appendix reports aggregate statistics and control studies for the paper-facing experiments.]
+\item {\bf Theory assumptions and proofs}
+    \item[] Question: For each theoretical result, does the paper provide the full set of assumptions and a complete (and correct) proof?
+    \item[] Answer: \answerYes{}
+    \item[] Justification: Assumptions are stated in the main text (Assumptions~\ref{ass:Lip} and~\ref{ass:Ahat_error_bound}, with Assumption~\ref{ass:twotimescale} in the persistent-$z$ appendix); proofs and extensions are in \Cref{app:persistent_latent,app:cpi_derivation,app:proofs,app:adv_bounds}.
 
-\item \textbf{Open access to data and code.} \answerYes[The anonymized supplementary ZIP includes paper sources, synthetic Sudoku datasets, experiment configs, trusted-baseline code, and sanitized result snapshots --- enough to rebuild the manuscript and reproduce the reported tables and figures from the bundled outputs.]
+\item {\bf Experimental result reproducibility}
+    \item[] Question: Does the paper fully disclose all the information needed to reproduce the main experimental results of the paper to the extent that it affects the main claims and/or conclusions of the paper (regardless of whether the code and data are provided or not)?
+    \item[] Answer: \answerYes{}
+    \item[] Justification: \Cref{sec:experiments} fixes evaluation protocols, seed counts, and training budgets; \Cref{app:implementation} reports implementation details, and the appendix reports aggregate statistics and control studies for the paper-facing experiments.
 
-\item \textbf{Experimental details.} \answerYes[Task protocols, action space, training budgets, seeds, summary statistics, and evaluation conditions are in \Cref{sec:experiments,app:implementation}. \Cref{app:implementation} also notes the single-device execution pattern used for the reported runs.]
+\item {\bf Open access to data and code}
+    \item[] Question: Does the paper provide open access to the data and code, with sufficient instructions to faithfully reproduce the main experimental results, as described in supplemental material?
+    \item[] Answer: \answerYes{}
+    \item[] Justification: The anonymized supplementary ZIP includes paper sources, synthetic Sudoku datasets, experiment configs, trusted-baseline code, and sanitized result snapshots --- enough to rebuild the manuscript and reproduce the reported tables and figures from the bundled outputs.
 
-\item \textbf{Experiment statistical significance.} \answerYes[Tables~\ref{tab:hard_suite_anchor} and~\ref{tab:controlled_2x2_main_body} report mean$\pm$std over 10 seeds. The headline UPI--TRM vs.\ TRM+PPO gap is significant under Welch's $t$-test ($p\approx 7.3\times 10^{-4}$), with consistent bootstrap and permutation robustness checks (\Cref{sec:harder_puzzles}, \Cref{app:headline_significance}). The controlled $2\times 2$ contraction main effect is $p\approx 0.6$ at 10 seeds (\Cref{sec:harder_puzzles}, \Cref{app:controlled_2x2}).]
+\item {\bf Experimental setting/details}
+    \item[] Question: Does the paper specify all the training and test details (e.g., data splits, hyperparameters, how they were chosen, type of optimizer, etc.) necessary to understand the results?
+    \item[] Answer: \answerYes{}
+    \item[] Justification: Task protocols, action space, training budgets, seeds, summary statistics, and evaluation conditions are in \Cref{sec:experiments,app:implementation}. \Cref{app:implementation} also notes the single-device execution pattern used for the reported runs.
 
-\item \textbf{Experiments compute resources.} \answerYes[See \Cref{app:implementation}: each reported run uses a single device; wall-clock and environment-interaction counts are not equalized across the rows of Table~\ref{tab:hard_suite_anchor} (Appendix~\ref{app:equalized_baselines}).]
+\item {\bf Experiment statistical significance}
+    \item[] Question: Does the paper report error bars suitably and correctly defined or other appropriate information about the statistical significance of the experiments?
+    \item[] Answer: \answerYes{}
+    \item[] Justification: Tables~\ref{tab:hard_suite_anchor} and~\ref{tab:controlled_2x2_main_body} report mean$\pm$std over 10 seeds. The headline UPI--TRM vs.\ TRM+PPO gap is significant under Welch's $t$-test ($p\approx 7.3\times 10^{-4}$), with consistent bootstrap and permutation robustness checks (\Cref{sec:harder_puzzles}, \Cref{app:headline_significance}). The controlled $2\times 2$ contraction main effect is $p\approx 0.6$ at 10 seeds (\Cref{sec:harder_puzzles}, \Cref{app:controlled_2x2}).
 
-\item \textbf{Ethics statement.} \answerYes[See \Cref{app:ethics_broader}.]
+\item {\bf Experiments compute resources}
+    \item[] Question: For each experiment, does the paper provide sufficient information on the computer resources (type of compute workers, memory, time of execution) needed to reproduce the experiments?
+    \item[] Answer: \answerYes{}
+    \item[] Justification: See \Cref{app:implementation}: each reported run uses a single device; wall-clock and environment-interaction counts are not equalized across the rows of Table~\ref{tab:hard_suite_anchor}, with equalized-budget reruns in Appendix~\ref{app:equalized_baselines}.
 
-\item \textbf{Broader impacts.} \answerYes[See \Cref{app:ethics_broader}.]
+\item {\bf Code of ethics}
+    \item[] Question: Does the research conducted in the paper conform, in every respect, with the NeurIPS Code of Ethics?
+    \item[] Answer: \answerYes{}
+    \item[] Justification: See \Cref{app:ethics_broader}. The paper studies checker-trained Tiny Recursive Models on synthetic Sudoku tasks, with no personal data, human subjects, crowdsourcing, or deployed decision systems.
 
-\item \textbf{Safeguards.} \answerNA[Synthetic puzzle domain, no user-facing system, no high-stakes deployment claim.]
+\item {\bf Broader impacts}
+    \item[] Question: Does the paper discuss both potential positive societal impacts and negative societal impacts of the work performed?
+    \item[] Answer: \answerYes{}
+    \item[] Justification: See \Cref{app:ethics_broader}. The methodological contribution may help analyses of verifier-feedback systems with bounded internal compute; the main risk discussed is misinterpretation of puzzle-domain results as broader claims about reasoning capability.
 
-\item \textbf{Licenses for existing assets.} \answerNA[The supplementary ZIP redistributes only manuscript sources, author-written code, synthetic Sudoku data, and derived result files; no third-party datasets, pretrained models, or crowd-generated assets.]
+\item {\bf Safeguards}
+    \item[] Question: Does the paper describe safeguards that have been put in place for responsible release of data or models that have a high risk for misuse (e.g., pretrained language models, image generators, or scraped datasets)?
+    \item[] Answer: \answerNA{}
+    \item[] Justification: Synthetic puzzle domain, no user-facing system, no high-stakes deployment claim. The released artifact contains only manuscript sources and training/eval code for synthetic Sudoku.
 
-\item \textbf{New assets.} \answerYes[A new anonymized reproduction artifact: paper sources, scripts, configs, synthetic-task data, and sanitized result summaries. No personal data, no human-generated annotations.]
+\item {\bf Licenses for existing assets}
+    \item[] Question: Are the creators or original owners of assets (e.g., code, data, models), used in the paper, properly credited and are the license and terms of use explicitly mentioned and properly respected?
+    \item[] Answer: \answerNA{}
+    \item[] Justification: The supplementary ZIP redistributes only manuscript sources, author-written code, synthetic Sudoku data, and derived result files; no third-party datasets, pretrained models, or crowd-generated assets.
 
-\item \textbf{Crowdsourcing and compensation.} \answerNA[No crowdsourcing or paid annotation.]
+\item {\bf New assets}
+    \item[] Question: Are new assets introduced in the paper well documented and is the documentation provided alongside the assets?
+    \item[] Answer: \answerYes{}
+    \item[] Justification: A new anonymized reproduction artifact: paper sources, scripts, configs, synthetic-task data, and sanitized result summaries. No personal data, no human-generated annotations.
 
-\item \textbf{Human subjects.} \answerNA[None.]
+\item {\bf Crowdsourcing and research with human subjects}
+    \item[] Question: For crowdsourcing experiments and research with human subjects, does the paper include the full text of instructions given to participants and screenshots, if applicable, as well as details about compensation (if any)?
+    \item[] Answer: \answerNA{}
+    \item[] Justification: No crowdsourcing or research with human subjects; all experiments use synthetic Sudoku puzzles.
 
-\item \textbf{Institutional review board (IRB) approvals.} \answerNA[Not applicable: no human subjects research.]
+\item {\bf Institutional review board (IRB) approvals or equivalent for research with human subjects}
+    \item[] Question: Does the paper describe potential risks incurred by study participants, whether such risks were disclosed to the subjects, and whether Institutional Review Board (IRB) approvals (or an equivalent approval/review based on the requirements of your country or institution) were obtained?
+    \item[] Answer: \answerNA{}
+    \item[] Justification: No human subjects research.
+
+\item {\bf Declaration of LLM usage}
+    \item[] Question: Does the paper describe the usage of LLMs if it is an important, original, or non-standard component of the core methods in this research? Note that if the LLM is used only for writing, editing, or formatting purposes and does not impact the core methodology, scientific rigorousness, or originality of the research, declaration is not required.
+    \item[] Answer: \answerNA{}
+    \item[] Justification: LLMs are not part of the core methodology; UPI--TRM uses Tiny Recursive Models on synthetic Sudoku, not language models.
+
 \end{enumerate}
 \normalsize
 \end{document}
