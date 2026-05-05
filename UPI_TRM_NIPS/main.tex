@@ -219,7 +219,7 @@ Persistent-$z$ is handled in Appendix~\ref{app:persistent_latent}, and the initi
 
 \section{Stability via Contraction of the Inner Evaluator}
 \label{sec:contraction}
-We train $U_n$ by $K$-step bootstrapped regression with loss $\mathcal{L}_{\mathrm{val}}=\E_{s_0\sim\mu}[(V_\psi(z^{(n)}(s_0),x_0)-\mathrm{sg}(G^{(K)}))^2]$, $G^{(K)}=\sum_{k<K}\gamma^k r_k + \gamma^K \bar V(s_K)$. The $K$-step Bellman operator $\mathcal T^\pi_K$ is the standard $\gamma^K$-contraction with fixed point $V^\pi$~\citep{SuttonBarto2018,Puterman1994}.
+We train $U_n$ by $K$-step bootstrapped regression with loss $\mathcal{L}_{\mathrm{val}}=\E_{s_0\sim\mu}[(V_\psi(z^{(n)}(s_0),x_0)-\mathrm{sg}(G^{(K)}))^2]$, where $G^{(K)}=\sum_{k<K}\gamma^k r_k + \gamma^K \bar V(s_K)$ is the $K$-step bootstrap target. The $K$-step Bellman operator $\mathcal T^\pi_K$ is the standard $\gamma^K$-contraction with fixed point $V^\pi$~\citep{SuttonBarto2018,Puterman1994}.
 
 The theory assumes sup-norm residual control on the relevant closure; we do not prove a general $L^2(\mu)\to\|\cdot\|_\infty$ conversion. This separates two notions of contraction. Bellman contraction is operator-level; inner-evaluator contraction of $z\mapsto\tilde f_\theta(z,y,x)$ controls truncation bias within one forward pass and by itself gives no TD-convergence guarantee.
 
@@ -233,7 +233,7 @@ C_z:=\sup_{(x,y)}\|\tilde f_\theta(z_{\mathrm{init}}(x,y),y,x)-z_{\mathrm{init}}
 \]
 \end{assumption}
 
-We enforce Assumption~\ref{ass:Lip} via operator-norm clamping on $z\!\to\!z$ layers plus per-layer scaling; $\Pi_R$ supplies forward invariance. Value-head spectral normalization is disabled in contraction sweeps to avoid confounds (Appendix~\ref{app:latent_collapse_diagnostic}). The assumption identifies a regime with rigorous bounds; it is sufficient, not necessary. Appendix~\ref{app:exp2_sweep} shows that the spectral-norm target does not reliably control achieved post-projection contraction once projection is active, so its practical effect has to be measured empirically.
+We enforce Assumption~\ref{ass:Lip} via operator-norm clamping on $z\!\to\!z$ layers plus per-layer scaling; $\Pi_R$ provides forward invariance. Value-head spectral normalization is disabled in contraction sweeps to avoid confounds (Appendix~\ref{app:latent_collapse_diagnostic}). The assumption identifies a regime with rigorous bounds; it is sufficient, not necessary. Appendix~\ref{app:exp2_sweep} shows that the spectral-norm target does not reliably control achieved post-projection contraction once projection is active, so its practical effect must be measured empirically.
 
 In the projection-active sweep cell of Appendix~\ref{app:exp2_sweep}, $\hat L_z^{\mathrm{post}}$ is set mostly by the saturation factor $R/\rho_R$ and stays in a narrow $0.219$--$0.242$ band (Table~\ref{tab:exp2_dial_failure}), so the $L_z$-dependent terms behave as proxies rather than as a tunable knob. A pre-registered episodic-$z$ hard-suite rerun (Appendix~\ref{app:episodic_z_hard_suite_rerun}) yields a broader post-projection distribution including seeds with $\hat L_z^{\mathrm{post}}\ge 1$, so the narrow-band behavior is not a general hard-suite geometry fact.
 
