@@ -494,8 +494,6 @@ L_V\,\frac{L_z^{\,n}}{1-L_z}\,C_z
 
 Corollary~\ref{cor:cpi_dials_main} is the optional fixed-point specialization of the finite-reference penalty $2\alpha\gamma B_{n,m}/(1-\gamma)$. It makes the one-step dependence on $(L_z,n,K,\alpha)$ explicit and reduces to standard CPI in the limit $L_z,\varepsilon_{\mathrm{res}}^*\to 0$. Two constants in~\eqref{eq:main_bound_dials} are observed rather than tuned: $L_V$ is only locally estimated by finite differences (Table~\ref{tab:exp1_value_head_lipschitz}), and the current clamping mechanism produces little range in the projection-active proxy $\hat L_z^{\mathrm{post}}$ ($\approx0.22$--$0.24$; Appendix~\ref{app:exp2_sweep}, Table~\ref{tab:exp2_dial_failure}). On the hard suite, we therefore treat the $L_z$-dependent terms as monitoring quantities.
 
-A controlled 64-state, 4-action MDP in which all quantities are exactly computable (Appendix~\ref{app:finite_mdp_certificate}, Figure~\ref{fig:finite_mdp_certificate_main}) numerically unit-tests the residual-to-value, value-to-advantage, and CPI inequalities. The artifact contains 80 value/decomposition rows ($4$ contraction settings by $20$ depths) and 21 mixture-weight rows for one selected CPI slice, with zero violations. This checks the composed inequalities in a setting where the assumptions are verifiable; it is not an empirical discovery or a 101-point sweep over all displayed variables.
-
 A projection-aware version of \eqref{eq:main_bound_dials} substitutes $\varepsilon_0+(1+\gamma^K)L_V(R)R$ for $\varepsilon_{\mathrm{res}}^*$ and $L_z^{\mathrm{sat}}(R)$ for $L_z$; the full statement is Eq.~\eqref{eq:main_bound_proj} in Appendix~\ref{app:projection_theory}. In the saturated regime ($\rho_R\gg R$), $R/\rho_R$ sets $L_z^{\mathrm{sat}}(R)$ more directly than the spectral-norm target does (Appendix~\ref{app:exp2_sweep}). Smaller $L_z$ or larger $n$ reduces $L_z^n$; smaller $\alpha$ is safer; larger $K$ tightens $1/(1-\gamma^K)$ at the cost of a $K$-dependent residual. Persistent-$z$ uses the direct augmented-state residual of Appendix~\ref{app:persistent_latent}; slow drift enters only the optional comparison to a memoryless fixed-point reference.
 
 \section{Experiments}
@@ -506,10 +504,27 @@ All task results in this paper are on $4\times4$ Sudoku. The decision-relevant e
 \textbf{Setup.}
 The environment is the checker-defined plan-edit MDP of Section~\ref{sec:setup}. The persistent hard result, factorial, and nominal baselines use the no-mask 6--8-empty suite with $T{=}16$ under a 20k outer-step protocol; the theory-aligned episodic run instead stops at 20k environment steps. The nominal protocol does not equalize actual interactions across algorithms. Appendix~\ref{app:equalized_baselines} audits architecture-matched baselines at common budgets but does not include a matched-budget UPI--TRM run. Architecture-matched TRM+PPO/A2C/DQN share the TRM backbone and checker-shaped reward but use different update rules; external SB3 baselines use a flat MLP and serve only as implementation checks. In stability studies, contraction ($L_z{=}0.9$) is enforced by operator-norm clamping, value-head spectral normalization is disabled, and \emph{proj.\ off} means $\Pi_R=\mathrm{Id}$. Secondary diagnostics use the easier 1--4-empty suite and are labeled accordingly.
 
-\subsection{Hard 4$\times$4: theory-aligned negative and persistent implementation}
-\label{sec:harder_puzzles}
+\begin{table}[t]
+\caption{Claim status. ``Measured'' denotes retained finite-sample evidence, not a uniform certificate.}
+\label{tab:claim_status}
+\centering
+\small
+\begin{tabularx}{\linewidth}{@{}p{0.20\linewidth}p{0.32\linewidth}X@{}}
+\toprule
+Claim & Required condition & Evidence / status \\
+\midrule
+Finite-depth value & Frozen policy pair, common closure and norm & Proven; Theorem~\ref{thm:finite_reference_depth} \\
+Persistent direct bound & Complete augmented state, shared frozen map, uniform residual & Valid but uncalibrated; residual not measured uniformly \\
+CPI headline & Exact centering and exact deployed mixture & Not covered; headline policy is distilled \\
+Persistent 57.4\% & Nominal implementation protocol & 10-seed implementation result; unequal interactions \\
+Projection / contraction & Controlled factorial & $+13.0$pp composite / $+2.2$pp inconclusive \\
+Finite-MDP inequalities & Exact finite-state calculation & Numerical unit test; 80 value + 21 CPI rows \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
-The theory-aligned episodic run jointly uses latent reinitialization, exact baseline summation, exact $K$-step targets, and a directly deployed conservative mixture. It obtains $0.0\%$ success at 20k environment steps over seeds 41--50 (Appendix~\ref{app:episodic_z_hard_suite_rerun}). This negative result is the closest hard-suite implementation of the plan-state theorem in the retained evidence. Because four factors change together and its environment-interaction budget differs from the persistent run, it neither isolates a failure mechanism nor forms a controlled performance comparison.
+\subsection{Persistent hard-suite implementation and limitations}
+\label{sec:harder_puzzles}
 
 The persistent, distilled implementation produces the higher task result in Table~\ref{tab:hard_suite_anchor}. The no-mask 6--8-empty protocol is the first setting in this paper where masked random play scores $0\%$.
 
@@ -537,11 +552,7 @@ SB3 PPO/A2C/DQN/DQN($n{=}5$) & 20k & 10 & 0.0 $\pm$ 0.0 & $\approx -17.9$ & 0.78
 
 The \emph{architecture-matched} baselines (TRM+PPO/A2C/DQN) share UPI--TRM's TRM backbone and checker-shaped reward and emit no invalid actions, but each one swaps in its own update rule (different advantage estimator, baseline, policy update, and sometimes target network). At the nominal outer-step endpoint, the $+25.4$pp gap to TRM+PPO is statistically distinguishable in the retained analysis (Welch's $t$-test: $t\approx4.10$, $p\approx7.3\times10^{-4}$, 95\% CI $[12.4,38.5]$pp); bootstrap and permutation analyses agree (Appendix~\ref{app:headline_significance}). This is a joint implementation contrast at unequal interaction counts, not an isolated algorithmic component or an efficiency comparison. The external SB3 baselines use a flat MLP, have invalid-action rates $0.78$--$1.00$, and are only implementation checks.
 
-PPO, A2C, and DQN collect 64, 32, and 4 environment transitions per outer step. UPI--TRM is not included in the interaction-equalized reruns of Appendix~\ref{app:equalized_baselines}. Accordingly, Table~\ref{tab:hard_suite_anchor} supports no claim of equal-interaction superiority or sample efficiency over PPO.
-
 The 57.4\% run uses persistent-$z$. Corollary~\ref{cor:persistent_cpi_augmented} provides the relevant conditional augmented-MDP form without slow drift, but the retained package cannot verify its clock encoding, latent-carry order, or shared frozen recurrence; moreover, the uniform augmented residual and exact augmented-state centering are not measured. More decisively, the headline implementation distills the mixture, so the exact deployed-mixture condition is known not to hold. Exact centering alone could not repair that mismatch. The 57.4\% is therefore an implementation result, not a verification of the persistent certificate or Theorem~\ref{thm:monotone_with_error}.
-
-The episodic finite-batch residual reported for the $0\%$ run is not evidence about the distinct persistent augmented-state residual.
 
 \subsection{Projection and contraction ablation}
 \label{sec:projection_contraction_ablation}
@@ -567,7 +578,25 @@ Contraction, $R{=}10$ & 50.2 $\pm$ 10.5 \\
 
 The projection main effect is $+13.0$ percentage points ($36.2\%\to49.2\%$, averaged over contraction status). This is an algorithmic effect that combines forward-pass clipping with all induced training-dynamics changes; it cannot be assigned to one term of~\eqref{eq:main_bound_proj}. The contraction main effect is $+2.2$ points ($41.6\%\to43.8\%$, averaged over projection status) and is inconclusive at 10 seeds. We omit the source-reported factorial $p$-value because the copied package lacks the per-seed artifact and named test needed to reproduce it. We therefore treat contraction only as a conditional stability/error-control mechanism, not as a demonstrated hard-task performance dial.
 
-The easier 1--4-empty depth-mismatch diagnostic shows improved value/depth stability under contraction (Appendix~\ref{app:depth_mismatch_main}), but it does not establish a hard-suite task-performance effect or explain the persistent headline run.
+\subsection{Theory-aligned episodic negative result}
+\label{sec:episodic_negative_main}
+
+The theory-aligned episodic run jointly uses latent reinitialization, exact baseline summation, exact $K$-step targets, and a directly deployed conservative mixture. It obtains $0.0\%$ success at 20k environment steps over seeds 41--50 (Appendix~\ref{app:episodic_z_hard_suite_rerun}). This is the closest hard-suite implementation of the plan-state theorem in the retained evidence. Because four factors change together and its interaction budget differs from the persistent run, it neither isolates a failure mechanism nor forms a controlled performance comparison. Its finite-batch episodic residual is not evidence about the distinct persistent augmented-state residual.
+
+\subsection{Interaction-budget audit}
+\label{sec:interaction_audit_main}
+
+PPO, A2C, and DQN collect 64, 32, and 4 environment transitions per nominal outer step. UPI--TRM is absent from the common-budget reruns in Appendix~\ref{app:equalized_baselines}, so the paper has no interaction-matched UPI--TRM versus PPO comparison. The retained package also lacks standalone provenance for the numerical rows of that baseline-only table; we use it only to document protocol structure and the missing UPI--TRM arm, not as independent numerical evidence.
+
+\subsection{Finite-MDP numerical unit test}
+\label{sec:finite_mdp_main}
+
+A controlled 64-state, 4-action MDP in which all quantities are exactly computable (Appendix~\ref{app:finite_mdp_certificate}, Figure~\ref{fig:finite_mdp_certificate_main}) unit-tests the residual-to-value, value-to-advantage, and CPI inequalities. The retained artifact contains 80 value/decomposition rows ($4$ contraction settings by $20$ depths) and 21 mixture-weight rows for one selected CPI slice, with zero violations. This checks the composed inequalities; it is neither an empirical discovery nor a 101-point Cartesian sweep over all displayed variables.
+
+\subsection{Secondary diagnostics}
+\label{sec:secondary_diagnostics_main}
+
+The easier 1--4-empty depth-mismatch diagnostic shows improved value/depth stability under contraction (Appendix~\ref{app:depth_mismatch_main}), but it does not establish a hard-suite task-performance effect or explain the persistent headline run. Additional sweeps and ablations are retained as exploratory diagnostics in Appendix~\ref{app:secondary_diagnostics}.
 
 \section{Discussion, Limitations, and Conclusion}
 \label{sec:conclusion}
@@ -901,6 +930,11 @@ $\KL(\pi_{\mathrm{new}}\|\pi_\phi)$ & App.~\ref{app:implementation} & Distillati
 \end{tabularx}
 \end{table}
 
+\section{Secondary and Exploratory Diagnostics}
+\label{app:secondary_diagnostics}
+
+The following studies probe mechanisms and implementation behavior. They are not theorem validation and are not used as confirmatory hard-suite evidence unless explicitly stated.
+
 \paragraph{Finite-difference $L_V$ diagnostic for the main comparison.}
 To partially operationalize $L_V$ in the same regime used by the main bound, we measure a local finite-difference proxy on the Exp1 refreeze package: frozen B0 states, episodic-$z$, $n_{\mathrm{eval}}{=}8$, and seeds 41--50. Table~\ref{tab:exp1_value_head_lipschitz} reports the seed-aggregated estimates. The smallest perturbation scale $\epsilon=10^{-5}$ is noisier, but over the practical range $\epsilon\in\{3\times 10^{-5}, 10^{-4}, 3\times 10^{-4}, 10^{-3}\}$ both conditions stay in the same-order $0.085$--$0.111$ band. This remains a local numerical diagnostic rather than a certified global Lipschitz bound, but it reduces the concern that the comparison is dominated by orders-of-magnitude differences in value-head sensitivity.
 
@@ -1167,6 +1201,11 @@ Figure~\ref{fig:exp5_L_vs_metrics} shows achieved $\hat L^{\mathrm{pre}}_z$ vs.\
 
 
 
+\section{Decision-Relevant Hard-Suite Records}
+\label{app:hard_records}
+
+This section retains the hard-suite task records and controlled projection $\times$ contraction aggregates used in the main narrative.
+
 \subsection{Harder 4$\times$4 Sudoku (6--8 Empties)}
 \label{app:harder_sudoku_detailed}
 
@@ -1204,6 +1243,11 @@ Contraction, $R{=}10$ & 50.2 $\pm$ 10.5 \\
 \end{table}
 
 The projection contrast raises success from $36.2\%$ to $49.2\%$ (+13.0pp averaged over contraction status). It is a composite algorithmic effect spanning the forward pass and training dynamics (changes to $f_\theta$, $\varepsilon_0$, and the optimizer trajectory), which~\eqref{eq:main_bound_proj} does not model. Averaging over projection status, contraction raises success from $41.6\%$ to $43.8\%$ (+2.2pp). The source-reported factorial $p$-value is omitted because the retained package lacks the per-seed artifact and test script; the aggregate contrast is inconclusive and does not support a variance-reduction claim.
+
+\section{Secondary Robustness Diagnostics}
+\label{app:secondary_robustness}
+
+These depth-mismatch curves and discussion details are secondary diagnostics and do not establish hard-suite task performance.
 
 \subsection{Depth-Mismatch Robustness (Isolation Study)}
 \label{sec:isolation_study}
@@ -1251,13 +1295,18 @@ These appendices show two observed contrasts: projection changes success and dep
 
 A naive reading of the older asymmetric comparison would suggest that enforcing $L_z<1$ is strongly harmful on harder tasks. The controlled no-mask 10-seed $2\times 2$ does not support that reading. Projection changes mean success from $36.2\%$ to $49.2\%$, while contraction changes it only from $41.6\%$ to $43.8\%$ averaged over projection settings (+2.2pp) and does not reduce variance under projection. Contraction is a sufficient error-control condition, but these data do not demonstrate it as a hard-task performance dial.
 
+\section{Protocol and Theory-Aligned Run Records}
+\label{app:protocol_records}
+
+This section records the interaction-budget audit, headline significance data, and the theory-aligned episodic hard-suite run. The common-budget baseline table lacks standalone provenance in the retained package and is marked accordingly.
+
 \subsection{Interaction-Equalized Baseline Audit}
 \label{app:equalized_baselines}
 
-Table~\ref{tab:hard_suite_anchor} reports the nominal 20k outer-step protocol used in the main hard-suite comparison. Because PPO, A2C, and DQN collect different numbers of environment transitions per outer step (64, 32, and 4 respectively), this protocol does not equalize environment interactions. To audit whether the ranking could be an artifact of this accounting mismatch, we reran the architecture-matched baselines under equalized interaction budgets while leaving the task, reward, checker, and evaluation pool unchanged.
+Table~\ref{tab:hard_suite_anchor} reports the nominal 20k outer-step protocol. Because PPO, A2C, and DQN collect 64, 32, and 4 transitions per outer step, it does not equalize environment interactions. The source manuscript records the baseline-only common-budget audit below, but its standalone logs are absent from the retained package. We preserve the table for provenance and use it only to document the intended audit and the absence of a UPI--TRM arm; its numerical rows are not independently revalidated here.
 
 \begin{table}[t]
-\caption{Interaction-equalized audit on no-mask hard 4$\times$4 (6--8 empties, $T{=}16$). Architecture-matched baselines only; UPI--TRM is omitted because the audit targets only the baseline interaction-accounting mismatch. 320k interactions corresponds to the equalized budget at PPO's nominal 5k outer steps; 1.28M matches PPO's interaction count under the nominal 20k protocol (3-seed pilot).}
+\caption{Source-reported interaction-equalized audit on no-mask hard 4$\times$4 (6--8 empties, $T{=}16$); standalone run provenance is unavailable in the retained package. UPI--TRM is omitted.}
 \label{tab:equalized_baselines}
 \centering
 \small
@@ -1271,7 +1320,7 @@ Budget & Seeds & TRM+PPO & TRM+A2C & TRM+DQN & TRM+DQN($n{=}5$) \\
 \end{tabular}
 \end{table}
 
-At 320k equalized interactions (10 seeds), all four baselines remain at or near $0\%$; TRM+DQN($n{=}5$) reaches $1.2\pm 1.0\%$. At 1.28M interactions, matching PPO's count under the nominal 20k-step protocol (PPO 20k, A2C 40k, DQN and DQN($n{=}5$) 320k outer steps), TRM+PPO recovers to $24.7\pm 11.0\%$ over 3 seeds, while TRM+A2C, TRM+DQN, and TRM+DQN($n{=}5$) remain at $0\%$. Interaction accounting changes the interpretation of the nominal-step protocol---PPO's nonzero success under Table~\ref{tab:hard_suite_anchor} partly reflects its larger interaction budget. The audit shows PPO is the strongest architecture-matched baseline under equalized interactions; it does not certify the UPI--TRM gap at equal interaction count because UPI--TRM was not rerun in this audit.
+The source-reported rows illustrate why outer-step counts are not interaction counts, but the missing provenance prevents an independent numerical conclusion from this table. Irrespective of those values, it cannot certify the UPI--TRM gap at equal interaction count because UPI--TRM was not run in the audit.
 
 \subsection{Headline significance-test data}
 \label{app:headline_significance}
