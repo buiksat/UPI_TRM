@@ -120,7 +120,7 @@
 
 \maketitle
 \begin{abstract}
-Tiny Recursive Models (TRMs) score candidates by unrolling an inner latent computation for $n$ steps. Used as a value evaluator in a checker-guided plan-edit MDP, this depth-$n$ output carries two distinct errors that standard conservative policy-improvement (CPI) analyses lump into a single approximation term: a Bellman residual at the latent fixed point, and truncation bias from stopping the recurrence early. We propose Unrolled Policy Iteration with TRMs (UPI--TRM), a policy-iteration procedure that runs the recurrent unroll inside one state evaluation of a discounted MDP over instance--plan states. Under a forward-invariant $L_z$-contraction and a Lipschitz value head, we show that the depth-$n$ value error splits into a fixed-point Bellman-residual term and a finite-unrolling term decaying as $L_z^n/(1-L_z)$. Substituting this decomposition into CPI yields a one-step improvement bound with explicit dependence on contraction $L_z$, unroll depth $n$, bootstrap horizon $K$, mixture weight $\alpha$, and projection radius $R$. A controlled finite MDP, in which all quantities are exactly computable, verifies the value, advantage, and CPI inequalities with no violations. On hard $4\times 4$ Sudoku, UPI--TRM reaches roughly $57\%$ over 10 seeds, against roughly $32\%$ for an architecture-matched PPO baseline; a controlled ablation identifies projection as the dominant mechanism on this suite. The Sudoku run uses persistent latents, which our main theorem does not directly cover; a slow-drift corollary handles the persistent setting under additional assumptions, and the bound's constants are tight on the finite-MDP check but loose at Sudoku scale. Together, this gives a quantitative account of how unroll depth, contraction, projection, and conservative mixing interact in finite-depth recurrent evaluators.
+Tiny Recursive Models (TRMs) score candidates by unrolling an inner latent computation for $n$ steps. Used as a value evaluator in a checker-guided plan-edit MDP, this depth-$n$ output carries two distinct errors that standard conservative policy-improvement (CPI) analyses lump into a single approximation term: a Bellman residual at the latent fixed point, and truncation bias from stopping the recurrence early. We propose Unrolled Policy Iteration with TRMs (UPI--TRM), a policy-iteration procedure that runs the recurrent unroll inside one state evaluation of a discounted MDP over instance--plan states. Under a forward-invariant $L_z$-contraction and a Lipschitz value head, we show that the depth-$n$ value error splits into a fixed-point Bellman-residual term and a finite-unrolling term decaying as $L_z^n/(1-L_z)$. Substituting this decomposition into CPI yields a one-step improvement bound with explicit dependence on contraction $L_z$, unroll depth $n$, bootstrap horizon $K$, mixture weight $\alpha$, and projection radius $R$. A controlled finite MDP, in which all quantities are exactly computable, verifies the value, advantage, and CPI inequalities with no violations. On hard $4\times 4$ Sudoku, UPI--TRM reaches roughly $57\%$ over 10 seeds, against roughly $32\%$ for an architecture-matched PPO baseline; a controlled ablation identifies projection as the dominant mechanism on this suite. Persistent latents admit a direct residual certificate on the augmented state $(x,y,z)$ without slow drift, but the required uniform augmented residual and exact centering are not measured for the Sudoku run, and its distilled policy is not the theorem's exact mixture. Together, this gives a quantitative account of how unroll depth, contraction, projection, and conservative mixing interact in finite-depth recurrent evaluators.
 \end{abstract}
 
 \section{Introduction}
@@ -134,13 +134,13 @@ Our main theoretical result decomposes the error of a finite-depth recurrent eva
 
 We validate the decomposition at two scales. A controlled finite-MDP experiment, in which all relevant quantities are exactly computable, verifies the residual-to-value, value-to-advantage, and CPI inequalities with no violations across the tested configurations. On hard $4\times4$ Sudoku, persistent-$z$ UPI--TRM reaches $57.4\% \pm 12.2\%$ over 10 seeds, against $32.0\% \pm 15.3\%$ for the closest architecture-matched PPO baseline at the same nominal outer-step budget. A controlled $2\times 2$ ablation isolates projection as the dominant factor on this suite ($+13.0$pp), while the contraction effect ($+2.2$pp) is statistically inconclusive at 10 seeds.
 
-\textbf{Scope.} The theorem is fixed-snapshot and one-step: it propagates residual and advantage error through CPI, but says nothing about the convergence of SGD, TD learning, BPTT, or policy distillation. The cleanest setting is episodic latents, where the latent is reinitialized from the current plan at each edit step and $(x,y)$ is Markov. The hard-suite Sudoku run uses persistent latents, which we cover via a slow-drift corollary on an augmented state $(x,y,z)$, a condition we do not empirically verify for Sudoku. At Sudoku scale the bound's constants tighten enough for the finite-MDP check but not for an a priori improvement certificate.
+\textbf{Scope.} The theorem is fixed-snapshot and one-step: it propagates residual and advantage error through CPI, but says nothing about the convergence of SGD, TD learning, BPTT, or policy distillation. Episodic latents are Markov on $(x,y)$. At a fixed snapshot, when all transition-relevant variables are included, persistent latents are Markov on the augmented state $(x,y,z)$ and have a direct residual certificate that does not require slow drift; slow drift is used only to compare the transient evaluator with a memoryless fixed-point reference. Neither the uniform augmented residual nor exact augmented-state centering is established for the hard-suite run, and distillation means its deployed policy is known not to be the exact mixture required by Theorem~\ref{thm:monotone_with_error}.
 
 \textbf{Contributions.}
 \begin{itemize}[leftmargin=1.2em,topsep=0pt,itemsep=2pt]
 \item A finite-reference-depth evaluator-error decomposition for TRM-style recurrent models that permits transient computation without a latent fixed point; a contractive recurrence recovers the geometric $L_z^n/(1-L_z)$ bound as a specialization (Theorem~\ref{thm:finite_reference_depth}, Corollary~\ref{cor:epsA_dials}).
 \item A CPI penalty with explicit $(L_z,n,K,\alpha,R)$ dependence (Theorem~\ref{thm:monotone_with_error}, Corollary~\ref{cor:cpi_dials_main}) that links recurrent depth and projection geometry to the safe-improvement bound.
-\item UPI--TRM, an unrolled policy-iteration algorithm that meets the centering and projection conditions of the bound via exact baseline summation and a Euclidean projection.
+\item A theorem-aligned UPI--TRM configuration that meets the centering and projection conditions via exact baseline summation and Euclidean projection; the distilled headline configuration does not meet the exact-mixture condition.
 \item A finite-MDP verification, where all relevant quantities are exactly computable, that confirms the residual-to-value, value-to-advantage, and CPI inequalities with no violations.
 \item Empirical evidence on hard $4\times 4$ Sudoku, where persistent-$z$ UPI--TRM outperforms the closest architecture-matched PPO baseline, with a controlled $2\times 2$ ablation that identifies projection as the dominant mechanism.
 \end{itemize}
@@ -177,7 +177,7 @@ The second is a scalar value head $V_\psi$ that produces the unrolled evaluator 
 In the plan-space MDP the external state is $s_t=(x,y_t)$, the action is an edit $a_t$, and the transition is $y_{t+1}=\mathrm{edit}(y_t,a_t;x)$. A checker score $c(x,y)$ supplies reward, optionally via potential shaping~\citep{Ng1999Shaping} $r=r_0+\gamma\Phi(s')-\Phi(s)$ with $\Phi=c$. The latent $z$ is \emph{not} part of the environment state in our primary analysis; it is internal computation used to evaluate $s_t$. The resulting process is a discounted MDP $(\mathcal S,\mathcal A,P,r,\rho,\gamma)$ with $\gamma\in(0,1)$ and $K\ge 1$. All theoretical statements fix one parameter snapshot: the MDP, recurrence, initialization, value head, current policy $\pi$, and candidate policy $\pi_{\mathrm{cand}}$ do not change while the displayed quantities are evaluated. Rewards are bounded, policies and evaluator outputs are measurable, and the relevant value functions are bounded on a measurable advantage-evaluation closure that is invariant under $\pi$ almost surely. For finite Sudoku these conditions hold automatically; otherwise all suprema are essential suprema on the stated closure sets. Increasing $n$ spends more computation inside one state evaluation but does not change the environment horizon or search depth, so the analysis tracks evaluator truncation error inside a fixed external MDP.
 
 \textbf{Episodic-$z$ vs.\ persistent-$z$.}
-In \emph{episodic-$z$}, the latent is reinitialized from the current plan at each edit step, so $(x,y)$ remains a Markov state; this is the primary theory setting. In \emph{persistent-$z$}, the latent is carried across edits, matching the original TRM. With persistent latents the next-state distribution depends jointly on $(x,y,z)$, since the same plan paired with a different carried latent can produce a different next plan after another inner unroll. Treating $(x,y)$ as the state in this regime is a non-Markov approximation. Our persistent-$z$ corollary (Appendix~\ref{app:persistent_latent}) lifts the analysis to the augmented state $\bar s=(x,y,z)$ and replaces the truncation term with a drift term that is small only under a slow-drift assumption on $z$. The hard 4$\times$4 experiment uses persistent-$z$, but we do not empirically verify the slow-drift condition for Sudoku.
+In \emph{episodic-$z$}, the latent is reinitialized from the current plan at each edit step, so $(x,y)$ remains a Markov state. In \emph{persistent-$z$}, the latent is carried across edits, matching the original TRM. With persistent latents the next-state distribution depends jointly on $(x,y,z)$, since the same plan paired with a different carried latent can produce a different next plan after another inner unroll. Treating $(x,y)$ as the state in this regime is a non-Markov approximation. Appendix~\ref{app:persistent_latent} lifts the finite-depth residual certificate directly to $\bar s=(x,y,z)$; this step needs no latent fixed point or slow drift. A separate slow-drift assumption is required only for comparison with a memoryless fixed-point reference.
 
 \textbf{Notation.}
 For one common initialization $z^{(0)}(s)=z_{\mathrm{init}}(s)$, let $z^{(j)}(s)$ be the latent after $j$ applications of the frozen recurrent map and let $U_j(s)=V_\psi(z^{(j)}(s),x)$. At the absorbing state, every $U_j$ uses the same depth-independent normalization from Appendix~\ref{app:shaping_convention}. Only the optional contractive specialization uses the latent fixed point $z^*$ and $U_*(s)=V_\psi(z^*(s),x)$. We write $\|f\|_{\infty,\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}:=\operatorname*{ess\,sup}_{s\in\mathcal{R}_{\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}\cup\{s_{\mathrm{abs}}\}}|f(s)|$ for the sup-norm over the measurable advantage-evaluation closure used by CPI. This closure contains states reachable under $\pi$ and the one-step successors needed to evaluate actions supported by $\pi$ and $\pi_{\mathrm{cand}}$, and is invariant under subsequent $\pi$ dynamics almost surely (Appendix~\ref{app:adv_closure_full}; full notation in Appendix~\ref{app:notation}).
@@ -206,7 +206,7 @@ Algorithm~\ref{alg:upi} alternates three phases: collect edit trajectories, fit 
 \end{algorithmic}
 \end{algorithm}
 
-The configuration covered by Theorem~\ref{thm:monotone_with_error} uses episodic-$z$, exact baseline summation over the discrete action space, the explicit mixture step, and no distillation. The explicit mixture (rather than a clipped surrogate or trust-region update) is required for the linear-in-$\alpha$ tightening of Theorem~\ref{thm:monotone_with_error}; exact baseline summation is feasible because the action space is a small discrete edit set, otherwise a learned baseline incurs the Corollary~\ref{cor:cpi_centering_defect} centering defect.
+The direct episodic and augmented-state applications of Theorem~\ref{thm:monotone_with_error} require exact statewise baseline summation, the explicit mixture step, and no distillation. In the persistent case, centering and the mixture identity are conditional on the full augmented state. The explicit mixture (rather than a clipped surrogate, trust-region update, parameter interpolation, or distilled approximation) is required for the linear-in-$\alpha$ tightening; otherwise the centering defect and deployment mismatch lie outside the stated bound.
 
 Persistent-$z$ is handled in Appendix~\ref{app:persistent_latent}, and the initialization condition in Appendix~\ref{app:implementation} gives $C_z\le 2R$. Per update, the dominant cost is $O(T \cdot |\mathcal A| \cdot n)$ inner-evaluator unrolls: $T$ states per trajectory, $|\mathcal A|$ unrolls each for exact baseline summation, and depth $n$ per unroll.
 
@@ -497,12 +497,12 @@ Corollary~\ref{cor:cpi_dials_main} is the optional fixed-point specialization of
 
 A controlled 64-state, 4-action MDP in which all quantities are exactly computable (Appendix~\ref{app:finite_mdp_certificate}, Figure~\ref{fig:finite_mdp_certificate_main}) numerically unit-tests the residual-to-value, value-to-advantage, and CPI inequalities. The artifact contains 80 value/decomposition rows ($4$ contraction settings by $20$ depths) and 21 mixture-weight rows for one selected CPI slice, with zero violations. This checks the composed inequalities in a setting where the assumptions are verifiable; it is not an empirical discovery or a 101-point sweep over all displayed variables.
 
-A projection-aware version of \eqref{eq:main_bound_dials} substitutes $\varepsilon_0+(1+\gamma^K)L_V(R)R$ for $\varepsilon_{\mathrm{res}}^*$ and $L_z^{\mathrm{sat}}(R)$ for $L_z$; the full statement is Eq.~\eqref{eq:main_bound_proj} in Appendix~\ref{app:projection_theory}. In the saturated regime ($\rho_R\gg R$), $R/\rho_R$ sets $L_z^{\mathrm{sat}}(R)$ more directly than the spectral-norm target does (Appendix~\ref{app:exp2_sweep}). Smaller $L_z$ or larger $n$ reduces $L_z^n$; smaller $\alpha$ is safer; larger $K$ tightens $1/(1-\gamma^K)$ at the cost of a $K$-dependent residual. Persistent-$z$ needs the augmented-state corollary of Appendix~\ref{app:persistent_latent}, which replaces the truncation term by $C_{\mathrm{drift}}(n)$ under a slow-drift assumption.
+A projection-aware version of \eqref{eq:main_bound_dials} substitutes $\varepsilon_0+(1+\gamma^K)L_V(R)R$ for $\varepsilon_{\mathrm{res}}^*$ and $L_z^{\mathrm{sat}}(R)$ for $L_z$; the full statement is Eq.~\eqref{eq:main_bound_proj} in Appendix~\ref{app:projection_theory}. In the saturated regime ($\rho_R\gg R$), $R/\rho_R$ sets $L_z^{\mathrm{sat}}(R)$ more directly than the spectral-norm target does (Appendix~\ref{app:exp2_sweep}). Smaller $L_z$ or larger $n$ reduces $L_z^n$; smaller $\alpha$ is safer; larger $K$ tightens $1/(1-\gamma^K)$ at the cost of a $K$-dependent residual. Persistent-$z$ uses the direct augmented-state residual of Appendix~\ref{app:persistent_latent}; slow drift enters only the optional comparison to a memoryless fixed-point reference.
 
 \section{Experiments}
 \label{sec:experiments}
 
-Persistent-$z$ UPI--TRM reaches $57.4\%$ on no-mask hard 4$\times$4 Sudoku at a nominal 20k outer-step protocol; that is the headline. The headline run uses persistent latents, while the episodic-$z$ regime that the theorem directly covers is tested separately on a 1--4-empty depth-mismatch study, where contraction does buy robustness. A controlled $2\times 2$ on the hard suite separates projection from contraction and finds projection dominant.
+Persistent-$z$ UPI--TRM reaches $57.4\%$ on no-mask hard 4$\times$4 Sudoku at a nominal 20k outer-step protocol; that is the headline. The headline run uses persistent latents, while the episodic plan-state theorem is tested separately on a 1--4-empty depth-mismatch study, where contraction does buy robustness. A controlled $2\times 2$ on the hard suite separates projection from contraction and finds projection dominant.
 
 \textbf{Setup.}
 The environment is the checker-defined plan-edit MDP of Section~\ref{sec:setup}. The hard 4$\times$4 result, the controlled 2$\times$2, and all baselines use the no-mask 6--8-empty suite with $T{=}16$ under a nominal 20k outer-step protocol; interaction-equalized reruns are in Appendix~\ref{app:equalized_baselines}. Baselines come in two tiers. \emph{Architecture-matched} (TRM+PPO/A2C/DQN) share UPI--TRM's TRM backbone and checker-shaped reward; they differ only in the training algorithm. \emph{External} (SB3 PPO/A2C/DQN, plus a 5-step DQN) use an independent Stable-Baselines3 codebase with a flat MLP policy as an implementation check. The depth-mismatch study uses the 1--4-empty suite, evaluated against $n_{\mathrm{train}}{=}2$. In stability studies, contraction ($L_z{=}0.9$) is enforced by operator-norm clamping, value-head spectral norm is disabled, and \emph{proj.\ off} means $\Pi_R=\mathrm{Id}$. A finite-MDP check on a controlled 64-state MDP is in Appendix~\ref{app:finite_mdp_certificate}.
@@ -538,9 +538,9 @@ The \emph{architecture-matched} baselines (TRM+PPO/A2C/DQN) share UPI--TRM's TRM
 
 PPO, A2C, and DQN collect 64, 32, and 4 environment transitions per outer step, so Table~\ref{tab:hard_suite_anchor} uses a nominal outer-step comparison. Appendix~\ref{app:equalized_baselines} reruns the architecture-matched baselines at equalized interaction budgets, but UPI--TRM is not rerun there, so the gap to TRM+PPO is not certified at equal interaction count.
 
-The 57.4\% run uses persistent-$z$, and the matching theoretical guarantee (Corollary~\ref{cor:persistent_cpi_augmented}) requires the slow-drift condition of Assumption~\ref{ass:twotimescale}, which we do not empirically verify for Sudoku (Remarks~\ref{rem:reasoning_manifold},~\ref{rem:persistent_augmented_scope}). Exact baseline summation is also not separately verified for this run; without it, the linear-$\alpha$ tightening in Theorem~\ref{thm:monotone_with_error} does not apply and the bound reduces to Corollary~\ref{cor:cpi_centering_defect}. The 57.4\% is therefore an empirical claim about the UPI--TRM implementation, not a verification of the persistent-$z$ corollary or of the linear-$\alpha$ theorem.
+The 57.4\% run uses persistent-$z$. Corollary~\ref{cor:persistent_cpi_augmented} provides the relevant conditional augmented-MDP form without slow drift, but the retained package cannot verify its clock encoding, latent-carry order, or shared frozen recurrence; moreover, the uniform augmented residual and exact augmented-state centering are not measured. More decisively, the headline implementation distills the mixture, so the exact deployed-mixture condition is known not to hold. Exact centering alone could not repair that mismatch. The 57.4\% is therefore an implementation result, not a verification of the persistent certificate or Theorem~\ref{thm:monotone_with_error}.
 
-A theory-aligned episodic-$z$ rerun on the same hard suite (Appendix~\ref{app:episodic_z_hard_suite_rerun}) replaces the persistent-$z$ training rule with the protocol the theorem actually assumes: exact baseline summation, exact $K$-step targets, and an explicit conservative mixture in place of distillation. It reaches $0\%$ at 20k environment steps over 10 seeds. We use the persistent-$z$ run as the headline empirical result and the episodic-$z$ rerun only for finite-batch diagnostics on the frozen closure batch.
+A theory-aligned episodic-$z$ rerun on the same hard suite (Appendix~\ref{app:episodic_z_hard_suite_rerun}) uses reinitialization, exact baseline summation, exact $K$-step targets, and an explicit conservative mixture in place of distillation. It reaches $0\%$ at 20k environment steps over 10 seeds. Its episodic finite-batch residual is not evidence about the distinct persistent augmented-state residual.
 
 \subsection{Projection and contraction ablation}
 \label{sec:projection_contraction_ablation}
@@ -573,7 +573,7 @@ Contraction helps more clearly in the episodic-$z$ depth-mismatch study on the e
 
 We derived a decomposition of finite-depth recurrent-evaluator error and propagated it through a conservative policy-improvement penalty with explicit $(L_z,n,K,\alpha,R)$ dependence. The result is a fixed-snapshot, one-step statement: it tracks how Bellman residual, finite unrolling, centering, and conservative mixing affect the CPI penalty under sup-norm residual control and exact baseline summation. It does not certify end-to-end SGD, TD learning, BPTT, policy distillation, or Sudoku-scale improvement.
 
-The experiments support a narrower empirical picture. On the hard $4\times4$ suite, persistent-$z$ UPI--TRM outperforms the closest architecture-matched baseline by $+25.4$pp under the nominal outer-step protocol, but that comparison is an implementation result rather than a verification of the theorem: environment interactions are not equalized, and the persistent-$z$ corollary depends on a slow-drift condition we do not verify for Sudoku. The controlled $2\times 2$ ablation is our most informative mechanism comparison. Projection is the dominant factor on the hard suite ($+13.0$pp), while contraction contributes only $+2.2$pp at 10 seeds and is statistically inconclusive. Contraction's clearest benefit appears instead in the easier episodic-$z$ depth-mismatch diagnostic.
+The experiments support a narrower empirical picture. On the hard $4\times4$ suite, persistent-$z$ UPI--TRM outperforms the closest architecture-matched baseline by $+25.4$pp under the nominal outer-step protocol, but that comparison is an implementation result rather than theorem validation: environment interactions are not equalized, the augmented residual and exact centering are not established, and distillation violates exact-mixture deployment. The controlled $2\times 2$ ablation is our most informative mechanism comparison. Projection is the dominant factor on the hard suite ($+13.0$pp), while contraction contributes only $+2.2$pp at 10 seeds and is statistically inconclusive. Contraction's clearest benefit appears instead in the easier episodic-$z$ depth-mismatch diagnostic.
 
 For the theorem itself, the finite-MDP certificate verifies the value, advantage, and CPI inequalities in a setting where all quantities are exactly computable. The theory-aligned episodic-$z$ rerun on the hard suite reaches $0\%$ at 20k environment steps, and the resulting CPI penalties are either infinite or on the order of $5\times 10^3$ at $\alpha{=}0.05$. The projection effect also cannot be assigned to a single term in the projection-aware bound, because changing $R$ changes training dynamics outside the theorem.
 
@@ -672,195 +672,170 @@ where $\varepsilon_{\mathrm{CPI}} = \max_s|\E_{a\sim\pi_{\mathrm{cand}}}A^\pi(s,
 \end{equation}
 
 
-\section{Persistent-$z$ Extension (Slow Drift)}
+\section{Persistent-$z$ on the Augmented MDP}
 \label{app:persistent_latent}
 
-\subsection{Slow-Drift Dynamics and Persistent-$z$}
+\subsection{Direct finite-depth residual certificate}
+\label{sec:persistent_augmented_cpi}
+
+Fix $n$, $(\theta,\psi)$, the policy parameters, and all environment kernels. Any timeout or remaining edit budget that affects termination is included in $y$, and $\mathrm{edit}$ updates that clock; we suppress it in the notation. Define
+\begin{equation}
+h_n(x,y,z):=T_{x,y}^{\circ n}(z)=(\Pi_R\circ f_\theta)^{\circ n}(z,y,x),
+\qquad \bar s=(x,y,z),
+\label{eq:persistent_hn}
+\end{equation}
+and the augmented transition by first computing $h_n$, sampling an action, and then setting
+\[
+\bar s'=\bigl(x,\mathrm{edit}(y,a;x),h_n(x,y,z)\bigr).
+\]
+The current and candidate action kernels share this same frozen $h_n$ and hence the same augmented MDP:
+\[
+\bar\pi(a\mid\bar s)=\pi_\phi(a\mid y,h_n(x,y,z),x),
+\qquad
+\bar\pi_{\mathrm{cand}}(a\mid\bar s)=\pi_{\mathrm{cand}}(a\mid y,h_n(x,y,z),x).
+\]
+Changing the recurrent map between these two policies would change the transition kernel and is outside ordinary CPI. The initial law is
+\begin{equation}
+\bar\rho(dx,dy,dz)=\rho(dx,dy)\,\delta_{z_{\mathrm{init}}(x,y)}(dz),
+\label{eq:persistent_initial_law}
+\end{equation}
+or, for stochastic initialization, $\bar\rho(dx,dy,dz)=\rho(dx,dy)\nu_0(dz\mid x,y)$ with the recorded kernel $\nu_0$.
+
+Assume the edit/reward kernels, $h_n$, $V_\psi$, and both policy kernels are measurable; rewards and the evaluator are bounded; and the augmented advantage-evaluation closure is measurable, contains the one-step successors under both action supports, and is $\bar\pi$-forward invariant almost surely. Define
+\begin{equation}
+\widetilde U_n(\bar s):=V_\psi(h_n(x,y,z),x),
+\qquad
+\widetilde U_n(\bar s_{\mathrm{abs}}):=-C_{\max},
+\label{eq:persistent_un_value}
+\end{equation}
+and let $\bar{\mathcal T}^{\bar\pi}_K$ denote the $K$-step Bellman operator of this frozen augmented MDP. Its direct residual is
+\begin{equation}
+\bar\varepsilon_{\mathrm{res},n}
+:=
+\|\widetilde U_n-\bar{\mathcal T}^{\bar\pi}_K\widetilde U_n\|_{\infty,\bar\pi,\bar\pi_{\mathrm{cand}}}^{\mathrm{adv}}.
+\label{eq:persistent_direct_residual}
+\end{equation}
+Here $\eta(\bar\pi')$ denotes the discounted return of any augmented policy $\bar\pi'$ from $\bar\rho$, and $d_{\bar\pi}$ is the discounted occupancy of the current policy. For an augmented advantage estimator $\widehat A$, define
+\begin{align}
+\widehat L_{\bar\pi}(\bar\pi')
+&:=\eta(\bar\pi)+\frac{1}{1-\gamma}
+\E_{\bar s\sim d_{\bar\pi},\,a\sim\bar\pi'(\cdot\mid\bar s)}[\widehat A(\bar s,a)],
+\label{eq:persistent_surrogate}\\
+\bar\varepsilon_{\mathrm{CPI}}
+&:=\sup_{\bar s}
+\left|\E_{a\sim\bar\pi_{\mathrm{cand}}(\cdot\mid\bar s)}A^{\bar\pi}(\bar s,a)\right|.
+\label{eq:persistent_cpi_constant}
+\end{align}
+
+\begin{corollary}[Direct persistent-$z$ certificate on the augmented MDP]
+\label{cor:persistent_cpi_augmented}
+Under the preceding frozen-MDP, measurability, boundedness, and closure assumptions,
+\begin{align}
+\|\widetilde U_n-V^{\bar\pi}\|_{\infty,\bar\pi,\bar\pi_{\mathrm{cand}}}^{\mathrm{adv}}
+&\le \frac{\bar\varepsilon_{\mathrm{res},n}}{1-\gamma^K}.
+\label{eq:persistent_augmented_value}
+\end{align}
+If $\widehat A_{\widetilde U_n}$ uses the exact transition expectation and exact baseline and is therefore centered pointwise under $\bar\pi$ on the full augmented state, then Assumption~\ref{ass:Ahat_error_bound} holds on the augmented closure with the valid choice
+\begin{align}
+\bar\varepsilon_A
+&:=\frac{2\gamma\,\bar\varepsilon_{\mathrm{res},n}}{1-\gamma^K}.
+\label{eq:persistent_augmented_adv}
+\end{align}
+If, additionally, the deployed policy is the pointwise exact mixture
+$\bar\pi_{\mathrm{new}}=(1-\alpha)\bar\pi+\alpha\bar\pi_{\mathrm{cand}}$ with no parameter interpolation or distillation, Theorem~\ref{thm:monotone_with_error} gives
+\begin{align}
+\eta(\bar\pi_{\mathrm{new}})
+&\ge \widehat L_{\bar\pi}(\bar\pi_{\mathrm{new}})
+-\frac{2\alpha\gamma}{1-\gamma}\frac{\bar\varepsilon_{\mathrm{res},n}}{1-\gamma^K}
+-\frac{2\bar\varepsilon_{\mathrm{CPI}}\gamma}{(1-\gamma)^2}\alpha^2.
+\label{eq:persistent_augmented_cpi}
+\end{align}
+\end{corollary}
+
+This direct result is Bellman contraction on the actual finite-depth augmented evaluator. It requires no latent fixed point, recurrent contraction, Lipschitz head, projection, or slow-drift assumption. The augmented residual differs from the episodic residual on $(x,y)$ because both the policy and transition depend on the carried latent. We do not measure $\bar\varepsilon_{\mathrm{res},n}$ uniformly for the headline run. Exact augmented-state centering is also not established there, and the headline implementation uses distillation, so the exact-mixture condition is known not to hold.
+
+\begin{remark}[Scope of the direct augmented-state certificate]
+\label{rem:persistent_augmented_scope}
+Corollary~\ref{cor:persistent_cpi_augmented} is a result on $\bar s=(x,y,z)$, not on the plan marginal $(x,y)$. Its exact-centering condition averages actions conditional on the full $\bar s$, and its mixture identity must hold pointwise on the augmented closure. Finite-batch maxima are diagnostics, not uniform certificates. The retained implementation package does not contain the training repository needed to verify latent-carry order, clock encoding, or whether candidate construction freezes the recurrent map; these remain implementation-audit requirements rather than assumed facts.
+\end{remark}
+
+\subsection{Optional slow-drift comparison to a fixed-point reference}
 \label{sec:twotimescale_persistent}
 
-In the persistent-$z$ variant, the fixed point $z^*(x,y)$ drifts as the plan $y_t$ is edited.
-We formalize a slow-drift assumption that captures when the latent can approximately track the moving fixed point.
-
-Let $e:\YY\to\mathcal{E}_y$ be a (possibly learned) embedding of plans, with norm $\|y-y'\|_{\mathcal{E}} := \|e(y)-e(y')\|_{\mathcal{E}_y}$.
+Slow drift is needed only for the stronger architectural comparison between the actual transient evaluator and the memoryless reference
+$\widetilde U_*(x,y,z):=V_\psi(z^*(x,y),x)$, with $\widetilde U_*(\bar s_{\mathrm{abs}})=-C_{\max}$. For this subsection, additionally assume $z^*(x,y)$ is measurable, $\widetilde U_*$ is bounded and measurable on the augmented closure, and the tracking conditions below hold uniformly over trajectories formed by one action supported by either policy followed by $\bar\pi$ dynamics. These are the one-deviation trajectories generating the augmented advantage closure. Let $e:\YY\to\mathcal E_y$ be a fixed plan embedding and write $\|y-y'\|_{\mathcal E}:=\|e(y)-e(y')\|_{\mathcal E_y}$.
 
 \begin{assumption}[Slow drift of fixed points]
 \label{ass:twotimescale}
-There exist $L_{z^*} \ge 0$, $\Delta y_{\max} \ge 0$, and $E_0 < \infty$ such that:
+Uniformly on the augmented policy-pair closure, there exist $L_{z^*}\ge0$, $\Delta y_{\max}\ge0$, and $E_0<\infty$ such that
 \begin{enumerate}
-\item \textbf{Lipschitz fixed-point:} For all $(x,y),(x,y')$:
-$\bigl\|z^*(x,y) - z^*(x,y')\bigr\| \le L_{z^*}\,\|y-y'\|_{\mathcal{E}}$.
-\item \textbf{Bounded plan change:} Along trajectories under any policy $\tilde{\pi}$ in the considered policy class $\tilde{\Pi}$:
-$\|y_{t+1}-y_t\|_{\mathcal{E}} \le \Delta y_{\max}$.
-\item \textbf{Bounded initial error:} For initial states: $\bigl\|z_0 - z^*(x,y_0)\bigr\|\le E_0$.
+\item $\|z^*(x,y)-z^*(x,y')\|\le L_{z^*}\|y-y'\|_{\mathcal E}$;
+\item every admissible edit satisfies $\|y_{t+1}-y_t\|_{\mathcal E}\le\Delta y_{\max}$; and
+\item the initial carried latent satisfies $\|z_0-z^*(x,y_0)\|\le E_0$.
 \end{enumerate}
 \end{assumption}
 
-\begin{remark}[Implicit dependence of $L_{z^*}$]
+\begin{remark}[A conditional sufficient bound for $L_{z^*}$]
 \label{rem:Lzstar_implicit}
-Condition (1) of Assumption~\ref{ass:twotimescale} requires the fixed-point map $y \mapsto z^*(x,y)$ to be Lipschitz.
-If the fixed point lies strictly inside the projection ball ($\|z^*(x,y)\|_2 < R$), then by Lemma~\ref{lem:interior_proj} the unprojected fixed-point equation $f_\theta(z^*(x,y),y,x)=z^*(x,y)$ holds.
-This allows us to apply the implicit function theorem to $z^* = f_\theta(z^*,y,x)$ rather than the projected map $\tilde f_\theta=\Pi_R\circ f_\theta$.
-
-\textbf{Why projection does not affect the derivative at $z^*$:}
-Since $\|z^*\|_2<R$, the projection $\Pi_R$ is the identity on an open ball around $z^*=f_\theta(z^*,y,x)$, and on that ball $\Pi_R$ is $C^\infty$ with Jacobian equal to the identity matrix $I$.
-Hence the Jacobian of the projected map satisfies $\partial_z\tilde f_\theta(z^*,y,x)=\partial_z f_\theta(z^*,y,x)$, and we may differentiate the unprojected fixed-point equation $z^*=f_\theta(z^*,y,x)$ directly.
-
-\textbf{Regularity qualifier:} We assume that, for each fixed $x$, the map $(z,y)\mapsto f_\theta(z,y,x)$ is $C^1$ in a neighborhood of $(z^*,y)$ so that the classical implicit function theorem applies.
-For piecewise-linear networks (e.g., ReLU MLPs), this holds almost everywhere; the same calculation applies on each differentiable region.
-
-By the implicit function theorem applied to $z^* = f_\theta(z^*, y, x)$, differentiating both sides with respect to $y$ yields
-\begin{equation*}
-\frac{\partial z^*}{\partial y} = \bigl(I - \partial_z f_\theta(z^*,y,x)\bigr)^{-1}
-\,\partial_y f_\theta(z^*,y,x).
-\end{equation*}
-Since $\|\partial_z f_\theta(z^*,y,x)\|_{\mathrm{op}} \le L_z < 1$ (by Assumption~\ref{ass:Lip}, noting that $\partial_z\tilde f_\theta=\partial_z f_\theta$ at $z^*$), the inverse $(I-\partial_z f_\theta)^{-1}$ exists and has operator norm bounded by $(1-L_z)^{-1}$.
-Thus:
+If $y$ has a specified differentiable continuous representation, $f_\theta$ is $C^1$ near an interior fixed point, and $\|\partial_z f_\theta\|_{\mathrm{op}}\le L_z<1$, the implicit-function calculation gives
 \begin{equation}
-L_{z^*} \le \frac{\|\partial_y f_\theta\|_{\mathrm{op}}}{1 - L_z},
+L_{z^*}\le\frac{\|\partial_y f_\theta\|_{\mathrm{op}}}{1-L_z}.
 \label{eq:Lzstar_bound}
 \end{equation}
-where $\|\partial_y f_\theta\|_{\mathrm{op}}$ is the operator norm of the Jacobian with respect to $y$, interpreted with respect to the continuous plan embedding $e(y)$ when $\YY$ is discrete, maximized over $(x,y,z^*)$.
-For discrete $\YY$ (e.g., Sudoku grids), this bound applies in the learned embedding $e(y)$; see Remark~\ref{rem:reasoning_manifold}.
-In practice, we monitor $\widehat{L}_{z^*}$ via finite differences in the embedding: for sampled $(x,y,y')$ pairs differing by one edit, compute $\|z^*(x,y) - z^*(x,y')\| / \|e(y) - e(y')\|$.
+For discrete Sudoku plans this calculation additionally requires a differentiable extension off the discrete embedding; the manuscript does not provide or verify such an extension.
 \end{remark}
 
-\begin{remark}[On learned embeddings for discrete tasks]
+\begin{remark}[Discrete-plan scope]
 \label{rem:reasoning_manifold}
-For combinatorial tasks (Sudoku, ARC), a single cell change in Hamming distance can move from near-solved to unsatisfiable, making $L_{z^*}$ potentially huge in raw symbolic distance.
-Assumption~\ref{ass:twotimescale} should be read as holding in a \emph{learned embedding} $e(y)$ that captures ``reasoning difficulty'' rather than raw symbolic distance.
-
-Concretely, one can parameterize $e$ as a small neural network trained to predict $z^*$ or checker scores, regularized to be locally smooth.
-The drift constant $\Cdrift(n)$ then quantifies how well the latent tracks a locally stable fixed point in this embedding.
-\textbf{For discrete domains, the existence of such a smooth embedding is not certified by the theorem.}
-We posit that successful training \emph{constructs} such a manifold; if the network fails to learn a smooth embedding, the drift bound degenerates and training may diverge.
-For tasks where $L_{z^*}$ is large even in learned embeddings, the bound becomes vacuous and the episodic-$z$ analysis (which has unconditional stability guarantees) is preferable.
-In practice, we monitor $\hat L_{z^*}$ via finite differences as described in Remark~\ref{rem:Lzstar_implicit}, and $\widehat{\Delta y}_{\max}$ along trajectories.
-The bound~\eqref{eq:Lzstar_bound} is most informative when $\|\partial_y f_\theta\|$ is moderate and $L_z$ stays away from $1$; otherwise the drift term degenerates regardless of the embedding.
+For a discrete domain, Assumption~\ref{ass:twotimescale} is simply an additional regularity assumption in the stated embedding. Successful training does not by itself establish it. We do not verify it for the headline Sudoku run.
 \end{remark}
 
 \begin{remark}[Scope of the slow-drift assumption]
 \label{rem:slowdrift_scope}
-Assumption~\ref{ass:twotimescale} is stated globally but in practice need only hold on the closure of the union of reachable plan sets $\bigcup_{\pi \in \Pi} \{y : (x,y) \in \mathcal{R}_\pi\}$.
-For Sudoku, this is the set of partially-filled grids reachable by cell edits from initial configurations.
+Only the augmented closure for the frozen policy pair is relevant; no global smoothness claim outside that closure is needed.
 \end{remark}
 
-Define tracking error $e_t = \bigl\|z_t - z^*(x,y_t)\bigr\|$.
-
+Define $e_t=\|z_t-z^*(x,y_t)\|$ and $\kappa_n=L_z^n$.
 \begin{lemma}[Drift bound for persistent-$z$]
 \label{lem:drift_bound}
-Under Assumptions~\ref{ass:Lip} and~\ref{ass:twotimescale}, with $\kappa_n := L_z^n$:
+Under Assumptions~\ref{ass:Lip} and~\ref{ass:twotimescale},
 \begin{equation}
-e_{t+1} \le \kappa_n\,e_t + L_{z^*}\,\Delta y_{\max},
+e_{t+1}\le\kappa_n e_t+L_{z^*}\Delta y_{\max},
 \label{eq:tracking_recursion}
 \end{equation}
-and for the used latent $z_t^{(n)} = (\Pi_R \circ f_\theta)^{\circ n}(z_t,y_t,x)$:
+and
 \begin{equation}
-\sup_t \bigl\|z_t^{(n)} - z^*(x,y_t)\bigr\| \le \Cdrift(n),
-\end{equation}
-where
-\begin{equation}
-\begin{split}
-\Cdrift(n)
-&= \kappa_n\,\max\!\Bigl(E_0,\,\frac{L_{z^*}\,\Delta y_{\max}}{1-\kappa_n}\Bigr) \\
-&\le \kappa_n E_0 + \frac{\kappa_n L_{z^*}\,\Delta y_{\max}}{1-\kappa_n}.
-\end{split}
+\sup_t\|z_t^{(n)}-z^*(x,y_t)\|\le\Cdrift(n)
+:=\kappa_n\max\!\left(E_0,\frac{L_{z^*}\Delta y_{\max}}{1-\kappa_n}\right)
+\le\kappa_n E_0+\frac{\kappa_nL_{z^*}\Delta y_{\max}}{1-\kappa_n}.
 \label{eq:Cdrift_def}
 \end{equation}
-The bound is tight for the linear recursion~\eqref{eq:tracking_recursion}.
-For intuition, the looser but additive upper bound on the right-hand side of~\eqref{eq:Cdrift_def} cleanly separates an initial-error decay term from a steady-state tracking term.
-For $L_z<1$ fixed, $\Cdrift(n) \to 0$ as $n\to\infty$.
 \end{lemma}
 
-The proof (Appendix~\ref{app:proofs}) follows from the contraction of $f_\theta^{\circ n}$ in $z$ and Lipschitz dependence of $z^*$ on $y$.
-This is a worst-case $L_\infty$ bound that assumes error can accumulate at every step; it may be loose in practice if the model effectively ``solves'' hard steps.
-We use it as a qualitative indicator.
-
-\begin{remark}[When the drift bound is meaningful]
+\begin{remark}[When the drift bound is informative]
 \label{rem:drift_meaningful}
-For $L_z = 0.8$ and $n = 5$, we have $\kappa_5 \approx 0.33$, giving denominator $1 - \kappa_5 \approx 0.67$.
-If $L_{z^*} \Delta y_{\max}$ is moderate (e.g., $\le 1$ in the learned embedding), then using the additive upper bound in~\eqref{eq:Cdrift_def} gives $\Cdrift(5) \lesssim 0.33 E_0 + 0.5$.
-Increasing to $n = 10$ gives $\kappa_{10} \approx 0.11$ and $\Cdrift(10) \approx 0.11 E_0 + 0.12$.
-For tasks where $L_{z^*}$ is large even in learned embeddings, the bound degenerates and episodic-$z$ analysis is preferable.
+The bound is useful only when its assumed constants are finite and calibrated on the policy-pair closure. Otherwise the direct residual certificate remains mathematically valid but uncalibrated, while the fixed-point comparison is vacuous.
 \end{remark}
 
-\subsection{Conditional CPI corollary on the augmented MDP}
-\label{sec:persistent_augmented_cpi}
-
-To state a clean persistent-$z$ extension, we lift the state to $\bar s=(x,y,z)$.
-At a fixed parameter snapshot, the persistent-$z$ rollout is Markov on this augmented state even though it is not Markov on plan-space states $(x,y)$ alone.
-Write
-\[
-T_{x,y}^{\circ n}(z) := (\Pi_R \circ f_\theta)^{\circ n}(z,y,x),
-\qquad
-\bar s' = \bigl(x,\mathrm{edit}(y,a;x),T_{x,y}^{\circ n}(z)\bigr),
-\]
-and define the persistent-$z$ policy on augmented states by
-\[
-\bar \pi(a\mid \bar s)
-:=
-\pi_\phi\!\bigl(a\mid y,T_{x,y}^{\circ n}(z),x\bigr),
-\]
-with $\bar\pi_{\mathrm{cand}}$ and $\bar\pi_{\mathrm{new}}=(1-\alpha)\bar\pi+\alpha\bar\pi_{\mathrm{cand}}$ defined analogously.
-For this corollary, interpret Assumption~\ref{ass:twotimescale} as holding uniformly on the augmented advantage-evaluation closure induced by $\bar\pi$ and $\bar\pi_{\mathrm{cand}}$; equivalently, take the policy class $\tilde\Pi$ large enough to contain all trajectories used by the lifted CPI closure.
-Interpret occupancies, closures, Bellman operators, and sup-norms exactly as in Sections~\ref{sec:cpi} and~\ref{app:adv_closure_full}, but on augmented states $\bar s$.
-Let
-\[
-\widetilde U_n(\bar s) := V_\psi(T_{x,y}^{\circ n}(z),x),
-\qquad
-\widetilde U_*(\bar s) := V_\psi(z^*(x,y),x),
-\]
-and define the augmented-state residual
-\[
-\widetilde \varepsilon_{\mathrm{res}}^*
-:=
-\|\widetilde U_* - \mathcal{T}^{\bar \pi}_K \widetilde U_*\|_{\infty,\bar\pi,\bar\pi_{\mathrm{cand}}}^{\mathrm{adv}}.
-\]
-
-\begin{corollary}[Conditional persistent-$z$ CPI on the augmented MDP]
-\label{cor:persistent_cpi_augmented}
-Assume Assumptions~\ref{ass:Lip} and~\ref{ass:twotimescale}, the Lipschitz value-head condition~\eqref{eq:LV_def}, and the augmented-state versions of Assumption~\ref{ass:Ahat_error_bound} and~\eqref{eq:centering_condition}.
-For discrete domains such as Sudoku we do not empirically verify Condition~(1) of Assumption~\ref{ass:twotimescale} (Remark~\ref{rem:reasoning_manifold}), so the corollary is a conditional augmented-state result in that setting, not direct support for the hard 4$\times$4 experiment.
-Then:
+Define
+\begin{equation}
+\bar\varepsilon_{\mathrm{res},*}
+:=\|\widetilde U_*-\bar{\mathcal T}^{\bar\pi}_K\widetilde U_*\|_{\infty,\bar\pi,\bar\pi_{\mathrm{cand}}}^{\mathrm{adv}}.
+\label{eq:persistent_fixed_residual}
+\end{equation}
+Then Lipschitzness of the head and Lemma~\ref{lem:drift_bound} give
 \begin{align}
-\|\widetilde U_n - V^{\bar \pi}\|_{\infty,\bar\pi,\bar\pi_{\mathrm{cand}}}^{\mathrm{adv}}
-&\le
-\frac{\widetilde \varepsilon_{\mathrm{res}}^*}{1-\gamma^K}
-+
-L_V\,\Cdrift(n),
-\label{eq:persistent_augmented_value}
-\\
-\widetilde \varepsilon_A
-&\le
-\frac{2\gamma\,\widetilde \varepsilon_{\mathrm{res}}^*}{1-\gamma^K}
-+
-2\gamma L_V\,\Cdrift(n),
-\label{eq:persistent_augmented_adv}
-\\
-\eta(\bar\pi_{\mathrm{new}})
-&\ge
-\widehat L_{\bar\pi}(\bar\pi_{\mathrm{new}})
--
-\frac{2\alpha\gamma}{1-\gamma}
-\left(
-\frac{\widetilde \varepsilon_{\mathrm{res}}^*}{1-\gamma^K}
-+
-L_V\,\Cdrift(n)
-\right)
--
-\frac{2\widetilde \varepsilon_{\mathrm{CPI}}\gamma}{(1-\gamma)^2}\alpha^2,
-\label{eq:persistent_augmented_cpi}
+\|\widetilde U_n-\widetilde U_*\|_{\infty,\bar\pi,\bar\pi_{\mathrm{cand}}}^{\mathrm{adv}}
+&\le L_V\Cdrift(n),
+\label{eq:persistent_fixed_comparison}\\
+\|\widetilde U_n-V^{\bar\pi}\|_{\infty,\bar\pi,\bar\pi_{\mathrm{cand}}}^{\mathrm{adv}}
+&\le L_V\Cdrift(n)+\frac{\bar\varepsilon_{\mathrm{res},*}}{1-\gamma^K},
+\label{eq:persistent_slow_drift_value}\\
+|\bar\varepsilon_{\mathrm{res},n}-\bar\varepsilon_{\mathrm{res},*}|
+&\le(1+\gamma^K)L_V\Cdrift(n).
+\label{eq:persistent_residual_relation}
 \end{align}
-where $\widetilde \varepsilon_A$, $\widetilde \varepsilon_{A,\mathrm{cand}}$, $\widetilde \varepsilon_{\mathrm{CPI}}$, and $\widehat L_{\bar\pi}$ are defined exactly as in Corollary~\ref{cor:epsA_dials} and Theorem~\ref{thm:monotone_with_error}, but with $s$ replaced by $\bar s$.
-\end{corollary}
-
-\begin{remark}[Scope of the augmented-state corollary]
-\label{rem:persistent_augmented_scope}
-Corollary~\ref{cor:persistent_cpi_augmented} is the clean persistent-$z$ lift of the episodic-$z$ theorem chain, but only on the augmented Markov state $\bar s=(x,y,z)$.
-It is not a direct CPI theorem on plan-space states $(x,y)$ alone.
-The reference value $\widetilde U_*(x,y,z)=V_\psi(z^*(x,y),x)$ ignores the carried latent $z$, so any additional dependence of the true augmented-state value $V^{\bar\pi}(x,y,z)$ on the current latent is absorbed into the augmented residual $\widetilde \varepsilon_{\mathrm{res}}^*$.
-For persistent-$z$ policies with non-negligible latent drift, this absorbed $z$-dependence may substantially exceed the episodic-$z$ residual, so the augmented-state bound is structurally weaker than the episodic-$z$ bound by an amount not estimated in our experiments.
-Our persistent-$z$ experiments are therefore empirical results for the UPI--TRM implementation, not verification of Corollary~\ref{cor:persistent_cpi_augmented}; as in the episodic-$z$ case, the appendix result is a structural decomposition, not a calibrated predictor.
-\end{remark}
+These are optional comparisons to a memoryless fixed-point reference; none is needed for Corollary~\ref{cor:persistent_cpi_augmented}.
 
 
 \section{Diagnostics and practical proxies}
@@ -904,7 +879,7 @@ Figure~\ref{fig:finite_mdp_certificate_main} shows two checks. Left: for $\gamma
 \label{tab:diagnostics}
 \centering
 \small
-\begin{tabular}{@{}lll@{}}
+\begin{tabularx}{\linewidth}{@{}llX@{}}
 \toprule
 Quantity & Appears in & Practical proxy / diagnostic \\
 \midrule
@@ -917,11 +892,12 @@ $C_z$ & Assump.~\ref{ass:Lip} & Empirical $\|\tilde f_\theta(z_{\mathrm{init}},y
 $L_V(R)$ & Eq.~\eqref{eq:LV_def}, Prop.~\ref{prop:proj_residual_anchor} & Lipschitz of $V_\psi$ on $B_R$; finite-diff check (Table~\ref{tab:exp1_value_head_lipschitz}) \\
 $\varepsilon_0$ & Prop.~\ref{prop:proj_residual_anchor} & $K$-step TD error of zero-latent baseline $V_\psi(0,x)$ \\
 $\|U_n-\mathcal{T}^\pi_K U_n\|$ & Proxy only & Held-out $K$-step TD error; proxy for $\varepsilon_{\mathrm{res}}^*$ up to $O(\|U_n-U_*\|)$ \\
+$\bar\varepsilon_{\mathrm{res},n}$ & Cor.~\ref{cor:persistent_cpi_augmented} & Finite-batch augmented residual; not measured uniformly for headline \\
 $\varepsilon_{\mathrm{cent}}$ & Thm.~\ref{thm:monotone_with_error} & $\sup_s|\E_{a\sim\pi}\widehat A(s,a)|$ (exactly $0$ if baseline is exact) \\
 $\varepsilon_{A,\mathrm{cand}}$ & Thm.~\ref{thm:monotone_with_error} & Empirical bias of $\E_{a\sim\pi_{\mathrm{cand}}}[\widehat A]$ on replay states \\
 $\KL(\pi_{\mathrm{new}}\|\pi_\phi)$ & App.~\ref{app:implementation} & Distillation projection gap measured on replay states \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 \paragraph{Finite-difference $L_V$ diagnostic for the main comparison.}
@@ -1312,7 +1288,7 @@ with mean $32.0\%$ and sample standard deviation $15.3\%$. Applying Welch's $t$-
 \subsection{Theory-Aligned Episodic-$z$ Rerun on the Hard Suite}
 \label{app:episodic_z_hard_suite_rerun}
 
-We ran a pre-registered, theory-aligned rerun on the same no-mask hard 4$\times$4 Sudoku suite used in Table~\ref{tab:hard_suite_anchor} (6--8 empties, $T{=}16$, 20k environment steps, seeds 41--50). The rerun starts from the persistent-$z$ hard-suite configuration and applies only the changes required by the theorem: episodic-$z$ latents, exact baseline summation, exact $K$-step targets, and explicit conservative mixtures. The architecture-matched evaluation interface and the inherited persistent-$z$ hyperparameters ($\gamma{=}0.99$, $K{=}1$, $n{=}2$) are unchanged. Diagnostics are computed on a frozen 256-instance closure batch (seed 1729). The fixed test split of the canonical 6--8-empty dataset contains only 99 viable puzzles, so the closure batch is sampled from the \texttt{train/} split with an independent RNG path; this deviation affects only the diagnostic batch, not the task-evaluation pool or the training seeds.
+We ran a pre-registered, theory-aligned rerun on the same no-mask hard 4$\times$4 Sudoku suite used in Table~\ref{tab:hard_suite_anchor} (6--8 empties, $T{=}16$, 20k environment steps, seeds 41--50). The rerun starts from the persistent-$z$ hard-suite configuration and jointly changes four factors: episodic-$z$ latents, exact baseline summation, exact $K$-step targets, and explicit conservative mixtures. The architecture-matched evaluation interface and the inherited persistent-$z$ hyperparameters ($\gamma{=}0.99$, $K{=}1$, $n{=}2$) are unchanged. Diagnostics are computed on a frozen 256-instance closure batch (seed 1729). The fixed test split of the canonical 6--8-empty dataset contains only 99 viable puzzles, so the closure batch is sampled from the \texttt{train/} split with an independent RNG path; this deviation affects only the diagnostic batch, not the task-evaluation pool or the training seeds.
 
 The paper tables below curate the main quantities; full per-seed values for all nine protocol diagnostics are recorded in the accompanying artifact bundle (\path{EPISODIC_Z_RUN_LOG.md}, \path{diagnostics_summary.json}, \path{cpi_penalty_grid.json}, and \path{per_seed_diagnostics.jsonl}).
 
@@ -1379,9 +1355,12 @@ Symbol & Meaning \\
 $z^{(j)}(s)$, $U_j(s)$ & Latent and scalar value after finite depth $j$ \\
 $U_*(s)$ & Fixed-point value used only in the contractive specialization \\
 $B_{n,m}$ & Finite path/discrepancy plus depth-$m$ residual certificate \\
-$V_{\mathrm{memless}}(x,y,z) = U_*(x,y)$ & Memoryless value (ignores $z$) \\
+$\widetilde U_n(\bar s)$, $\widetilde U_*(\bar s)$ & Persistent finite-depth value / memoryless reference \\
+$\varepsilon_{\mathrm{res},n}$ & Episodic finite-depth Bellman residual \\
+$\bar\varepsilon_{\mathrm{res},n}$ & Persistent augmented-state finite-depth residual \\
+$\bar\varepsilon_{\mathrm{res},*}$ & Augmented residual of the fixed-point reference \\
 $L_{z^*}$, $\Delta y_{\max}$, $E_0$ & Slow-drift parameters \\
-$\varepsilon_A$, $\varepsilon_A^{\mathrm{pers}}$ & Advantage error bounds \\
+$\varepsilon_A$, $\bar\varepsilon_A$ & Episodic / augmented advantage error bounds \\
 $\varepsilon_{\mathrm{res}}^*$ & Architectural residual at $U_*$ \\
 $\varepsilon_{\mathrm{CPI}}$ & CPI constant \\
 $\kappa_n = L_z^n$ & Contraction after $n$ steps \\
@@ -2181,57 +2160,27 @@ Combining with the CPI bound gives~\eqref{eq:main_theorem}.
 \subsection{Proof of Corollary~\ref{cor:persistent_cpi_augmented}}
 
 \begin{proof}
-At a fixed parameter snapshot, the persistent-$z$ rollout is Markov on augmented states $\bar s=(x,y,z)$ by construction of the deterministic update
-\[
-\bar s' = \bigl(x,\mathrm{edit}(y,a;x),T_{x,y}^{\circ n}(z)\bigr)
-\]
-and the policy $\bar\pi(a\mid \bar s)=\pi_\phi(a\mid y,T_{x,y}^{\circ n}(z),x)$.
-The standard $K$-step Bellman operator $\mathcal{T}^{\bar\pi}_K$ is therefore well-defined on the augmented MDP.
-
-By Lemma~\ref{lem:drift_bound}, applied on the augmented advantage-evaluation closure induced by $\bar\pi$ and $\bar\pi_{\mathrm{cand}}$,
-\[
-\|T_{x,y}^{\circ n}(z)-z^*(x,y)\| \le \Cdrift(n)
-\]
-uniformly on the augmented advantage-evaluation closure, so the Lipschitz value-head condition~\eqref{eq:LV_def} gives
-\[
-\|\widetilde U_n-\widetilde U_*\|_{\infty,\bar\pi,\bar\pi_{\mathrm{cand}}}^{\mathrm{adv}}
-\le
-L_V\,\Cdrift(n).
-\]
-
-Applying the proof of Proposition~\ref{prop:error_bounds} verbatim on the augmented MDP yields
-\[
-\|\widetilde U_* - V^{\bar\pi}\|_{\infty,\bar\pi,\bar\pi_{\mathrm{cand}}}^{\mathrm{adv}}
-\le
-\frac{\widetilde \varepsilon_{\mathrm{res}}^*}{1-\gamma^K}.
-\]
-Combining the last two displays by triangle inequality gives~\eqref{eq:persistent_augmented_value}.
-
-Lemma~\ref{lem:A_error_app} also applies verbatim on the augmented MDP, so
-\[
-\widetilde \varepsilon_A
-\le
-2\gamma\,
-\|\widetilde U_n - V^{\bar\pi}\|_{\infty,\bar\pi,\bar\pi_{\mathrm{cand}}}^{\mathrm{adv}},
-\]
-and substituting~\eqref{eq:persistent_augmented_value} gives~\eqref{eq:persistent_augmented_adv}.
-
-If $\bar\pi_{\mathrm{new}}$ is the exact mixture and $\widehat A$ is statewise-centered under $\bar\pi$, then Theorem~\ref{thm:monotone_with_error} applies verbatim on the augmented MDP:
-\[
-\eta(\bar\pi_{\mathrm{new}})
-\ge
-\widehat L_{\bar\pi}(\bar\pi_{\mathrm{new}})
--
-\frac{\alpha}{1-\gamma}\,\widetilde \varepsilon_{A,\mathrm{cand}}
--
-\frac{2\widetilde \varepsilon_{\mathrm{CPI}}\gamma}{(1-\gamma)^2}\alpha^2.
-\]
-By the same Jensen argument used in the proof of Theorem~\ref{thm:monotone_with_error},
-\[
-\widetilde \varepsilon_{A,\mathrm{cand}} \le \widetilde \varepsilon_A.
-\]
-Substituting~\eqref{eq:persistent_augmented_adv} into the previous display yields~\eqref{eq:persistent_augmented_cpi}.
+The clock-complete state, frozen shared map $h_n$, and specified initial law define one augmented MDP for both action kernels. On its bounded measurable functions, $\bar{\mathcal T}^{\bar\pi}_K$ is a $\gamma^K$-contraction in the augmented closure norm. In this proof, $\|\cdot\|_{\infty}^{\mathrm{adv}}$ abbreviates $\|\cdot\|_{\infty,\bar\pi,\bar\pi_{\mathrm{cand}}}^{\mathrm{adv}}$. Thus
+\begin{align*}
+\|\widetilde U_n-V^{\bar\pi}\|_{\infty}^{\mathrm{adv}}
+&\le
+\|\widetilde U_n-\bar{\mathcal T}^{\bar\pi}_K\widetilde U_n\|_{\infty}^{\mathrm{adv}}
++\|\bar{\mathcal T}^{\bar\pi}_K\widetilde U_n-\bar{\mathcal T}^{\bar\pi}_K V^{\bar\pi}\|_{\infty}^{\mathrm{adv}}\\
+&\le \bar\varepsilon_{\mathrm{res},n}
++\gamma^K\|\widetilde U_n-V^{\bar\pi}\|_{\infty}^{\mathrm{adv}}.
+\end{align*}
+Rearrangement proves~\eqref{eq:persistent_augmented_value}. Lemma~\ref{lem:A_error_app}, applied on the augmented closure with exact centering conditional on $\bar s$, gives~\eqref{eq:persistent_augmented_adv}. The candidate-policy bias is no larger than this uniform advantage error. Under the exact pointwise mixture, substituting it into Theorem~\ref{thm:monotone_with_error} proves~\eqref{eq:persistent_augmented_cpi}.
 \end{proof}
+
+For completeness, the optional slow-drift comparisons follow directly. Lemma~\ref{lem:drift_bound} and the Lipschitz head imply~\eqref{eq:persistent_fixed_comparison}; adding and subtracting $\widetilde U_*$ and applying the residual bound~\eqref{eq:boundA} proves~\eqref{eq:persistent_slow_drift_value}. Finally, the reverse triangle inequality and Bellman contraction give
+\begin{align*}
+|\bar\varepsilon_{\mathrm{res},n}-\bar\varepsilon_{\mathrm{res},*}|
+&\le
+\|(\widetilde U_n-\widetilde U_*)
+-(\bar{\mathcal T}^{\bar\pi}_K\widetilde U_n-\bar{\mathcal T}^{\bar\pi}_K\widetilde U_*)\|_{\infty}^{\mathrm{adv}}\\
+&\le(1+\gamma^K)\|\widetilde U_n-\widetilde U_*\|_{\infty}^{\mathrm{adv}},
+\end{align*}
+which proves~\eqref{eq:persistent_residual_relation}.
 
 \section{Implementation Details}
 \label{app:implementation}
@@ -2298,7 +2247,7 @@ To ensure $z_{\mathrm{init}}(x,y) \in \mathcal{Z}_{\mathrm{inv}}$ and that itera
 \item Equivalently, define $\tilde f_\theta := \Pi_R \circ f_\theta$ and unroll $\tilde f_\theta^{\circ n}$: $z^{(t+1)}=\Pi_R(f_\theta(z^{(t)},y,x))$ for $t=0,\dots,n-1$.
 \end{itemize}
 
-For persistent-$z$ we monitor latent drift via $\widehat{C}_{\mathrm{drift}}(n) = \max_t \|z_t^{(n)} - z_{\mathrm{init}}(x,y_t)\|$, which upper-bounds latent movement relative to fresh initialization.
+For persistent-$z$ we monitor the fresh-initialization discrepancy $\widehat{C}_{\mathrm{fresh}}(n)=\max_t\|z_t^{(n)}-z_{\mathrm{init}}(x,y_t)\|$. It measures separation from a fresh initialization; it is not a fixed-point tracking bound and is not a substitute for $\Cdrift(n)$ or the augmented residual.
 
 \textbf{Distillation.}
 When distilling $\pi_{\mathrm{new}}$ to $\pi_\phi$, we minimize:
