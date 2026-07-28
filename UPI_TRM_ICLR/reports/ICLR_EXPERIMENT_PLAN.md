@@ -106,21 +106,23 @@ Five stages × 10 seeds gives 50 training runs. At the historical 9 GPU-hour sca
 
 These measurements are finite-batch diagnostics for frozen snapshots. They are never called uniform theorem certificates or upper bounds on closure suprema.
 
-### Frozen augmented-state batch
+### Frozen state-matched batches
 
-For each confirmatory seed and stage, roll out the frozen policy on the ordered 99-puzzle pool and retain complete states `(x,y,z,remaining_budget)` at edit indices `0,4,8,12` when present. Store reward/termination information, policy logits, recurrent parameters, and snapshot hashes. The batch must be materialized once per snapshot and never filtered based on diagnostic values.
+For each confirmatory seed and stage, roll out the frozen policy on the ordered 99-puzzle pool using that stage's actual state transition. For P0 and any other carried-latent arm, retain augmented states `(x,y,z,remaining_budget)` at edit indices `0,4,8,12` when present. For reinitialized P1–P4, retain Markov plan states `(x,y,remaining_budget)` plus the freshly constructed evaluator latent as a diagnostic field, not as a carried transition-state component. Store `state_mode`, reward/termination information, policy logits, recurrent parameters, and snapshot hashes. Materialize each batch once per snapshot and never filter it based on diagnostic values.
 
 ### Required diagnostics
 
-1. **Augmented Bellman residual.** Compute the finite-batch maximum and quantiles of
+1. **State-matched Bellman residuals.** For P0 and any carried-latent arm, compute finite-batch maxima and quantiles of
    `|U_tilde_n(bar s) - bar T_K^bar pi U_tilde_n(bar s)|`
-   using the actual carried-latent transition, actual frozen policy, exact discrete action expectation, and the same evaluator on the bootstrap side. Report separately from the episodic residual.
-2. **Centering defect.** Compute `|E_{a~bar pi}[Ahat(bar s,a)]|` by exact action summation on the complete augmented state. Report maximum and quantiles.
-3. **Distillation KL.** For P0/P1 and any distilled arm, compute `KL(pi_mix || pi_phi)` per augmented state before the next update. For direct-mixture stages, record structural zero/not-applicable rather than an estimated KL.
-4. **Recurrent path length.** For depths `j=0,...,31`, store `d_j(bar s)=||z^(j+1)-z^(j)||`; report `sum_{j=n}^{m-1} d_j` for locked pairs `(n,m) in {(2,4),(2,8),(2,16),(2,32)}`.
+   using the actual carried-latent transition. For reinitialized P1–P4, compute the distinct episodic residual
+   `|U_n(s) - T_K^pi U_n(s)|`
+   using the actual reset-at-each-edit transition. In both cases use the actual frozen policy, exact discrete action expectation, and the same evaluator on the bootstrap side. Never pool or relabel the two residuals.
+2. **Centering defect.** Compute the exact action-summed centering defect conditional on the actual Markov state: `|E_{a~bar pi}[Ahat(bar s,a)]|` for carried arms and `|E_{a~pi}[Ahat(s,a)]|` for reinitialized arms. Report maxima and quantiles separately by `state_mode`.
+3. **Distillation KL.** For P0/P1 and any distilled arm, compute `KL(pi_mix || pi_phi)` conditional on that arm's actual Markov state before the next update (augmented state for carried arms, plan state for reset arms). For direct-mixture stages, record structural zero/not-applicable rather than an estimated KL.
+4. **Recurrent path length.** For depths `j=0,...,31`, store `d_j(state,z_start)=||z^(j+1)-z^(j)||`, using the actual carried start latent for carried arms and the prescribed fresh initialization for reset arms; report `sum_{j=n}^{m-1} d_j` for locked pairs `(n,m) in {(2,4),(2,8),(2,16),(2,32)}` separately by `state_mode`.
 5. **Ratio diagnostic.** Store `q_j=d_(j+1)/d_j` only when `d_j >= 1e-12`; otherwise record undefined. Report distributions rather than a fitted contraction constant.
 6. **Value-head depth drift.** Store `|U_(j+1)-U_j|`, `|U_n-U_m|`, and the corresponding Lipschitz path proxy for the locked depth pairs.
-7. **Multiple-initialization behavior.** For each `(x,y)`, evaluate the actual carried latent, fresh `z_init(x,y)`, zero latent, and five fixed projected random initializations generated with seed `1730`. Report pairwise latent/value diameters at depths `0,2,4,8,16,32` and action agreement. Do not label decreasing finite-depth diameter as convergence without a proved limit.
+7. **Multiple-initialization behavior.** For each `(x,y)`, evaluate fresh `z_init(x,y)`, zero latent, and five fixed projected random initializations generated with seed `1730`; add the actual carried latent only for carried-latent arms. Report pairwise latent/value diameters at depths `0,2,4,8,16,32` and action agreement separately by `state_mode`. Do not label decreasing finite-depth diameter as convergence without a proved limit.
 8. **Closure/evidence status.** Record batch size, state-source policy, edit-index coverage, and the fact that no finite batch establishes a uniform supremum.
 
 ### Acceptance criterion
@@ -146,7 +148,7 @@ This experiment may begin only after Experiments 1 and 2 have complete, audited 
 - Split: stable hash of the board permutation with split salt `upi-trm-iclr-8p-v1`; take 50,000 train states, 5,000 tuning states, and 5,000 evaluation states from the band in hash order, with no overlap. Commit ordered manifests and hashes before training.
 - Actions: four slide directions with explicit invalid-action accounting.
 - Horizon: `T=32` moves.
-- Reward: goal success plus a prespecified checker-derived shaping function that is identical for both methods. The exact formula must be committed before any tuning run and may not use the BFS optimal action.
+- Reward: for transition `(s,a,s')`, set `r0 = 1{goal(s')} - 0.05*1{a is invalid}` (an invalid action leaves the board unchanged), and set `Phi(s) = -m(s)/8`, where `m(s)` is the number of misplaced numbered tiles, excluding the blank. Use `Phi(goal)=Phi(absorbing)=0` and `r = r0 + gamma*Phi(s') - Phi(s)` on every transition, including timeout-to-absorbing; post-terminal absorbing self-loops have zero reward. This formula is identical for both methods and uses neither BFS distance nor the BFS-optimal action.
 - Methods: UPI–TRM and architecture-matched TRM+PPO.
 - Architecture: same latent/value-policy capacity, `n`, `K`, `gamma`, projection setting, optimizer, interaction budget, and reporting grid as the matched Sudoku experiment, except for the four-action input/output adapters and `T=32`.
 - Seeds: development `201–205`, confirmatory `101–110`, generator/split seed encoded by the fixed hash salt.

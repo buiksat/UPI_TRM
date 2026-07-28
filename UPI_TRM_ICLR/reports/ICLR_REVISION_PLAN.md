@@ -2,7 +2,7 @@
 
 ## Status and governing scope
 
-The anonymous ICLR-template baseline passed the mandatory compile gate and was committed as `d729d0dde5c6df8f5a77469474090c1762774543` before this plan was written. The complete manuscript was then read, including the CPI derivation, persistent-state construction, all proofs, every experiment section, implementation details, and provenance documents.
+The anonymous ICLR-template baseline passed the mandatory compile gate and was committed as `3cc36531a50cc096b5acaa0232533ba82d67f5a0` before the scientific revision began. The complete manuscript was then read, including the CPI derivation, persistent-state construction, all proofs, every experiment section, implementation details, and provenance documents.
 
 The revision will present a fixed-parameter-snapshot analysis of finite-depth evaluators. It will not claim an end-to-end training theorem, sample-efficiency advantage, equal-interaction advantage, uniform empirical certificate, or validation of a theorem by the hard-Sudoku implementation. No new experimental result will enter the paper until its locked protocol has run and its artifacts have been audited.
 
@@ -48,14 +48,14 @@ The revision will present a fixed-parameter-snapshot analysis of finite-depth ev
 | Foreground the theory-aligned episodic hard-suite result of `0%` | C, D | Experiments opener/main hard-suite discussion and appendix | Claim/presentation | Yes | No | `0%` over 10 seeds is visible in the main narrative and is not demoted to a diagnostic footnote |
 | State that equal-interaction and sample-efficiency advantages over PPO are not established | C | Table 1 caption/text, discussion, conclusion | Claim | Yes | No | No “outperforms PPO” sentence lacks the nominal-budget qualifier; no sample-efficiency claim remains |
 | Describe projection’s `+13.0` pp as a combined algorithmic effect | C | Main factorial and appendix duplicates | Claim | Yes | No | Text names both forward-pass geometry and training-dynamics/optimizer channels and does not attribute the lift to one bound term |
-| Describe contraction’s `+2.2` pp, `p approx 0.6` as inconclusive | C | Main factorial, diagnostics, discussion, conclusion | Claim | Yes | No | It is a conditional stability/error-control mechanism, not a demonstrated hard-task performance control |
+| Describe contraction’s `+2.2` pp and source-reported `p approx 0.6` as inconclusive | C | Main factorial, diagnostics, discussion, conclusion | Claim | Yes | No | The aggregate effect is conditional stability/error-control evidence; the source-reported p-value is explicitly not independently auditable from retained artifacts |
 | Call the finite-MDP study a numerical certificate/unit test | C, D | Main theory, experimental appendix, figure caption, conclusion | Claim/presentation | Yes | No | It is not called an empirical discovery or evidence of task-level performance |
 | State the empirical scope as current `4x4` Sudoku only | C | Abstract, experiments, discussion, conclusion | Claim | Yes | No | No result claim extends to `9x9`, ARC, LLM reasoning, or a second domain |
 | State exact-mixture failure for the distilled headline policy as known, not unverified | B, C | Algorithm, hard-suite limitations, persistent appendix, implementation details | Claim | Yes | No | The paper says the headline implementation distills and therefore does not deploy the exact mixture required by Theorem 6.5 |
 | State that exact centering and the uniform augmented residual are not established for the headline run | B, C | Hard-suite limitations and claim-status table | Claim | Yes | No | Episodic finite-batch diagnostics are not offered as persistent uniform certificates |
 | Reorganize experimental evidence around decisions | D | Experiments and experimental appendix | Presentation | Yes | No | Reading order is hard-suite scope, factorial, negative theory-aligned run, interaction audit, finite-MDP unit test, then secondary diagnostics |
 | Move exploratory/redundant ablations to a clearly labeled secondary-diagnostics block without deletion | D | Experimental appendix | Presentation | Yes | No | All reproducibility tables/figures remain reachable; exploratory evidence is labeled exploratory |
-| Rewrite discussion and conclusion around what is established, conditional, inconclusive, and missing | C, D | Discussion/limitations/conclusion | Claim/presentation | Yes | No | Every numerical claim points to existing evidence and every theorem-dependent empirical limitation is explicit |
+| Rewrite discussion and conclusion around what is established, conditional, inconclusive, and missing | C, D | Discussion/limitations/conclusion | Claim/presentation | Yes | No | Every unqualified numerical claim points to retained evidence; source-only quantities are labeled unauditable; every theorem-dependent limitation is explicit |
 | Update labels/references and notation after reorganization | A–D | Entire manuscript | Mechanical | Yes | No | Zero undefined references/citations; theorem 6.5 remains the centered-error CPI theorem |
 | Bring the main text within the official ICLR limit without style changes | Formatting | Main paper | Presentation | Yes | No | Main-text count is reported; official margins, spacing, and font sizes remain untouched; excess pages are reported if unresolved |
 
@@ -70,8 +70,8 @@ The revision will present a fixed-parameter-snapshot analysis of finite-depth ev
 | Hard-suite `57.4%` result | Reproduced persistent implementation under nominal outer-step protocol | 10 seeds and retained provenance | Implementation result only |
 | UPI versus PPO efficiency | Equal interactions and locked common evaluation | Not run for both methods | Missing experiment; no advantage claim |
 | Projection `+13.0` pp | Controlled `2x2`; same protocol | Existing 10-seed factorial | Algorithmic effect across forward/training channels |
-| Contraction `+2.2` pp | Controlled `2x2` | `p approx 0.6`, 10 seeds | Inconclusive hard-task effect |
-| Composed finite-MDP inequalities | Exactly computable finite MDP | 101 checked configurations, zero violations | Numerical certificate/unit test |
+| Contraction `+2.2` pp | Controlled `2x2` | Aggregate cell means; source-reported `p approx 0.6` lacks retained per-seed/test artifacts | Inconclusive hard-task effect; p-value not independently audited |
+| Composed finite-MDP inequalities | Exactly computable finite MDP | 80 value/decomposition rows plus 21 alpha rows on one selected CPI slice, zero violations | Numerical certificate/unit test |
 
 ## Proof acceptance checklist
 
@@ -104,6 +104,8 @@ Each content commit must pass `make pdf` before the next begins. The baseline PD
 - Exact centering has not been uniformly established for the headline persistent run.
 - The headline distilled policy is known not to satisfy the direct exact-mixture deployment condition.
 - No interaction-equalized UPI–TRM versus TRM+PPO comparison exists.
+- The source-reported contraction `p approx 0.6` lacks the retained per-seed factorial artifact and test script needed for independent reproduction.
+- The source-reported baseline-only interaction-equalization rows lack standalone run provenance and are excluded from active numerical claims.
 - The fixed-point Lipschitz/slow-drift assumptions remain unverified on Sudoku and are not needed for the new direct persistent certificate.
 - Type 3 and unembedded DejaVu fonts remain in imported figure PDFs and must be regenerated from source before submission if the ICLR checker rejects them.
 - ICLR 2027 style files were unavailable; the ICLR 2026 files are a temporary porting baseline and must be replaced/verified when the intended-cycle kit is published or reachable.

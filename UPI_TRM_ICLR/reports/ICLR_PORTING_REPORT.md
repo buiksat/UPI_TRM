@@ -15,7 +15,7 @@
 - Destination state at Phase 0: absent, so no destination work could be overwritten
 - Destination branch: `iclr-revision`
 
-The three paper directories are sibling subtrees of one parent Git repository, not independent nested repositories. The prior mispathed revision was preserved on `iclr-revision-mispath-backup`; the active `iclr-revision` branch was recreated from the clean pre-port commit. The tracked `UPI_TRM_ICML` archive matches that pre-port commit and is not an input to this corrected ICLR build.
+The paper workspaces are sibling subtrees of one parent Git repository, not independent nested repositories. The prior mispathed revision was preserved on `iclr-revision-mispath-backup`; the active `iclr-revision` branch was recreated from the clean pre-port commit. The archival sibling matches that pre-port commit and is not an input to this corrected ICLR build.
 
 ## Controlled source copy
 
@@ -73,7 +73,7 @@ The root loads `\usepackage{iclr2026_conference,times}` in the style's default a
 
 The scientific-body comparison against the source was inspected before the gate. Differences were limited to the venue header/package, anonymous template configuration, bibliography style, checklist removal, unused-package compatibility, and that filename line-break fix. The title, abstract, theorem statements, experiments, numerical claims, conclusions, figures, tables, bibliography, and appendix content were not revised before the successful baseline gate.
 
-No ICML style file, bibliography style, command, or template was used. After the archive restoration, the corrected copy, template conversion, and build did not read from the working-tree `UPI_TRM_ICML` directory.
+No ICML style file, bibliography style, command, or template was used. After the archive restoration, the corrected copy, template conversion, and build did not read from the archival sibling directory.
 
 ## Baseline compile gate
 

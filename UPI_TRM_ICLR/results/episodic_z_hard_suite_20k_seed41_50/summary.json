@@ -1,0 +1,194 @@
+{
+  "aggregate_final_eval": {
+    "invalid_action_rate": {
+      "count": 10,
+      "finite_count": 10,
+      "max": 0.0,
+      "mean": 0.0,
+      "min": 0.0,
+      "nan_count": 0,
+      "neg_inf_count": 0,
+      "pos_inf_count": 0,
+      "sample_std": 0.0
+    },
+    "mean_return": {
+      "count": 10,
+      "finite_count": 10,
+      "max": -20.896,
+      "mean": -21.7331,
+      "min": -22.769,
+      "nan_count": 0,
+      "neg_inf_count": 0,
+      "pos_inf_count": 0,
+      "sample_std": 0.5119820851900537
+    },
+    "mean_score": {
+      "count": 10,
+      "finite_count": 10,
+      "max": 4.9,
+      "mean": 3.906,
+      "min": 2.68,
+      "nan_count": 0,
+      "neg_inf_count": 0,
+      "pos_inf_count": 0,
+      "sample_std": 0.60612063339093
+    },
+    "success_rate": {
+      "count": 10,
+      "finite_count": 10,
+      "max": 0.0,
+      "mean": 0.0,
+      "min": 0.0,
+      "nan_count": 0,
+      "neg_inf_count": 0,
+      "pos_inf_count": 0,
+      "sample_std": 0.0
+    }
+  },
+  "artifacts": {
+    "per_seed_diagnostics_jsonl": "/home/buiksat/UPI_TRM/UPI_TRM_NIPS/results/episodic_z_hard_suite_20k_seed41_50/per_seed_diagnostics.jsonl",
+    "per_seed_eval_jsonl": "/home/buiksat/UPI_TRM/UPI_TRM_NIPS/results/episodic_z_hard_suite_20k_seed41_50/per_seed_eval.jsonl"
+  },
+  "checkpoint_steps": [
+    5000,
+    10000,
+    15000,
+    20000
+  ],
+  "experiment": "episodic_z_hard_suite_20k_seed41_50",
+  "final_step": 20000,
+  "per_seed_final_eval": [
+    {
+      "episodes": 50,
+      "eval_policy_mode": "greedy",
+      "invalid_action_rate": 0.0,
+      "mean_return": -21.435,
+      "mean_score": 4.26,
+      "seed": 41,
+      "solved": 0,
+      "source_log": "/home/buiksat/UPI_TRM/UPI_TRM_NIPS/results/episodic_z_hard_suite_20k_seed41_50/logs/seed41.log",
+      "step": 20000,
+      "success_rate": 0.0
+    },
+    {
+      "episodes": 50,
+      "eval_policy_mode": "greedy",
+      "invalid_action_rate": 0.0,
+      "mean_return": -20.896,
+      "mean_score": 4.9,
+      "seed": 42,
+      "solved": 0,
+      "source_log": "/home/buiksat/UPI_TRM/UPI_TRM_NIPS/results/episodic_z_hard_suite_20k_seed41_50/logs/seed42.log",
+      "step": 20000,
+      "success_rate": 0.0
+    },
+    {
+      "episodes": 50,
+      "eval_policy_mode": "greedy",
+      "invalid_action_rate": 0.0,
+      "mean_return": -21.843,
+      "mean_score": 3.78,
+      "seed": 43,
+      "solved": 0,
+      "source_log": "/home/buiksat/UPI_TRM/UPI_TRM_NIPS/results/episodic_z_hard_suite_20k_seed41_50/logs/seed43.log",
+      "step": 20000,
+      "success_rate": 0.0
+    },
+    {
+      "episodes": 50,
+      "eval_policy_mode": "greedy",
+      "invalid_action_rate": 0.0,
+      "mean_return": -21.856,
+      "mean_score": 3.76,
+      "seed": 44,
+      "solved": 0,
+      "source_log": "/home/buiksat/UPI_TRM/UPI_TRM_NIPS/results/episodic_z_hard_suite_20k_seed41_50/logs/seed44.log",
+      "step": 20000,
+      "success_rate": 0.0
+    },
+    {
+      "episodes": 50,
+      "eval_policy_mode": "greedy",
+      "invalid_action_rate": 0.0,
+      "mean_return": -21.293,
+      "mean_score": 4.42,
+      "seed": 45,
+      "solved": 0,
+      "source_log": "/home/buiksat/UPI_TRM/UPI_TRM_NIPS/results/episodic_z_hard_suite_20k_seed41_50/logs/seed45.log",
+      "step": 20000,
+      "success_rate": 0.0
+    },
+    {
+      "episodes": 50,
+      "eval_policy_mode": "greedy",
+      "invalid_action_rate": 0.0,
+      "mean_return": -21.435,
+      "mean_score": 4.26,
+      "seed": 46,
+      "solved": 0,
+      "source_log": "/home/buiksat/UPI_TRM/UPI_TRM_NIPS/results/episodic_z_hard_suite_20k_seed41_50/logs/seed46.log",
+      "step": 20000,
+      "success_rate": 0.0
+    },
+    {
+      "episodes": 50,
+      "eval_policy_mode": "greedy",
+      "invalid_action_rate": 0.0,
+      "mean_return": -22.769,
+      "mean_score": 2.68,
+      "seed": 47,
+      "solved": 0,
+      "source_log": "/home/buiksat/UPI_TRM/UPI_TRM_NIPS/results/episodic_z_hard_suite_20k_seed41_50/logs/seed47.log",
+      "step": 20000,
+      "success_rate": 0.0
+    },
+    {
+      "episodes": 50,
+      "eval_policy_mode": "greedy",
+      "invalid_action_rate": 0.0,
+      "mean_return": -21.981,
+      "mean_score": 3.62,
+      "seed": 48,
+      "solved": 0,
+      "source_log": "/home/buiksat/UPI_TRM/UPI_TRM_NIPS/results/episodic_z_hard_suite_20k_seed41_50/logs/seed48.log",
+      "step": 20000,
+      "success_rate": 0.0
+    },
+    {
+      "episodes": 50,
+      "eval_policy_mode": "greedy",
+      "invalid_action_rate": 0.0,
+      "mean_return": -21.736,
+      "mean_score": 3.9,
+      "seed": 49,
+      "solved": 0,
+      "source_log": "/home/buiksat/UPI_TRM/UPI_TRM_NIPS/results/episodic_z_hard_suite_20k_seed41_50/logs/seed49.log",
+      "step": 20000,
+      "success_rate": 0.0
+    },
+    {
+      "episodes": 50,
+      "eval_policy_mode": "greedy",
+      "invalid_action_rate": 0.0,
+      "mean_return": -22.087,
+      "mean_score": 3.48,
+      "seed": 50,
+      "solved": 0,
+      "source_log": "/home/buiksat/UPI_TRM/UPI_TRM_NIPS/results/episodic_z_hard_suite_20k_seed41_50/logs/seed50.log",
+      "step": 20000,
+      "success_rate": 0.0
+    }
+  ],
+  "seeds": [
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50
+  ]
+}

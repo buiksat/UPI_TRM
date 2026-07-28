@@ -1,0 +1,3 @@
+Wrote figures and tables to /home/buiksat/UPI_TRM/UPI_TRM_ICLR/results/finite_mdp_certificate_validation
+Worst margins: decomposition=-2.943e-01, residual=-2.943e-01, advantage=-1.423e+00, cpi_decomp=0.000e+00, cpi_exact=0.000e+00
+Selected CPI slice: sigma_xi=0.10, L_z=0.20, n=16, beta=1.0, mode=evaluator, max_true_improvement=0.2677, min_positive_gap=1.1163e-03

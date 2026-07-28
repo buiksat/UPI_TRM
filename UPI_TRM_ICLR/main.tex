@@ -4,7 +4,7 @@
 
 \PassOptionsToPackage{dvipsnames}{xcolor}
 
-% Anonymous review mode is the default.
+% Anonymous review mode is the default; final-copy mode remains disabled.
 \usepackage{iclr2026_conference,times}
 
 % Recommended packages:
@@ -274,7 +274,7 @@ L_V\sum_{j=n}^{m-1}
 
 The theorem is a residual bound plus a telescoping path bound; we make no novelty claim for the triangle inequality itself. Its role is to expose a certifiable finite reference $m$: the recurrence may perform useful transient computation and need not converge before, at, or after $m$. The same frozen policy $\pi$ appears in $V^\pi$ and $\mathcal T_K^\pi$, and the latter bootstraps from $U_m$ itself.
 
-For the optional contractive specialization, set $U_*(s_{\mathrm{abs}})=-C_{\max}$ and define
+For the optional contractive specialization, additionally assume the fixed-point map is measurable and $U_*$ is bounded on the closure (the latter follows from Assumption~\ref{ass:bounded_value_head}); set $U_*(s_{\mathrm{abs}})=-C_{\max}$ and define
 \begin{equation}
 \varepsilon_{\mathrm{res}}^* \triangleq \|U_* - \mathcal{T}^\pi_K U_*\|_{\infty,\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}.
 \label{eq:eps_res_def}
@@ -538,7 +538,7 @@ For the persistent run, clock/carry details are unaudited, the uniform augmented
 \subsection{Projection and contraction ablation}
 \label{sec:projection_contraction_ablation}
 
-The $2\times2$ factorial varies projection and contraction (Appendix Table~\ref{tab:controlled_2x2_main}). Projection's composite $+13.0$pp contrast ($36.2\%\to49.2\%$) mixes clipping and training dynamics. Contraction's $+2.2$pp ($41.6\%\to43.8\%$) is inconclusive; its unauditable source-reported $p$-value is omitted. It remains a conditional error-control mechanism, not a demonstrated performance dial.
+The $2\times2$ factorial varies projection and contraction (Appendix Table~\ref{tab:controlled_2x2_main}). Projection's composite $+13.0$pp contrast ($36.2\%\to49.2\%$) mixes clipping and training dynamics. Contraction's $+2.2$pp is inconclusive; the source-reported $p\approx0.6$ is not independently auditable from retained per-seed/test artifacts. Contraction remains a conditional error-control mechanism, not a demonstrated performance dial.
 
 \subsection{Theory-aligned episodic negative result}
 \label{sec:episodic_negative_main}
@@ -567,7 +567,7 @@ The primary result certifies a transient depth-$n$ evaluator against any finite 
 
 Policy improvement additionally requires uniform closure control, exact centering, and pointwise exact-mixture deployment at a frozen snapshot; it certifies neither training nor distillation. The headline run is distilled and lacks a uniform augmented residual and verified centering, so exact centering alone would not make Theorem~\ref{thm:monotone_with_error} apply.
 
-Empirically: episodic $0\%$; nominal PPO $+25.4$pp with unequal interactions; projection $+13.0$pp composite; contraction $+2.2$pp inconclusive. The checklist is to measure paths/residuals, audit centering/deployment, and separate performance from certification; missing experiments are protocolized.
+Empirically: episodic $0\%$; PPO unmatched; projection composite; contraction inconclusive.
 
 
 
@@ -867,6 +867,8 @@ with $z_0(s)=0$, so both the truncation term and the $K$-step residuals are know
 
 Figure~\ref{fig:finite_mdp_certificate_main} shows two checks. Left: for $\gamma{=}0.9$, $K{=}3$, $\sigma_\xi{=}0.05$, the value error decays with $n$ and worsens as $L_z\to 1$, staying below the contractive specialization of Theorem~\ref{thm:finite_reference_depth}. Right: on an evaluator-based candidate slice ($L_z{=}0.2$, $n{=}16$, $\sigma_\xi{=}0.1$, $\beta{=}1$), the surrogate gap $\widehat L_\pi(\pi_\alpha)-\eta(\pi_\alpha)$ is positive and stays below both the decomposition-based CPI penalty and the tighter $\varepsilon_{A,\mathrm{cand}}$ penalty for every tested $\alpha$ (log scale; the bound is conservative). Corollary~\ref{cor:finite_depth_residual_certificate} is directly checkable here because $\|U_n-\mathcal{T}^\pi_K U_n\|_\infty$ is computable. The script checks 80 value/decomposition rows ($4$ $L_z$ values by $20$ depths) and 21 $\alpha$ rows on this selected CPI slice, with zero violations; it does not constitute a full Cartesian sweep over $(L_z,n,K,\sigma_\xi,\alpha)$.
 
+For this revision we reran \path{python3 experiments/finite_mdp_certificate.py --outdir results/finite_mdp_certificate_validation}. The retained CSV contains 80 \texttt{value\_curve} and 21 \texttt{cpi\_curve} rows, with both certificate flags true in every row; stdout is retained in \path{reports/finite_mdp_certificate_validation.log}.
+
 \begin{figure}[t]
 \centering
 \begin{subfigure}[t]{0.48\textwidth}
@@ -987,13 +989,9 @@ D & ON & ON & 32.0 & 608.7 & 0.396 & 2412 & 10.0 \\
 
 Three observations stand out. First, $z\!\to\!z$ contraction causes modest clustering, not collapse-to-zero. Comparing B vs.\ A, total variance decreases by $\sim$25\% (ratio 0.75) and pairwise cosine similarity increases by $\sim$0.21, while pre-projection norms remain $\|z^{(n)}_{\text{pre}}\|\approx 32$, well above the projection radius $R{=}10$: latents become modestly more clustered in direction, but do not collapse toward zero. Second, the large $\mathrm{Var}(V)$ differences come from value-head normalization, not $z\!\to\!z$ contraction. Comparing C vs.\ A, $\mathrm{Var}(V)$ increases by $\sim$160{,}000$\times$ (from 0.016 to 2493) when value-head normalization is enabled, while B vs.\ A barely moves (ratio $\approx$1.04); earlier observations of exploding $\mathrm{Var}(V)$ ``with contraction ON'' were confounded by value-head normalization. Third, projection saturation explains the constant post-projection norms: all conditions have pre-projection $\|z^{(n)}_{\text{pre}}\|\approx 32 \gg R{=}10$, so $\Pi_R$ is always active and clips to $\|z^{(n)}_{\text{post}}\|=10$.
 
-Together this argues \emph{against} the hypothesis that $z\!\to\!z$ contraction degrades performance through latent collapse. The observed 25\% variance reduction and increased cosine similarity are too modest to explain the success-rate differences seen in ablations. The mechanism by which contraction can hurt task success remains unclear; reduced expressivity of latent dynamics is one candidate rather than representational collapse.
+Within this single-seed diagnostic, the modest clustering pattern is inconsistent with a simple collapse-to-zero explanation, but it cannot identify the mechanism behind success-rate differences.
 
-A follow-up 2$\times$2 training ablation (200 steps) that toggles $z\!\to\!z$ contraction and value-head normalization independently is consistent: (i) $z\!\to\!z$ contraction alone (B) remains stable with targets $\approx -1.7$; (ii) value-head normalization alone (C) induces severe target clamp-hitting ($\pm 20$); (iii) both combined (D) collapses to the positive clamp (target${}=20$ by step 60, $V(s)=20$ by step 100).
-The instability previously attributed to enable\_contraction is therefore driven by value-head normalization (spectral normalization + $L_V$ scaling), not by $z\!\to\!z$ contraction itself.
-Consistent with this, on the 4$\times$4 suite (1--4 empties) short runs that enable $z\!\to\!z$ contraction with value-head normalization disabled remain stable but achieve low success (${\approx}10\%$ at 1k steps): contraction can be overly restrictive even when it does not induce collapse.
-
-This is a single seed on the 4$\times$4 1--4-empty suite, so it argues against collapse but is not a universal statement.
+A 200-step follow-up associates value-head normalization with clamp-hitting: contraction alone remains stable with targets $\approx-1.7$, value-head normalization alone reaches the $\pm20$ clamps, and the combined cell reaches the positive clamp (target${}=20$ by step 60, $V(s)=20$ by step 100). Short contraction-only runs with value-head normalization disabled remain stable but obtain only ${\approx}10\%$ success at 1k steps. These exploratory observations identify a confound; they do not establish a causal or general training mechanism.
 
 
 
@@ -1143,7 +1141,7 @@ We ablate projection at \emph{training time} to test whether the ball projection
 
 \input{tables/table_exp3_projection_ablation.tex}
 
-Training is stable without projection. All 6 conditions (contraction ON/OFF crossed with projection setting $\in\{\text{proj.\ off}, 10, 100\}$) pass the stability gate (no NaN, no gradient collapse), with comparable success rates ($94$--$98\%$). Projection can still dominate mismatch stability at \emph{evaluation time} when active, but it is not required for \emph{training stability}.
+In this easy-suite ablation, all six conditions (contraction ON/OFF crossed with $\{\text{proj.\ off},10,100\}$) pass the stated stability gate and obtain $94$--$98\%$ success. Thus projection is not necessary for stability within this tested protocol; this is not a general training-stability conclusion.
 
 \subsection{Projection-Free Contraction Dial (Full Results)}
 \label{app:exp4_projection_free_dial_v2}
@@ -1221,7 +1219,7 @@ Contraction, $R{=}10$ & 50.2 $\pm$ 10.5 \\
 \end{tabular}
 \end{table}
 
-The projection contrast raises success from $36.2\%$ to $49.2\%$ (+13.0pp averaged over contraction status). It is a composite algorithmic effect spanning the forward pass and training dynamics (changes to $f_\theta$, $\varepsilon_0$, and the optimizer trajectory), which~\eqref{eq:main_bound_proj} does not model. Averaging over projection status, contraction raises success from $41.6\%$ to $43.8\%$ (+2.2pp). The source-reported factorial $p$-value is omitted because the retained package lacks the per-seed artifact and test script; the aggregate contrast is inconclusive and does not support a variance-reduction claim.
+The projection contrast raises success from $36.2\%$ to $49.2\%$ (+13.0pp averaged over contraction status). It is a composite algorithmic effect spanning the forward pass and training dynamics (changes to $f_\theta$, $\varepsilon_0$, and the optimizer trajectory), which~\eqref{eq:main_bound_proj} does not model. Averaging over projection status, contraction raises success from $41.6\%$ to $43.8\%$ (+2.2pp). The source-reported $p\approx0.6$ is not independently auditable because the retained package lacks the per-seed factorial artifact and test script; the aggregate contrast is inconclusive and does not support a variance-reduction claim.
 
 \section{Secondary Robustness Diagnostics}
 \label{app:secondary_robustness}
@@ -1232,7 +1230,7 @@ These depth-mismatch curves and discussion details are secondary diagnostics and
 \label{sec:isolation_study}
 \label{app:depth_mismatch_main}
 
-To test whether contraction improves evaluation-time robustness as compute changes, we evaluate checkpoints trained at $n_{\mathrm{train}}{=}2$ under deeper unrolls $n_{\mathrm{eval}}\in\{4,8,16\}$ on the 1--4-empty suite and aggregate over seeds 41--50. On B0 initial states at fixed $4\times$ mismatch ($n{=}2\rightarrow 8$), contraction lowers $\Delta_V$ from $0.166$ to $0.064$ and raises argmax agreement from $90.2\%$ to $95.5\%$; $\Delta_\pi$ stays near zero, so the main discriminator is value/latent stability, not policy KL. The effect is visible on the easier 1--4-empty regime (where masked random already reaches $52\%$) but not on the hard 4$\times$4 suite. This regime is the most direct test of the episodic-$z$ theorem we have, but it does not speak to persistent-$z$ behavior on the hard suite.
+To probe evaluation-time robustness as compute changes, we evaluate checkpoints trained at $n_{\mathrm{train}}{=}2$ under deeper unrolls $n_{\mathrm{eval}}\in\{4,8,16\}$ on the 1--4-empty suite and aggregate over seeds 41--50. On B0 initial states at fixed $4\times$ mismatch ($n{=}2\rightarrow 8$), contraction lowers $\Delta_V$ from $0.166$ to $0.064$ and raises argmax agreement from $90.2\%$ to $95.5\%$; $\Delta_\pi$ stays near zero. This is finite-batch diagnostic contact with the episodic setting, not theorem validation, and it does not speak to persistent-$z$ behavior on the hard suite.
 
 \begin{figure}[t]
 \centering
@@ -1282,24 +1280,24 @@ This section records the interaction-budget audit, headline significance data, a
 \subsection{Interaction-Equalized Baseline Audit}
 \label{app:equalized_baselines}
 
-Table~\ref{tab:hard_suite_anchor} reports the nominal 20k outer-step protocol. Because PPO, A2C, and DQN collect 64, 32, and 4 transitions per outer step, it does not equalize environment interactions. The source manuscript records the baseline-only common-budget audit below, but its standalone logs are absent from the retained package. We preserve the table for provenance and use it only to document the intended audit and the absence of a UPI--TRM arm; its numerical rows are not independently revalidated here.
+Table~\ref{tab:hard_suite_anchor} reports the nominal 20k outer-step protocol. Because PPO, A2C, and DQN collect 64, 32, and 4 transitions per outer step, it does not equalize interactions. The source manuscript recorded baseline-only common-budget rows, but their standalone logs are absent. We therefore remove those unauditable numbers from active claims (they remain recoverable in Git history) and retain only the artifact-status audit below.
 
 \begin{table}[t]
-\caption{Source-reported interaction-equalized audit on no-mask hard 4$\times$4 (6--8 empties, $T{=}16$); standalone run provenance is unavailable in the retained package. UPI--TRM is omitted.}
+\caption{Artifact status for the missing interaction-equalized comparison.}
 \label{tab:equalized_baselines}
 \centering
 \small
-\begin{tabular}{@{}lccccc@{}}
+\begin{tabularx}{\linewidth}{@{}lXXX@{}}
 \toprule
-Budget & Seeds & TRM+PPO & TRM+A2C & TRM+DQN & TRM+DQN($n{=}5$) \\
+Run family & UPI--TRM arm & Standalone provenance & Claim status \\
 \midrule
-320k env.\ int. & 10 & 0.0 $\pm$ 0.0 & 0.0 $\pm$ 0.0 & 0.0 $\pm$ 0.0 & 1.2 $\pm$ 1.0 \\
-1.28M env.\ int. & 3 & 24.7 $\pm$ 11.0 & 0.0 $\pm$ 0.0 & 0.0 $\pm$ 0.0 & 0.0 $\pm$ 0.0 \\
+Source baseline-only audit & Absent & Absent & Numerical rows excluded \\
+Required UPI--TRM vs.\ PPO audit & Required & Not run & Missing experiment \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{table}
 
-The source-reported rows illustrate why outer-step counts are not interaction counts, but the missing provenance prevents an independent numerical conclusion from this table. Irrespective of those values, it cannot certify the UPI--TRM gap at equal interaction count because UPI--TRM was not run in the audit.
+There is therefore no numerical interaction-matched UPI--TRM versus PPO result in this paper.
 
 \subsection{Headline significance-test data}
 \label{app:headline_significance}
@@ -1319,7 +1317,7 @@ with mean $32.0\%$ and sample standard deviation $15.3\%$. Applying Welch's $t$-
 
 We ran a pre-registered, theory-aligned rerun on the same no-mask hard 4$\times$4 Sudoku suite used in Table~\ref{tab:hard_suite_anchor} (6--8 empties, $T{=}16$, 20k environment steps, seeds 41--50). The rerun starts from the persistent-$z$ hard-suite configuration and jointly changes four factors: episodic-$z$ latents, exact baseline summation, exact $K$-step targets, and explicit conservative mixtures. The architecture-matched evaluation interface and the inherited persistent-$z$ hyperparameters ($\gamma{=}0.99$, $K{=}1$, $n{=}2$) are unchanged. Diagnostics are computed on a frozen 256-instance closure batch (seed 1729). The fixed test split of the canonical 6--8-empty dataset contains only 99 viable puzzles, so the closure batch is sampled from the \texttt{train/} split with an independent RNG path; this deviation affects only the diagnostic batch, not the task-evaluation pool or the training seeds.
 
-The paper tables below curate the main quantities; full per-seed values for all nine protocol diagnostics are recorded in the accompanying artifact bundle (\path{EPISODIC_Z_RUN_LOG.md}, \path{diagnostics_summary.json}, \path{cpi_penalty_grid.json}, and \path{per_seed_diagnostics.jsonl}).
+The paper tables below curate the main quantities; full per-seed values for all nine protocol diagnostics are recorded in \path{EPISODIC_Z_RUN_LOG.md} and \path{results/episodic_z_hard_suite_20k_seed41_50/} (\path{diagnostics_summary.json}, \path{cpi_penalty_grid.json}, and \path{per_seed_diagnostics.jsonl}).
 
 Table~\ref{tab:episodic_z_branch_d} reports the final task outcome and the main diagnostics at 20k. The rerun reaches $0.0\%$ success over 10 seeds, so by the locked decision rule it falls into Branch~D: $S_E = 0.0\% < 0.85 \times 57.4\% = 48.79\%$. The persistent-$z$ value $S_P = 57.4\%$ in Table~\ref{tab:hard_suite_anchor} is measured under the nominal 20k outer-step protocol of Section~\ref{sec:harder_puzzles}, which uses a larger environment-interaction budget than this rerun; the Branch~D margin holds under either budget framing. We therefore retain persistent-$z$ as the headline empirical result and use the episodic-$z$ rerun only for finite-batch diagnostics on the frozen closure batch.
 
@@ -1827,7 +1825,6 @@ For the consequence: if $z^*=\tilde f_\theta(z^*,y,x)=\Pi_R(f_\theta(z^*,y,x))$ 
 Fix $(x,y)$.
 By Assumption~\ref{ass:Lip}, $T_{x,y}(z)=\tilde f_\theta(z,y,x)$ maps $\mathcal{Z}_{\mathrm{inv}}$ to itself (forward-invariance) and is a contraction with modulus $L_z<1$.
 Since $\mathcal{Z}_{\mathrm{inv}}$ is a closed subset of the complete metric space $(\ZZ,\|\cdot\|)=(\R^d,\|\cdot\|_2)$, it is itself complete.
-(Boundedness is used separately to ensure $R=\sup_{z\in\mathcal{Z}_{\mathrm{inv}}}\|z\|<\infty$.)
 
 Banach's theorem yields unique fixed point $z^*(x,y) \in \mathcal{Z}_{\mathrm{inv}}$ and linear convergence~\eqref{eq:linear_convergence}.
 
@@ -2087,10 +2084,10 @@ U_*-\mathcal{T}_K^\pi U_*
 +
 (U_*-B_{\mathrm{anc}})
 +
-\mathcal{T}_K^\pi(B_{\mathrm{anc}}-U_*).
+\bigl(\mathcal{T}_K^\pi B_{\mathrm{anc}}-\mathcal{T}_K^\pi U_*\bigr).
 \]
 Taking $\|\cdot\|_{\infty,\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}$ and using the
-$\gamma^K$-contraction of $\mathcal{T}_K^\pi$ on the last term gives
+$\gamma^K$-contraction of $\mathcal{T}_K^\pi$ on the difference of its two images gives
 \[
 \varepsilon_{\mathrm{res}}^*
 \;\le\;
@@ -2243,20 +2240,22 @@ For the episodic-$z$ variant, skip line~10 (``Carry latent'') and reinitialize $
   \ENDIF
 \ENDFOR
 \STATE Compute target $G^{(K)}$ via~\eqref{eq:GK_def}
-\STATE Update $(\theta,\psi)$ by minimizing $\mathcal{L}_{\mathrm{val}}$ (bootstrapped MSE)
+\STATE Update $(\theta,\psi)$ by minimizing $\mathcal{L}_{\mathrm{val}}$, then freeze the evaluator snapshot $h_n$
 \STATE Form advantages $\widehat A$ via centered estimator (see below)
-\STATE Policy gradient step $\to$ candidate $\pi_{\mathrm{cand}}$
+\STATE Policy-head step with $h_n$ frozen $\to$ candidate $\pi_{\mathrm{cand}}$
 \STATE $\pi_{\mathrm{new}} \gets (1-\alpha)\pi_{\phi} + \alpha\pi_{\mathrm{cand}}$
 \STATE Distill: $\pi_\phi \gets \arg\min_\phi \KL(\pi_{\mathrm{new}} \| \pi_\phi)$
 \STATE $\bar\psi \gets \tau \bar\psi + (1-\tau)\psi$ \hfill \emph{// Target network update}
 \end{algorithmic}
 \end{algorithm}
 
+The frozen CPI comparison begins only after the value update and uses the same fixed recurrent map $h_n$ for the current and candidate action kernels through the mixture step. Any subsequent recurrent-parameter update starts a new snapshot and is outside Theorem~\ref{thm:monotone_with_error}. The retained training repository is unavailable, so whether the headline implementation enforces this separation remains unaudited.
+
 
 We maintain a replay buffer and sample mini-batches for value and policy updates. Latents in the buffer computed under older $\theta$ are stale, so we recompute $z^{(n)}$ for sampled states or use a slowly moving target encoder $f_{\bar\theta}$.
 
 \textbf{Compute and hardware.}
-Each reported training or evaluation run uses a single device. The main training jobs and the trusted external PPO/A2C/DQN reruns, including the 5-step DQN variant, ran through GPU-enabled batch jobs; the evaluation scripts also support CPU fallback for analysis-only runs. Within the architecture-matched group, ``matched'' refers to the shared TRM backbone and checker-shaped reward, not to identical environment-interaction counts or constant-factor wall-clock cost. The nominal 20k outer-step protocol gives different interaction budgets across PPO, A2C, and DQN because each collects a different number of transitions per outer step; Appendix~\ref{app:equalized_baselines} reports interaction-equalized reruns. The baseline update rules also carry algorithm-specific overhead; for example, PPO and A2C evaluate policy and value heads in separate forwards through the TRM backbone during optimization, so wall-clock time per update can exceed UPI--TRM.
+Each reported training or evaluation run uses a single device. The main training jobs and the trusted external PPO/A2C/DQN reruns, including the 5-step DQN variant, ran through GPU-enabled batch jobs; the evaluation scripts also support CPU fallback for analysis-only runs. Within the architecture-matched group, ``matched'' refers to the shared TRM backbone and checker-shaped reward, not to identical environment-interaction counts or constant-factor wall-clock cost. The nominal 20k outer-step protocol gives different interaction budgets across PPO, A2C, and DQN because each collects a different number of transitions per outer step; Appendix~\ref{app:equalized_baselines} reports the missing-audit and artifact status, not validated equalized results. The baseline update rules also carry algorithm-specific overhead; for example, PPO and A2C evaluate policy and value heads in separate forwards through the TRM backbone during optimization, so wall-clock time per update can exceed UPI--TRM.
 
 \textbf{Advantage estimation.}
 The theory uses the centered estimator~\eqref{eq:Ahat_def_app}; in practice GAE/$(\lambda)$-return variants are also fine for variance reduction. The linear-in-$\alpha$ error term in Theorem~\ref{thm:monotone_with_error} requires \emph{exact} statewise centering $\E_{a\sim\pi}[\widehat{A}(s,a)]=0$, which holds deterministically only when the baseline is computed exactly as $B_V(s)=\E_{b\sim\pi(\cdot|s)}[\widehat Q_V(s,b)]$ (e.g., by summation over a discrete action space). With a learned value baseline (as in standard GAE), centering is only approximate and the deterministic bound degrades by the centering defect $\varepsilon_{\mathrm{cent}}$; the naive $O(\varepsilon_A/(1-\gamma))$ penalty is recovered only as a worst-case upper bound when $\varepsilon_{\mathrm{cent}}$ and $\varepsilon_{A,\mathrm{cand}}$ are both controlled by $\varepsilon_A$.

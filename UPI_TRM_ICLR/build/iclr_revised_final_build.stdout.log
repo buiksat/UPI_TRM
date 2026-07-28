@@ -1,0 +1,2979 @@
+rm -f main.aux main.bbl main.blg main.fdb_latexmk main.fls main.log main.out main.pdf main.synctex.gz main.toc
+pdflatex -interaction=nonstopmode -halt-on-error -file-line-error main.tex
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex)
+ restricted \write18 enabled.
+entering extended mode
+(./main.tex
+LaTeX2e <2020-10-01> patch level 4
+L3 programming layer <2021-02-18>
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2020/04/10 v1.4m Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size10.clo))
+(./iclr2026_conference.sty
+(/usr/share/texlive/texmf-dist/tex/latex/eso-pic/eso-pic.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/xcolor/xcolor.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/color.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-def/pdftex.def)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/dvipsnam.def)))
+(./fancyhdr.sty) (/usr/share/texlive/texmf-dist/tex/latex/natbib/natbib.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/times.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/base/fontenc.sty
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1ptm.fd))
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype.sty
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype-pdftex.def)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype.cfg))
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/graphics.cfg)))
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/frontendlayer/tikz.sty
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/basiclayer/pgf.sty
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgfrcs.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-common.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-common-lists.t
+ex)) (/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-latex.def
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfrcs.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/pgf.revision.tex)))
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/basiclayer/pgfcore.sty
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/systemlayer/pgfsys.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeysfiltered.code.t
+ex)) (/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgf.cfg)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-pdftex.def
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-common-pdf.de
+f)))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsyssoftpath.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsysprotocol.code.
+tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcore.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathcalc.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathutil.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathparser.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.basic.code
+.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.trigonomet
+ric.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.random.cod
+e.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.comparison
+.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.base.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.round.code
+.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.misc.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.integerari
+thmetics.code.tex)))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfloat.code.tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfint.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepoints.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathconstruct.
+code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathusage.code
+.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorescopes.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoregraphicstate.c
+ode.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransformation
+s.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorequick.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreobjects.code.t
+ex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathprocessing
+.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorearrows.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreshade.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreimage.code.tex
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreexternal.code.
+tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorelayers.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransparency.c
+ode.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepatterns.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorerdf.code.tex))
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmoduleshapes.code.tex
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmoduleplot.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version-0-65
+.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version-1-18
+.sty)) (/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgffor.sty
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgfkeys.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex))
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/math/pgfmath.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgffor.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex)))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/tikz.code.tex
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/pgflibraryplothandlers
+.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmodulematrix.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibrarytopaths.code.tex)))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/pgflibraryarrows.meta.
+code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibrarycalc.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibrarypositioning.code.tex)
+(/usr/share/texlive/texmf-dist/tex/latex/caption/subcaption.sty
+(/usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty
+(/usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/booktabs/booktabs.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/tools/tabularx.sty
+(/usr/share/texlive/texmf-dist/tex/latex/tools/array.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hyperref.sty
+(/usr/share/texlive/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/iftex/iftex.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty
+(/usr/share/texlive/texmf-dist/tex/generic/infwarerr/infwarerr.sty))
+(/usr/share/texlive/texmf-dist/tex/generic/kvsetkeys/kvsetkeys.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/pdfescape/pdfescape.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hycolor/hycolor.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/letltxmacro/letltxmacro.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/auxhook/auxhook.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/kvoptions/kvoptions.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/pd1enc.def)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hyperref-langpatches.def)
+(/usr/share/texlive/texmf-dist/tex/generic/intcalc/intcalc.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/etexcmds/etexcmds.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/puenc.def)
+(/usr/share/texlive/texmf-dist/tex/latex/url/url.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/bitset/bitset.sty
+(/usr/share/texlive/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/base/atbegshi-ltx.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hpdftex.def
+(/usr/share/texlive/texmf-dist/tex/latex/base/atveryend-ltx.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty
+(/usr/share/texlive/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
+For additional information on amsmath, use the `?' option.
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amstext.sty
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsgen.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsbsy.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsopn.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amssymb.sty
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amsfonts.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/mathtools/mathtools.sty
+(/usr/share/texlive/texmf-dist/tex/latex/tools/calc.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/mathtools/mhsetup.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/amscls/amsthm.sty) (./algorithm.sty
+Document Style `algorithm' - floating environment
+(/usr/share/texlive/texmf-dist/tex/latex/float/float.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/base/ifthen.sty)) (./algorithmic.sty
+Document Style `algorithmic' - environment
+) (/usr/share/texlive/texmf-dist/tex/latex/enumitem/enumitem.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def)
+No file main.aux.
+(/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
+(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-ptm.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
+(/usr/share/texlive/texmf-dist/tex/latex/refcount/refcount.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-cmr.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msa.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msb.cfg)
+
+Package natbib Warning: Citation `TRM2025' on page 1 undefined on input line 12
+9.
+
+
+Package natbib Warning: Citation `BertsekasTsitsiklis1996' on page 1 undefined 
+on input line 129.
+
+
+Package natbib Warning: Citation `KakadeLangford2002' on page 1 undefined on in
+put line 129.
+
+
+LaTeX Warning: Reference `thm:finite_reference_depth' on page 1 undefined on in
+put line 133.
+
+
+LaTeX Warning: Reference `cor:epsA_dials' on page 1 undefined on input line 133
+.
+
+
+LaTeX Warning: Reference `thm:monotone_with_error' on page 1 undefined on input
+ line 133.
+
+[1{/usr/share/texlive/texmf-dist/fonts/map/pdftex/updmap/pdftex.map}]
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1ptm.fd)
+
+LaTeX Warning: Reference `thm:finite_reference_depth' on page 2 undefined on in
+put line 141.
+
+
+LaTeX Warning: Reference `cor:persistent_cpi_augmented' on page 2 undefined on 
+input line 142.
+
+
+LaTeX Warning: Reference `thm:monotone_with_error' on page 2 undefined on input
+ line 143.
+
+(./figures/trm_to_mdp_bridge.tex)
+
+Package natbib Warning: Citation `TRM2025' on page 2 undefined on input line 15
+0.
+
+
+Package natbib Warning: Citation `TRM2025' on page 2 undefined on input line 15
+0.
+
+
+Package natbib Warning: Citation `TRM2025' on page 2 undefined on input line 15
+8.
+
+
+Package natbib Warning: Citation `HRM2025' on page 2 undefined on input line 15
+8.
+
+
+Package natbib Warning: Citation `Qasim2025CGAR' on page 2 undefined on input l
+ine 158.
+
+
+Package natbib Warning: Citation `McGovern2025TRMAdapt' on page 2 undefined on 
+input line 158.
+
+
+Package natbib Warning: Citation `Bai2019DEQ' on page 2 undefined on input line
+ 158.
+
+
+Package natbib Warning: Citation `KakadeLangford2002' on page 2 undefined on in
+put line 161.
+
+
+Package natbib Warning: Citation `Schulman2015TRPO' on page 2 undefined on inpu
+t line 161.
+
+
+Package natbib Warning: Citation `Pirotta2013SafePI' on page 2 undefined on inp
+ut line 161.
+
+
+Package natbib Warning: Citation `Metelli2021SafePI' on page 2 undefined on inp
+ut line 161.
+
+
+Package natbib Warning: Citation `Eshwar2025MonotoneCPI' on page 2 undefined on
+ input line 161.
+
+
+Package natbib Warning: Citation `Metelli2021SafePI' on page 2 undefined on inp
+ut line 161.
+
+
+Package natbib Warning: Citation `Eshwar2025MonotoneCPI' on page 2 undefined on
+ input line 161.
+
+
+Package natbib Warning: Citation `Wang2025OneShotRLVR' on page 2 undefined on i
+nput line 161.
+
+
+Package natbib Warning: Citation `Su2025RewardBridge' on page 2 undefined on in
+put line 161.
+
+
+Package natbib Warning: Citation `DeepSeekR1' on page 2 undefined on input line
+ 161.
+
+[2]
+
+Package natbib Warning: Citation `Tamar2016VIN' on page 3 undefined on input li
+ne 164.
+
+
+Package natbib Warning: Citation `janner2021trajectory' on page 3 undefined on 
+input line 164.
+
+
+Package natbib Warning: Citation `chen2021decision' on page 3 undefined on inpu
+t line 164.
+
+
+Package natbib Warning: Citation `laskin2022context' on page 3 undefined on inp
+ut line 164.
+
+
+Package natbib Warning: Citation `Daume2009SEARN' on page 3 undefined on input 
+line 164.
+
+
+Package natbib Warning: Citation `Ross2011DAgger' on page 3 undefined on input 
+line 164.
+
+
+Package natbib Warning: Citation `Chang2015LOLS' on page 3 undefined on input l
+ine 164.
+
+
+Package natbib Warning: Citation `Mehta2021SudokuRL' on page 3 undefined on inp
+ut line 164.
+
+
+Package natbib Warning: Citation `Klein2022SudokuRL' on page 3 undefined on inp
+ut line 164.
+
+
+Package natbib Warning: Citation `TRM2025' on page 3 undefined on input line 17
+0.
+
+
+LaTeX Warning: Reference `ass:Lip' on page 3 undefined on input line 170.
+
+
+LaTeX Warning: Reference `eq:projection' on page 3 undefined on input line 170.
+
+
+
+Package natbib Warning: Citation `Ng1999Shaping' on page 3 undefined on input l
+ine 176.
+
+
+LaTeX Warning: Reference `app:persistent_latent' on page 3 undefined on input l
+ine 179.
+
+
+LaTeX Warning: Reference `app:shaping_convention' on page 3 undefined on input 
+line 182.
+
+
+LaTeX Warning: Reference `app:adv_closure_full' on page 3 undefined on input li
+ne 182.
+
+
+LaTeX Warning: Reference `app:notation' on page 3 undefined on input line 182.
+
+
+LaTeX Warning: Reference `alg:upi' on page 3 undefined on input line 186.
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active [3]
+
+LaTeX Warning: Reference `thm:monotone_with_error' on page 4 undefined on input
+ line 208.
+
+
+LaTeX Warning: Reference `app:persistent_latent' on page 4 undefined on input l
+ine 210.
+
+
+LaTeX Warning: Reference `app:implementation' on page 4 undefined on input line
+ 210.
+
+
+Package natbib Warning: Citation `SuttonBarto2018' on page 4 undefined on input
+ line 216.
+
+
+Package natbib Warning: Citation `Puterman1994' on page 4 undefined on input li
+ne 216.
+
+
+LaTeX Warning: Reference `sec:error_bounds' on page 4 undefined on input line 2
+18.
+
+
+LaTeX Warning: Reference `ass:Lip' on page 4 undefined on input line 230.
+
+
+LaTeX Warning: Reference `app:latent_collapse_diagnostic' on page 4 undefined o
+n input line 230.
+
+
+LaTeX Warning: Reference `app:exp2_sweep' on page 4 undefined on input line 230
+.
+
+
+LaTeX Warning: Reference `app:exp2_sweep' on page 4 undefined on input line 232
+.
+
+
+LaTeX Warning: Reference `tab:exp2_dial_failure' on page 4 undefined on input l
+ine 232.
+
+
+LaTeX Warning: Reference `app:episodic_z_hard_suite_rerun' on page 4 undefined 
+on input line 232.
+
+[4]
+
+Package natbib Warning: Citation `KakadeLangford2002' on page 5 undefined on in
+put line 237.
+
+
+LaTeX Warning: Reference `app:persistent_latent' on page 5 undefined on input l
+ine 237.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 239.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 239.
+
+
+LaTeX Warning: Reference `ass:bounded_value_head' on page 5 undefined on input 
+line 277.
+
+
+LaTeX Warning: Reference `ass:Lip' on page 5 undefined on input line 282.
+
+
+LaTeX Warning: Reference `thm:finite_reference_depth' on page 5 undefined on in
+put line 283.
+
+
+LaTeX Warning: Reference `rem:finite_R_Cz' on page 5 undefined on input line 30
+1.
+
+
+LaTeX Warning: Reference `prop:proj_sat_contraction' on page 5 undefined on inp
+ut line 303.
+
+[5]
+
+LaTeX Warning: Reference `prop:proj_residual_anchor' on page 6 undefined on inp
+ut line 308.
+
+
+LaTeX Warning: Reference `rem:residual_bridge' on page 6 undefined on input lin
+e 313.
+
+
+LaTeX Warning: Reference `eq:Ahat_def_app' on page 6 undefined on input line 33
+1.
+
+
+LaTeX Warning: Reference `ass:Ahat_error_bound' on page 6 undefined on input li
+ne 331.
+
+
+LaTeX Warning: Reference `thm:monotone_with_error' on page 6 undefined on input
+ line 338.
+
+
+LaTeX Warning: Reference `app:finite_mdp_certificate' on page 6 undefined on in
+put line 352.
+
+
+LaTeX Warning: Reference `cor:finite_depth_residual_certificate' on page 6 unde
+fined on input line 354.
+
+
+LaTeX Warning: Reference `thm:finite_reference_depth' on page 6 undefined on in
+put line 358.
+
+
+LaTeX Warning: Reference `eq:Ahat_def_app' on page 6 undefined on input line 36
+7.
+
+
+LaTeX Warning: Reference `ass:Ahat_error_bound' on page 6 undefined on input li
+ne 367.
+
+
+LaTeX Warning: Reference `ass:Lip' on page 6 undefined on input line 372.
+
+
+LaTeX Warning: Reference `def:adv_closure' on page 6 undefined on input line 38
+3.
+
+
+LaTeX Warning: Reference `rem:A_error_kstep_app' on page 6 undefined on input l
+ine 383.
+
+
+LaTeX Warning: Reference `thm:monotone_with_error' on page 6 undefined on input
+ line 383.
+
+[6]
+
+LaTeX Warning: Reference `app:adv_closure_full' on page 7 undefined on input li
+ne 409.
+
+
+LaTeX Warning: Reference `ass:Ahat_error_bound' on page 7 undefined on input li
+ne 414.
+
+
+LaTeX Warning: Reference `eq:centering_condition' on page 7 undefined on input 
+line 445.
+
+
+LaTeX Warning: Reference `alg:upi' on page 7 undefined on input line 445.
+
+
+LaTeX Warning: Reference `cor:cpi_centering_defect' on page 7 undefined on inpu
+t line 445.
+
+
+LaTeX Warning: Reference `tab:diagnostics' on page 7 undefined on input line 44
+7.
+
+
+LaTeX Warning: Reference `rem:residual_bridge' on page 7 undefined on input lin
+e 447.
+
+
+LaTeX Warning: Reference `tab:episodic_z_penalty' on page 7 undefined on input 
+line 447.
+
+
+LaTeX Warning: Reference `thm:monotone_with_error' on page 7 undefined on input
+ line 451.
+
+
+LaTeX Warning: Reference `cor:epsA_dials' on page 7 undefined on input line 461
+.
+
+
+LaTeX Warning: Reference `eq:sufficient_improvement_condition' on page 7 undefi
+ned on input line 462.
+
+
+LaTeX Warning: Reference `thm:monotone_with_error' on page 7 undefined on input
+ line 473.
+
+
+LaTeX Warning: Reference `eq:centering_condition' on page 7 undefined on input 
+line 473.
+
+
+LaTeX Warning: Reference `cor:cpi_centering_defect' on page 7 undefined on inpu
+t line 473.
+
+[7]
+
+LaTeX Warning: Reference `cor:epsA_dials' on page 8 undefined on input line 477
+.
+
+
+LaTeX Warning: Reference `thm:monotone_with_error' on page 8 undefined on input
+ line 477.
+
+
+LaTeX Warning: Reference `cor:cpi_dials_main' on page 8 undefined on input line
+ 495.
+
+
+LaTeX Warning: Reference `eq:main_bound_dials' on page 8 undefined on input lin
+e 495.
+
+
+LaTeX Warning: Reference `tab:exp1_value_head_lipschitz' on page 8 undefined on
+ input line 495.
+
+
+LaTeX Warning: Reference `app:exp2_sweep' on page 8 undefined on input line 495
+.
+
+
+LaTeX Warning: Reference `tab:exp2_dial_failure' on page 8 undefined on input l
+ine 495.
+
+
+LaTeX Warning: Reference `eq:main_bound_dials' on page 8 undefined on input lin
+e 497.
+
+
+LaTeX Warning: Reference `eq:main_bound_proj' on page 8 undefined on input line
+ 497.
+
+
+LaTeX Warning: Reference `app:projection_theory' on page 8 undefined on input l
+ine 497.
+
+
+LaTeX Warning: Reference `app:exp2_sweep' on page 8 undefined on input line 497
+.
+
+
+LaTeX Warning: Reference `app:persistent_latent' on page 8 undefined on input l
+ine 497.
+
+
+LaTeX Warning: Reference `tab:claim_status' on page 8 undefined on input line 5
+02.
+
+
+LaTeX Warning: Reference `tab:hard_suite_anchor' on page 8 undefined on input l
+ine 510.
+
+
+LaTeX Warning: Reference `app:headline_significance' on page 8 undefined on inp
+ut line 534.
+
+
+LaTeX Warning: Reference `cor:persistent_cpi_augmented' on page 8 undefined on 
+input line 536.
+
+
+LaTeX Warning: Reference `thm:monotone_with_error' on page 8 undefined on input
+ line 536.
+
+[8]
+
+LaTeX Warning: Reference `tab:controlled_2x2_main' on page 9 undefined on input
+ line 541.
+
+
+LaTeX Warning: Reference `app:episodic_z_hard_suite_rerun' on page 9 undefined 
+on input line 546.
+
+
+LaTeX Warning: Reference `app:equalized_baselines' on page 9 undefined on input
+ line 551.
+
+
+LaTeX Warning: Reference `app:finite_mdp_certificate' on page 9 undefined on in
+put line 556.
+
+
+LaTeX Warning: Reference `app:depth_mismatch_main' on page 9 undefined on input
+ line 561.
+
+
+LaTeX Warning: Reference `app:secondary_diagnostics' on page 9 undefined on inp
+ut line 561.
+
+
+LaTeX Warning: Reference `thm:monotone_with_error' on page 9 undefined on input
+ line 568.
+
+No file main.bbl.
+[9]
+Underfull \hbox (badness 4303) in paragraph at lines 592--593
+[][]\T1/ptm/b/n/10 (+20) Assumption A.1 \T1/ptm/m/n/10 (+20) (Bounded re-wards)
+\T1/ptm/b/n/10 (+20) . []\T1/ptm/m/n/10 (+20) Potential-shaped re-wards are uni
+-formly bounded:
+
+LaTeX Warning: Reference `ass:Lip' on page 10 undefined on input line 623.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 665.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 665.
+
+[10]
+
+LaTeX Warning: Reference `ass:Ahat_error_bound' on page 11 undefined on input l
+ine 728.
+
+
+LaTeX Warning: Reference `thm:monotone_with_error' on page 11 undefined on inpu
+t line 735.
+
+
+LaTeX Warning: Reference `cor:persistent_cpi_augmented' on page 11 undefined on
+ input line 749.
+
+[11]
+
+LaTeX Warning: Reference `ass:twotimescale' on page 12 undefined on input line 
+780.
+
+
+LaTeX Warning: Reference `ass:Lip' on page 12 undefined on input line 791.
+
+
+LaTeX Warning: Reference `ass:twotimescale' on page 12 undefined on input line 
+791.
+
+
+LaTeX Warning: Reference `lem:drift_bound' on page 12 undefined on input line 8
+16.
+
+
+LaTeX Warning: Reference `cor:persistent_cpi_augmented' on page 12 undefined on
+ input line 828.
+
+
+LaTeX Warning: Reference `tab:diagnostics' on page 12 undefined on input line 8
+34.
+
+
+LaTeX Warning: Reference `thm:finite_reference_depth' on page 12 undefined on i
+nput line 852.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 852--852
+[]|\T1/ptm/m/n/9 (+20) Persistent di-rect
+
+Underfull \hbox (badness 1163) in paragraph at lines 852--852
+[]|\T1/ptm/m/n/9 (+20) Projection / con-trac-
+
+LaTeX Warning: Reference `fig:finite_mdp_certificate_main' on page 12 undefined
+ on input line 868.
+
+
+LaTeX Warning: Reference `thm:finite_reference_depth' on page 12 undefined on i
+nput line 868.
+
+
+LaTeX Warning: Reference `cor:finite_depth_residual_certificate' on page 12 und
+efined on input line 868.
+
+[12] (/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1pcr.fd)
+Underfull \hbox (badness 10000) in paragraph at lines 870--871
+[]\T1/ptm/m/n/10 (+20) For this re-vi-sion we reran $\T1/pcr/m/n/10 python3expe
+riments / finite _ mdp _ certificate .
+
+LaTeX Warning: Reference `ass:Lip' on page 13 undefined on input line 911.
+
+
+LaTeX Warning: Reference `ass:Lip' on page 13 undefined on input line 911.
+
+
+LaTeX Warning: Reference `prop:proj_sat_contraction' on page 13 undefined on in
+put line 911.
+
+
+LaTeX Warning: Reference `prop:proj_sat_contraction' on page 13 undefined on in
+put line 911.
+
+
+LaTeX Warning: Reference `app:exp2_sweep' on page 13 undefined on input line 91
+1.
+
+
+LaTeX Warning: Reference `ass:Lip' on page 13 undefined on input line 911.
+
+
+LaTeX Warning: Reference `eq:LV_def' on page 13 undefined on input line 911.
+
+
+LaTeX Warning: Reference `prop:proj_residual_anchor' on page 13 undefined on in
+put line 911.
+
+
+LaTeX Warning: Reference `tab:exp1_value_head_lipschitz' on page 13 undefined o
+n input line 911.
+
+
+LaTeX Warning: Reference `prop:proj_residual_anchor' on page 13 undefined on in
+put line 911.
+
+
+LaTeX Warning: Reference `cor:persistent_cpi_augmented' on page 13 undefined on
+ input line 911.
+
+
+LaTeX Warning: Reference `thm:monotone_with_error' on page 13 undefined on inpu
+t line 911.
+
+
+LaTeX Warning: Reference `thm:monotone_with_error' on page 13 undefined on inpu
+t line 911.
+
+
+LaTeX Warning: Reference `app:implementation' on page 13 undefined on input lin
+e 911.
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active [13 <./res
+ults/finite_mdp_certificate/fig_value_decomposition.png> <./results/finite_mdp_
+certificate/fig_cpi_certificate.png>]
+
+LaTeX Warning: Reference `tab:exp1_value_head_lipschitz' on page 14 undefined o
+n input line 920.
+
+(./tables/table_exp1_value_head_lipschitz.tex)
+
+LaTeX Warning: Reference `ass:Lip' on page 14 undefined on input line 926.
+
+
+Package natbib Warning: Citation `Miyato2018' on page 14 undefined on input lin
+e 927.
+
+
+Underfull \vbox (badness 1215) has occurred while \output is active [14]
+
+LaTeX Warning: Reference `ass:Lip' on page 15 undefined on input line 955.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 957.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\leavevmode@ifvmode' on input line 957.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                \kern -1.66702pt
+(hyperref)                removed on input line 957.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\to' on input line 957.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\leavevmode@ifvmode' on input line 957.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                \kern -1.66702pt
+(hyperref)                removed on input line 957.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 957.
+
+[15]
+
+LaTeX Warning: Reference `app:depth_mismatch_main' on page 16 undefined on inpu
+t line 1002.
+
+
+LaTeX Warning: Reference `tab:unroll_sensitivity' on page 16 undefined on input
+ line 1024.
+
+
+LaTeX Warning: Reference `tab:radius_sweep' on page 16 undefined on input line 
+1024.
+
+
+LaTeX Warning: Reference `sec:isolation_study' on page 16 undefined on input li
+ne 1024.
+
+(./tables/table_exp1_unroll_sensitivity.tex)
+(./tables/table_exp1_radius_sweep_main.tex)
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1029.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1029.
+
+
+LaTeX Warning: Reference `rem:finite_R_Cz' on page 16 undefined on input line 1
+032.
+
+
+LaTeX Warning: Reference `sec:isolation_study' on page 16 undefined on input li
+ne 1032.
+
+
+LaTeX Warning: Reference `sec:isolation_study' on page 16 undefined on input li
+ne 1060.
+
+[16] [17 <./figures/fig_exp1_finite_r_primary_b0.png> <./figures/fig_exp1_finit
+e_r_mechanism_b0.png> <./figures/fig_exp1_finite_r_theory_b0.png>]
+
+LaTeX Warning: Reference `fig:exp1_unroll_sensitivity_b1' on page 18 undefined 
+on input line 1063.
+
+
+LaTeX Warning: Reference `sec:isolation_study' on page 18 undefined on input li
+ne 1076.
+
+(./tables/table_exp1_radius_sweep_appendix.tex)
+Underfull \hbox (badness 10000) in paragraph at lines 1090--1092
+\T1/ptm/m/n/10 (+20) All mod-els are trained on the same 4$\OMS/cmsy/m/n/10 ^^B
+$\T1/ptm/m/n/10 (+20) 4 Su-doku suite (1--4 emp-ties) with
+
+LaTeX Warning: Reference `fig:exp2_dial_does_not_control_Lz' on page 18 undefin
+ed on input line 1093.
+
+
+LaTeX Warning: Reference `tab:exp2_dial_failure' on page 18 undefined on input 
+line 1093.
+
+(./tables/table_exp2_dial_does_not_control_Lz.tex)
+
+LaTeX Warning: Reference `fig:exp2_projection_stabilizer' on page 18 undefined 
+on input line 1108.
+
+
+LaTeX Warning: Reference `tab:exp2_projection_stabilizer' on page 18 undefined 
+on input line 1108.
+
+[18 <./figures/fig_exp1_unroll_sensitivity_appendix.pdf>] [19 <./figures/fig_ex
+p1_radius_sweep_appendix.pdf> <./figures/fig_exp2_dial_does_not_control_Lz.pdf>
+] (./tables/table_exp2_projection_effect.tex)
+
+LaTeX Warning: Reference `app:exp2_sweep' on page 20 undefined on input line 11
+28.
+
+(./tables/table_exp4_projection_free_dial_range_test.tex [20 <./figures/fig_exp
+2_projection_is_primary_stabilizer.pdf>])
+(./tables/table_exp3_projection_ablation.tex)
+
+LaTeX Warning: Reference `app:depth_mismatch_main' on page 21 undefined on inpu
+t line 1149.
+
+
+LaTeX Warning: Reference `tab:exp4_projection_free_dial_v2' on page 21 undefine
+d on input line 1150.
+
+(./tables/table_exp4_projection_free_dial_v2.tex)
+
+LaTeX Warning: Reference `tab:upi_success_only' on page 21 undefined on input l
+ine 1158.
+
+
+LaTeX Warning: Reference `tab:upi_success_only' on page 21 undefined on input l
+ine 1158.
+
+
+LaTeX Warning: Reference `tab:exp5-tradeoff' on page 21 undefined on input line
+ 1161.
+
+(./tables/table_exp5_tradeoff_curve.tex [21])
+
+LaTeX Warning: Reference `fig:exp5_L_vs_metrics' on page 22 undefined on input 
+line 1165.
+
+
+LaTeX Warning: Reference `tab:upi_success_only' on page 22 undefined on input l
+ine 1174.
+
+
+LaTeX Warning: Reference `tab:upi_success_only' on page 22 undefined on input l
+ine 1174.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1186.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\times' on input line 1186.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1186.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1200.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\times' on input line 1200.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1200.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1200.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\times' on input line 1200.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1200.
+
+
+LaTeX Warning: Reference `eq:main_bound_proj' on page 22 undefined on input lin
+e 1222.
+
+[22]
+
+LaTeX Warning: Reference `fig:exp1_unroll_sensitivity' on page 23 undefined on 
+input line 1242.
+
+
+LaTeX Warning: Reference `app:exp1_tables' on page 23 undefined on input line 1
+242.
+
+
+LaTeX Warning: Reference `app:exp1_b1' on page 23 undefined on input line 1242.
+
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1244.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\times' on input line 1244.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1244.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1244.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\times' on input line 1244.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1244.
+
+
+LaTeX Warning: Reference `fig:feasibility_6to8empties_appendix' on page 23 unde
+fined on input line 1248.
+
+
+LaTeX Warning: Reference `fig:controlled_2x2_bar' on page 23 undefined on input
+ line 1248.
+
+[23 <./figures/fig_exp5_L_vs_metrics.pdf>]
+
+LaTeX Warning: Reference `sec:isolation_study' on page 24 undefined on input li
+ne 1265.
+
+
+LaTeX Warning: Reference `app:exp2_sweep' on page 24 undefined on input line 12
+66.
+
+
+LaTeX Warning: Reference `app:exp3_projection_ablation' on page 24 undefined on
+ input line 1267.
+
+
+LaTeX Warning: Reference `app:exp4_projection_free_dial_v2' on page 24 undefine
+d on input line 1268.
+
+
+LaTeX Warning: Reference `app:exp5_tradeoff_curve' on page 24 undefined on inpu
+t line 1269.
+
+
+LaTeX Warning: Reference `tab:upi_success_only' on page 24 undefined on input l
+ine 1269.
+
+[24 <./figures/table3_hard_controlled_curves.pdf>] [25 <./figures/fig_exp1_unro
+ll_sensitivity_main.pdf> <./figures/table3_hard_controlled_2x2_bar.pdf>]
+
+LaTeX Warning: Reference `tab:hard_suite_anchor' on page 26 undefined on input 
+line 1283.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1297--1297
+[]|\T1/ptm/m/n/9 (+20) Standalone prove-
+
+Underfull \hbox (badness 2384) in paragraph at lines 1297--1297
+[]|\T1/ptm/m/n/9 (+20) Numerical rows ex-
+
+LaTeX Warning: Reference `sec:harder_puzzles' on page 26 undefined on input lin
+e 1305.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1315.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1315.
+
+
+LaTeX Warning: Reference `tab:hard_suite_anchor' on page 26 undefined on input 
+line 1318.
+
+
+Underfull \hbox (badness 1430) in paragraph at lines 1320--1321
+\T1/pcr/m/n/10 20k _ seed41 _ 50/$ \T1/ptm/m/n/10 (+20) ($\T1/pcr/m/n/10 diagno
+stics _ summary . json$\T1/ptm/m/n/10 (+20) , $\T1/pcr/m/n/10 cpi _ penalty _ g
+rid . json$\T1/ptm/m/n/10 (+20) , and
+
+LaTeX Warning: Reference `tab:episodic_z_branch_d' on page 26 undefined on inpu
+t line 1322.
+
+
+LaTeX Warning: Reference `tab:hard_suite_anchor' on page 26 undefined on input 
+line 1322.
+
+
+LaTeX Warning: Reference `sec:harder_puzzles' on page 26 undefined on input lin
+e 1322.
+
+[26]
+
+LaTeX Warning: Reference `tab:episodic_z_penalty' on page 27 undefined on input
+ line 1349.
+
+
+LaTeX Warning: Reference `tab:notation' on page 27 undefined on input line 1372
+.
+
+[27]
+
+LaTeX Warning: Reference `def:adv_closure' on page 28 undefined on input line 1
+423.
+
+
+LaTeX Warning: Reference `def:adv_closure' on page 28 undefined on input line 1
+449.
+
+[28]
+
+LaTeX Warning: Reference `eq:cpi_bound' on page 29 undefined on input line 1489
+.
+
+
+Package natbib Warning: Citation `KakadeLangford2002' on page 29 undefined on i
+nput line 1489.
+
+
+Package natbib Warning: Citation `KakadeLangford2002' on page 29 undefined on i
+nput line 1510.
+
+[29]
+
+LaTeX Warning: Reference `eq:cpi_bound' on page 30 undefined on input line 1618
+.
+
+
+LaTeX Warning: Reference `thm:monotone_with_error' on page 30 undefined on inpu
+t line 1622.
+
+
+LaTeX Warning: Reference `eq:centering_condition' on page 30 undefined on input
+ line 1622.
+
+
+LaTeX Warning: Reference `eq:cpi_centering_defect_bound' on page 30 undefined o
+n input line 1679.
+
+
+LaTeX Warning: Reference `cor:finite_depth_residual_certificate' on page 30 und
+efined on input line 1682.
+
+
+LaTeX Warning: Reference `eq:finite_depth_residual_certificate' on page 30 unde
+fined on input line 1698.
+
+
+LaTeX Warning: Reference `lem:A_error_app' on page 30 undefined on input line 1
+698.
+
+
+LaTeX Warning: Reference `eq:finite_depth_residual_adv' on page 30 undefined on
+ input line 1698.
+
+
+LaTeX Warning: Reference `thm:monotone_with_error' on page 30 undefined on inpu
+t line 1698.
+
+
+LaTeX Warning: Reference `eq:finite_depth_residual_cpi' on page 30 undefined on
+ input line 1698.
+
+[30]
+
+LaTeX Warning: Reference `eq:residual_bridge' on page 31 undefined on input lin
+e 1712.
+
+
+LaTeX Warning: Reference `prop:banach' on page 31 undefined on input line 1712.
+
+
+
+LaTeX Warning: Reference `thm:monotone_with_error' on page 31 undefined on inpu
+t line 1735.
+
+
+LaTeX Warning: Reference `eq:Ahat_def_app' on page 31 undefined on input line 1
+740.
+
+
+LaTeX Warning: Reference `thm:monotone_with_error' on page 31 undefined on inpu
+t line 1749.
+
+
+LaTeX Warning: Reference `def:adv_closure' on page 31 undefined on input line 1
+754.
+
+
+LaTeX Warning: Reference `lem:A_error_app' on page 31 undefined on input line 1
+766.
+
+
+LaTeX Warning: Reference `eq:Ahat_def_app' on page 31 undefined on input line 1
+766.
+
+
+LaTeX Warning: Reference `ass:Ahat_error_bound' on page 31 undefined on input l
+ine 1778.
+
+
+LaTeX Warning: Reference `thm:finite_reference_depth' on page 31 undefined on i
+nput line 1783.
+
+
+LaTeX Warning: Reference `lem:A_error_app' on page 31 undefined on input line 1
+783.
+
+[31]
+
+LaTeX Warning: Reference `lem:A_error_app' on page 32 undefined on input line 1
+798.
+
+
+LaTeX Warning: Reference `def:adv_closure' on page 32 undefined on input line 1
+798.
+
+
+LaTeX Warning: Reference `lem:interior_proj' on page 32 undefined on input line
+ 1804.
+
+
+LaTeX Warning: Reference `eq:projection' on page 32 undefined on input line 180
+8.
+
+
+LaTeX Warning: Reference `eq:projection' on page 32 undefined on input line 181
+5.
+
+
+LaTeX Warning: Reference `eq:projection' on page 32 undefined on input line 181
+6.
+
+
+LaTeX Warning: Reference `prop:banach' on page 32 undefined on input line 1822.
+
+
+
+LaTeX Warning: Reference `ass:Lip' on page 32 undefined on input line 1826.
+
+
+LaTeX Warning: Reference `eq:linear_convergence' on page 32 undefined on input 
+line 1829.
+
+
+LaTeX Warning: Reference `eq:Cz_def' on page 32 undefined on input line 1839.
+
+
+LaTeX Warning: Reference `lem:drift_bound' on page 32 undefined on input line 1
+843.
+
+
+LaTeX Warning: Reference `ass:twotimescale' on page 32 undefined on input line 
+1850.
+
+[32]
+
+LaTeX Warning: Reference `eq:Cdrift_def' on page 33 undefined on input line 188
+7.
+
+
+LaTeX Warning: Reference `thm:finite_reference_depth' on page 33 undefined on i
+nput line 1890.
+
+
+LaTeX Warning: Reference `eq:finite_reference_depth' on page 33 undefined on in
+put line 1904.
+
+
+LaTeX Warning: Reference `eq:finite_path_length' on page 33 undefined on input 
+line 1913.
+
+
+LaTeX Warning: Reference `ass:Lip' on page 33 undefined on input line 1915.
+
+
+LaTeX Warning: Reference `eq:finite_reference_contracting' on page 33 undefined
+ on input line 1921.
+
+
+LaTeX Warning: Reference `prop:banach' on page 33 undefined on input line 1921.
+
+
+
+LaTeX Warning: Reference `eq:epsV_dials' on page 33 undefined on input line 192
+7.
+
+
+LaTeX Warning: Reference `app:implementation' on page 33 undefined on input lin
+e 1932.
+
+
+LaTeX Warning: Reference `thm:finite_reference_depth' on page 33 undefined on i
+nput line 1944.
+
+[33]
+
+LaTeX Warning: Reference `prop:proj_sat_contraction' on page 34 undefined on in
+put line 1960.
+
+
+LaTeX Warning: Reference `eq:Lz_sat' on page 34 undefined on input line 1960.
+
+
+LaTeX Warning: Reference `eq:eps_res_proj' on page 34 undefined on input line 1
+960.
+
+
+LaTeX Warning: Reference `eq:main_bound_dials' on page 34 undefined on input li
+ne 1960.
+
+
+LaTeX Warning: Reference `app:finite_r_b0' on page 34 undefined on input line 1
+977.
+
+
+LaTeX Warning: Reference `ass:Lip' on page 34 undefined on input line 2001.
+
+
+LaTeX Warning: Reference `ass:Lip' on page 34 undefined on input line 2001.
+
+[34]
+
+LaTeX Warning: Reference `lem:A_error_app' on page 35 undefined on input line 2
+112.
+
+
+LaTeX Warning: Reference `def:adv_closure' on page 35 undefined on input line 2
+121.
+
+
+LaTeX Warning: Reference `thm:monotone_with_error' on page 35 undefined on inpu
+t line 2135.
+
+
+LaTeX Warning: Reference `eq:cpi_bound' on page 35 undefined on input line 2138
+.
+
+
+LaTeX Warning: Reference `app:cpi_derivation' on page 35 undefined on input lin
+e 2138.
+
+
+LaTeX Warning: Reference `eq:centering_condition' on page 35 undefined on input
+ line 2159.
+
+
+LaTeX Warning: Reference `ass:Ahat_error_bound' on page 35 undefined on input l
+ine 2169.
+
+[35]
+
+LaTeX Warning: Reference `eq:main_theorem' on page 36 undefined on input line 2
+183.
+
+
+LaTeX Warning: Reference `cor:persistent_cpi_augmented' on page 36 undefined on
+ input line 2186.
+
+
+LaTeX Warning: Reference `eq:persistent_augmented_value' on page 36 undefined o
+n input line 2198.
+
+
+LaTeX Warning: Reference `lem:A_error_app' on page 36 undefined on input line 2
+198.
+
+
+LaTeX Warning: Reference `eq:persistent_augmented_adv' on page 36 undefined on 
+input line 2198.
+
+
+LaTeX Warning: Reference `thm:monotone_with_error' on page 36 undefined on inpu
+t line 2198.
+
+
+LaTeX Warning: Reference `eq:persistent_augmented_cpi' on page 36 undefined on 
+input line 2198.
+
+
+LaTeX Warning: Reference `lem:drift_bound' on page 36 undefined on input line 2
+201.
+
+
+LaTeX Warning: Reference `eq:persistent_fixed_comparison' on page 36 undefined 
+on input line 2201.
+
+
+LaTeX Warning: Reference `eq:boundA' on page 36 undefined on input line 2201.
+
+
+LaTeX Warning: Reference `eq:persistent_slow_drift_value' on page 36 undefined 
+on input line 2201.
+
+
+LaTeX Warning: Reference `eq:persistent_residual_relation' on page 36 undefined
+ on input line 2209.
+
+
+LaTeX Warning: Reference `alg:upi' on page 36 undefined on input line 2218.
+
+
+LaTeX Warning: Reference `eq:GK_def' on page 36 undefined on input line 2242.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+
+LaTeX Warning: Reference `thm:monotone_with_error' on page 36 undefined on inpu
+t line 2252.
+
+
+LaTeX Warning: Reference `app:equalized_baselines' on page 36 undefined on inpu
+t line 2258.
+
+[36]
+
+LaTeX Warning: Reference `eq:Ahat_def_app' on page 37 undefined on input line 2
+261.
+
+
+LaTeX Warning: Reference `thm:monotone_with_error' on page 37 undefined on inpu
+t line 2261.
+
+
+LaTeX Warning: Reference `eq:projection' on page 37 undefined on input line 227
+3.
+
+[37]
+
+Package natbib Warning: Citation `TRM2025' on page 38 undefined on input line 2
+290.
+
+
+Package natbib Warning: There were undefined citations.
+
+[38] (./main.aux)
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+
+Package rerunfilecheck Warning: File `main.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+ )
+(see the transcript file for additional information){/usr/share/texlive/texmf-d
+ist/fonts/enc/dvips/base/8r.enc}</usr/share/texlive/texmf-dist/fonts/type1/publ
+ic/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
+fonts/cmextra/cmex7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfo
+nts/cmextra/cmex9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
+s/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/c
+mmi12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.p
+fb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></us
+r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share
+/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/share/texliv
+e/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf
+-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fo
+nts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type
+1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public
+/amsfonts/cm/cmr9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
+s/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/c
+msy5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pf
+b></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr
+/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/
+texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti9.pfb></usr/share/texlive
+/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/share/texlive/
+texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/share/texlive/t
+exmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fon
+ts/type1/urw/helvetic/uhvb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw
+/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.p
+fb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on main.pdf (38 pages, 1346413 bytes).
+Transcript written on main.log.
+bibtex main
+This is BibTeX, Version 0.99d (TeX Live 2020)
+The top-level auxiliary file: main.aux
+The style file: iclr2026_conference.bst
+Database file #1: trm_rl.bib
+pdflatex -interaction=nonstopmode -halt-on-error -file-line-error main.tex
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex)
+ restricted \write18 enabled.
+entering extended mode
+(./main.tex
+LaTeX2e <2020-10-01> patch level 4
+L3 programming layer <2021-02-18>
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2020/04/10 v1.4m Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size10.clo))
+(./iclr2026_conference.sty
+(/usr/share/texlive/texmf-dist/tex/latex/eso-pic/eso-pic.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/xcolor/xcolor.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/color.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-def/pdftex.def)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/dvipsnam.def)))
+(./fancyhdr.sty) (/usr/share/texlive/texmf-dist/tex/latex/natbib/natbib.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/times.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/base/fontenc.sty
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1ptm.fd))
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype.sty
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype-pdftex.def)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype.cfg))
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/graphics.cfg)))
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/frontendlayer/tikz.sty
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/basiclayer/pgf.sty
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgfrcs.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-common.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-common-lists.t
+ex)) (/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-latex.def
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfrcs.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/pgf.revision.tex)))
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/basiclayer/pgfcore.sty
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/systemlayer/pgfsys.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeysfiltered.code.t
+ex)) (/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgf.cfg)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-pdftex.def
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-common-pdf.de
+f)))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsyssoftpath.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsysprotocol.code.
+tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcore.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathcalc.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathutil.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathparser.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.basic.code
+.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.trigonomet
+ric.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.random.cod
+e.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.comparison
+.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.base.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.round.code
+.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.misc.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.integerari
+thmetics.code.tex)))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfloat.code.tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfint.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepoints.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathconstruct.
+code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathusage.code
+.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorescopes.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoregraphicstate.c
+ode.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransformation
+s.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorequick.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreobjects.code.t
+ex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathprocessing
+.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorearrows.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreshade.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreimage.code.tex
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreexternal.code.
+tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorelayers.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransparency.c
+ode.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepatterns.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorerdf.code.tex))
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmoduleshapes.code.tex
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmoduleplot.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version-0-65
+.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version-1-18
+.sty)) (/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgffor.sty
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgfkeys.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex))
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/math/pgfmath.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgffor.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex)))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/tikz.code.tex
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/pgflibraryplothandlers
+.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmodulematrix.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibrarytopaths.code.tex)))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/pgflibraryarrows.meta.
+code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibrarycalc.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibrarypositioning.code.tex)
+(/usr/share/texlive/texmf-dist/tex/latex/caption/subcaption.sty
+(/usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty
+(/usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/booktabs/booktabs.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/tools/tabularx.sty
+(/usr/share/texlive/texmf-dist/tex/latex/tools/array.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hyperref.sty
+(/usr/share/texlive/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/iftex/iftex.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty
+(/usr/share/texlive/texmf-dist/tex/generic/infwarerr/infwarerr.sty))
+(/usr/share/texlive/texmf-dist/tex/generic/kvsetkeys/kvsetkeys.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/pdfescape/pdfescape.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hycolor/hycolor.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/letltxmacro/letltxmacro.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/auxhook/auxhook.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/kvoptions/kvoptions.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/pd1enc.def)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hyperref-langpatches.def)
+(/usr/share/texlive/texmf-dist/tex/generic/intcalc/intcalc.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/etexcmds/etexcmds.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/puenc.def)
+(/usr/share/texlive/texmf-dist/tex/latex/url/url.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/bitset/bitset.sty
+(/usr/share/texlive/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/base/atbegshi-ltx.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hpdftex.def
+(/usr/share/texlive/texmf-dist/tex/latex/base/atveryend-ltx.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty
+(/usr/share/texlive/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
+For additional information on amsmath, use the `?' option.
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amstext.sty
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsgen.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsbsy.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsopn.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amssymb.sty
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amsfonts.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/mathtools/mathtools.sty
+(/usr/share/texlive/texmf-dist/tex/latex/tools/calc.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/mathtools/mhsetup.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/amscls/amsthm.sty) (./algorithm.sty
+Document Style `algorithm' - floating environment
+(/usr/share/texlive/texmf-dist/tex/latex/float/float.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/base/ifthen.sty)) (./algorithmic.sty
+Document Style `algorithmic' - environment
+) (/usr/share/texlive/texmf-dist/tex/latex/enumitem/enumitem.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def)
+(./main.aux) (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+
+[Loading MPS to PDF converter (version 2006.09.02).]
+) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
+(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-ptm.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
+(/usr/share/texlive/texmf-dist/tex/latex/refcount/refcount.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty))
+(./main.out) (./main.out)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-cmr.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msa.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msb.cfg)
+
+Package natbib Warning: Citation `TRM2025' on page 1 undefined on input line 12
+9.
+
+
+Package natbib Warning: Citation `BertsekasTsitsiklis1996' on page 1 undefined 
+on input line 129.
+
+
+Package natbib Warning: Citation `KakadeLangford2002' on page 1 undefined on in
+put line 129.
+
+[1{/usr/share/texlive/texmf-dist/fonts/map/pdftex/updmap/pdftex.map}]
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1ptm.fd)
+(./figures/trm_to_mdp_bridge.tex)
+
+Package natbib Warning: Citation `TRM2025' on page 2 undefined on input line 15
+0.
+
+
+Package natbib Warning: Citation `TRM2025' on page 2 undefined on input line 15
+0.
+
+
+Package natbib Warning: Citation `TRM2025' on page 2 undefined on input line 15
+8.
+
+
+Package natbib Warning: Citation `HRM2025' on page 2 undefined on input line 15
+8.
+
+
+Package natbib Warning: Citation `Qasim2025CGAR' on page 2 undefined on input l
+ine 158.
+
+
+Package natbib Warning: Citation `McGovern2025TRMAdapt' on page 2 undefined on 
+input line 158.
+
+
+Package natbib Warning: Citation `Bai2019DEQ' on page 2 undefined on input line
+ 158.
+
+
+Package natbib Warning: Citation `KakadeLangford2002' on page 2 undefined on in
+put line 161.
+
+
+Package natbib Warning: Citation `Schulman2015TRPO' on page 2 undefined on inpu
+t line 161.
+
+
+Package natbib Warning: Citation `Pirotta2013SafePI' on page 2 undefined on inp
+ut line 161.
+
+
+Package natbib Warning: Citation `Metelli2021SafePI' on page 2 undefined on inp
+ut line 161.
+
+
+Package natbib Warning: Citation `Eshwar2025MonotoneCPI' on page 2 undefined on
+ input line 161.
+
+
+Package natbib Warning: Citation `Metelli2021SafePI' on page 2 undefined on inp
+ut line 161.
+
+
+Package natbib Warning: Citation `Eshwar2025MonotoneCPI' on page 2 undefined on
+ input line 161.
+
+
+Package natbib Warning: Citation `Wang2025OneShotRLVR' on page 2 undefined on i
+nput line 161.
+
+
+Package natbib Warning: Citation `Su2025RewardBridge' on page 2 undefined on in
+put line 161.
+
+
+Package natbib Warning: Citation `DeepSeekR1' on page 2 undefined on input line
+ 161.
+
+[2]
+
+Package natbib Warning: Citation `Tamar2016VIN' on page 3 undefined on input li
+ne 164.
+
+
+Package natbib Warning: Citation `janner2021trajectory' on page 3 undefined on 
+input line 164.
+
+
+Package natbib Warning: Citation `chen2021decision' on page 3 undefined on inpu
+t line 164.
+
+
+Package natbib Warning: Citation `laskin2022context' on page 3 undefined on inp
+ut line 164.
+
+
+Package natbib Warning: Citation `Daume2009SEARN' on page 3 undefined on input 
+line 164.
+
+
+Package natbib Warning: Citation `Ross2011DAgger' on page 3 undefined on input 
+line 164.
+
+
+Package natbib Warning: Citation `Chang2015LOLS' on page 3 undefined on input l
+ine 164.
+
+
+Package natbib Warning: Citation `Mehta2021SudokuRL' on page 3 undefined on inp
+ut line 164.
+
+
+Package natbib Warning: Citation `Klein2022SudokuRL' on page 3 undefined on inp
+ut line 164.
+
+
+Package natbib Warning: Citation `TRM2025' on page 3 undefined on input line 17
+0.
+
+
+Package natbib Warning: Citation `Ng1999Shaping' on page 3 undefined on input l
+ine 176.
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active [3]
+
+Package natbib Warning: Citation `SuttonBarto2018' on page 4 undefined on input
+ line 216.
+
+
+Package natbib Warning: Citation `Puterman1994' on page 4 undefined on input li
+ne 216.
+
+[4]
+
+Package natbib Warning: Citation `KakadeLangford2002' on page 5 undefined on in
+put line 237.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 239.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 239.
+
+[5] [6] [7] [8] (./main.bbl [9]
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1pcr.fd)
+Underfull \hbox (badness 5161) in paragraph at lines 73--77
+[]\T1/ptm/m/n/10 (+20) Kevin Klein.  Su-doku #3: Poor man's RL.  []$\T1/pcr/m/n
+/10 https : / / kevinkle . in / posts /
+[10]) [11]
+Underfull \hbox (badness 4303) in paragraph at lines 592--593
+[][]\T1/ptm/b/n/10 (+20) Assumption A.1 \T1/ptm/m/n/10 (+20) (Bounded re-wards)
+\T1/ptm/b/n/10 (+20) . []\T1/ptm/m/n/10 (+20) Potential-shaped re-wards are uni
+-formly bounded:
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 665.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 665.
+
+[12] [13]
+Underfull \hbox (badness 10000) in paragraph at lines 852--852
+[]|\T1/ptm/m/n/9 (+20) Persistent di-rect
+
+Underfull \hbox (badness 1163) in paragraph at lines 852--852
+[]|\T1/ptm/m/n/9 (+20) Projection / con-trac-
+[14]
+Underfull \hbox (badness 10000) in paragraph at lines 870--871
+[]\T1/ptm/m/n/10 (+20) For this re-vi-sion we reran $\T1/pcr/m/n/10 python3expe
+riments / finite _ mdp _ certificate .
+
+Underfull \vbox (badness 10000) has occurred while \output is active [15 <./res
+ults/finite_mdp_certificate/fig_value_decomposition.png> <./results/finite_mdp_
+certificate/fig_cpi_certificate.png>]
+(./tables/table_exp1_value_head_lipschitz.tex)
+
+Package natbib Warning: Citation `Miyato2018' on page 16 undefined on input lin
+e 927.
+
+[16]
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 957.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\leavevmode@ifvmode' on input line 957.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                \kern -1.66702pt
+(hyperref)                removed on input line 957.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\to' on input line 957.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\leavevmode@ifvmode' on input line 957.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                \kern -1.66702pt
+(hyperref)                removed on input line 957.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 957.
+
+[17] (./tables/table_exp1_unroll_sensitivity.tex)
+(./tables/table_exp1_radius_sweep_main.tex)
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1029.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1029.
+
+[18] [19 <./figures/fig_exp1_finite_r_primary_b0.png> <./figures/fig_exp1_finit
+e_r_mechanism_b0.png> <./figures/fig_exp1_finite_r_theory_b0.png>]
+(./tables/table_exp1_radius_sweep_appendix.tex)
+Underfull \hbox (badness 10000) in paragraph at lines 1090--1092
+\T1/ptm/m/n/10 (+20) All mod-els are trained on the same 4$\OMS/cmsy/m/n/10 ^^B
+$\T1/ptm/m/n/10 (+20) 4 Su-doku suite (1--4 emp-ties) with
+(./tables/table_exp2_dial_does_not_control_Lz.tex) [20 <./figures/fig_exp1_unro
+ll_sensitivity_appendix.pdf>] [21 <./figures/fig_exp1_radius_sweep_appendix.pdf
+> <./figures/fig_exp2_dial_does_not_control_Lz.pdf>]
+(./tables/table_exp2_projection_effect.tex)
+(./tables/table_exp4_projection_free_dial_range_test.tex [22 <./figures/fig_exp
+2_projection_is_primary_stabilizer.pdf>])
+(./tables/table_exp3_projection_ablation.tex)
+(./tables/table_exp4_projection_free_dial_v2.tex)
+(./tables/table_exp5_tradeoff_curve.tex [23])
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1186.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\times' on input line 1186.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1186.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1200.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\times' on input line 1200.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1200.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1200.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\times' on input line 1200.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1200.
+
+[24]
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1244.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\times' on input line 1244.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1244.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1244.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\times' on input line 1244.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1244.
+
+[25 <./figures/fig_exp5_L_vs_metrics.pdf>] [26 <./figures/table3_hard_controlle
+d_curves.pdf>] [27 <./figures/fig_exp1_unroll_sensitivity_main.pdf> <./figures/
+table3_hard_controlled_2x2_bar.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 1297--1297
+[]|\T1/ptm/m/n/9 (+20) Standalone prove-
+
+Underfull \hbox (badness 2384) in paragraph at lines 1297--1297
+[]|\T1/ptm/m/n/9 (+20) Numerical rows ex-
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1315.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1315.
+
+
+Underfull \hbox (badness 1430) in paragraph at lines 1320--1321
+\T1/pcr/m/n/10 20k _ seed41 _ 50/$ \T1/ptm/m/n/10 (+20) ($\T1/pcr/m/n/10 diagno
+stics _ summary . json$\T1/ptm/m/n/10 (+20) , $\T1/pcr/m/n/10 cpi _ penalty _ g
+rid . json$\T1/ptm/m/n/10 (+20) , and
+[28] [29] [30]
+
+Package natbib Warning: Citation `KakadeLangford2002' on page 31 undefined on i
+nput line 1489.
+
+
+Package natbib Warning: Citation `KakadeLangford2002' on page 31 undefined on i
+nput line 1510.
+
+[31] [32] [33] [34] [35] [36] [37]
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[38] [39]
+
+Package natbib Warning: Citation `TRM2025' on page 40 undefined on input line 2
+290.
+
+
+Package natbib Warning: There were undefined citations.
+
+[40] (./main.aux
+
+Package natbib Warning: Citation(s) may have changed.
+(natbib)                Rerun to get citations correct.
+
+)
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+
+Package rerunfilecheck Warning: File `main.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+ )
+(see the transcript file for additional information)pdfTeX warning (dest): name
+{figure.caption.28} has been referenced but does not exist, replaced by a fixed
+ one
+
+pdfTeX warning (dest): name{figure.caption.25} has been referenced but does not
+ exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{table.caption.20} has been referenced but does not 
+exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{figure.caption.19} has been referenced but does not
+ exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{figure.caption.17} has been referenced but does not
+ exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{figure.caption.4} has been referenced but does not 
+exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{table.caption.27} has been referenced but does not 
+exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{table.caption.3} has been referenced but does not e
+xist, replaced by a fixed one
+
+pdfTeX warning (dest): name{table.caption.7} has been referenced but does not e
+xist, replaced by a fixed one
+
+pdfTeX warning (dest): name{table.caption.5} has been referenced but does not e
+xist, replaced by a fixed one
+
+pdfTeX warning (dest): name{table.caption.18} has been referenced but does not 
+exist, replaced by a fixed one
+
+{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texlive/
+texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-
+dist/fonts/type1/public/amsfonts/cmextra/cmex7.pfb></usr/share/texlive/texmf-di
+st/fonts/type1/public/amsfonts/cmextra/cmex9.pfb></usr/share/texlive/texmf-dist
+/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts
+/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texlive/texmf-dist/fonts/type1
+/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public
+/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfon
+ts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/c
+mmi9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pf
+b></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/
+share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/te
+xlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/te
+xmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texlive/texmf-dist
+/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts
+/type1/public/amsfonts/cm/cmsy5.pfb></usr/share/texlive/texmf-dist/fonts/type1/
+public/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/
+amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
+s/cm/cmsy9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cm
+ti9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msam
+10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm1
+0.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/s
+hare/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/share/texlive
+/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fon
+ts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/ti
+mes/utmri8a.pfb>
+Output written on main.pdf (40 pages, 1368377 bytes).
+Transcript written on main.log.
+pdflatex -interaction=nonstopmode -halt-on-error -file-line-error main.tex
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex)
+ restricted \write18 enabled.
+entering extended mode
+(./main.tex
+LaTeX2e <2020-10-01> patch level 4
+L3 programming layer <2021-02-18>
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2020/04/10 v1.4m Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size10.clo))
+(./iclr2026_conference.sty
+(/usr/share/texlive/texmf-dist/tex/latex/eso-pic/eso-pic.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/xcolor/xcolor.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/color.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-def/pdftex.def)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/dvipsnam.def)))
+(./fancyhdr.sty) (/usr/share/texlive/texmf-dist/tex/latex/natbib/natbib.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/times.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/base/fontenc.sty
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1ptm.fd))
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype.sty
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype-pdftex.def)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype.cfg))
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/graphics.cfg)))
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/frontendlayer/tikz.sty
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/basiclayer/pgf.sty
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgfrcs.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-common.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-common-lists.t
+ex)) (/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-latex.def
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfrcs.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/pgf.revision.tex)))
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/basiclayer/pgfcore.sty
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/systemlayer/pgfsys.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeysfiltered.code.t
+ex)) (/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgf.cfg)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-pdftex.def
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-common-pdf.de
+f)))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsyssoftpath.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsysprotocol.code.
+tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcore.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathcalc.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathutil.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathparser.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.basic.code
+.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.trigonomet
+ric.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.random.cod
+e.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.comparison
+.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.base.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.round.code
+.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.misc.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.integerari
+thmetics.code.tex)))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfloat.code.tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfint.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepoints.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathconstruct.
+code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathusage.code
+.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorescopes.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoregraphicstate.c
+ode.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransformation
+s.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorequick.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreobjects.code.t
+ex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathprocessing
+.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorearrows.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreshade.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreimage.code.tex
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreexternal.code.
+tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorelayers.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransparency.c
+ode.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepatterns.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorerdf.code.tex))
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmoduleshapes.code.tex
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmoduleplot.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version-0-65
+.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version-1-18
+.sty)) (/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgffor.sty
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgfkeys.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex))
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/math/pgfmath.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgffor.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex)))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/tikz.code.tex
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/pgflibraryplothandlers
+.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmodulematrix.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibrarytopaths.code.tex)))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/pgflibraryarrows.meta.
+code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibrarycalc.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibrarypositioning.code.tex)
+(/usr/share/texlive/texmf-dist/tex/latex/caption/subcaption.sty
+(/usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty
+(/usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/booktabs/booktabs.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/tools/tabularx.sty
+(/usr/share/texlive/texmf-dist/tex/latex/tools/array.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hyperref.sty
+(/usr/share/texlive/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/iftex/iftex.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty
+(/usr/share/texlive/texmf-dist/tex/generic/infwarerr/infwarerr.sty))
+(/usr/share/texlive/texmf-dist/tex/generic/kvsetkeys/kvsetkeys.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/pdfescape/pdfescape.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hycolor/hycolor.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/letltxmacro/letltxmacro.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/auxhook/auxhook.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/kvoptions/kvoptions.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/pd1enc.def)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hyperref-langpatches.def)
+(/usr/share/texlive/texmf-dist/tex/generic/intcalc/intcalc.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/etexcmds/etexcmds.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/puenc.def)
+(/usr/share/texlive/texmf-dist/tex/latex/url/url.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/bitset/bitset.sty
+(/usr/share/texlive/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/base/atbegshi-ltx.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hpdftex.def
+(/usr/share/texlive/texmf-dist/tex/latex/base/atveryend-ltx.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty
+(/usr/share/texlive/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
+For additional information on amsmath, use the `?' option.
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amstext.sty
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsgen.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsbsy.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsopn.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amssymb.sty
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amsfonts.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/mathtools/mathtools.sty
+(/usr/share/texlive/texmf-dist/tex/latex/tools/calc.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/mathtools/mhsetup.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/amscls/amsthm.sty) (./algorithm.sty
+Document Style `algorithm' - floating environment
+(/usr/share/texlive/texmf-dist/tex/latex/float/float.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/base/ifthen.sty)) (./algorithmic.sty
+Document Style `algorithmic' - environment
+) (/usr/share/texlive/texmf-dist/tex/latex/enumitem/enumitem.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def)
+(./main.aux) (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+
+[Loading MPS to PDF converter (version 2006.09.02).]
+) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
+(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-ptm.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
+(/usr/share/texlive/texmf-dist/tex/latex/refcount/refcount.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty))
+(./main.out) (./main.out)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-cmr.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msa.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msb.cfg) [1{/usr/share/te
+xlive/texmf-dist/fonts/map/pdftex/updmap/pdftex.map}]
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1ptm.fd)
+(./figures/trm_to_mdp_bridge.tex) [2]
+Underfull \vbox (badness 3029) has occurred while \output is active [3]
+[4]
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 239.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 239.
+
+[5] [6] [7] [8] (./main.bbl [9]
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1pcr.fd)
+Underfull \hbox (badness 5161) in paragraph at lines 73--77
+[]\T1/ptm/m/n/10 (+20) Kevin Klein.  Su-doku #3: Poor man's RL.  []$\T1/pcr/m/n
+/10 https : / / kevinkle . in / posts /
+[10]) [11]
+Underfull \hbox (badness 4303) in paragraph at lines 592--593
+[][]\T1/ptm/b/n/10 (+20) Assumption A.1 \T1/ptm/m/n/10 (+20) (Bounded re-wards)
+\T1/ptm/b/n/10 (+20) . []\T1/ptm/m/n/10 (+20) Potential-shaped re-wards are uni
+-formly bounded:
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 665.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 665.
+
+[12] [13]
+Underfull \hbox (badness 10000) in paragraph at lines 852--852
+[]|\T1/ptm/m/n/9 (+20) Persistent di-rect
+
+Underfull \hbox (badness 1163) in paragraph at lines 852--852
+[]|\T1/ptm/m/n/9 (+20) Projection / con-trac-
+[14]
+Underfull \hbox (badness 10000) in paragraph at lines 870--871
+[]\T1/ptm/m/n/10 (+20) For this re-vi-sion we reran $\T1/pcr/m/n/10 python3expe
+riments / finite _ mdp _ certificate .
+
+Underfull \vbox (badness 10000) has occurred while \output is active [15 <./res
+ults/finite_mdp_certificate/fig_value_decomposition.png> <./results/finite_mdp_
+certificate/fig_cpi_certificate.png>]
+(./tables/table_exp1_value_head_lipschitz.tex) [16]
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 957.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\leavevmode@ifvmode' on input line 957.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                \kern -1.66702pt
+(hyperref)                removed on input line 957.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\to' on input line 957.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\leavevmode@ifvmode' on input line 957.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                \kern -1.66702pt
+(hyperref)                removed on input line 957.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 957.
+
+[17] (./tables/table_exp1_unroll_sensitivity.tex)
+(./tables/table_exp1_radius_sweep_main.tex)
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1029.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1029.
+
+[18] [19 <./figures/fig_exp1_finite_r_primary_b0.png> <./figures/fig_exp1_finit
+e_r_mechanism_b0.png> <./figures/fig_exp1_finite_r_theory_b0.png>]
+(./tables/table_exp1_radius_sweep_appendix.tex)
+Underfull \hbox (badness 10000) in paragraph at lines 1090--1092
+\T1/ptm/m/n/10 (+20) All mod-els are trained on the same 4$\OMS/cmsy/m/n/10 ^^B
+$\T1/ptm/m/n/10 (+20) 4 Su-doku suite (1--4 emp-ties) with
+(./tables/table_exp2_dial_does_not_control_Lz.tex) [20 <./figures/fig_exp1_unro
+ll_sensitivity_appendix.pdf>] [21 <./figures/fig_exp1_radius_sweep_appendix.pdf
+> <./figures/fig_exp2_dial_does_not_control_Lz.pdf>]
+(./tables/table_exp2_projection_effect.tex)
+(./tables/table_exp4_projection_free_dial_range_test.tex [22 <./figures/fig_exp
+2_projection_is_primary_stabilizer.pdf>])
+(./tables/table_exp3_projection_ablation.tex)
+(./tables/table_exp4_projection_free_dial_v2.tex)
+(./tables/table_exp5_tradeoff_curve.tex [23])
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1186.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\times' on input line 1186.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1186.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1200.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\times' on input line 1200.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1200.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1200.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\times' on input line 1200.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1200.
+
+[24]
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1244.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\times' on input line 1244.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1244.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1244.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\times' on input line 1244.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1244.
+
+[25 <./figures/fig_exp5_L_vs_metrics.pdf>] [26 <./figures/table3_hard_controlle
+d_curves.pdf>] [27 <./figures/fig_exp1_unroll_sensitivity_main.pdf> <./figures/
+table3_hard_controlled_2x2_bar.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 1297--1297
+[]|\T1/ptm/m/n/9 (+20) Standalone prove-
+
+Underfull \hbox (badness 2384) in paragraph at lines 1297--1297
+[]|\T1/ptm/m/n/9 (+20) Numerical rows ex-
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1315.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1315.
+
+
+Underfull \hbox (badness 1430) in paragraph at lines 1320--1321
+\T1/pcr/m/n/10 20k _ seed41 _ 50/$ \T1/ptm/m/n/10 (+20) ($\T1/pcr/m/n/10 diagno
+stics _ summary . json$\T1/ptm/m/n/10 (+20) , $\T1/pcr/m/n/10 cpi _ penalty _ g
+rid . json$\T1/ptm/m/n/10 (+20) , and
+[28] [29] [30]
+Underfull \vbox (badness 1178) has occurred while \output is active [31]
+[32] [33] [34] [35] [36] [37]
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[38]
+Underfull \vbox (badness 3646) has occurred while \output is active [39]
+[40] [41] (./main.aux)
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+ )
+(see the transcript file for additional information){/usr/share/texlive/texmf-d
+ist/fonts/enc/dvips/base/8r.enc}</usr/share/texlive/texmf-dist/fonts/type1/publ
+ic/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
+fonts/cmextra/cmex7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfo
+nts/cmextra/cmex9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
+s/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/c
+mmi12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.p
+fb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></us
+r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share
+/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/share/texliv
+e/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf
+-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fo
+nts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type
+1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public
+/amsfonts/cm/cmr9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
+s/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/c
+msy5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pf
+b></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr
+/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/
+texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti9.pfb></usr/share/texlive
+/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/share/texlive/
+texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/share/texlive/t
+exmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fon
+ts/type1/urw/helvetic/uhvb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw
+/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.p
+fb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on main.pdf (41 pages, 1371413 bytes).
+Transcript written on main.log.
+pdflatex -interaction=nonstopmode -halt-on-error -file-line-error main.tex
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex)
+ restricted \write18 enabled.
+entering extended mode
+(./main.tex
+LaTeX2e <2020-10-01> patch level 4
+L3 programming layer <2021-02-18>
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2020/04/10 v1.4m Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size10.clo))
+(./iclr2026_conference.sty
+(/usr/share/texlive/texmf-dist/tex/latex/eso-pic/eso-pic.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/xcolor/xcolor.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/color.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-def/pdftex.def)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/dvipsnam.def)))
+(./fancyhdr.sty) (/usr/share/texlive/texmf-dist/tex/latex/natbib/natbib.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/times.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/base/fontenc.sty
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1ptm.fd))
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype.sty
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype-pdftex.def)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype.cfg))
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/graphics.cfg)))
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/frontendlayer/tikz.sty
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/basiclayer/pgf.sty
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgfrcs.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-common.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-common-lists.t
+ex)) (/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-latex.def
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfrcs.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/pgf.revision.tex)))
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/basiclayer/pgfcore.sty
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/systemlayer/pgfsys.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeysfiltered.code.t
+ex)) (/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgf.cfg)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-pdftex.def
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-common-pdf.de
+f)))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsyssoftpath.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsysprotocol.code.
+tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcore.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathcalc.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathutil.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathparser.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.basic.code
+.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.trigonomet
+ric.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.random.cod
+e.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.comparison
+.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.base.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.round.code
+.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.misc.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.integerari
+thmetics.code.tex)))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfloat.code.tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfint.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepoints.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathconstruct.
+code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathusage.code
+.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorescopes.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoregraphicstate.c
+ode.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransformation
+s.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorequick.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreobjects.code.t
+ex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathprocessing
+.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorearrows.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreshade.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreimage.code.tex
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreexternal.code.
+tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorelayers.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransparency.c
+ode.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepatterns.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorerdf.code.tex))
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmoduleshapes.code.tex
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmoduleplot.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version-0-65
+.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version-1-18
+.sty)) (/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgffor.sty
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgfkeys.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex))
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/math/pgfmath.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgffor.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex)))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/tikz.code.tex
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/pgflibraryplothandlers
+.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmodulematrix.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibrarytopaths.code.tex)))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/pgflibraryarrows.meta.
+code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibrarycalc.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibrarypositioning.code.tex)
+(/usr/share/texlive/texmf-dist/tex/latex/caption/subcaption.sty
+(/usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty
+(/usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/booktabs/booktabs.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/tools/tabularx.sty
+(/usr/share/texlive/texmf-dist/tex/latex/tools/array.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hyperref.sty
+(/usr/share/texlive/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/iftex/iftex.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty
+(/usr/share/texlive/texmf-dist/tex/generic/infwarerr/infwarerr.sty))
+(/usr/share/texlive/texmf-dist/tex/generic/kvsetkeys/kvsetkeys.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/pdfescape/pdfescape.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hycolor/hycolor.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/letltxmacro/letltxmacro.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/auxhook/auxhook.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/kvoptions/kvoptions.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/pd1enc.def)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hyperref-langpatches.def)
+(/usr/share/texlive/texmf-dist/tex/generic/intcalc/intcalc.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/etexcmds/etexcmds.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/puenc.def)
+(/usr/share/texlive/texmf-dist/tex/latex/url/url.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/bitset/bitset.sty
+(/usr/share/texlive/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/base/atbegshi-ltx.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hpdftex.def
+(/usr/share/texlive/texmf-dist/tex/latex/base/atveryend-ltx.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty
+(/usr/share/texlive/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
+For additional information on amsmath, use the `?' option.
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amstext.sty
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsgen.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsbsy.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsopn.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amssymb.sty
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amsfonts.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/mathtools/mathtools.sty
+(/usr/share/texlive/texmf-dist/tex/latex/tools/calc.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/mathtools/mhsetup.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/amscls/amsthm.sty) (./algorithm.sty
+Document Style `algorithm' - floating environment
+(/usr/share/texlive/texmf-dist/tex/latex/float/float.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/base/ifthen.sty)) (./algorithmic.sty
+Document Style `algorithmic' - environment
+) (/usr/share/texlive/texmf-dist/tex/latex/enumitem/enumitem.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def)
+(./main.aux) (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+
+[Loading MPS to PDF converter (version 2006.09.02).]
+) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
+(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-ptm.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
+(/usr/share/texlive/texmf-dist/tex/latex/refcount/refcount.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty))
+(./main.out) (./main.out)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-cmr.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msa.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msb.cfg) [1{/usr/share/te
+xlive/texmf-dist/fonts/map/pdftex/updmap/pdftex.map}]
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1ptm.fd)
+(./figures/trm_to_mdp_bridge.tex) [2]
+Underfull \vbox (badness 3029) has occurred while \output is active [3]
+[4]
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 239.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 239.
+
+[5] [6] [7] [8] (./main.bbl [9]
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1pcr.fd)
+Underfull \hbox (badness 5161) in paragraph at lines 73--77
+[]\T1/ptm/m/n/10 (+20) Kevin Klein.  Su-doku #3: Poor man's RL.  []$\T1/pcr/m/n
+/10 https : / / kevinkle . in / posts /
+[10]) [11]
+Underfull \hbox (badness 4303) in paragraph at lines 592--593
+[][]\T1/ptm/b/n/10 (+20) Assumption A.1 \T1/ptm/m/n/10 (+20) (Bounded re-wards)
+\T1/ptm/b/n/10 (+20) . []\T1/ptm/m/n/10 (+20) Potential-shaped re-wards are uni
+-formly bounded:
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 665.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 665.
+
+[12] [13]
+Underfull \hbox (badness 10000) in paragraph at lines 852--852
+[]|\T1/ptm/m/n/9 (+20) Persistent di-rect
+
+Underfull \hbox (badness 1163) in paragraph at lines 852--852
+[]|\T1/ptm/m/n/9 (+20) Projection / con-trac-
+[14]
+Underfull \hbox (badness 10000) in paragraph at lines 870--871
+[]\T1/ptm/m/n/10 (+20) For this re-vi-sion we reran $\T1/pcr/m/n/10 python3expe
+riments / finite _ mdp _ certificate .
+
+Underfull \vbox (badness 10000) has occurred while \output is active [15 <./res
+ults/finite_mdp_certificate/fig_value_decomposition.png> <./results/finite_mdp_
+certificate/fig_cpi_certificate.png>]
+(./tables/table_exp1_value_head_lipschitz.tex) [16]
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 957.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\leavevmode@ifvmode' on input line 957.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                \kern -1.66702pt
+(hyperref)                removed on input line 957.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\to' on input line 957.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\leavevmode@ifvmode' on input line 957.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                \kern -1.66702pt
+(hyperref)                removed on input line 957.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 957.
+
+[17] (./tables/table_exp1_unroll_sensitivity.tex)
+(./tables/table_exp1_radius_sweep_main.tex)
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1029.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1029.
+
+[18] [19 <./figures/fig_exp1_finite_r_primary_b0.png> <./figures/fig_exp1_finit
+e_r_mechanism_b0.png> <./figures/fig_exp1_finite_r_theory_b0.png>]
+(./tables/table_exp1_radius_sweep_appendix.tex)
+Underfull \hbox (badness 10000) in paragraph at lines 1090--1092
+\T1/ptm/m/n/10 (+20) All mod-els are trained on the same 4$\OMS/cmsy/m/n/10 ^^B
+$\T1/ptm/m/n/10 (+20) 4 Su-doku suite (1--4 emp-ties) with
+(./tables/table_exp2_dial_does_not_control_Lz.tex) [20 <./figures/fig_exp1_unro
+ll_sensitivity_appendix.pdf>] [21 <./figures/fig_exp1_radius_sweep_appendix.pdf
+> <./figures/fig_exp2_dial_does_not_control_Lz.pdf>]
+(./tables/table_exp2_projection_effect.tex)
+(./tables/table_exp4_projection_free_dial_range_test.tex [22 <./figures/fig_exp
+2_projection_is_primary_stabilizer.pdf>])
+(./tables/table_exp3_projection_ablation.tex)
+(./tables/table_exp4_projection_free_dial_v2.tex)
+(./tables/table_exp5_tradeoff_curve.tex [23])
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1186.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\times' on input line 1186.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1186.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1200.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\times' on input line 1200.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1200.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1200.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\times' on input line 1200.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1200.
+
+[24]
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1244.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\times' on input line 1244.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1244.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1244.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\times' on input line 1244.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1244.
+
+[25 <./figures/fig_exp5_L_vs_metrics.pdf>] [26 <./figures/table3_hard_controlle
+d_curves.pdf>] [27 <./figures/fig_exp1_unroll_sensitivity_main.pdf> <./figures/
+table3_hard_controlled_2x2_bar.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 1297--1297
+[]|\T1/ptm/m/n/9 (+20) Standalone prove-
+
+Underfull \hbox (badness 2384) in paragraph at lines 1297--1297
+[]|\T1/ptm/m/n/9 (+20) Numerical rows ex-
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1315.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1315.
+
+
+Underfull \hbox (badness 1430) in paragraph at lines 1320--1321
+\T1/pcr/m/n/10 20k _ seed41 _ 50/$ \T1/ptm/m/n/10 (+20) ($\T1/pcr/m/n/10 diagno
+stics _ summary . json$\T1/ptm/m/n/10 (+20) , $\T1/pcr/m/n/10 cpi _ penalty _ g
+rid . json$\T1/ptm/m/n/10 (+20) , and
+[28] [29] [30]
+Underfull \vbox (badness 1178) has occurred while \output is active [31]
+[32] [33] [34] [35] [36] [37]
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[38]
+Underfull \vbox (badness 3646) has occurred while \output is active [39]
+[40] [41] (./main.aux) )
+(see the transcript file for additional information){/usr/share/texlive/texmf-d
+ist/fonts/enc/dvips/base/8r.enc}</usr/share/texlive/texmf-dist/fonts/type1/publ
+ic/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
+fonts/cmextra/cmex7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfo
+nts/cmextra/cmex9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
+s/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/c
+mmi12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.p
+fb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></us
+r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share
+/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/share/texliv
+e/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf
+-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fo
+nts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type
+1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public
+/amsfonts/cm/cmr9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
+s/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/c
+msy5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pf
+b></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr
+/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/
+texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti9.pfb></usr/share/texlive
+/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/share/texlive/
+texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/share/texlive/t
+exmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fon
+ts/type1/urw/helvetic/uhvb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw
+/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.p
+fb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on main.pdf (41 pages, 1371413 bytes).
+Transcript written on main.log.
