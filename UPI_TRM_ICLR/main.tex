@@ -499,29 +499,10 @@ A projection-aware version of \eqref{eq:main_bound_dials} substitutes $\varepsil
 \section{Experiments}
 \label{sec:experiments}
 
-All task results in this paper are on $4\times4$ Sudoku. The decision-relevant evidence is: a theory-aligned episodic hard-suite run that obtains $0\%$ over 10 seeds; a persistent, distilled implementation that obtains $57.4\%$ under a different interaction budget; and a controlled projection $\times$ contraction factorial. These implementation results do not validate the fixed-snapshot theorem.
+All task results in this paper are on $4\times4$ Sudoku. The decision-relevant evidence is a theory-aligned episodic run at $0\%$, a persistent distilled run at $57.4\%$ under a different interaction budget, and a controlled projection $\times$ contraction factorial. These implementations do not validate the fixed-snapshot theorem; Appendix Table~\ref{tab:claim_status} maps each claim to its conditions and status.
 
 \textbf{Setup.}
-The environment is the checker-defined plan-edit MDP of Section~\ref{sec:setup}. The persistent hard result, factorial, and nominal baselines use the no-mask 6--8-empty suite with $T{=}16$ under a 20k outer-step protocol; the theory-aligned episodic run instead stops at 20k environment steps. The nominal protocol does not equalize actual interactions across algorithms. Appendix~\ref{app:equalized_baselines} audits architecture-matched baselines at common budgets but does not include a matched-budget UPI--TRM run. Architecture-matched TRM+PPO/A2C/DQN share the TRM backbone and checker-shaped reward but use different update rules; external SB3 baselines use a flat MLP and serve only as implementation checks. In stability studies, contraction ($L_z{=}0.9$) is enforced by operator-norm clamping, value-head spectral normalization is disabled, and \emph{proj.\ off} means $\Pi_R=\mathrm{Id}$. Secondary diagnostics use the easier 1--4-empty suite and are labeled accordingly.
-
-\begin{table}[t]
-\caption{Claim status. ``Measured'' denotes retained finite-sample evidence, not a uniform certificate.}
-\label{tab:claim_status}
-\centering
-\small
-\begin{tabularx}{\linewidth}{@{}p{0.20\linewidth}p{0.32\linewidth}X@{}}
-\toprule
-Claim & Required condition & Evidence / status \\
-\midrule
-Finite-depth value & Frozen policy pair, common closure and norm & Proven; Theorem~\ref{thm:finite_reference_depth} \\
-Persistent direct bound & Complete augmented state, shared frozen map, uniform residual & Valid but uncalibrated; residual not measured uniformly \\
-CPI headline & Exact centering and exact deployed mixture & Not covered; headline policy is distilled \\
-Persistent 57.4\% & Nominal implementation protocol & 10-seed implementation result; unequal interactions \\
-Projection / contraction & Controlled factorial & $+13.0$pp composite / $+2.2$pp inconclusive \\
-Finite-MDP inequalities & Exact finite-state calculation & Numerical unit test; 80 value + 21 CPI rows \\
-\bottomrule
-\end{tabularx}
-\end{table}
+The persistent result, factorial, and nominal baselines use no-mask 6--8-empty Sudoku ($T{=}16$) for 20k outer steps; the episodic run stops at 20k environment steps. Nominal interactions are unequal. Architecture-matched baselines share the TRM backbone but not the update rule; external SB3 baselines are implementation checks. Contraction uses operator-norm clamping at $L_z{=}0.9$; secondary diagnostics use the easier 1--4-empty suite.
 
 \subsection{Persistent hard-suite implementation and limitations}
 \label{sec:harder_puzzles}
@@ -550,64 +531,43 @@ SB3 PPO/A2C/DQN/DQN($n{=}5$) & 20k & 10 & 0.0 $\pm$ 0.0 & $\approx -17.9$ & 0.78
 \end{tabular}
 \end{table}
 
-The \emph{architecture-matched} baselines (TRM+PPO/A2C/DQN) share UPI--TRM's TRM backbone and checker-shaped reward and emit no invalid actions, but each one swaps in its own update rule (different advantage estimator, baseline, policy update, and sometimes target network). At the nominal outer-step endpoint, the $+25.4$pp gap to TRM+PPO is statistically distinguishable in the retained analysis (Welch's $t$-test: $t\approx4.10$, $p\approx7.3\times10^{-4}$, 95\% CI $[12.4,38.5]$pp); bootstrap and permutation analyses agree (Appendix~\ref{app:headline_significance}). This is a joint implementation contrast at unequal interaction counts, not an isolated algorithmic component or an efficiency comparison. The external SB3 baselines use a flat MLP, have invalid-action rates $0.78$--$1.00$, and are only implementation checks.
+At the nominal endpoint, the $+25.4$pp TRM+PPO gap is distinguishable in the retained analysis (Welch $t\!\approx\!4.10$, $p\!\approx\!7.3\!\times\!10^{-4}$, 95\% CI $[12.4,38.5]$pp; consistent bootstrap/permutation tests). This joint, unequal-interaction implementation contrast isolates no component and implies no efficiency advantage (Appendix~\ref{app:headline_significance}).
 
-The 57.4\% run uses persistent-$z$. Corollary~\ref{cor:persistent_cpi_augmented} provides the relevant conditional augmented-MDP form without slow drift, but the retained package cannot verify its clock encoding, latent-carry order, or shared frozen recurrence; moreover, the uniform augmented residual and exact augmented-state centering are not measured. More decisively, the headline implementation distills the mixture, so the exact deployed-mixture condition is known not to hold. Exact centering alone could not repair that mismatch. The 57.4\% is therefore an implementation result, not a verification of the persistent certificate or Theorem~\ref{thm:monotone_with_error}.
+For the persistent run, clock/carry details are unaudited, the uniform augmented residual and centering are unmeasured, and distillation violates exact-mixture deployment. Thus 57.4\% is an implementation result, not verification of Corollary~\ref{cor:persistent_cpi_augmented} or Theorem~\ref{thm:monotone_with_error}; exact centering alone would not repair the mixture mismatch.
 
 \subsection{Projection and contraction ablation}
 \label{sec:projection_contraction_ablation}
 
-To separate mechanisms, we run a $2\times 2$ factorial that varies the two factors entering the projection-aware bound: projection radius (through $\Pi_R$, with \emph{proj.\ off} denoting $\Pi_R=\mathrm{Id}$) and contraction modulus (through operator-norm clamping at $L_z=0.9$ vs.\ disabled).
-
-\begin{table}[t]
-\caption{Controlled no-mask hard 4$\times$4 projection $\times$ contraction factorial on the 6--8-empty suite (10 seeds per cell, 20k steps). The projection contrast is larger; the contraction contrast is small and inconclusive.}
-\label{tab:controlled_2x2_main_body}
-\centering
-\small
-\begin{tabular}{@{}lc@{}}
-\toprule
-Condition & Success (\%) \\
-\midrule
-No contraction, proj.\ off & 35.0 $\pm$ 8.9 \\
-No contraction, $R{=}10$ & 48.2 $\pm$ 7.1 \\
-Contraction, proj.\ off & 37.4 $\pm$ 7.8 \\
-Contraction, $R{=}10$ & 50.2 $\pm$ 10.5 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-The projection main effect is $+13.0$ percentage points ($36.2\%\to49.2\%$, averaged over contraction status). This is an algorithmic effect that combines forward-pass clipping with all induced training-dynamics changes; it cannot be assigned to one term of~\eqref{eq:main_bound_proj}. The contraction main effect is $+2.2$ points ($41.6\%\to43.8\%$, averaged over projection status) and is inconclusive at 10 seeds. We omit the source-reported factorial $p$-value because the copied package lacks the per-seed artifact and named test needed to reproduce it. We therefore treat contraction only as a conditional stability/error-control mechanism, not as a demonstrated hard-task performance dial.
+The $2\times2$ factorial varies projection and contraction (Appendix Table~\ref{tab:controlled_2x2_main}). Projection's composite $+13.0$pp contrast ($36.2\%\to49.2\%$) mixes clipping and training dynamics. Contraction's $+2.2$pp ($41.6\%\to43.8\%$) is inconclusive; its unauditable source-reported $p$-value is omitted. It remains a conditional error-control mechanism, not a demonstrated performance dial.
 
 \subsection{Theory-aligned episodic negative result}
 \label{sec:episodic_negative_main}
 
-The theory-aligned episodic run jointly uses latent reinitialization, exact baseline summation, exact $K$-step targets, and a directly deployed conservative mixture. It obtains $0.0\%$ success at 20k environment steps over seeds 41--50 (Appendix~\ref{app:episodic_z_hard_suite_rerun}). This is the closest hard-suite implementation of the plan-state theorem in the retained evidence. Because four factors change together and its interaction budget differs from the persistent run, it neither isolates a failure mechanism nor forms a controlled performance comparison. Its finite-batch episodic residual is not evidence about the distinct persistent augmented-state residual.
+The episodic run uses reinitialization, exact baselines/targets, and the direct mixture, obtaining $0.0\%$ at 20k environment steps over seeds 41--50. Its four joint changes and different budget preclude a controlled comparison, and its residual is not the persistent augmented residual (Appendix~\ref{app:episodic_z_hard_suite_rerun}).
 
 \subsection{Interaction-budget audit}
 \label{sec:interaction_audit_main}
 
-PPO, A2C, and DQN collect 64, 32, and 4 environment transitions per nominal outer step. UPI--TRM is absent from the common-budget reruns in Appendix~\ref{app:equalized_baselines}, so the paper has no interaction-matched UPI--TRM versus PPO comparison. The retained package also lacks standalone provenance for the numerical rows of that baseline-only table; we use it only to document protocol structure and the missing UPI--TRM arm, not as independent numerical evidence.
+PPO/A2C/DQN collect 64/32/4 transitions per nominal step. UPI--TRM is absent from the common-budget reruns, whose provenance is missing; there is no matched UPI--TRM--PPO result (Appendix~\ref{app:equalized_baselines}).
 
 \subsection{Finite-MDP numerical unit test}
 \label{sec:finite_mdp_main}
 
-A controlled 64-state, 4-action MDP in which all quantities are exactly computable (Appendix~\ref{app:finite_mdp_certificate}, Figure~\ref{fig:finite_mdp_certificate_main}) unit-tests the residual-to-value, value-to-advantage, and CPI inequalities. The retained artifact contains 80 value/decomposition rows ($4$ contraction settings by $20$ depths) and 21 mixture-weight rows for one selected CPI slice, with zero violations. This checks the composed inequalities; it is neither an empirical discovery nor a 101-point Cartesian sweep over all displayed variables.
+An exact 64-state, 4-action unit test has zero violations in 80 value and 21 selected-slice CPI rows; it is not an empirical discovery or Cartesian sweep (Appendix~\ref{app:finite_mdp_certificate}).
 
 \subsection{Secondary diagnostics}
 \label{sec:secondary_diagnostics_main}
 
-The easier 1--4-empty depth-mismatch diagnostic shows improved value/depth stability under contraction (Appendix~\ref{app:depth_mismatch_main}), but it does not establish a hard-suite task-performance effect or explain the persistent headline run. Additional sweeps and ablations are retained as exploratory diagnostics in Appendix~\ref{app:secondary_diagnostics}.
+The easier diagnostic shows depth stability, not a hard-suite effect; other sweeps remain exploratory (Appendices~\ref{app:depth_mismatch_main} and~\ref{app:secondary_diagnostics}).
 
 \section{Discussion, Limitations, and Conclusion}
 \label{sec:conclusion}
 
-The primary result is a fixed-snapshot, finite-reference-depth certificate: a transient depth-$n$ evaluator can be compared with any finite $m>n$ through its recurrent path and the Bellman residual at $m$. A latent fixed point is unnecessary. Contraction is a sufficient specialization that geometrically bounds the path, not an assumed design objective for arbitrary TRMs. On the augmented persistent-state MDP, the actual finite-depth evaluator has the same direct residual certificate without slow drift; slow drift is relevant only to a stronger memoryless-reference comparison.
+The primary result certifies a transient depth-$n$ evaluator against any finite $m>n$ through its recurrent path and depth-$m$ residual. A fixed point is unnecessary; contraction is only a geometric specialization. Persistent state has the same direct residual certificate on the augmented MDP, while slow drift serves only a stronger memoryless-reference comparison.
 
-The bridge to policy improvement remains conditional. It requires uniform closure control, exact statewise centering, and pointwise deployment of the exact mixture at one frozen snapshot. It does not certify training or distillation. The headline implementation fails the exact-mixture condition by construction and lacks a uniform augmented residual and verified augmented centering, so exact centering alone would not make Theorem~\ref{thm:monotone_with_error} apply.
+Policy improvement additionally requires uniform closure control, exact centering, and pointwise exact-mixture deployment at a frozen snapshot; it certifies neither training nor distillation. The headline run is distilled and lacks a uniform augmented residual and verified centering, so exact centering alone would not make Theorem~\ref{thm:monotone_with_error} apply.
 
-The empirical scope is $4\times4$ Sudoku. The theory-aligned episodic hard-suite run obtains $0\%$ over 10 seeds. The persistent implementation obtains a $+25.4$-point nominal gap over TRM+PPO, but actual interactions are unequal, so this is neither an equal-budget comparison nor evidence of sample efficiency. Projection's $+13.0$-point factorial contrast is a composite algorithmic effect. Contraction's $+2.2$-point contrast is inconclusive and supports only a conditional stability/error-control interpretation. The finite-MDP calculation is a numerical unit test of the inequalities rather than an empirical finding.
-
-The useful outcome is therefore a separation of obligations: measure finite-depth paths and the appropriate episodic or augmented residual, audit centering and mixture deployment, and keep implementation performance distinct from theorem-certified improvement. Matched-interaction comparisons, one-factor bridges, persistent-state diagnostics, and a second verifier-guided domain remain future experiments under the locked protocol in the accompanying experiment plan.
+Empirically: episodic $0\%$; nominal PPO $+25.4$pp with unequal interactions; projection $+13.0$pp composite; contraction $+2.2$pp inconclusive. The checklist is to measure paths/residuals, audit centering/deployment, and separate performance from certification; missing experiments are protocolized.
 
 
 
@@ -872,6 +832,25 @@ These are optional comparisons to a memoryless fixed-point reference; none is ne
 \label{app:diagnostics}
 
 Table~\ref{tab:diagnostics} shows the theoretical bound quantities and the practical proxies typically logged during training.
+
+\begin{table}[t]
+\caption{Claim status. ``Measured'' denotes retained finite-sample evidence, not a uniform certificate.}
+\label{tab:claim_status}
+\centering
+\small
+\begin{tabularx}{\linewidth}{@{}p{0.20\linewidth}p{0.32\linewidth}X@{}}
+\toprule
+Claim & Required condition & Evidence / status \\
+\midrule
+Finite-depth value & Frozen policy pair, common closure and norm & Proven; Theorem~\ref{thm:finite_reference_depth} \\
+Persistent direct bound & Complete augmented state, shared frozen map, uniform residual & Valid but uncalibrated; residual not measured uniformly \\
+CPI headline & Exact centering and exact deployed mixture & Not covered; headline policy is distilled \\
+Persistent 57.4\% & Nominal implementation protocol & 10-seed implementation result; unequal interactions \\
+Projection / contraction & Controlled factorial & $+13.0$pp composite / $+2.2$pp inconclusive \\
+Finite-MDP inequalities & Exact finite-state calculation & Numerical unit test; 80 value + 21 CPI rows \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
 \subsection{Finite-MDP certificate}
 \label{app:finite_mdp_certificate}
