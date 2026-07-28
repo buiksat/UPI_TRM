@@ -1,0 +1,22 @@
+# Local scratch / session logs (do not commit)
+scripts/scratch.md
+scripts/scratch*.md
+
+# Root LaTeX build products (curated PDFs/logs under build/ are tracked).
+/main.aux
+/main.bbl
+/main.blg
+/main.fdb_latexmk
+/main.fls
+/main.log
+/main.out
+/main.pdf
+/main.synctex.gz
+/main.toc
+
+# Local inspection and superseded build attempts.
+/build/*
+!/build/upi_trm_iclr_template_baseline.pdf
+!/build/upi_trm_iclr_template_baseline.log
+!/build/iclr_template_baseline_build_pass1.stdout.log
+!/build/iclr_template_baseline_build_pass5_clean.stdout.log

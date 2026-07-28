@@ -1,0 +1,8 @@
+# Preserve producer-emitted whitespace in retained build logs.
+build/*.log -whitespace
+
+# Local vendored package files are preserved byte-for-byte.
+algorithm.sty -whitespace
+algorithmic.sty -whitespace
+fancyhdr.sty -whitespace
+iclr2026_conference.bst -whitespace
