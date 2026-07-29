@@ -20,7 +20,7 @@
 \usepackage{xcolor}
 \usepackage{hyperref}
 \hypersetup{
-  pdftitle={Finite-Depth Error Certificates for Recurrent Evaluators in Tiny Recursive Models},
+  pdftitle={Finite-Reference Error Bounds for Recurrent Evaluators in Tiny Recursive Models},
   pdfauthor={},
   pdfcreator={},
   pdfproducer={},
@@ -110,7 +110,7 @@
 % TITLE & AUTHOR
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\title{Finite-Depth Error Certificates for Recurrent Evaluators in Tiny Recursive Models}
+\title{Finite-Reference Error Bounds for Recurrent Evaluators in Tiny Recursive Models}
 
 \author{%
   Anonymous Author(s)
@@ -120,7 +120,7 @@
 
 \maketitle
 \begin{abstract}
-We study the fixed-snapshot error of a finite-depth recurrent value evaluator inside a discounted plan-edit MDP. For any two finite depths $m>n$, the depth-$n$ error is bounded by its discrepancy from the depth-$m$ evaluator plus the depth-$m$ Bellman residual divided by $1-\gamma^K$. A Lipschitz value head controls the discrepancy by the recurrent path length from $n$ to $m$. This result permits transient computation and assumes no latent fixed point; a contractive fixed-point bound follows only as a specialization. Persistent latents have a separate direct certificate on the augmented state $(x,y,z)$ that also needs no slow drift. Exact statewise centering and direct deployment of the exact policy mixture are required to propagate these errors through conservative policy improvement. A 64-state finite-MDP calculation is a numerical unit test of the composed inequalities. Our empirical scope is limited to $4\times4$ Sudoku. A persistent implementation obtains $57.4\%$ success over 10 seeds versus $32.0\%$ for TRM+PPO at the same nominal outer-step count but unequal environment interactions; this is neither theorem validation nor evidence of sample efficiency. The theory-aligned episodic configuration obtains $0\%$ over 10 seeds. In a controlled factorial, projection has a $+13.0$ percentage-point algorithmic effect, while contraction's $+2.2$-point effect is inconclusive. These results separate a finite-depth certificate from the current implementation evidence and its limitations.
+We study the fixed-snapshot error of a finite-depth recurrent value evaluator inside a discounted plan-edit MDP. For finite reference depths $m>n$, the depth-$n$ error is bounded by its discrepancy from the depth-$m$ evaluator plus the depth-$m$ Bellman residual divided by $1-\gamma^K$. A Lipschitz value head controls the discrepancy by the recurrent path length from $n$ to $m$. The result permits transient computation and assumes no latent fixed point; a contractive fixed-point bound is only a specialization. Persistent latents admit the same direct residual argument on the augmented state $(x,y,z)$. Propagating either value bound through conservative policy improvement additionally requires exact statewise centering and pointwise deployment of the exact policy mixture. A 64-state finite-MDP calculation numerically unit-tests the composed inequalities. Empirically, our scope is limited to $4\times4$ Sudoku: the theory-aligned episodic configuration obtains $0\%$ over 10 seeds, while the higher-performing persistent implementation does not establish the uniform augmented residual, exact centering, or exact-mixture deployment required by the theory. The reported UPI--TRM/PPO comparison also uses unequal environment-interaction budgets. We therefore present the theory as a finite-reference error decomposition, not as a certificate for the current implementation or as evidence of sample efficiency.
 \end{abstract}
 
 \section{Introduction}
@@ -132,7 +132,7 @@ We analyze Unrolled Policy Iteration with TRMs (UPI--TRM), which retains the inn
 
 Our primary result (Theorem~\ref{thm:finite_reference_depth}) compares $U_n(s)=V_\psi(z^{(n)}(s),x)$ with any deeper finite reference $U_m$ for $m>n$. It bounds $\|U_n-V^\pi\|$ by $\|U_n-U_m\|$ plus the Bellman residual of $U_m$ divided by $1-\gamma^K$, and controls the first term by the recurrent path length for a Lipschitz head. No recurrent convergence is assumed. A forward-invariant contraction geometrically bounds that path and recovers the fixed-point formula as $m\to\infty$. Corollary~\ref{cor:epsA_dials} transfers the value bound to centered advantage error, and Theorem~\ref{thm:monotone_with_error} supplies a one-step CPI statement only for exact centering and direct deployment of the exact mixture.
 
-The evidence has two distinct roles. First, an exactly solvable finite MDP numerically unit-tests the composed value, advantage, and CPI inequalities; it is not an empirical discovery. Second, experiments on hard $4\times4$ Sudoku evaluate implementations. The theory-aligned episodic run obtains $0\%$ success over 10 seeds. A persistent, distilled implementation obtains $57.4\%\pm12.2\%$, versus $32.0\%\pm15.3\%$ for TRM+PPO at the same nominal outer-step count, but their environment-interaction counts differ. We therefore claim neither equal-interaction superiority nor sample efficiency. Projection's $+13.0$-point factorial effect combines forward-pass clipping with changed training dynamics; contraction's $+2.2$-point effect is inconclusive.
+The evidence has two distinct roles. First, an exactly solvable finite MDP numerically unit-tests the composed value, advantage, and CPI inequalities; it is not an empirical discovery. Second, experiments on hard $4\times4$ Sudoku evaluate implementations. The theory-aligned episodic run obtains $0\%$ success over 10 seeds. A persistent, distilled implementation obtains $57.4\%\pm12.2\%$ in a supplied UPI--TRM reevaluation artifact. The manuscript-recorded TRM+PPO result is $32.0\%\pm15.3\%$ at the same nominal outer-step count, but its per-seed run artifact is unavailable and the environment-interaction counts differ. We therefore claim neither equal-interaction superiority nor sample efficiency. A reported projection--clamping factorial has only aggregate provenance; we treat projection as a composite forward-pass and training-dynamics intervention and do not claim that clamping controls the global contraction modulus.
 
 \textbf{Scope.} Episodic latents are Markov on $(x,y)$. At a fixed snapshot, persistent latents are Markov on $(x,y,z)$ when every transition-relevant variable is included. Their direct residual certificate needs no latent fixed point or slow drift; slow drift is needed only for the stronger comparison with a memoryless fixed-point reference. For the headline run, the uniform augmented residual and exact augmented-state centering are not established, several transition details cannot be audited from the retained package, and distillation is known to violate exact-mixture deployment. The current empirical domain is only $4\times4$ Sudoku.
 
@@ -141,7 +141,7 @@ The evidence has two distinct roles. First, an exactly solvable finite MDP numer
 \item A fixed-point-free finite-reference-depth value and path decomposition, with the contractive fixed-point result as a specialization (Theorem~\ref{thm:finite_reference_depth}).
 \item A direct finite-depth certificate for persistent state on the augmented MDP, separated from an optional slow-drift comparison (Corollary~\ref{cor:persistent_cpi_augmented}).
 \item A conditional bridge from these value errors to CPI under exact centering and exact-mixture deployment (Theorem~\ref{thm:monotone_with_error}); this is a fixed-snapshot result, not a training theorem.
-\item A numerical finite-MDP unit test and a $4\times4$ Sudoku study that reports the theory-aligned $0\%$ result, the persistent implementation result under unequal interactions, and controlled projection--contraction effects with their limitations.
+\item A numerical finite-MDP unit test and a $4\times4$ Sudoku study that reports the theory-aligned $0\%$ result, the persistent implementation result under unequal interactions, and aggregate projection--clamping contrasts with their provenance limitations.
 \end{itemize}
 
 \begin{figure}[t]
@@ -173,13 +173,13 @@ z^{(k+1)} = (\Pi_R \circ f_\theta)(z^{(k)}, y_t, x).
 \)
 The second is a scalar value head $V_\psi$ that produces the unrolled evaluator output $U_n(s_t)=V_\psi(z_t^{(n)},x)$ with $s_t=(x,y_t)$, which scores candidate plans in the outer CPI loop.
 
-In the plan-space MDP the external state is $s_t=(x,y_t)$, the action is an edit $a_t$, and the transition is $y_{t+1}=\mathrm{edit}(y_t,a_t;x)$. A checker score $c(x,y)$ supplies reward, optionally via potential shaping~\citep{Ng1999Shaping} $r=r_0+\gamma\Phi(s')-\Phi(s)$ with $\Phi=c$. The latent $z$ is \emph{not} part of the environment state in our primary analysis; it is internal computation used to evaluate $s_t$. The resulting process is a discounted MDP $(\mathcal S,\mathcal A,P,r,\rho,\gamma)$ with $\gamma\in(0,1)$ and $K\ge 1$. All theoretical statements fix one parameter snapshot: the MDP, recurrence, initialization, value head, current policy $\pi$, and candidate policy $\pi_{\mathrm{cand}}$ do not change while the displayed quantities are evaluated. Rewards are bounded, policies and evaluator outputs are measurable, and the relevant value functions are bounded on a measurable advantage-evaluation closure that is invariant under $\pi$ almost surely. For finite Sudoku these conditions hold automatically; otherwise all suprema are essential suprema on the stated closure sets. Increasing $n$ spends more computation inside one state evaluation but does not change the environment horizon or search depth, so the analysis tracks evaluator truncation error inside a fixed external MDP.
+In the plan-space MDP the external state is $s_t=(x,y_t)$, the action is an edit $a_t$, and the transition is $y_{t+1}=\mathrm{edit}(y_t,a_t;x)$. A checker score $c(x,y)$ supplies reward, optionally via potential shaping~\citep{Ng1999Shaping} $r=r_0+\gamma\Phi(s')-\Phi(s)$ with $\Phi=c$. The latent $z$ is \emph{not} part of the environment state in our primary analysis; it is internal computation used to evaluate $s_t$. The resulting process is a discounted MDP $(\mathcal S,\mathcal A,P,r,\rho,\gamma)$ with $\gamma\in(0,1)$ and $K\ge 1$. All theoretical statements fix one parameter snapshot: the MDP, recurrence, initialization, value head, current policy $\pi$, and candidate policy $\pi_{\mathrm{cand}}$ do not change while the displayed quantities are evaluated. The formal results assume finite or countable state and action spaces and use ordinary sup norms; the proofs also apply when only the relevant policy-pair closure and supported action sets are finite or countable. Rewards are bounded and the relevant closure is invariant under $\pi$ almost surely. This setting covers every reported experiment. Appendix~\ref{app:adv_closure_full} states the additional domination and total-variation requirements for a general-kernel extension. Increasing $n$ spends more computation inside one state evaluation but does not change the environment horizon or search depth, so the analysis tracks evaluator truncation error inside a fixed external MDP.
 
 \textbf{Episodic-$z$ vs.\ persistent-$z$.}
 In \emph{episodic-$z$}, the latent is reinitialized from the current plan at each edit step, so $(x,y)$ remains a Markov state. In \emph{persistent-$z$}, the latent is carried across edits, matching the original TRM. With persistent latents the next-state distribution depends jointly on $(x,y,z)$, since the same plan paired with a different carried latent can produce a different next plan after another inner unroll. Treating $(x,y)$ as the state in this regime is a non-Markov approximation. Appendix~\ref{app:persistent_latent} lifts the finite-depth residual certificate directly to $\bar s=(x,y,z)$; this step needs no latent fixed point or slow drift. A separate slow-drift assumption is required only for comparison with a memoryless fixed-point reference.
 
 \textbf{Notation.}
-For one common initialization $z^{(0)}(s)=z_{\mathrm{init}}(s)$, let $z^{(j)}(s)$ be the latent after $j$ applications of the frozen recurrent map and let $U_j(s)=V_\psi(z^{(j)}(s),x)$. At the absorbing state, every $U_j$ uses the same depth-independent normalization from Appendix~\ref{app:shaping_convention}. Only the optional contractive specialization uses the latent fixed point $z^*$ and $U_*(s)=V_\psi(z^*(s),x)$. We write $\|f\|_{\infty,\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}:=\operatorname*{ess\,sup}_{s\in\mathcal{R}_{\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}\cup\{s_{\mathrm{abs}}\}}|f(s)|$ for the sup-norm over the measurable advantage-evaluation closure used by CPI. This closure contains states reachable under $\pi$ and the one-step successors needed to evaluate actions supported by $\pi$ and $\pi_{\mathrm{cand}}$, and is invariant under subsequent $\pi$ dynamics almost surely (Appendix~\ref{app:adv_closure_full}; full notation in Appendix~\ref{app:notation}).
+For one common initialization $z^{(0)}(s)=z_{\mathrm{init}}(s)$, let $z^{(j)}(s)$ be the latent after $j$ applications of the frozen recurrent map and let $U_j(s)=V_\psi(z^{(j)}(s),x)$. At the absorbing state, every $U_j$ uses the same depth-independent normalization from Appendix~\ref{app:shaping_convention}. Only the optional contractive specialization uses the latent fixed point $z^*$ and $U_*(s)=V_\psi(z^*(s),x)$. We write $\|f\|_{\infty,\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}:=\sup_{s\in\mathcal{R}_{\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}\cup\{s_{\mathrm{abs}}\}}|f(s)|$ for the ordinary sup-norm over the advantage-evaluation closure used by CPI. This closure contains states reachable under $\pi$ and the one-step successors needed to evaluate actions supported by $\pi$ and $\pi_{\mathrm{cand}}$, and is invariant under subsequent $\pi$ dynamics almost surely (Appendix~\ref{app:adv_closure_full}; full notation in Appendix~\ref{app:notation}).
 
 \section{UPI--TRM Algorithm}
 \label{sec:algorithm}
@@ -227,9 +227,9 @@ C_z:=\sup_{(x,y)}\|\tilde f_\theta(z_{\mathrm{init}}(x,y),y,x)-z_{\mathrm{init}}
 \]
 \end{assumption}
 
-We enforce Assumption~\ref{ass:Lip} via operator-norm clamping on $z\!\to\!z$ layers plus per-layer scaling; $\Pi_R$ provides forward invariance. Value-head spectral normalization is disabled in contraction sweeps to avoid confounds (Appendix~\ref{app:latent_collapse_diagnostic}). The assumption identifies a regime with rigorous bounds; it is sufficient, not necessary. Appendix~\ref{app:exp2_sweep} shows that the spectral-norm target does not reliably control achieved post-projection contraction once projection is active, so its practical effect must be measured empirically.
+We enable operator-norm clamping and per-layer scaling as a contraction-oriented intervention; $\Pi_R$ provides forward invariance. The retained finite-difference quantities are local proxies and do not certify the global modulus required by Assumption~\ref{ass:Lip}. We therefore distinguish the theorem's contractive regime from the empirical \emph{clamping enabled} condition. Value-head spectral normalization is disabled in these comparisons to avoid a separate value-head confound.
 
-In the projection-active sweep cell of Appendix~\ref{app:exp2_sweep}, $\hat L_z^{\mathrm{post}}$ is set mostly by the saturation factor $R/\rho_R$ and stays in a narrow $0.219$--$0.242$ band (Table~\ref{tab:exp2_dial_failure}), so the $L_z$-dependent terms behave as proxies rather than as a tunable knob. A pre-registered episodic-$z$ hard-suite rerun (Appendix~\ref{app:episodic_z_hard_suite_rerun}) yields a broader post-projection distribution including seeds with $\hat L_z^{\mathrm{post}}\ge 1$, so the narrow-band behavior is not a general hard-suite geometry fact.
+In a projection-active exploratory sweep, the local post-projection proxy $\hat L_z^{\mathrm{post}}$ stays in a narrow $0.219$--$0.242$ band, so the $L_z$-dependent terms are monitoring quantities rather than a tunable empirical knob. The protocol-specified episodic-$z$ hard-suite rerun (Appendix~\ref{app:episodic_z_hard_suite_rerun}) yields a broader post-projection distribution including seeds with $\hat L_z^{\mathrm{post}}\ge 1$, so the narrow-band behavior is not a general hard-suite geometry fact.
 
 \section{Finite-Depth Evaluation Error Decomposition and CPI Penalty}
 \label{sec:error_bounds}
@@ -251,8 +251,7 @@ and therefore permits any finite unroll depth to serve as the reference.
 
 \begin{theorem}[Finite-reference-depth value decomposition]
 \label{thm:finite_reference_depth}
-\label{prop:error_bounds}
-Fix one parameter snapshot, policies $(\pi,\pi_{\mathrm{cand}})$, recurrent map, initialization convention, $K\ge1$, and a latent norm on $\mathcal Z\subseteq\mathbb R^d$. Let $V_\psi:\mathcal Z\times\mathcal X\to\mathbb R$ be the scalar value head. For any finite integers $0\le n<m$, let $\mathcal R_{\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}\cup\{s_{\mathrm{abs}}\}$ be measurable, contain the one-step successors required by both policies, and be invariant under subsequent $\pi$ transitions almost surely. Assume rewards are bounded there; every latent iterate $z^{(j)}$ is measurable; $U_j(s)=V_\psi(z^{(j)}(s),x)$ is bounded and measurable there for $j\in\{n,\ldots,m\}$; and $U_j(s_{\mathrm{abs}})=-C_{\max}$ for every depth. Then
+Fix a finite or countable MDP, or a finite or countable policy-pair closure, and one parameter snapshot, policies $(\pi,\pi_{\mathrm{cand}})$, recurrent map, initialization convention, $K\ge1$, and a latent norm on $\mathcal Z\subseteq\mathbb R^d$. Let $V_\psi:\mathcal Z\times\mathcal X\to\mathbb R$ be the scalar value head. For any finite integers $0\le n<m$, let $\mathcal R_{\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}\cup\{s_{\mathrm{abs}}\}$ contain the one-step successors required by both policies and be invariant under subsequent $\pi$ transitions almost surely. Assume rewards are bounded there; $U_j(s)=V_\psi(z^{(j)}(s),x)$ is bounded there for $j\in\{n,\ldots,m\}$; and $U_j(s_{\mathrm{abs}})=-C_{\max}$ for every depth. All displayed norms are ordinary sup norms. Then
 \begin{align}
 \|U_n - V^\pi\|_{\infty,\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}
 &\le
@@ -266,7 +265,7 @@ If, in addition, the scalar head is $L_V$-Lipschitz in its latent argument unifo
 \|U_n-U_m\|_{\infty,\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}
 &\le
 L_V\sum_{j=n}^{m-1}
-\operatorname*{ess\,sup}_{s\in\mathcal R_{\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}}
+\sup_{s\in\mathcal R_{\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}}
 \|z^{(j+1)}(s)-z^{(j)}(s)\|.
 \label{eq:finite_path_length}
 \end{align}
@@ -305,12 +304,17 @@ A projection-active specialization makes the role of $R$ explicit. When projecti
 L_z\;\le\;L_z^{\mathrm{sat}}(R)\;:=\;\frac{R}{\rho_R}\,L_z^{\mathrm{pre}}(R),
 \label{eq:Lz_sat}
 \end{equation}
-and Proposition~\ref{prop:proj_residual_anchor} bounds the residual relative to a plan-independent baseline $b_0(x)=V_\psi(0,x)$:
+and Proposition~\ref{prop:proj_residual_anchor} bounds the residual relative to the boundary-normalized zero-latent baseline
+\[
+B_0(x,y):=V_\psi(0,x),
+\qquad
+B_0(s_{\mathrm{abs}}):=-C_{\max}:
+\]
 \begin{equation}
 \varepsilon_{\mathrm{res}}^*\;\le\;\varepsilon_0\;+\;(1+\gamma^K)\,L_V(R)\,R,
 \label{eq:eps_res_proj}
 \end{equation}
-with $\varepsilon_0:=\|b_0-\mathcal{T}^\pi_K b_0\|_{\infty,\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}$. Projection thus enters both the architectural term (through $L_V(R)R$) and the truncation term (through $L_z^{\mathrm{sat}}(R)$ and $C_z\le 2R$). The experiments report finite-sample proxies for this regime. They do not certify the uniform $\rho_R$ and Lipschitz assumptions; the held-out $U_n$ Bellman residual upper-bounds $\varepsilon_{\mathrm{res}}^*$ only up to the truncation gap (Remark~\ref{rem:residual_bridge}).
+with $\varepsilon_0:=\|B_0-\mathcal{T}^\pi_K B_0\|_{\infty,\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}$. Projection thus enters both the architectural term (through $L_V(R)R$) and the truncation term (through $L_z^{\mathrm{sat}}(R)$ and $C_z\le 2R$). The experiments report finite-sample proxies for this regime. They do not certify the uniform $\rho_R$ and Lipschitz assumptions; the held-out $U_n$ Bellman residual upper-bounds $\varepsilon_{\mathrm{res}}^*$ only up to the truncation gap (Remark~\ref{rem:residual_bridge}).
 
 \begin{corollary}[Finite-depth residual certificate]
 \label{cor:finite_depth_residual_certificate}
@@ -442,7 +446,7 @@ Then:
 where $\varepsilon_{\mathrm{CPI}} \triangleq \sup_s\bigl|\E_{a\sim\pi_{\mathrm{cand}}(\cdot\mid s)}A^\pi(s,a)\bigr|$.
 \end{theorem}
 
-The linear-in-$\alpha$ contribution $\alpha\varepsilon_{A,\mathrm{cand}}/(1-\gamma)$, instead of the naive $\varepsilon_A/(1-\gamma)$, requires the exact-centering condition~\eqref{eq:centering_condition}. That holds deterministically only when the baseline expectation in $\widehat A$ is computed by exact summation over the action space, as in the discrete-action setting of Algorithm~\ref{alg:upi}. For sampling-based or learned baselines the bound falls back to Corollary~\ref{cor:cpi_centering_defect}.
+The linear-in-$\alpha$ contribution $\alpha\varepsilon_{A,\mathrm{cand}}/(1-\gamma)$, instead of the naive $\varepsilon_A/(1-\gamma)$, requires the exact-centering condition~\eqref{eq:centering_condition}. This condition holds whenever the estimator is constructed to be exactly statewise centered. For Eq.~\eqref{eq:Ahat_def_app}, the baseline expectation must be evaluated exactly; in our finite action space we use explicit summation. Sampling-based or learned approximations instead incur the centering defect of Corollary~\ref{cor:cpi_centering_defect}.
 
 The constants split into estimable and assumed (Table~\ref{tab:diagnostics}): $\hat L_z^{\mathrm{post}}$, $\hat\rho_R$, $\hat C_z$, $\hat L_V$, and $\hat\varepsilon_{\mathrm{cent}}$ admit finite-difference or batch proxies. The architectural residual $\varepsilon_{\mathrm{res}}^*$ is a sup-norm over the advantage closure that we do not estimate uniformly; the held-out finite-batch residual upper-bounds it only up to the truncation gap (Remark~\ref{rem:residual_bridge}). On the theory-aligned episodic-$z$ hard-suite rerun, the predicted CPI penalty is non-finite on 2/10 seeds at every $\alpha$ (Table~\ref{tab:episodic_z_penalty}). At this scale, the bound functions as a structural decomposition; its constants are not calibrated enough to predict Sudoku-scale improvement.
 
@@ -492,17 +496,17 @@ L_V\,\frac{L_z^{\,n}}{1-L_z}\,C_z
 \end{align}
 \end{corollary}
 
-Corollary~\ref{cor:cpi_dials_main} is the optional fixed-point specialization of the finite-reference penalty $2\alpha\gamma B_{n,m}/(1-\gamma)$. It makes the one-step dependence on $(L_z,n,K,\alpha)$ explicit and reduces to standard CPI in the limit $L_z,\varepsilon_{\mathrm{res}}^*\to 0$. Two constants in~\eqref{eq:main_bound_dials} are observed rather than tuned: $L_V$ is only locally estimated by finite differences (Table~\ref{tab:exp1_value_head_lipschitz}), and the current clamping mechanism produces little range in the projection-active proxy $\hat L_z^{\mathrm{post}}$ ($\approx0.22$--$0.24$; Appendix~\ref{app:exp2_sweep}, Table~\ref{tab:exp2_dial_failure}). On the hard suite, we therefore treat the $L_z$-dependent terms as monitoring quantities.
+Corollary~\ref{cor:cpi_dials_main} is the optional fixed-point specialization of the finite-reference penalty $2\alpha\gamma B_{n,m}/(1-\gamma)$. It makes the one-step dependence on $(L_z,n,K,\alpha)$ explicit and reduces to standard CPI in the limit $L_z,\varepsilon_{\mathrm{res}}^*\to 0$. Two constants in~\eqref{eq:main_bound_dials} are observed rather than tuned: $L_V$ is only locally estimated by finite differences, and the current clamping mechanism produces little range in one projection-active proxy $\hat L_z^{\mathrm{post}}$ ($\approx0.22$--$0.24$). On the hard suite, we therefore treat the $L_z$-dependent terms as monitoring quantities.
 
-A projection-aware version of \eqref{eq:main_bound_dials} substitutes $\varepsilon_0+(1+\gamma^K)L_V(R)R$ for $\varepsilon_{\mathrm{res}}^*$ and $L_z^{\mathrm{sat}}(R)$ for $L_z$; the full statement is Eq.~\eqref{eq:main_bound_proj} in Appendix~\ref{app:projection_theory}. In the saturated regime ($\rho_R\gg R$), $R/\rho_R$ sets $L_z^{\mathrm{sat}}(R)$ more directly than the spectral-norm target does (Appendix~\ref{app:exp2_sweep}). Smaller $L_z$ or larger $n$ reduces $L_z^n$; smaller $\alpha$ is safer; larger $K$ tightens $1/(1-\gamma^K)$ at the cost of a $K$-dependent residual. Persistent-$z$ uses the direct augmented-state residual of Appendix~\ref{app:persistent_latent}; slow drift enters only the optional comparison to a memoryless fixed-point reference.
+A projection-aware version of \eqref{eq:main_bound_dials} substitutes $\varepsilon_0+(1+\gamma^K)L_V(R)R$ for $\varepsilon_{\mathrm{res}}^*$ and $L_z^{\mathrm{sat}}(R)$ for $L_z$; the full statement is Eq.~\eqref{eq:main_bound_proj} in Appendix~\ref{app:projection_theory}. In the saturated regime ($\rho_R\gg R$), $R/\rho_R$ sets $L_z^{\mathrm{sat}}(R)$ more directly than the clamping target does. Smaller $L_z$ or larger $n$ reduces $L_z^n$; smaller $\alpha$ is safer; larger $K$ tightens $1/(1-\gamma^K)$ at the cost of a $K$-dependent residual. Persistent-$z$ uses the direct augmented-state residual of Appendix~\ref{app:persistent_latent}; slow drift enters only the optional comparison to a memoryless fixed-point reference.
 
 \section{Experiments}
 \label{sec:experiments}
 
-All task results in this paper are on $4\times4$ Sudoku. The decision-relevant evidence is a theory-aligned episodic run at $0\%$, a persistent distilled run at $57.4\%$ under a different interaction budget, and a controlled projection $\times$ contraction factorial. These implementations do not validate the fixed-snapshot theorem; Appendix Table~\ref{tab:claim_status} maps each claim to its conditions and status.
+All task results in this paper are on $4\times4$ Sudoku. The decision-relevant evidence is a theory-aligned episodic run at $0\%$, a persistent distilled run at $57.4\%$ under a different interaction budget, and manuscript-reported aggregate projection $\times$ clamping cells. These implementations do not validate the fixed-snapshot theorem; Appendix Table~\ref{tab:claim_status} maps each claim to its conditions, provenance, and status.
 
 \textbf{Setup.}
-The persistent result, factorial, and nominal baselines use no-mask 6--8-empty Sudoku ($T{=}16$) for 20k outer steps; the episodic run stops at 20k environment steps. Nominal interactions are unequal. Architecture-matched baselines share the TRM backbone but not the update rule; external SB3 baselines are implementation checks. Contraction uses operator-norm clamping at $L_z{=}0.9$; secondary diagnostics use the easier 1--4-empty suite.
+The persistent result, reported factorial, and nominal baselines use no-mask 6--8-empty Sudoku ($T{=}16$) for 20k outer steps; the episodic run stops at 20k environment steps. Nominal interactions are unequal. Architecture-matched baselines share the TRM backbone but not the update rule; external SB3 baselines are implementation checks. The clamping-enabled condition uses an operator-norm target of $0.9$; this label does not assert that the global modulus is below one.
 
 \subsection{Persistent hard-suite implementation and limitations}
 \label{sec:harder_puzzles}
@@ -510,7 +514,7 @@ The persistent result, factorial, and nominal baselines use no-mask 6--8-empty S
 The persistent, distilled implementation produces the higher task result in Table~\ref{tab:hard_suite_anchor}. The no-mask 6--8-empty protocol is the first setting in this paper where masked random play scores $0\%$.
 
 \begin{table}[t]
-\caption{No-mask hard 4$\times$4 results on 6--8 empties ($T{=}16$, mean $\pm$ std across seeds, nominal 20k outer-step protocol; persistent-$z$). The protocol does not equalize environment interactions across rows; see paragraph below.}
+\caption{No-mask hard 4$\times$4 results on 6--8 empties ($T{=}16$, mean $\pm$ std across seeds, nominal 20k outer-step protocol; persistent-$z$). A per-seed reevaluation artifact supports the UPI--TRM row. Baseline rows are manuscript-recorded aggregates whose per-seed run artifacts are unavailable. The protocol does not equalize environment interactions across rows.}
 \label{tab:hard_suite_anchor}
 \centering
 \small
@@ -520,7 +524,7 @@ Method & Outer Steps & Seeds & Success (\%) & Return & Invalid \\
 \midrule
 UPI--TRM & 20k & 10 & \textbf{57.4 $\pm$ 12.2} & -1.82 $\pm$ 2.66 & 0.000 $\pm$ 0.000 \\
 \midrule
-\multicolumn{6}{@{}l}{\emph{Architecture-matched (same TRM backbone, no invalid actions):}} \\
+\multicolumn{6}{@{}l}{\emph{Architecture-matched, manuscript-recorded aggregates (same TRM backbone):}} \\
 TRM+PPO & 20k & 10 & 32.0 $\pm$ 15.3 & -7.87 $\pm$ 3.65 & 0.000 $\pm$ 0.000 \\
 TRM+A2C & 20k & 10 & 0.0 $\pm$ 0.0 & -16.81 $\pm$ 0.29 & 0.000 $\pm$ 0.000 \\
 TRM+DQN & 20k & 10 & 0.0 $\pm$ 0.0 & -18.38 $\pm$ 0.63 & 0.000 $\pm$ 0.000 \\
@@ -531,14 +535,14 @@ SB3 PPO/A2C/DQN/DQN($n{=}5$) & 20k & 10 & 0.0 $\pm$ 0.0 & $\approx -17.9$ & 0.78
 \end{tabular}
 \end{table}
 
-At the nominal endpoint, the $+25.4$pp TRM+PPO gap is distinguishable in the retained analysis (Welch $t\!\approx\!4.10$, $p\!\approx\!7.3\!\times\!10^{-4}$, 95\% CI $[12.4,38.5]$pp; consistent bootstrap/permutation tests). This joint, unequal-interaction implementation contrast isolates no component and implies no efficiency advantage (Appendix~\ref{app:headline_significance}).
+At the nominal endpoint, the ten manuscript-recorded seed values imply a $+25.4$pp UPI--TRM/TRM+PPO gap (Welch $t\!\approx\!4.10$, $p\!\approx\!7.3\!\times\!10^{-4}$, 95\% CI $[12.4,38.5]$pp). The arithmetic is reproducible, but the PPO per-seed run artifact is unavailable. This joint, unequal-interaction implementation contrast isolates no component and implies no efficiency advantage (Appendix~\ref{app:headline_significance}).
 
 For the persistent run, clock/carry details are unaudited, the uniform augmented residual and centering are unmeasured, and distillation violates exact-mixture deployment. Thus 57.4\% is an implementation result, not verification of Corollary~\ref{cor:persistent_cpi_augmented} or Theorem~\ref{thm:monotone_with_error}; exact centering alone would not repair the mixture mismatch.
 
-\subsection{Projection and contraction ablation}
+\subsection{Projection and clamping ablation}
 \label{sec:projection_contraction_ablation}
 
-The $2\times2$ factorial varies projection and contraction (Appendix Table~\ref{tab:controlled_2x2_main}). Projection's composite $+13.0$pp contrast ($36.2\%\to49.2\%$) mixes clipping and training dynamics. Contraction's $+2.2$pp is inconclusive; the source-reported $p\approx0.6$ is not independently auditable from retained per-seed/test artifacts. Contraction remains a conditional error-control mechanism, not a demonstrated performance dial.
+The manuscript reports aggregate cells from a $2\times2$ projection $\times$ clamping factorial (Appendix Table~\ref{tab:controlled_2x2_main}); the per-seed artifact and test script are unavailable. Projection's composite $+13.0$pp contrast ($36.2\%\to49.2\%$) mixes clipping and training dynamics. The clamping-enabled contrast is $+2.2$pp and inconclusive; the source-reported $p\approx0.6$ is not independently auditable. The theorem's contraction condition remains a conditional error-control mechanism, not a demonstrated performance dial.
 
 \subsection{Theory-aligned episodic negative result}
 \label{sec:episodic_negative_main}
@@ -555,19 +559,12 @@ PPO/A2C/DQN collect 64/32/4 transitions per nominal step. UPI--TRM is absent fro
 
 An exact 64-state, 4-action unit test has zero violations in 80 value and 21 selected-slice CPI rows; it is not an empirical discovery or Cartesian sweep (Appendix~\ref{app:finite_mdp_certificate}).
 
-\subsection{Secondary diagnostics}
-\label{sec:secondary_diagnostics_main}
-
-The easier diagnostic shows depth stability, not a hard-suite effect; other sweeps remain exploratory (Appendices~\ref{app:depth_mismatch_main} and~\ref{app:secondary_diagnostics}).
-
 \section{Discussion, Limitations, and Conclusion}
 \label{sec:conclusion}
 
-The primary result certifies a transient depth-$n$ evaluator against any finite $m>n$ through its recurrent path and depth-$m$ residual. A fixed point is unnecessary; contraction is only a geometric specialization. Persistent state has the same direct residual certificate on the augmented MDP, while slow drift serves only a stronger memoryless-reference comparison.
+The main result is a fixed-snapshot decomposition: a finite-depth recurrent evaluator can be compared with any deeper finite reference through a recurrent-path term and a reference-depth Bellman residual. Contraction supplies one optional geometric specialization rather than a model of arbitrary TRM computation. Persistent latents admit the same direct residual argument on a clock-complete augmented MDP, but the headline implementation does not provide the uniform augmented residual, exact centering, or exact-mixture deployment required to instantiate the CPI bound.
 
-Policy improvement additionally requires uniform closure control, exact centering, and pointwise exact-mixture deployment at a frozen snapshot; it certifies neither training nor distillation. The headline run is distilled and lacks a uniform augmented residual and verified centering, so exact centering alone would not make Theorem~\ref{thm:monotone_with_error} apply.
-
-Empirically: episodic $0\%$; PPO unmatched; projection composite; contraction inconclusive.
+The present empirical evidence is limited to $4\times4$ Sudoku. The theory-aligned episodic configuration fails under the tested budget, the UPI--TRM/PPO comparison is not interaction matched, projection has a composite forward-pass and training-dynamics effect, and the clamping-enabled contrast is inconclusive and lacks per-seed provenance. The two decision-relevant next tests are an interaction-matched comparison and a one-factor-at-a-time bridge between the persistent and episodic implementations.
 
 
 
@@ -653,7 +650,7 @@ For $\pi_{\mathrm{new}} = (1-\alpha)\pi + \alpha\pi_{\mathrm{cand}}$:
 \eta(\pi_{\mathrm{new}}) \ge L_\pi(\pi_{\mathrm{new}}) - \frac{2\varepsilon_{\mathrm{CPI}}\,\gamma}{(1-\gamma)^2}\,\alpha^2,
 \label{eq:cpi_bound}
 \end{equation}
-where $\varepsilon_{\mathrm{CPI}} = \max_s|\E_{a\sim\pi_{\mathrm{cand}}}A^\pi(s,a)|$.
+where $\varepsilon_{\mathrm{CPI}} = \sup_s|\E_{a\sim\pi_{\mathrm{cand}}}A^\pi(s,a)|$.
 
 % Mixture equation:
 \begin{equation}
@@ -667,6 +664,8 @@ where $\varepsilon_{\mathrm{CPI}} = \max_s|\E_{a\sim\pi_{\mathrm{cand}}}A^\pi(s,
 
 \subsection{Direct finite-depth residual certificate}
 \label{sec:persistent_augmented_cpi}
+
+The formal statement below assumes that the reachable augmented policy-pair closure is finite or countable, as in Section~\ref{sec:setup}. A continuous-kernel extension requires Remark~\ref{rem:general_kernel_extension}.
 
 Fix $n$, $(\theta,\psi)$, the policy parameters, and all environment kernels. Any timeout or remaining edit budget that affects termination is included in $y$, and $\mathrm{edit}$ updates that clock; we suppress it in the notation. Define
 \begin{equation}
@@ -845,9 +844,9 @@ Claim & Required condition & Evidence / status \\
 Finite-depth value & Frozen policy pair, common closure and norm & Proven; Theorem~\ref{thm:finite_reference_depth} \\
 Persistent direct bound & Complete augmented state, shared frozen map, uniform residual & Valid but uncalibrated; residual not measured uniformly \\
 CPI headline & Exact centering and exact deployed mixture & Not covered; headline policy is distilled \\
-Persistent 57.4\% & Nominal implementation protocol & 10-seed implementation result; unequal interactions \\
-Projection / contraction & Controlled factorial & $+13.0$pp composite / $+2.2$pp inconclusive \\
-Finite-MDP inequalities & Exact finite-state calculation & Numerical unit test; 80 value + 21 CPI rows \\
+Persistent / PPO results & Nominal implementation protocol & UPI per-seed reevaluation supplied; PPO per-seed run artifact unavailable; interactions unequal \\
+Projection / clamping & Reported factorial with per-seed provenance & $+13.0$pp composite / $+2.2$pp inconclusive; per-seed and test artifacts unavailable \\
+Finite-MDP inequalities & Exact finite-state calculation & 101 supplied CSV rows have zero numerical violations; generator and stdout supplied \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -867,7 +866,7 @@ with $z_0(s)=0$, so both the truncation term and the $K$-step residuals are know
 
 Figure~\ref{fig:finite_mdp_certificate_main} shows two checks. Left: for $\gamma{=}0.9$, $K{=}3$, $\sigma_\xi{=}0.05$, the value error decays with $n$ and worsens as $L_z\to 1$, staying below the contractive specialization of Theorem~\ref{thm:finite_reference_depth}. Right: on an evaluator-based candidate slice ($L_z{=}0.2$, $n{=}16$, $\sigma_\xi{=}0.1$, $\beta{=}1$), the surrogate gap $\widehat L_\pi(\pi_\alpha)-\eta(\pi_\alpha)$ is positive and stays below both the decomposition-based CPI penalty and the tighter $\varepsilon_{A,\mathrm{cand}}$ penalty for every tested $\alpha$ (log scale; the bound is conservative). Corollary~\ref{cor:finite_depth_residual_certificate} is directly checkable here because $\|U_n-\mathcal{T}^\pi_K U_n\|_\infty$ is computable. The script checks 80 value/decomposition rows ($4$ $L_z$ values by $20$ depths) and 21 $\alpha$ rows on this selected CPI slice, with zero violations; it does not constitute a full Cartesian sweep over $(L_z,n,K,\sigma_\xi,\alpha)$.
 
-For this revision we reran \path{python3 experiments/finite_mdp_certificate.py --outdir results/finite_mdp_certificate_validation}. The retained CSV contains 80 \texttt{value\_curve} and 21 \texttt{cpi\_curve} rows, with both certificate flags true in every row; stdout is retained in \path{reports/finite_mdp_certificate_validation.log}.
+For this revision we reran the supplied \texttt{finite\_mdp\_certificate.py}. The submitted \texttt{finite\_mdp\_summary.csv} contains 80 \texttt{value\_curve} and 21 \texttt{cpi\_curve} rows, with both certificate flags true in every row; the submitted \texttt{finite\_mdp\_certificate\_validation.log} records stdout.
 
 \begin{figure}[t]
 \centering
@@ -901,7 +900,7 @@ $\rho_R$ & Prop.~\ref{prop:proj_sat_contraction} & $\min$-batch $\|f_\theta(z,y,
 projection\_active & App.~\ref{app:exp2_sweep} & Fraction of samples where $\|f_\theta(z)\|>R$ (clipped) \\
 $C_z$ & Assump.~\ref{ass:Lip} & Empirical $\|\tilde f_\theta(z_{\mathrm{init}},y,x)-z_{\mathrm{init}}\|$ on batches \\
 $L_V(R)$ & Eq.~\eqref{eq:LV_def}, Prop.~\ref{prop:proj_residual_anchor} & Lipschitz of $V_\psi$ on $B_R$; finite-diff check (Table~\ref{tab:exp1_value_head_lipschitz}) \\
-$\varepsilon_0$ & Prop.~\ref{prop:proj_residual_anchor} & $K$-step TD error of zero-latent baseline $V_\psi(0,x)$ \\
+$\varepsilon_0$ & Prop.~\ref{prop:proj_residual_anchor} & $K$-step TD error of the boundary-normalized zero-latent baseline $B_0$ \\
 $\|U_n-\mathcal{T}^\pi_K U_n\|$ & Proxy only & Held-out $K$-step TD error; proxy for $\varepsilon_{\mathrm{res}}^*$ up to $O(\|U_n-U_*\|)$ \\
 $\bar\varepsilon_{\mathrm{res},n}$ & Cor.~\ref{cor:persistent_cpi_augmented} & Finite-batch augmented residual; not measured uniformly for headline \\
 $\varepsilon_{\mathrm{cent}}$ & Thm.~\ref{thm:monotone_with_error} & $\sup_s|\E_{a\sim\pi}\widehat A(s,a)|$ (exactly $0$ if baseline is exact) \\
@@ -924,7 +923,7 @@ To partially operationalize $L_V$ in the same regime used by the main bound, we 
 \subsection{Spectral normalization instability and a more robust alternative}
 \label{app:sn_instability}
 The contraction assumption (Assumption~\ref{ass:Lip}) is a property of the latent update map $z\mapsto \tilde f_\theta(z,y,x)$.
-We first tried to enforce it by applying power-iteration spectral normalization~\citep{Miyato2018} to linear layers in the inner recursion, followed by a strict scalar contraction factor.
+We first tried to target it by applying power-iteration spectral normalization~\citep{Miyato2018} to linear layers in the inner recursion, followed by a strict scalar factor.
 On our TRM inner module this turned out to be numerically unstable.
 
 We estimate a local Lipschitz proxy $\hat L_z$ by finite differences:
@@ -934,7 +933,7 @@ We compare six variants: (i) OFF (no normalization, no scaling), (ii) SN-only, (
 (iv) SN+SCALE, (v) CLAMP-only (operator-norm clamping without scaling), and (vi) CLAMP+SCALE.
 
 \begin{table}[t]
-\caption{Representative local Lipschitz proxy $\hat L_z$ for the inner latent update map under different ``contraction enforcement'' components (4$\times$4 Sudoku batch; $\varepsilon=10^{-3}$). Power-iteration spectral normalization (SN) can cause the proxy to explode in our inner recursion, whereas operator-norm clamping (CLAMP) remains stable.}
+\caption{Representative local Lipschitz proxy $\hat L_z$ for the inner latent update map under different contraction-oriented components (4$\times$4 Sudoku batch; $\varepsilon=10^{-3}$). Power-iteration spectral normalization (SN) can cause the proxy to explode in our inner recursion, whereas operator-norm clamping (CLAMP) remains stable. These local values are not global certificates.}
 \label{tab:sn_instability}
 \centering
 \small
@@ -952,17 +951,17 @@ CLAMP+SCALE & $\approx 0.6$ & stable \\
 \end{tabular}
 \end{table}
 
-Naively applying power-iteration spectral normalization to this architecture does not give reliable contraction control of the inner recursion. Explicit operator-norm clamping, by contrast, stays stable in this check and provides a practical path toward enforcing Assumption~\ref{ass:Lip} without numerical blow-ups.
+Naively applying power-iteration spectral normalization to this architecture does not give reliable contraction control of the inner recursion. Explicit operator-norm clamping stays numerically stable in this check, but the resulting local proxy does not establish Assumption~\ref{ass:Lip}.
 
-\subsection{Latent collapse: isolating $z\!\to\!z$ contraction from value-head normalization}
+\subsection{Latent collapse: isolating $z\!\to\!z$ clamping from value-head normalization}
 \label{app:latent_collapse_diagnostic}
 
-A natural hypothesis for why $z\!\to\!z$ contraction enforcement can hurt success rates is \emph{latent collapse}: contraction might drive all latent representations toward zero and destroy discriminative information.
-We test this with a controlled $2\times 2$ that isolates $z\!\to\!z$ contraction from value-head normalization, which also affects $\mathrm{Var}(V)$ but is architecturally separate.
+A natural hypothesis for why $z\!\to\!z$ clamping can hurt success rates is \emph{latent collapse}: the intervention might drive all latent representations toward zero and destroy discriminative information.
+We test this with a $2\times 2$ diagnostic that isolates $z\!\to\!z$ clamping from value-head normalization, which also affects $\mathrm{Var}(V)$ but is architecturally separate.
 
 The setup is a $2\times 2$ factorial on the 4$\times$4 Sudoku dataset (1--4 empties, single seed, unroll depth $n{=}16$, batch size 128, projection radius $R{=}10$):
 \begin{itemize}
-\item \textbf{Axis 1 ($z\!\to\!z$ contraction):} OFF (baseline) vs.\ ON (target $L_z=0.9$).
+\item \textbf{Axis 1 ($z\!\to\!z$ clamping):} disabled vs.\ enabled (target $0.9$).
 \item \textbf{Axis 2 (value-head normalization):} OFF (baseline) vs.\ ON (target $L_V=1.0$).
 \end{itemize}
 This gives four conditions: A (both OFF), B ($z\!\to\!z$ ON, value-head OFF), C ($z\!\to\!z$ OFF, value-head ON), D (both ON).
@@ -970,7 +969,7 @@ We measure pre-projection latent norms $\|z^{(n)}_{\text{pre}}\|$ and total vari
 
 \begin{table}[t]
 \caption{Latent collapse diagnostic at $n{=}16$ unroll depth.
-Comparing B vs.\ A isolates $z\!\to\!z$ contraction effect; comparing C vs.\ A isolates value-head normalization effect.
+Comparing B vs.\ A isolates the $z\!\to\!z$ clamping contrast; comparing C vs.\ A isolates the value-head normalization contrast.
 Pre-projection metrics are measured before the ball projection $\Pi_R$; post-projection norms are $\|z^{(n)}_{\text{post}}\|=\|\Pi_R(z^{(n)}_{\text{pre}})\|$.}
 \label{tab:latent_collapse}
 \centering
@@ -987,11 +986,11 @@ D & ON & ON & 32.0 & 608.7 & 0.396 & 2412 & 10.0 \\
 \end{tabular}
 \end{table}
 
-Three observations stand out. First, $z\!\to\!z$ contraction causes modest clustering, not collapse-to-zero. Comparing B vs.\ A, total variance decreases by $\sim$25\% (ratio 0.75) and pairwise cosine similarity increases by $\sim$0.21, while pre-projection norms remain $\|z^{(n)}_{\text{pre}}\|\approx 32$, well above the projection radius $R{=}10$: latents become modestly more clustered in direction, but do not collapse toward zero. Second, the large $\mathrm{Var}(V)$ differences come from value-head normalization, not $z\!\to\!z$ contraction. Comparing C vs.\ A, $\mathrm{Var}(V)$ increases by $\sim$160{,}000$\times$ (from 0.016 to 2493) when value-head normalization is enabled, while B vs.\ A barely moves (ratio $\approx$1.04); earlier observations of exploding $\mathrm{Var}(V)$ ``with contraction ON'' were confounded by value-head normalization. Third, projection saturation explains the constant post-projection norms: all conditions have pre-projection $\|z^{(n)}_{\text{pre}}\|\approx 32 \gg R{=}10$, so $\Pi_R$ is always active and clips to $\|z^{(n)}_{\text{post}}\|=10$.
+Three observations stand out. First, clamping is associated with modest clustering, not collapse-to-zero. Comparing B vs.\ A, total variance decreases by $\sim$25\% (ratio 0.75) and pairwise cosine similarity increases by $\sim$0.21, while pre-projection norms remain $\|z^{(n)}_{\text{pre}}\|\approx 32$, well above the projection radius $R{=}10$. Second, the large $\mathrm{Var}(V)$ differences come from value-head normalization, not $z\!\to\!z$ clamping. Comparing C vs.\ A, $\mathrm{Var}(V)$ increases by $\sim$160{,}000$\times$ (from 0.016 to 2493) when value-head normalization is enabled, while B vs.\ A barely moves (ratio $\approx$1.04); earlier observations of exploding $\mathrm{Var}(V)$ in a clamping-enabled condition were confounded by value-head normalization. Third, projection saturation explains the constant post-projection norms: all conditions have pre-projection $\|z^{(n)}_{\text{pre}}\|\approx 32 \gg R{=}10$, so $\Pi_R$ is always active and clips to $\|z^{(n)}_{\text{post}}\|=10$.
 
 Within this single-seed diagnostic, the modest clustering pattern is inconsistent with a simple collapse-to-zero explanation, but it cannot identify the mechanism behind success-rate differences.
 
-A 200-step follow-up associates value-head normalization with clamp-hitting: contraction alone remains stable with targets $\approx-1.7$, value-head normalization alone reaches the $\pm20$ clamps, and the combined cell reaches the positive clamp (target${}=20$ by step 60, $V(s)=20$ by step 100). Short contraction-only runs with value-head normalization disabled remain stable but obtain only ${\approx}10\%$ success at 1k steps. These exploratory observations identify a confound; they do not establish a causal or general training mechanism.
+A 200-step follow-up associates value-head normalization with clamp-hitting: clamping alone remains stable with targets $\approx-1.7$, value-head normalization alone reaches the $\pm20$ clamps, and the combined cell reaches the positive clamp (target${}=20$ by step 60, $V(s)=20$ by step 100). Short clamping-only runs with value-head normalization disabled remain stable but obtain only ${\approx}10\%$ success at 1k steps. These exploratory observations identify a confound; they do not establish a causal or general training mechanism.
 
 
 
@@ -1010,9 +1009,9 @@ The 1--4-empty toy suite is a sanity check because masked random already succeed
 \toprule
 Method & Success (\%) \\
 \midrule
-UPI--TRM (persistent-$z$, no contraction, $R{=}10$) & \textbf{93.3 $\pm$ 2.3} \\
-UPI--TRM (episodic-$z$, no contraction, $R{=}10$) & \textbf{93.3 $\pm$ 2.3} \\
-UPI--TRM (episodic-$z$, contraction, proj.\ off) & \textbf{90.7 $\pm$ 5.0} \\
+UPI--TRM (persistent-$z$, clamping disabled, $R{=}10$) & \textbf{93.3 $\pm$ 2.3} \\
+UPI--TRM (episodic-$z$, clamping disabled, $R{=}10$) & \textbf{93.3 $\pm$ 2.3} \\
+UPI--TRM (episodic-$z$, clamping enabled, proj.\ off) & \textbf{90.7 $\pm$ 5.0} \\
 Random (masked uniform) & 52.0 \\
 \bottomrule
 \end{tabular*}
@@ -1060,73 +1059,37 @@ To test whether the finite-$R$ specialization in Remark~\ref{rem:finite_R_Cz} ha
 We present the full B1 (one-step successor states from B0) results from the isolation study (Section~\ref{sec:isolation_study}).
 
 \textbf{Unroll sensitivity on B1.}
-On successor states, contraction still improves $\Delta_V$, $\Delta_z$, $\Delta_\pi$, and action agreement at all tested depth mismatches, though absolute instability remains higher than on B0 initial states (Figure~\ref{fig:exp1_unroll_sensitivity_b1}).
-
-\begin{figure}[!htbp]
-\centering
-\includegraphics[width=0.85\linewidth]{figures/fig_exp1_unroll_sensitivity_appendix.pdf}
-\caption{Unroll sensitivity on B1 (successor states). Training depth $n_{\mathrm{train}}{=}2$, evaluated at $n_{\mathrm{eval}} \in \{4, 8, 16\}$. ``No Contraction'' vs.\ ``Contraction'' ($L_z{=}0.9$); the \emph{only} difference is \texttt{enable\_contraction}. Both conditions: value-head spectral norm disabled, projection $R{=}10$. Seeds: 41--50. Left: $\Delta_V$ (value instability, log scale). Center: $\Delta_\pi$ (policy KL, log scale). Right: Argmax Agreement. Contraction improves all three metrics on B1 as well, though the absolute variability remains higher than on B0. Error bars: mean$\pm$std ($\Delta_V$, $\Delta_\pi$); Wilson 95\% CI (argmax).}
-\label{fig:exp1_unroll_sensitivity_b1}
-\end{figure}
+On successor states, the clamping-enabled condition has lower $\Delta_V$, $\Delta_z$, and $\Delta_\pi$ and higher action agreement at all tested depth mismatches, though absolute instability remains higher than on B0 initial states.
 
 \textbf{Radius sweep on B1.}
-On B1 at \emph{proj.\ off}, contraction improves latent drift ($\Delta_z$: $35.3 \to 22.7$, i.e., $1.6\times$), action agreement ($47.2\% \to 64.7\%$), and value instability $\Delta_V$ ($2.23 \to 1.06$, i.e., $2.1\times$).
+On B1 at \emph{proj.\ off}, the clamping-enabled condition has lower latent drift ($\Delta_z$: $35.3 \to 22.7$, i.e., $1.6\times$), higher action agreement ($47.2\% \to 64.7\%$), and lower value instability $\Delta_V$ ($2.23 \to 1.06$, i.e., $2.1\times$).
 Absolute variability nevertheless remains substantially higher than on B0 initial states.
 
 The main-text claim in Section~\ref{sec:isolation_study} stays anchored on B0 initial states, because B1 is an appendix-only successor-state check and is noisier even though the qualitative direction now matches B0.
-
-\begin{figure}[!htbp]
-\centering
-\includegraphics[width=0.85\linewidth]{figures/fig_exp1_radius_sweep_appendix.pdf}
-\caption{Projection radius sweep on B1 (successor states). ``No Contraction'' vs.\ ``Contraction'' ($L_z{=}0.9$) across projection settings \{proj.\ off, $R{=}10$, $R{=}100$\}, where \emph{proj.\ off} denotes $\Pi_R=\mathrm{Id}$. Both conditions: value-head spectral norm disabled. Left: $\Delta_V$. Center: $\Delta_z$. Right: argmax agreement. At \emph{proj.\ off}, contraction improves $\Delta_V$, $\Delta_z$, and argmax, though the absolute instability remains higher than on B0. Seeds: 41--50. Error bars: mean$\pm$std ($\Delta_V$, $\Delta_z$); Wilson 95\% CI (argmax).}
-\label{fig:exp1_radius_sweep_b1}
-\end{figure}
 
 \input{tables/table_exp1_radius_sweep_appendix.tex}
 
 \subsection{Projection Dominance Study}
 \label{app:exp2_sweep}
 
-We probed a putative ``contraction dial'' by sweeping the target $L_z^{\mathrm{target}}\in\{0.9, 0.95, 0.99, 0.999\}$.
+We probed the clamping target $L_z^{\mathrm{target}}\in\{0.9, 0.95, 0.99, 0.999\}$.
 All models are trained on the same 4$\times$4 Sudoku suite (1--4 empties) with \texttt{disable\_value\_head\_norm: true}, evaluated at $8\times$ depth mismatch on B0 (initial states).
 
-The dial does not control achieved $L_z$. Figure~\ref{fig:exp2_dial_does_not_control_Lz} and Table~\ref{tab:exp2_dial_failure} show that the achieved post-projection contraction modulus $\hat L_z^{\mathrm{post}}$ stays in a narrow $0.219$--$0.242$ band across the four dial settings, and the \emph{ordering} of dial values does not produce a monotonic ordering in stability metrics. The dial has insufficient range to meaningfully control the achieved Lipschitz constant.
-
-\begin{figure}[!htbp]
-\centering
-\IfFileExists{figures/fig_exp2_dial_does_not_control_Lz.pdf}{%
-\includegraphics[width=0.85\linewidth]{figures/fig_exp2_dial_does_not_control_Lz.pdf}%
-}{%
-\missingfigurebox{Figure unavailable; numeric results are in Table~\ref{tab:exp2_dial_failure}.}%
-}
-\caption{The contraction ``dial'' ($L_z^{\mathrm{target}}$) does not meaningfully control achieved $\hat L_z^{\mathrm{post}}$: all four settings land in a narrow $0.219$--$0.242$ band. The ordering of dial values does not produce monotonic stability. All conditions: value-head spectral norm disabled, projection $R{=}10$. \emph{No monotonic stability-dial claim is supported.}}
-\label{fig:exp2_dial_does_not_control_Lz}
-\end{figure}
+The target does not control the measured local proxy. Table~\ref{tab:exp2_dial_failure} shows that $\hat L_z^{\mathrm{post}}$ stays in a narrow $0.219$--$0.242$ band across the four target settings, and the ordering does not produce a monotonic ordering in stability metrics. These finite-difference values are not certified global Lipschitz constants.
 
 \input{tables/table_exp2_dial_does_not_control_Lz.tex}
 
-Projection, separately, is a major stabilizer. Figure~\ref{fig:exp2_projection_stabilizer} and Table~\ref{tab:exp2_projection_stabilizer} show that projection at $R{=}10$ improves $\Delta_V$ by $6$--$10\times$ and argmax agreement by $\approx 8$--$10$~pp compared to \emph{proj.\ off}. At $R{=}10$ projection is active $100\%$ of the time, which can mask any contraction-related effects.
-
-\begin{figure}[!htbp]
-\centering
-\IfFileExists{figures/fig_exp2_projection_is_primary_stabilizer.pdf}{%
-\includegraphics[width=0.85\linewidth]{figures/fig_exp2_projection_is_primary_stabilizer.pdf}%
-}{%
-\missingfigurebox{Figure unavailable; numeric results are in Table~\ref{tab:exp2_projection_stabilizer}.}%
-}
-\caption{Projection ($R{=}10$ vs.\ \emph{proj.\ off}, where \emph{proj.\ off} denotes $\Pi_R=\mathrm{Id}$) is a major stabilizer: $\Delta_V$ improves $6$--$10\times$; argmax agreement improves $8$--$10$~pp. All conditions: value-head spectral norm disabled, $z\!\to\!z$ contraction ON ($L_z{=}0.9$). When projection is active 100\%, it can dominate stability effects.}
-\label{fig:exp2_projection_stabilizer}
-\end{figure}
+Projection, separately, is a major stabilizer in this exploratory comparison. Table~\ref{tab:exp2_projection_stabilizer} shows that projection at $R{=}10$ improves $\Delta_V$ by $6$--$10\times$ and argmax agreement by $\approx 8$--$10$~pp compared to \emph{proj.\ off}. At $R{=}10$ projection is active $100\%$ of the time, which can mask differences between the clamping conditions.
 
 \input{tables/table_exp2_projection_effect.tex}
 
-In this projection-active regime, the spectral-norm target does not meaningfully vary the achieved contraction modulus, while projection itself acts as a strong stabilizer. The isolation study therefore supports only a \emph{binary} contraction effect at \emph{proj.\ off}, not a tunable post-projection control parameter.
+In this projection-active regime, the clamping target does not meaningfully vary the local proxy, while projection itself acts as a strong stabilizer. The isolation study therefore supports only a binary clamping-condition contrast at \emph{proj.\ off}, not a tunable or certified post-projection modulus.
 
 \subsection{Projection-Free Dial Range Test}
 \label{app:exp4_projection_free_dial}
 
 Appendix~\ref{app:exp2_sweep} shows that the spectral-norm target $L_z^{\mathrm{target}}$ is not an effective control parameter when projection is active.
-We therefore test a narrower question here: with projection disabled, can inference-time scaling induce a wider range of achieved contraction?
+We therefore test a narrower question here: with projection disabled, can inference-time scaling induce a wider range in the local proxy?
 
 With projection disabled (\emph{proj.\ off}, implemented as $\Pi_R=\mathrm{Id}$) and value-head spectral norm disabled, we apply inference-time scalar scaling to the $z\!\to\!z$ update weights of a single trained checkpoint, then measure the achieved pre-projection Lipschitz proxy $L^{\mathrm{pre}}_z$ and stability metrics ($\Delta_V$, argmax agreement) at $8\times$ depth mismatch on 100 B0 samples.
 
@@ -1141,9 +1104,9 @@ We ablate projection at \emph{training time} to test whether the ball projection
 
 \input{tables/table_exp3_projection_ablation.tex}
 
-In this easy-suite ablation, all six conditions (contraction ON/OFF crossed with $\{\text{proj.\ off},10,100\}$) pass the stated stability gate and obtain $94$--$98\%$ success. Thus projection is not necessary for stability within this tested protocol; this is not a general training-stability conclusion.
+In this easy-suite ablation, all six conditions (clamping enabled/disabled crossed with $\{\text{proj.\ off},10,100\}$) pass the stated stability gate and obtain $94$--$98\%$ success. Thus projection is not necessary for stability within this tested protocol; this is not a general training-stability conclusion.
 
-\subsection{Projection-Free Contraction Dial (Full Results)}
+\subsection{Projection-Free Clamping-Target Sweep (Full Results)}
 \label{app:exp4_projection_free_dial_v2}
 
 The depth-mismatch summary in Appendix~\ref{app:depth_mismatch_main} gives the high-level takeaway.
@@ -1155,55 +1118,30 @@ Table~\ref{tab:exp4_projection_free_dial_v2} below provides the full numeric res
 \label{app:exp5_tradeoff_curve}
 
 This appendix provides an exploratory stability--expressivity analysis.
-\textbf{Important:} Success rates here (${\approx}6.7\%$) are \emph{not} comparable to Table~\ref{tab:upi_success_only} (${\approx}93\%$) because they use different evaluation protocols: Exp5 uses \emph{matched compute} ($n_\mathrm{eval}{=}2$, \emph{proj.\ off}) to isolate contraction-related effects, while Table~\ref{tab:upi_success_only} uses $n_\mathrm{eval}{=}2$ with mixed projection settings (no-contraction: $R{=}10$; contraction: \emph{proj.\ off}). The low matched-compute success in Exp5 reflects the inherent difficulty of solving puzzles with only 2 unroll steps under uniform projection-off evaluation, not model deficiency.
+\textbf{Important:} Success rates here (${\approx}6.7\%$) are \emph{not} comparable to Table~\ref{tab:upi_success_only} (${\approx}93\%$) because they use different evaluation protocols: Exp5 uses \emph{matched compute} ($n_\mathrm{eval}{=}2$, \emph{proj.\ off}) to isolate clamping-condition differences, while Table~\ref{tab:upi_success_only} uses $n_\mathrm{eval}{=}2$ with mixed projection settings (clamping disabled: $R{=}10$; clamping enabled: \emph{proj.\ off}). The low matched-compute success in Exp5 reflects the inherent difficulty of solving puzzles with only 2 unroll steps under uniform projection-off evaluation, not model deficiency.
 
 Using inference-time scaling (scales $\in \{1.0, 0.85, 0.70, 0.55\}$, \emph{proj.\ off}, value-head spectral normalization disabled), we observe that stability varies modestly across scale settings while task success remains essentially flat ($\approx 6.7\%$); we do not observe a pronounced tradeoff in this regime.
 Table~\ref{tab:exp5-tradeoff} provides the numeric results.
 
 \input{tables/table_exp5_tradeoff_curve.tex}
 
-Figure~\ref{fig:exp5_L_vs_metrics} shows achieved $\hat L^{\mathrm{pre}}_z$ vs.\ both stability and success.
-
-\begin{figure}[t]
-\centering
-\IfFileExists{figures/fig_exp5_L_vs_metrics.pdf}{%
-\includegraphics[width=0.85\linewidth]{figures/fig_exp5_L_vs_metrics.pdf}%
-}{%
-\missingfigurebox{Figure unavailable; numeric results are in Table~\ref{tab:exp5-tradeoff}.}%
-}
-\caption{Achieved $\hat L^{\mathrm{pre}}_z$ (x-axis) vs.\ argmax agreement [\%] ($n{=}2 \to 16$, left y-axis, blue) and task success [\%] (right y-axis, green). Scale annotations show $s$. \textbf{Note:} Success rates use matched compute ($n{=}2$, proj.\ off); Table~\ref{tab:upi_success_only} uses $n{=}2$ with mixed projection settings (see text).}
-\label{fig:exp5_L_vs_metrics}
-\end{figure}
-
-
-
-
 \section{Decision-Relevant Hard-Suite Records}
 \label{app:hard_records}
 
-This section retains the hard-suite task records and controlled projection $\times$ contraction aggregates used in the main narrative.
+This section retains the hard-suite task records and reported projection $\times$ clamping aggregates used in the main narrative.
 
 \subsection{Harder 4$\times$4 Sudoku (6--8 Empties)}
 \label{app:harder_sudoku_detailed}
 
 We extend evaluation to a harder suite with 6--8 empty cells, where the random-policy success rate drops to 0\%.
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=0.85\linewidth]{figures/table3_hard_controlled_curves.pdf}
-\caption{Controlled no-mask hard 4$\times$4 2$\times$2 learning curves on 6--8 empties: success rate (feasible within $T{=}16$) vs.\ training steps (20k steps, greedy evaluation, 10 seeds per cell). Final success rates are $35.0\%$ (NC, proj.\ off), $48.2\%$ (NC,$R{=}10$), $37.4\%$ (C, proj.\ off), and $50.2\%$ (C,$R{=}10$). Random remains at $0\%$. Projection shifts both contraction settings upward by about 13 percentage points, while contraction adds only a small average effect.}
-\label{fig:feasibility_6to8empties_appendix}
-\end{figure}
-
-
-
-\subsection{Deconfounded Projection $\times$ Contraction on Hard 4$\times$4}
+\subsection{Reported Projection $\times$ Clamping Aggregates on Hard 4$\times$4}
 \label{sec:controlled_2x2_main}
 
-To isolate the mechanisms, we ran a controlled 2$\times$2 factorial on the same no-mask hard 4$\times$4 suite.
+The manuscript records aggregate cells from a $2\times2$ factorial on the same no-mask hard 4$\times$4 suite. The per-seed factorial artifact and statistical test script are unavailable, so the table supports only arithmetic comparisons among the reported aggregates.
 
 \begin{table}[t]
-\caption{Controlled no-mask hard 4$\times$4 2$\times$2 (10 seeds per cell). The projection contrast is larger; the contraction contrast is small and inconclusive.}
+\caption{Manuscript-reported no-mask hard 4$\times$4 2$\times$2 aggregates (10 seeds per cell). The projection contrast is larger; the clamping-enabled contrast is small and inconclusive. Per-seed artifacts are unavailable.}
 \label{tab:controlled_2x2_main}
 \centering
 \small
@@ -1211,15 +1149,15 @@ To isolate the mechanisms, we ran a controlled 2$\times$2 factorial on the same 
 \toprule
 Condition & Success (\%) \\
 \midrule
-No contraction, proj.\ off & 35.0 $\pm$ 8.9 \\
-No contraction, $R{=}10$ & 48.2 $\pm$ 7.1 \\
-Contraction, proj.\ off & 37.4 $\pm$ 7.8 \\
-Contraction, $R{=}10$ & 50.2 $\pm$ 10.5 \\
+Clamping disabled, proj.\ off & 35.0 $\pm$ 8.9 \\
+Clamping disabled, $R{=}10$ & 48.2 $\pm$ 7.1 \\
+Clamping enabled, proj.\ off & 37.4 $\pm$ 7.8 \\
+Clamping enabled, $R{=}10$ & 50.2 $\pm$ 10.5 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The projection contrast raises success from $36.2\%$ to $49.2\%$ (+13.0pp averaged over contraction status). It is a composite algorithmic effect spanning the forward pass and training dynamics (changes to $f_\theta$, $\varepsilon_0$, and the optimizer trajectory), which~\eqref{eq:main_bound_proj} does not model. Averaging over projection status, contraction raises success from $41.6\%$ to $43.8\%$ (+2.2pp). The source-reported $p\approx0.6$ is not independently auditable because the retained package lacks the per-seed factorial artifact and test script; the aggregate contrast is inconclusive and does not support a variance-reduction claim.
+The reported projection contrast raises success from $36.2\%$ to $49.2\%$ (+13.0pp averaged over clamping status). It is a composite algorithmic effect spanning the forward pass and training dynamics (changes to $f_\theta$, $\varepsilon_0$, and the optimizer trajectory), which~\eqref{eq:main_bound_proj} does not model. Averaging over projection status, the clamping-enabled contrast raises success from $41.6\%$ to $43.8\%$ (+2.2pp). The source-reported $p\approx0.6$ is not independently auditable because the retained package lacks the per-seed factorial artifact and test script; the aggregate contrast is inconclusive and does not support a variance-reduction claim.
 
 \section{Secondary Robustness Diagnostics}
 \label{app:secondary_robustness}
@@ -1230,47 +1168,32 @@ These depth-mismatch curves and discussion details are secondary diagnostics and
 \label{sec:isolation_study}
 \label{app:depth_mismatch_main}
 
-To probe evaluation-time robustness as compute changes, we evaluate checkpoints trained at $n_{\mathrm{train}}{=}2$ under deeper unrolls $n_{\mathrm{eval}}\in\{4,8,16\}$ on the 1--4-empty suite and aggregate over seeds 41--50. On B0 initial states at fixed $4\times$ mismatch ($n{=}2\rightarrow 8$), contraction lowers $\Delta_V$ from $0.166$ to $0.064$ and raises argmax agreement from $90.2\%$ to $95.5\%$; $\Delta_\pi$ stays near zero. This is finite-batch diagnostic contact with the episodic setting, not theorem validation, and it does not speak to persistent-$z$ behavior on the hard suite.
+To probe evaluation-time robustness as compute changes, we evaluate checkpoints trained at $n_{\mathrm{train}}{=}2$ under deeper unrolls $n_{\mathrm{eval}}\in\{4,8,16\}$ on the 1--4-empty suite and aggregate over seeds 41--50. On B0 initial states at fixed $4\times$ mismatch ($n{=}2\rightarrow 8$), the clamping-enabled condition lowers $\Delta_V$ from $0.166$ to $0.064$ and raises argmax agreement from $90.2\%$ to $95.5\%$; $\Delta_\pi$ stays near zero. This is finite-batch diagnostic contact with the episodic setting, not theorem validation, and it does not establish the global contraction condition or speak to persistent-$z$ behavior on the hard suite.
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=0.88\columnwidth]{figures/fig_exp1_unroll_sensitivity_main.pdf}
-\caption{B0 depth-mismatch sensitivity for checkpoints trained at $n_{\mathrm{train}}{=}2$ and evaluated at $n_{\mathrm{eval}}\in\{4,8,16\}$. Both conditions use projection $R{=}10$ and 10 seeds. Contraction lowers $\Delta_V$ and improves argmax agreement; $\Delta_\pi$ stays near zero.}
-\label{fig:exp1_unroll_sensitivity}
-\end{figure}
+The detailed tables (Appendix~\ref{app:exp1_tables}) show that moving from \emph{proj.\ off} to $R{=}10$ yields the larger reduction in $\Delta_V$, while Appendix~\ref{app:exp1_b1} gives the same qualitative pattern on B1 successor states with higher noise.
 
-Figure~\ref{fig:exp1_unroll_sensitivity} shows a clear robustness gain from contraction under deeper evaluation. The detailed tables (Appendix~\ref{app:exp1_tables}) show that moving from \emph{proj.\ off} to $R{=}10$ yields the larger reduction in $\Delta_V$, while Appendix~\ref{app:exp1_b1} gives the same qualitative pattern on B1 successor states with higher noise.
-
-\subsection{Controlled 2$\times$2 (Contraction $\times$ Projection) on Hard Suite (Full Curves)}
+\subsection{Reported 2$\times$2 (Clamping $\times$ Projection) on Hard Suite}
 \label{app:controlled_2x2}
 
-Historical hard-suite comparisons mixed projection settings and therefore confounded contraction with clipping.
-To deconfound, we ran a controlled 2$\times$2 factorial (contraction ON/OFF $\times$ projection ON/OFF) on the same hard 4$\times$4 Sudoku suite under the no-mask protocol (6--8 empties, 20k steps, 10 seeds). Figure~\ref{fig:feasibility_6to8empties_appendix} shows the full learning curves; Figure~\ref{fig:controlled_2x2_bar} summarizes final performance.
+Historical hard-suite comparisons mixed projection settings and therefore confounded the clamping intervention with clipping. The recorded $2\times2$ aggregate uses the same no-mask hard 4$\times$4 Sudoku protocol (6--8 empties, 20k steps, 10 seeds), but the submitted evidence lacks per-seed provenance.
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=0.85\linewidth]{figures/table3_hard_controlled_2x2_bar.pdf}
-\caption{Controlled 2$\times$2 (contraction $\times$ projection) on hard 4$\times$4 Sudoku (6--8 empties, no-mask protocol, $T{=}16$, 20k steps, 10 seeds). Final success rates are \textbf{No Contraction + proj.\ off:} $35.0\% \pm 8.9\%$; \textbf{No Contraction + $R{=}10$:} $48.2\% \pm 7.1\%$; \textbf{Contraction + proj.\ off:} $37.4\% \pm 7.8\%$; \textbf{Contraction + $R{=}10$:} $50.2\% \pm 10.5\%$. The aggregate projection contrast is +13.0pp; contraction adds +2.2pp and does not reduce variance under projection.}
-\label{fig:controlled_2x2_bar}
-\end{figure}
+Three readings follow from the aggregate table. Enabling projection raises reported mean success from $36.2\%$ to $49.2\%$ (+13.0pp averaged over clamping status), a composite algorithmic contrast. Clamping adds only a small average contrast: at \emph{proj.\ off} it changes success from $35.0\%$ to $37.4\%$ (+2.4pp), and at $R{=}10$ from $48.2\%$ to $50.2\%$ (+2.0pp). The highest-mean cell is clamping enabled with $R{=}10$ ($50.2\%\pm10.5\%$) versus $48.2\%\pm7.1\%$ for clamping disabled at $R{=}10$; these aggregates do not establish a contraction benefit or variance reduction.
 
-Three readings follow from the aggregate 10-seed table. Enabling projection raises mean success from $36.2\%$ to $49.2\%$ (+13.0pp averaged over contraction status), a composite algorithmic contrast. Contraction adds only a small average effect: at \emph{proj.\ off} it changes success from $35.0\%$ to $37.4\%$ (+2.4pp), and at $R{=}10$ from $48.2\%$ to $50.2\%$ (+2.0pp). The highest-mean cell is C$+R{=}10$ ($50.2\%\pm10.5\%$) versus $48.2\%\pm7.1\%$ for no contraction at $R{=}10$; this factorial does not establish a contraction benefit or variance reduction.
-
-The controlled table replaces the older asymmetric narrative: projection has the larger composite success contrast, while contraction has only a small, inconclusive average contrast. The separate depth-mismatch result concerns value stability, not hard-suite return.
+The reported table replaces the older asymmetric narrative: projection has the larger composite success contrast, while clamping has only a small, inconclusive average contrast. The separate depth-mismatch result concerns value stability, not hard-suite return.
 
 \subsection{Discussion details}
 \label{app:discussion_details}
 
 The stability experiments answer different questions, and the shortest consistent reading is:
-Appendix~\ref{sec:isolation_study} gives a binary contraction effect on \emph{evaluation-time} depth-mismatch stability for B0 initial states;
+Appendix~\ref{sec:isolation_study} gives a binary clamping-condition contrast on \emph{evaluation-time} depth-mismatch stability for B0 initial states;
 Appendix~\ref{app:exp2_sweep} shows that active projection can dominate and mask that effect;
 Appendix~\ref{app:exp3_projection_ablation} shows projection is not required for \emph{training} stability;
-and Appendix~\ref{app:exp4_projection_free_dial_v2} shows that once projection is disabled, the contraction proxy regains meaningful range.
+and Appendix~\ref{app:exp4_projection_free_dial_v2} shows that once projection is disabled, the local proxy regains meaningful range.
 Appendix~\ref{app:exp5_tradeoff_curve} is exploratory only: its success rates (${\approx}6.7\%$) use matched compute ($n{=}2$, proj.\ off) and are not directly comparable to Table~\ref{tab:upi_success_only}, which mixes projection settings.
 
-These appendices show two observed contrasts: projection changes success and depth-stability diagnostics through coupled forward-pass and training channels, while disabling projection exposes a wider contraction-proxy range for inference-time checks. They do not isolate a projection training-stability effect or establish that contraction improves hard-suite performance.
+These appendices show two observed contrasts: projection changes success and depth-stability diagnostics through coupled forward-pass and training channels, while disabling projection exposes a wider local-proxy range for inference-time checks. They do not isolate a projection training-stability effect, certify contraction, or establish that clamping improves hard-suite performance.
 
-A naive reading of the older asymmetric comparison would suggest that enforcing $L_z<1$ is strongly harmful on harder tasks. The controlled no-mask 10-seed $2\times 2$ does not support that reading. Projection changes mean success from $36.2\%$ to $49.2\%$, while contraction changes it only from $41.6\%$ to $43.8\%$ averaged over projection settings (+2.2pp) and does not reduce variance under projection. Contraction is a sufficient error-control condition, but these data do not demonstrate it as a hard-task performance dial.
+A naive reading of the older asymmetric comparison would suggest that the clamping intervention is strongly harmful on harder tasks. The reported no-mask 10-seed $2\times2$ aggregates do not support that reading. Projection changes mean success from $36.2\%$ to $49.2\%$, while clamping changes it only from $41.6\%$ to $43.8\%$ averaged over projection settings (+2.2pp) and does not reduce variance under projection. Mathematical contraction is a sufficient error-control condition, but these data do not establish that condition or demonstrate clamping as a hard-task performance dial.
 
 \section{Protocol and Theory-Aligned Run Records}
 \label{app:protocol_records}
@@ -1302,7 +1225,7 @@ There is therefore no numerical interaction-matched UPI--TRM versus PPO result i
 \subsection{Headline significance-test data}
 \label{app:headline_significance}
 
-The significance tests in Section~\ref{sec:harder_puzzles} use the final per-seed success rates from the nominal 20k outer-step hard-suite protocol. For UPI--TRM, the 10 seed-level success rates are
+The significance calculation in Section~\ref{sec:harder_puzzles} uses the ten seed-level success rates recorded in the manuscript for the nominal 20k outer-step hard-suite protocol. For UPI--TRM, the rates are also present in the submitted reevaluation artifact:
 \[
 0.56,\ 0.50,\ 0.68,\ 0.50,\ 0.64,\ 0.70,\ 0.74,\ 0.42,\ 0.38,\ 0.62,
 \]
@@ -1310,19 +1233,19 @@ with mean $57.4\%$ and sample standard deviation $12.2\%$. For the architecture-
 \[
 0.30,\ 0.32,\ 0.12,\ 0.54,\ 0.12,\ 0.56,\ 0.20,\ 0.32,\ 0.42,\ 0.30,
 \]
-with mean $32.0\%$ and sample standard deviation $15.3\%$. Applying Welch's $t$-test to these seed-level values gives $t\approx 4.10$, $\mathrm{df}\approx 17.1$, two-sided $p\approx 7.3\times 10^{-4}$, and a 95\% confidence interval of $[12.4, 38.5]$ percentage points for the mean difference. A 100{,}000-sample bootstrap over seeds gives a 95\% interval of $[13.8, 36.6]$ percentage points, and a permutation test gives $p\approx 1.2\times 10^{-3}$.
+with mean $32.0\%$ and sample standard deviation $15.3\%$. Applying Welch's $t$-test to these recorded values gives $t\approx 4.10$, $\mathrm{df}\approx 17.1$, two-sided $p\approx 7.3\times 10^{-4}$, and a 95\% confidence interval of $[12.4, 38.5]$ percentage points for the mean difference. These calculations establish arithmetic consistency only: the submitted evidence does not contain the PPO per-seed run artifact or an independent resampling script.
 
 \subsection{Theory-Aligned Episodic-$z$ Rerun on the Hard Suite}
 \label{app:episodic_z_hard_suite_rerun}
 
-We ran a pre-registered, theory-aligned rerun on the same no-mask hard 4$\times$4 Sudoku suite used in Table~\ref{tab:hard_suite_anchor} (6--8 empties, $T{=}16$, 20k environment steps, seeds 41--50). The rerun starts from the persistent-$z$ hard-suite configuration and jointly changes four factors: episodic-$z$ latents, exact baseline summation, exact $K$-step targets, and explicit conservative mixtures. The architecture-matched evaluation interface and the inherited persistent-$z$ hyperparameters ($\gamma{=}0.99$, $K{=}1$, $n{=}2$) are unchanged. Diagnostics are computed on a frozen 256-instance closure batch (seed 1729). The fixed test split of the canonical 6--8-empty dataset contains only 99 viable puzzles, so the closure batch is sampled from the \texttt{train/} split with an independent RNG path; this deviation affects only the diagnostic batch, not the task-evaluation pool or the training seeds.
+We ran a protocol-specified, theory-aligned rerun on the same no-mask hard 4$\times$4 Sudoku suite used in Table~\ref{tab:hard_suite_anchor} (6--8 empties, $T{=}16$, 20k environment steps, seeds 41--50). The supplied files do not establish that the protocol was timestamped before execution. The rerun starts from the persistent-$z$ hard-suite configuration and jointly changes four factors: episodic-$z$ latents, exact baseline summation, exact $K$-step targets, and explicit conservative mixtures. The architecture-matched evaluation interface and the inherited persistent-$z$ hyperparameters ($\gamma{=}0.99$, $K{=}1$, $n{=}2$) are unchanged. Diagnostics are computed on a frozen 256-instance closure batch (seed 1729). The fixed test split of the canonical 6--8-empty dataset contains only 99 viable puzzles, so the closure batch is sampled from the \texttt{train/} split with an independent RNG path; this deviation affects only the diagnostic batch, not the task-evaluation pool or the training seeds.
 
-The paper tables below curate the main quantities; full per-seed values for all nine protocol diagnostics are recorded in \path{EPISODIC_Z_RUN_LOG.md} and \path{results/episodic_z_hard_suite_20k_seed41_50/} (\path{diagnostics_summary.json}, \path{cpi_penalty_grid.json}, and \path{per_seed_diagnostics.jsonl}).
+The paper tables below curate the main quantities. The submitted supplement includes \texttt{EPISODIC\_Z\_RUN\_LOG.md}, \texttt{episodic\_diagnostics\_summary.json}, \texttt{cpi\_penalty\_grid.json}, and \texttt{episodic\_per\_seed\_diagnostics.jsonl}.
 
 Table~\ref{tab:episodic_z_branch_d} reports the final task outcome and the main diagnostics at 20k. The rerun reaches $0.0\%$ success over 10 seeds, so by the locked decision rule it falls into Branch~D: $S_E = 0.0\% < 0.85 \times 57.4\% = 48.79\%$. The persistent-$z$ value $S_P = 57.4\%$ in Table~\ref{tab:hard_suite_anchor} is measured under the nominal 20k outer-step protocol of Section~\ref{sec:harder_puzzles}, which uses a larger environment-interaction budget than this rerun; the Branch~D margin holds under either budget framing. We therefore retain persistent-$z$ as the headline empirical result and use the episodic-$z$ rerun only for finite-batch diagnostics on the frozen closure batch.
 
 \begin{table}[t]
-\caption{Pre-registered theory-aligned episodic-$z$ rerun at 20k on the no-mask hard 4$\times$4 suite. Means $\pm$ sample std over 10 seeds unless noted.}
+\caption{Protocol-specified theory-aligned episodic-$z$ rerun at 20k on the no-mask hard 4$\times$4 suite. Means $\pm$ sample std over 10 seeds unless noted.}
 \label{tab:episodic_z_branch_d}
 \centering
 \small
@@ -1405,22 +1328,22 @@ $B_V(s)$ & Baseline: $\E_{b \sim \pi}[\widehat{Q}_V(s,b)]$ \\
 
 \begin{definition}[Reachable set]
 \label{def:reachable}
-For a policy $\pi$, let $\mathcal R_\pi$ be a measurable carrier of every state marginal: $(\rho P_\pi^t)(\mathcal R_\pi)=1$ for all $t\ge0$, where $P_\pi$ is the policy-induced Markov kernel. In a finite or countable MDP we take the exact set of states reached with positive probability. In a general state space the carrier is understood up to sets that are null for all these marginals.
+For a policy $\pi$ in a finite or countable MDP, let $\mathcal R_\pi$ be the exact set of states reached with positive probability under some state marginal $\rho P_\pi^t$, $t\ge0$, where $P_\pi$ is the policy-induced transition kernel.
 \end{definition}
 
 \begin{definition}[Advantage-evaluation closure]
 \label{def:adv_closure}
 Fix a current policy $\pi$ and a candidate policy $\pi_{\mathrm{cand}}$.
-Let $\mathcal{R}_{\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}$ be a measurable set containing $\mathcal R_\pi$ and $s_{\mathrm{abs}}$ such that
+Let $\mathcal{R}_{\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}$ contain $\mathcal R_\pi$ and $s_{\mathrm{abs}}$ such that
 \begin{enumerate}
 \item for every $s\in\mathcal R_\pi$ and every action in $\mathrm{supp}(\pi(\cdot|s))\cup\mathrm{supp}(\pi_{\mathrm{cand}}(\cdot|s))$, the next state lies in $\mathcal{R}_{\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}$ almost surely; and
 \item for every $s\in\mathcal{R}_{\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}$ and $a\in\mathrm{supp}(\pi(\cdot|s))$, $P(\mathcal{R}_{\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}\mid s,a)=1$.
 \end{enumerate}
-We write $\|f\|_{\infty,\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}$ for the essential supremum of $|f|$ on this set (including the absorbing boundary). The essential-supremum reference measure must dominate the transition laws appearing above; in the finite experiments this is simply counting measure and the norm is an ordinary maximum.
+We write $\|f\|_{\infty,\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}$ for the ordinary supremum of $|f|$ on this set, including the absorbing boundary.
 \end{definition}
 
 
-For completeness, in a finite or countable MDP the following construction gives the exact closure in Definition~\ref{def:adv_closure}. For general kernels, the same recursion uses measurable carriers of the indicated transition laws rather than point masses; the theorem requires an admissible measurable closure, not a pointwise ``positive density'' test or a unique minimal carrier.
+The following construction gives the exact closure in Definition~\ref{def:adv_closure}.
 
 Fix a current policy $\pi$ and a candidate policy $\pi_{\mathrm{cand}}$.
 Define the \emph{one-step deviation} set
@@ -1447,6 +1370,11 @@ Let $\mathcal{R}_{\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}$ denote the smallest s
 \label{eq:R_adv_def_app}
 \end{align}
 The sup-norm $\|f\|_{\infty,\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}$ used throughout is the one introduced in Definition~\ref{def:adv_closure}.
+
+\begin{remark}[Requirements for a general-kernel extension]
+\label{rem:general_kernel_extension}
+A general measurable-state-space extension is not part of the formal claims above. One route is to fix a single sigma-finite reference measure $\nu$ on the closure, with $\nu(\{s_{\mathrm{abs}}\})>0$, such that every relevant one-step transition law and every $K$-step $\pi$ transition law is absolutely continuous with respect to $\nu$. All essential suprema must then be taken in the same $L^\infty(\nu)$ space so that $\mathcal T_K^\pi$ is well defined on equivalence classes. For general action kernels, support conditions must be replaced by statements holding for $\pi(\cdot\mid s)$- and $\pi_{\mathrm{cand}}(\cdot\mid s)$-almost every action unless additional topology is specified. The CPI occupancy argument must likewise be written for finite signed measures in total variation rather than for probability vectors in $\ell_1$.
+\end{remark}
 
 \section{Shaping Convention and Absorbing-State Normalization}
 \label{app:shaping_convention}
@@ -1488,12 +1416,14 @@ Accordingly, performance differences and optimal policies are unchanged.
 
 We derive the CPI bound~\eqref{eq:cpi_bound} specialized to mixture policies $\pi_{\mathrm{new}} = (1-\alpha)\pi + \alpha\pi_{\mathrm{cand}}$, following the framework of~\citet{KakadeLangford2002}.
 
+This derivation is stated for finite or countable state and action spaces, where discounted occupancies are probability mass functions and $\|\cdot\|_1$ has its usual meaning. A general-kernel extension requires the total-variation formulation and common-domination conditions in Remark~\ref{rem:general_kernel_extension}.
+
 \textbf{Setup.}
 Define the \emph{advantage function under the greedy policy $\pi_{\mathrm{cand}}$}:
 \begin{equation}
 \delta(s) := \E_{a \sim \pi_{\mathrm{cand}}(\cdot|s)}[A^\pi(s,a)].
 \end{equation}
-Note that $|\delta(s)| \le \varepsilon_{\mathrm{CPI}} := \max_s |\delta(s)|$ by definition.
+Note that $|\delta(s)| \le \varepsilon_{\mathrm{CPI}} := \sup_s |\delta(s)|$ by definition.
 
 For the mixture policy $\pi_{\mathrm{new}} = (1-\alpha)\pi + \alpha\pi_{\mathrm{cand}}$:
 \begin{align}
@@ -1890,7 +1820,7 @@ and the final ``$\le$'' in~\eqref{eq:Cdrift_def} gives the simpler additive uppe
 \subsection{Proof of Theorem~\ref{thm:finite_reference_depth}}
 
 \begin{proof}
-Write $\|\cdot\|_\infty$ for the essential sup-norm on
+Write $\|\cdot\|_\infty$ for the ordinary sup-norm on
 $\mathcal{R}_{\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}\cup\{s_{\mathrm{abs}}\}$.
 The measurability, boundedness, and almost-sure forward-invariance assumptions ensure that $\mathcal T_K^\pi$ maps the relevant bounded functions back to this space and is a $\gamma^K$-contraction in this norm. Since $V^\pi=\mathcal T_K^\pi V^\pi$,
 \begin{align*}
@@ -1909,8 +1839,8 @@ For every nonabsorbing $s$, Lipschitzness of the scalar head and the telescoping
 &\le L_V\|z^{(n)}(s)-z^{(m)}(s)\| \\
 &\le L_V\sum_{j=n}^{m-1}\|z^{(j+1)}(s)-z^{(j)}(s)\|.
 \end{align*}
-The left side is zero at $s_{\mathrm{abs}}$ because its value is depth independent. Taking the essential supremum and using
-$\operatorname*{ess\,sup}_s\sum_j g_j(s)\le\sum_j\operatorname*{ess\,sup}_s g_j(s)$ proves~\eqref{eq:finite_path_length}. The latent norm is the same norm fixed in the theorem, so each summand has latent units and multiplication by $L_V$ gives value units.
+The left side is zero at $s_{\mathrm{abs}}$ because its value is depth independent. Taking the supremum and using
+$\sup_s\sum_j g_j(s)\le\sum_j\sup_s g_j(s)$ proves~\eqref{eq:finite_path_length}. The latent norm is the same norm fixed in the theorem, so each summand has latent units and multiplication by $L_V$ gives value units.
 
 Under Assumption~\ref{ass:Lip},
 \[
@@ -2034,13 +1964,13 @@ Applying this with $u=f_\theta(z,y,x)$ and $v=f_\theta(z',y,x)$ for $z,z'\in B_R
 \begin{proposition}[Projection-aware architectural residual via a plan-independent latent anchor]
 \label{prop:proj_residual_anchor}
 Fix any anchor map $z_{\mathrm{anc}}:\XX\to B_R$ that depends only on the instance $x$, and define
-\[
-B_{\mathrm{anc}}(x,y):=V_\psi(z_{\mathrm{anc}}(x),x),
-\qquad
+\begin{align*}
+B_{\mathrm{anc}}(x,y)&:=V_\psi(z_{\mathrm{anc}}(x),x), &
+B_{\mathrm{anc}}(s_{\mathrm{abs}})&:=-C_{\max}, \\
 \varepsilon_{\mathrm{anc}}
-:=
+&:=
 \|B_{\mathrm{anc}}-\mathcal{T}_K^\pi B_{\mathrm{anc}}\|_{\infty,\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}.
-\]
+\end{align*}
 Let
 \[
 D_{\mathrm{anc}}(R)
@@ -2062,17 +1992,18 @@ Then
 \label{eq:eps_res_anchor}
 \end{equation}
 In the special case $z_{\mathrm{anc}}(x)\equiv 0$,
-\[
+\begin{align*}
+B_0(x,y)&:=V_\psi(0,x), &
+B_0(s_{\mathrm{abs}})&:=-C_{\max}, \\
 \varepsilon_{\mathrm{res}}^*
-\;\le\;
+&\le
 \varepsilon_{0}
-\;+\;
-(1+\gamma^K)\,L_V(R)\,R,
-\qquad
+\;+
+(1+\gamma^K)\,L_V(R)\,R, \\
 \varepsilon_0
-:=
-\|V_\psi(0,x)-\mathcal{T}_K^\pi V_\psi(0,x)\|_{\infty,\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}.
-\]
+&:=
+\|B_0-\mathcal{T}_K^\pi B_0\|_{\infty,\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}.
+\end{align*}
 \end{proposition}
 
 \begin{proof}
@@ -2105,6 +2036,7 @@ L_V(R)\,\|z^*(x,y)-z_{\mathrm{anc}}(x)\|_2
 \;\le\;
 L_V(R)\,D_{\mathrm{anc}}(R).
 \end{align*}
+At the absorbing boundary, $U_*(s_{\mathrm{abs}})=B_{\mathrm{anc}}(s_{\mathrm{abs}})=-C_{\max}$, so the difference is zero.
 The special case $z_{\mathrm{anc}}(x)\equiv 0$ uses $D_{\mathrm{anc}}(R)\le R$.
 \end{proof}
 
@@ -2258,10 +2190,10 @@ We maintain a replay buffer and sample mini-batches for value and policy updates
 Each reported training or evaluation run uses a single device. The main training jobs and the trusted external PPO/A2C/DQN reruns, including the 5-step DQN variant, ran through GPU-enabled batch jobs; the evaluation scripts also support CPU fallback for analysis-only runs. Within the architecture-matched group, ``matched'' refers to the shared TRM backbone and checker-shaped reward, not to identical environment-interaction counts or constant-factor wall-clock cost. The nominal 20k outer-step protocol gives different interaction budgets across PPO, A2C, and DQN because each collects a different number of transitions per outer step; Appendix~\ref{app:equalized_baselines} reports the missing-audit and artifact status, not validated equalized results. The baseline update rules also carry algorithm-specific overhead; for example, PPO and A2C evaluate policy and value heads in separate forwards through the TRM backbone during optimization, so wall-clock time per update can exceed UPI--TRM.
 
 \textbf{Advantage estimation.}
-The theory uses the centered estimator~\eqref{eq:Ahat_def_app}; in practice GAE/$(\lambda)$-return variants are also fine for variance reduction. The linear-in-$\alpha$ error term in Theorem~\ref{thm:monotone_with_error} requires \emph{exact} statewise centering $\E_{a\sim\pi}[\widehat{A}(s,a)]=0$, which holds deterministically only when the baseline is computed exactly as $B_V(s)=\E_{b\sim\pi(\cdot|s)}[\widehat Q_V(s,b)]$ (e.g., by summation over a discrete action space). With a learned value baseline (as in standard GAE), centering is only approximate and the deterministic bound degrades by the centering defect $\varepsilon_{\mathrm{cent}}$; the naive $O(\varepsilon_A/(1-\gamma))$ penalty is recovered only as a worst-case upper bound when $\varepsilon_{\mathrm{cent}}$ and $\varepsilon_{A,\mathrm{cand}}$ are both controlled by $\varepsilon_A$.
+The theory uses the centered estimator~\eqref{eq:Ahat_def_app}; in practice GAE/$(\lambda)$-return variants are also fine for variance reduction. The linear-in-$\alpha$ error term in Theorem~\ref{thm:monotone_with_error} requires \emph{exact} statewise centering $\E_{a\sim\pi}[\widehat{A}(s,a)]=0$. This holds whenever the estimator is constructed to be exactly centered. For Eq.~\eqref{eq:Ahat_def_app}, the baseline $B_V(s)=\E_{b\sim\pi(\cdot|s)}[\widehat Q_V(s,b)]$ must be evaluated exactly; the finite discrete implementation uses explicit summation. With a learned value baseline (as in standard GAE), centering is only approximate and the deterministic bound degrades by the centering defect $\varepsilon_{\mathrm{cent}}$; the naive $O(\varepsilon_A/(1-\gamma))$ penalty is recovered only as a worst-case upper bound when $\varepsilon_{\mathrm{cent}}$ and $\varepsilon_{A,\mathrm{cand}}$ are both controlled by $\varepsilon_A$.
 
-\textbf{Operator-norm control and contraction details.}
-We enforce contraction on the inner $z\!\to\!z$ recursion via explicit operator-norm clamping (periodic rescaling of linear weights using power-iteration estimates), followed by per-layer output scaling or an explicit scalar contraction factor to target $L_z<1$. We estimate $\hat L_z$ on mini-batches by finite differences:
+\textbf{Operator-norm control and contraction-oriented details.}
+We apply explicit operator-norm clamping on the inner $z\!\to\!z$ recursion (periodic rescaling of linear weights using power-iteration estimates), followed by per-layer output scaling or an explicit scalar factor targeting $L_z<1$. This intervention does not certify the uniform global modulus in Assumption~\ref{ass:Lip}. We estimate only a local mini-batch proxy $\hat L_z$ by finite differences:
 \[
 \hat L_z = \max_i \frac{\|f_\theta(z_i,y_i,x_i) - f_\theta(z_i',y_i,x_i)\|}{\|z_i - z_i'\|}.
 \]

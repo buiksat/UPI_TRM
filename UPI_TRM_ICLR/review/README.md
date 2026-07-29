@@ -1,19 +1,25 @@
-# UPI--TRM GPT Pro review bundle
+# UPI--TRM ICLR consolidated archive
 
-Upload `upi_trm_iclr_gpt_pro_review_bundle.zip` to GPT Pro, then paste the contents of `GPT_PRO_REVIEW_PROMPT.md` into the conversation.
+`UPI_TRM_ICLR_COMPLETE.zip` is the single paper handoff archive.
 
-The archive contains:
+It contains:
 
-- `paper/upi_trm_iclr_revised.pdf`: authoritative rendered manuscript;
-- `paper/main.tex`: LaTeX manuscript source;
-- `paper/trm_rl.bib`: bibliography database;
-- `reports/ICLR_REVISION_PLAN.md`: claim and revision map;
-- `reports/ICLR_EXPERIMENT_PLAN.md`: locked protocols for missing experiments;
-- `reports/ICLR_FINAL_VALIDATION.md`: build and validation record;
-- `evidence/finite_mdp_summary.csv`: finite-MDP certificate rows;
-- `evidence/episodic_summary.json`: episodic hard-suite summary;
-- `evidence/episodic_per_seed_eval.jsonl`: per-seed evaluation outcomes;
-- `evidence/episodic_diagnostics_summary.json`: retained diagnostic summary;
-- `GPT_PRO_REVIEW_PROMPT.md`: review instructions.
+- the final rendered PDF;
+- a self-contained LaTeX source tree and current build logs;
+- finite-MDP generator, outputs, and validation log;
+- episodic and persistent per-seed evidence;
+- retained experiment protocols and provenance;
+- revision, experiment, and final-validation reports;
+- the external review prompt;
+- a SHA-256 manifest for every archived file.
 
-The bundle intentionally omits raw experiment dumps, build intermediates, author identities, and future experiments that have not run.
+The source tree can be rebuilt with:
+
+```bash
+cd source
+make pdf
+```
+
+Known evidence gaps remain explicit in the manuscript: no PPO per-seed run artifact, no projection--clamping factorial per-seed artifact or test script, and no interaction-matched UPI--TRM/PPO result.
+
+Absolute local paths are sanitized only in the archive copy. Raw checkpoints, LaTeX intermediates, historical template builds, withdrawn studies, and obsolete venue handoff notes are excluded.

@@ -1,6 +1,6 @@
 \begin{table}[t]
 \caption{Training-time projection ablation (4$\times$4 trivial Sudoku, feasibility checker).
-Projection setting $\in\{\text{proj.\ off}, 10, 100\}$ crossed with contraction ON/OFF.
+Projection setting $\in\{\text{proj.\ off}, 10, 100\}$ crossed with clamping enabled/disabled.
 All conditions pass the stated stability gate.
 Within this tested easy-suite protocol, success rates are comparable with \emph{proj.\ off}; this is not a general training-stability claim.}
 \label{tab:exp3_projection_ablation}
@@ -8,7 +8,7 @@ Within this tested easy-suite protocol, success rates are comparable with \emph{
 \small
 \begin{tabular}{@{}lcccl@{}}
 \toprule
-Condition & Contraction & $R$ & Success (\%) & Stability Gate \\
+Condition & Clamping & $R$ & Success (\%) & Stability Gate \\
 \midrule
 No-Contr / $R{=}10$ & OFF & 10 & 94 & PASS \\
 No-Contr / $R{=}100$ & OFF & 100 & 96 & PASS \\

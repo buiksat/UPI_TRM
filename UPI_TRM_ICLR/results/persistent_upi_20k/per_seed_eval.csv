@@ -1,0 +1,11 @@
+seed,success_rate,mean_score,mean_return,invalid_action_rate,mean_steps,solved_count,total_episodes,eval_policy_mode,inner_unroll_n,episodic_latent,checker_kind
+0,0.56,14.48,-2.360600000000001,0.0,10.94,28,50,greedy,2,False,feasibility
+1,0.5,14.84,-3.1434000000000033,0.0,11.4,25,50,greedy,2,False,feasibility
+2,0.68,14.94,0.2631999999999969,0.0,9.82,34,50,greedy,2,False,feasibility
+3,0.5,15.04,-3.0004000000000044,0.0,11.62,25,50,greedy,2,False,feasibility
+4,0.64,15.14,-0.31740000000000257,0.0,10.32,32,50,greedy,2,False,feasibility
+5,0.7,15.48,1.0455999999999965,0.0,10.04,35,50,greedy,2,False,feasibility
+6,0.74,15.38,1.7269999999999976,0.0,9.48,37,50,greedy,2,False,feasibility
+7,0.42,14.0,-5.364200000000003,0.0,12.16,21,50,greedy,2,False,feasibility
+8,0.38,13.9,-6.216000000000008,0.0,12.7,19,50,greedy,2,False,feasibility
+9,0.62,15.0,-0.7952000000000035,0.0,10.36,31,50,greedy,2,False,feasibility
