@@ -5,7 +5,7 @@
 It contains:
 
 - the final rendered PDF;
-- a self-contained LaTeX source tree and current build logs;
+- a self-contained LaTeX source tree and current build log;
 - finite-MDP generator, outputs, and validation log;
 - episodic and persistent per-seed evidence;
 - retained experiment protocols and provenance;
@@ -16,9 +16,19 @@ It contains:
 The source tree can be rebuilt with:
 
 ```bash
-cd source
+cd UPI_TRM_ICLR
 make pdf
 ```
+
+Rebuild the complete handoff archive from the repository root with:
+
+```bash
+UPI_TRM_ICLR/scripts/build_complete_archive.sh
+```
+
+The builder uses `review/ICLR_BUNDLE_FILE_LIST.txt`, fails if a required input
+is absent, sanitizes local paths in a temporary staging tree, rejects identity
+and prior-venue leaks, and writes `SHA256SUMS` inside the archive.
 
 Known evidence gaps remain explicit in the manuscript: no PPO per-seed run artifact, no projection--clamping factorial per-seed artifact or test script, and no interaction-matched UPI--TRM/PPO result.
 
