@@ -10,7 +10,7 @@
 ]
 
 \node[font=\bfseries\small] at (-2.8, 2.85) {Original TRM};
-\node[font=\bfseries\small] at (4.6, 2.85) {Plan-space MDP view};
+\node[font=\bfseries\small] at (4.6, 2.85) {Clock-complete edit MDP};
 \draw[dashed, gray!60] (0.9, -3.0) -- (0.9, 3.1);
 
 \node[leftpanel] (inner) at (-2.8, 1.25) {%
@@ -32,20 +32,21 @@ Unroll the evaluator for depth $n$.\\[2pt]
 {\centering
 $\begin{aligned}
 z^{(k+1)} &= (\Pi_R \circ f_\theta)(z^{(k)}, y_t, x)\\
-U_n(s_t) &= V_\psi(z_t^{(n)},x)
+U_n(s_t) &= V_\psi(z_t^{(n)},x)\\
+\widetilde U_n(\bar s_t) &= V_\psi(z_t^{(n)},x)
 \end{aligned}$\par
 }
 };
 
 \node[rightpanel] (mdp) at (4.6, -1.85) {%
-\textbf{Plan-space MDP}\\[-1pt]
-State: $s_t=(x,y_t)$\\
-Action: edit $a_t$\\
-Transition: $y_{t+1}=\mathrm{edit}(y_t,a_t;x)$\\
-Reward: checker score $c(x,y_t)$
+\textbf{Clock-complete state}\\[-1pt]
+Episodic: $s_t=(x,y_t,h_t)$\\
+Persistent: $\bar s_t=(x,y_t,z_t,h_t)$\\
+Edit: $y_{t+1}=\mathrm{edit}(y_t,a_t;x)$\\
+Clock: $h_{t+1}=h_t-1$
 };
 
-\draw[flow] (eval.south) -- node[right, note] {policy uses\\$U_n$} (mdp.north);
+\draw[flow] (eval.south) -- node[right, note] {policy uses\\finite-depth value} (mdp.north);
 
 \draw[map] (inner.east) -- node[above, note] {inner loop\\$\mapsto$ evaluator depth} (eval.west);
 \draw[map] (outer.east) -- node[below, note] {outer refinement\\$\mapsto$ edit MDP} (mdp.west);
