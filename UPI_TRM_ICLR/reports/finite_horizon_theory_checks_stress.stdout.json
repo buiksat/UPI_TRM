@@ -1,0 +1,55 @@
+{
+  "boundary_coverage": [
+    "H=0",
+    "H=1",
+    "K=1",
+    "K=H",
+    "K>H",
+    "gamma=0",
+    "alpha=0",
+    "alpha=1",
+    "n=0",
+    "m=n+1",
+    "absorbing initial state",
+    "shared nonzero absorbing boundary",
+    "TV delta=1",
+    "incompatible policy supports",
+    "infinite KL with Pinsker finite-bound marked inapplicable"
+  ],
+  "checks": {
+    "finite_horizon_cpi_checks": 54323,
+    "finite_horizon_deployment_checks": 2005,
+    "incompatible_support_checks": 7,
+    "infinite_horizon_deployment_checks": 4010,
+    "positive_horizon_absorbing_initial_checks": 11,
+    "residual_reference_checks": 201440,
+    "zero_horizon_and_absorbing_checks": 18
+  },
+  "finite_horizon_case_count": 2005,
+  "finite_horizon_cpi_check_breakdown": {
+    "centering_assertions": 24201,
+    "closed_form_assertions": 8020,
+    "cpi_bound_assertions": 12030,
+    "occupancy_assertions": 8067,
+    "performance_difference_assertions": 2005
+  },
+  "incompatible_support_case": {
+    "forward_kl": "infinity",
+    "pinsker_finite_bound_applicable": false,
+    "reverse_kl": "infinity",
+    "tv_delta": 1.0
+  },
+  "maximum_centering_defect": 2.220446049250313e-16,
+  "maximum_occupancy_bound_violation": 0.0,
+  "maximum_performance_difference_error": 3.3306690738754696e-16,
+  "maximum_residual_uniform_bound_ratio": 1.0000000000000002,
+  "minimum_numerical_slack": -8.881784197001252e-16,
+  "positive_horizon_absorbing_initial_law": {
+    "horizon": 4,
+    "maximum_law_error": 0.0
+  },
+  "random_cases": 2000,
+  "seed": 9173551,
+  "status": "PASS",
+  "total_checks": 261814
+}
