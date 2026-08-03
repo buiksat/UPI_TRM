@@ -10,18 +10,18 @@ finish. This report distinguishes committed work from missing work.
 - Paper: `/home/buiksat/UPI_TRM`, branch
   `iclr-evidence-aligned-revision`, current pre-handoff commit `5c5d687`.
 - Code: `/home/buiksat/trm_bellman`, branch `iclr-confirmatory-repair`, commit
-  `5377a396a6d5f00f1d3b8248e1f9c40206482f24`.
+  `111e3a96655d1b3414ba15801a3ebfa393e8e394`.
 - Protected NeurIPS tree: unchanged at tree
   `8dc95739b9830a75409af3d89ba86ac174ae1376` with scoped tracked-file digest
   `32e7967b973bffe2858d340fa793177c298796937790d17ca1463ce7b636cdab`.
 
-The paper repository contains a recovery copy of the three code commits at:
+The paper repository contains a recovery copy of the four code commits at:
 
 `handoff/trm_bellman_iclr-confirmatory-repair.patch.gz`
 
 SHA-256:
 
-`a8a31f5fe76ed29931be4253ec858029eb5c195bbf65713e35837f00cfeae01c`
+`e73a2e6d38df9204f25f07fe5e628a9b89407a50ab28839ee5d7fc0b02e6b071`
 
 Apply it to a clone containing base commit `6d5a241027fe72921d5fc039dd6a12434999088b`:
 
@@ -58,9 +58,11 @@ validation, exact live interaction budgets, schema-v3 resume, complete dataset
 provenance, held-out CleanRL evaluation, PPO/DQN boundary fixes, seeded dataset
 builders, and finite-batch augmented-state diagnostic utilities.
 
-Static compilation and diff checks pass. The combined post-repair Buck batch
-was interrupted before results were available. Do not describe the repair as
-fully tested until the next machine runs the command in that report.
+Static compilation and diff checks pass. The final focused Buck set passed 120
+of 121 tests, exposed one PPO boundary-check `NameError`, and then passed the
+complete 12-test CleanRL target after that fix. No focused failure remains.
+The next machine still needs to rerun all declared targets before calling the
+repair fully validated.
 
 ## Open scientific and implementation work
 
