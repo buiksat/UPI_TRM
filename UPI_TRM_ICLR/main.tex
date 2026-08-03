@@ -548,11 +548,12 @@ part of a submitted artifact.
 
 \paragraph{Negative episodic record.}
 The theory-oriented episodic configuration reinitialized the latent and used
-exact baseline summation, exact $K$-step targets, and explicit-mixture
-collection. Its endpoint evaluator nevertheless scored only
+exact baseline summation, complete $K$-step segments with terminal masking,
+and explicit-mixture collection. Its bootstrap still came from an EMA target
+rather than the frozen current evaluator. Its endpoint evaluator scored only
 \texttt{policy\_model\_old}, and task evaluation reused a materialized
 32-record training pool. The retained aggregate records $0.0\%$ success at
-the nominal 20k-environment-step endpoint over seeds 41--50. This is an
+the nominal outer-step-20,000 endpoint over seeds 41--50. This is an
 in-sample old-policy endpoint, not an evaluation of the exact mixture and not
 a controlled persistent-versus-episodic comparison. Regeneration from the
 original checkpoints and per-instance outcomes is
