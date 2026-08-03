@@ -132,7 +132,7 @@ We analyze Unrolled Policy Iteration with TRMs (UPI--TRM), which retains the inn
 
 Our primary result (Theorem~\ref{thm:finite_reference_depth}) compares $U_n(s)=V_\psi(z^{(n)}(s),x)$ with any deeper finite reference $U_m$ for $m>n$. It bounds $\|U_n-V^\pi\|$ by $\|U_n-U_m\|$ plus the Bellman residual of $U_m$ divided by $1-\gamma^K$, and controls the first term by the recurrent path length for a Lipschitz head. No recurrent convergence is assumed. A forward-invariant contraction geometrically bounds that path and recovers the fixed-point formula as $m\to\infty$. Corollary~\ref{cor:epsA_dials} transfers the value bound to centered advantage error, and Theorem~\ref{thm:monotone_with_error} supplies a one-step CPI statement only for exact centering and direct deployment of the exact mixture.
 
-The evidence has two distinct roles. First, an exactly solvable finite MDP numerically unit-tests the composed value, advantage, and CPI inequalities; it is not an empirical discovery. Second, retained hard-$4\times4$ Sudoku artifacts record historical implementations. The episodic run reports $0\%$ success over 10 seeds, but its endpoint evaluator scored only the old-policy component. The persistent artifact cycles evaluation over training records and deploys parameter interpolation rather than distillation or the exact pointwise mixture. Per-seed logs retain the manuscript-recorded TRM+PPO and projection--clamping arithmetic, but the checkpoints, hard-suite dataset, ordered evaluation population, and exact training revision are absent; interaction counts also differ. We attach no comparative or inferential interpretation to these records; their numerical details are confined to Appendix~\ref{app:headline_significance}.
+The evidence has two distinct roles. First, an exactly solvable finite MDP numerically unit-tests the composed value, advantage, and CPI inequalities; it is not an empirical discovery. Second, retained hard-$4\times4$ Sudoku artifacts document historical implementations. The episodic run records $0\%$ success over 10 seeds, but its endpoint evaluator scored only the old-policy component. The persistent evaluator cycled over training records and deployed parameter interpolation rather than the exact pointwise mixture. The checkpoints, hard-suite dataset, ordered evaluation population, and exact training revision are absent, and interaction counts differ. We therefore exclude the old performance and ablation tables and attach no comparative or inferential interpretation to those records.
 
 \textbf{Scope.} Write $h$ for the remaining edit budget. Episodic latents are Markov on $s=(x,y,h)$. At a fixed snapshot, persistent latents are Markov on the clock-complete state $\bar s=(x,y,z,h)$. Their direct residual certificate needs no latent fixed point or slow drift; slow drift is needed only for the stronger comparison with a memoryless fixed-point reference. Repository audit found that the historical persistent path omitted the carried latent from replay updates, omitted the edit clock from recorded state, and used parameter interpolation for deployment. The hard-suite data and checkpoints are absent, so the original runs cannot be re-executed. The current empirical domain is only $4\times4$ Sudoku.
 
@@ -237,7 +237,10 @@ C_z:=\sup_{(x,y)}\|\tilde f_\theta(z_{\mathrm{init}}(x,y),y,x)-z_{\mathrm{init}}
 
 We enable operator-norm clamping and per-layer scaling as a contraction-oriented intervention; $\Pi_R$ provides forward invariance. The retained finite-difference quantities are local proxies and do not certify the global modulus required by Assumption~\ref{ass:Lip}. We therefore distinguish the theorem's contractive regime from the empirical \emph{clamping enabled} condition. Value-head spectral normalization is disabled in these comparisons to avoid a separate value-head confound.
 
-In a projection-active exploratory sweep, the local post-projection proxy $\hat L_z^{\mathrm{post}}$ stays in a narrow $0.219$--$0.242$ band, so the $L_z$-dependent terms are monitoring quantities rather than a tunable empirical knob. The protocol-specified episodic-$z$ hard-suite rerun (Appendix~\ref{app:episodic_z_hard_suite_rerun}) yields a broader post-projection distribution including seeds with $\hat L_z^{\mathrm{post}}\ge 1$, so the narrow-band behavior is not a general hard-suite geometry fact.
+The intervention is labeled \emph{clamping enabled} in empirical code and
+records. That label does not imply contraction. The $L_z$-dependent theorem
+terms require a certified global modulus below one, which the retained local
+finite-difference measurements do not provide.
 
 \section{Finite-Depth Evaluation Error Decomposition and CPI Penalty}
 \label{sec:error_bounds}
@@ -461,7 +464,15 @@ for the central inequality~\eqref{eq:main_theorem}.
 
 The linear-in-$\alpha$ contribution $\alpha\varepsilon_{A,\mathrm{cand}}/(1-\gamma)$, instead of the naive $\varepsilon_A/(1-\gamma)$, requires the exact-centering condition~\eqref{eq:centering_condition}. This condition holds whenever the estimator is constructed to be exactly statewise centered. For Eq.~\eqref{eq:Ahat_def_app}, the baseline expectation must be evaluated exactly; in our finite action space we use explicit summation. Sampling-based or learned approximations instead incur the centering defect of Corollary~\ref{cor:cpi_centering_defect}.
 
-The constants split into estimable and assumed (Table~\ref{tab:diagnostics}): $\hat L_z^{\mathrm{post}}$, $\hat\rho_R$, $\hat C_z$, $\hat L_V$, and $\hat\varepsilon_{\mathrm{cent}}$ admit finite-difference or batch proxies. The architectural residual $\varepsilon_{\mathrm{res}}^*$ is a sup-norm over the advantage closure that we do not estimate uniformly; a finite-batch residual upper-bounds it only up to the truncation gap (Remark~\ref{rem:residual_bridge}). On the historical theory-oriented episodic-$z$ run, the predicted CPI penalty is non-finite on 2/10 seeds at every $\alpha$ (Table~\ref{tab:episodic_z_penalty}). The task pool was not held out and the endpoint did not evaluate the mixture, so these quantities are retained only as finite-batch diagnostics.
+The constants split into estimable and assumed quantities
+(Table~\ref{tab:diagnostics}). Local finite-difference and batch measurements
+are diagnostics, not uniform bounds. In particular, the architectural residual
+$\varepsilon_{\mathrm{res}}^*$ is a sup norm over the advantage closure; a
+finite-batch residual relates to it only through the truncation gap in
+Remark~\ref{rem:residual_bridge}. The retained historical records do not
+contain the checkpoints and byte-identified diagnostic population needed to
+regenerate these quantities, so calibration on the successful persistent
+implementation is \emph{not verifiable from supplied evidence}.
 
 \begin{corollary}[Sufficient condition for one-step improvement]
 \label{cor:one_step_improvement_condition}
@@ -509,49 +520,72 @@ L_V\,\frac{L_z^{\,n}}{1-L_z}\,C_z
 \end{align}
 \end{corollary}
 
-Corollary~\ref{cor:cpi_dials_main} is the optional fixed-point specialization of the finite-reference penalty $2\alpha\gamma B_{n,m}/(1-\gamma)$. It makes the one-step dependence on $(L_z,n,K,\alpha)$ explicit. For $n\ge1$, its recurrent term vanishes as $L_z\to0$; together with $\varepsilon_{\mathrm{res}}^*\to0$, this recovers the standard CPI expression. At $n=0$, the displayed recurrent term instead tends to $L_VC_z$ and no such claim is made. Two constants in~\eqref{eq:main_bound_dials} are observed rather than tuned: $L_V$ is only locally estimated by finite differences, and the current clamping mechanism produces little range in one projection-active proxy $\hat L_z^{\mathrm{post}}$ ($\approx0.22$--$0.24$). On the hard suite, we therefore treat the $L_z$-dependent terms as monitoring quantities.
+Corollary~\ref{cor:cpi_dials_main} is the optional fixed-point specialization of the finite-reference penalty $2\alpha\gamma B_{n,m}/(1-\gamma)$. It makes the one-step dependence on $(L_z,n,K,\alpha)$ explicit. For $n\ge1$, its recurrent term vanishes as $L_z\to0$; together with $\varepsilon_{\mathrm{res}}^*\to0$, this recovers the standard CPI expression. At $n=0$, the displayed recurrent term instead tends to $L_VC_z$ and no such claim is made. The retained finite-difference values are local proxies and certify no global modulus below one. On the hard suite, we therefore treat the $L_z$-dependent terms as monitoring quantities.
 
 A projection-aware version of \eqref{eq:main_bound_dials} substitutes $\varepsilon_0+(1+\gamma^K)L_V(R)R$ for $\varepsilon_{\mathrm{res}}^*$ and $L_z^{\mathrm{sat}}(R)$ for $L_z$; the full statement is Eq.~\eqref{eq:main_bound_proj} in Appendix~\ref{app:projection_theory}. The saturated-regime upper bound depends multiplicatively on both $R/\rho_R$ and $L_z^{\mathrm{pre}}(R)$, and the retained local proxies certify neither global factor. For $n\ge1$, a smaller certified $L_z$ or larger $n$ reduces $L_z^n$; smaller $\alpha$ is safer; larger $K$ tightens $1/(1-\gamma^K)$ at the cost of a $K$-dependent residual. Persistent-$z$ uses the direct augmented-state residual of Appendix~\ref{app:persistent_latent}; slow drift enters only the optional comparison to a memoryless fixed-point reference.
 
-\section{Experiments}
+\section{Evidence Status and Numerical Unit Test}
 \label{sec:experiments}
 
-All task records in this paper are on $4\times4$ Sudoku. The only theory-oriented task endpoint retained in the main text is the negative episodic old-policy result at $0\%$. The persistent, baseline, and projection $\times$ clamping values are historical execution records confined to the appendix. None is a held-out method comparison or validation of the fixed-snapshot theorem; Appendix Table~\ref{tab:claim_status} maps each claim to its conditions, provenance, and status.
+All learned-model task records concern $4\times4$ Sudoku. None provides a
+held-out, interaction-matched method comparison or empirical validation of the
+fixed-snapshot theorem. Table~\ref{tab:claim_status} maps each retained claim
+to its required conditions and evidence status.
 
-\textbf{Setup.}
-The persistent record, reported factorial, and architecture-matched baselines use nominal 20k outer updates; the episodic record and external SB3 baselines use 20k environment steps. These are different budget units. The retained external JSON files name a test split but contain no ordered-pool hashes, and the underlying hard-suite dataset is absent. The clamping-enabled condition uses an operator-norm target of $0.9$; this label does not assert that the global modulus is below one.
+\paragraph{Historical limitations.}
+The successful persistent record used parameter interpolation, evaluated
+training records, omitted the carried latent from replay updates, and omitted
+the remaining-edit clock from the recorded state. The historical persistent
+checkpoints, hard-suite data, ordered outcomes, and producer revision are
+absent. Its held-out performance interpretation and theorem-facing diagnostics
+are therefore \emph{not verifiable from supplied evidence}. Historical projection/clamping
+and baseline aggregates are excluded from the active evidence narrative for
+the same provenance reason. They do not establish a controlled projection
+mechanism, contraction, or relative performance. The internal report
+\nolinkurl{reports/ARCHIVED_EXPERIMENTS.md} preserves every omitted null and
+negative outcome for a future artifact build; we do not claim that report is
+part of a submitted artifact.
 
-\subsection{Persistent hard-suite implementation and limitations}
-\label{sec:harder_puzzles}
+\paragraph{Negative episodic record.}
+The theory-oriented episodic configuration reinitialized the latent and used
+exact baseline summation, exact $K$-step targets, and explicit-mixture
+collection. Its endpoint evaluator nevertheless scored only
+\texttt{policy\_model\_old}, and task evaluation reused a materialized
+32-record training pool. The retained aggregate records $0.0\%$ success at
+the nominal 20k-environment-step endpoint over seeds 41--50. This is an
+in-sample old-policy endpoint, not an evaluation of the exact mixture and not
+a controlled persistent-versus-episodic comparison. Regeneration from the
+original checkpoints and per-instance outcomes is
+\emph{not verifiable from supplied evidence}.
 
-The historical persistent implementation used parameter interpolation of the edit-policy head, evaluated on training records, dropped carried latents from replay updates, and omitted the remaining-edit clock from recorded state. Its uniform augmented residual and centering are unmeasured. Appendix Table~\ref{tab:hard_suite_anchor} preserves the numerical record for auditability; it is not a held-out result, a comparative experiment, or verification of Corollary~\ref{cor:persistent_cpi_augmented} or Theorem~\ref{thm:monotone_with_error}.
+\paragraph{Missing decision-changing evidence.}
+Augmented-state diagnostics on successful persistent checkpoints, a
+one-factor-at-a-time bridge, an interaction-matched UPI--TRM/PPO comparison, a
+train-radius by evaluation-radius projection study, and a second-domain test
+have not been completed. No performance-superiority or sample-efficiency
+claim follows from the historical records.
 
-\subsection{Projection and clamping ablation}
-\label{sec:projection_contraction_ablation}
-
-The implementation repository retains per-seed logs that reproduce the $2\times2$ projection $\times$ clamping cell arithmetic in Appendix Table~\ref{tab:controlled_2x2_main}. The original statistical-test script, checkpoints, dataset, and ordered evaluation records are absent, so the source-reported test and a causal mechanism interpretation are \emph{not verifiable from supplied evidence}. Projection has the larger historical composite contrast, but that contrast mixes clipping and training dynamics; the clamping-enabled contrast is small. The theorem's contraction condition remains a conditional error-control mechanism, not a demonstrated performance dial.
-
-\subsection{Theory-oriented episodic historical record}
-\label{sec:episodic_negative_main}
-
-The episodic configuration used reinitialization, exact baselines/targets, and explicit-mixture collection, but its endpoint evaluator called only \texttt{policy\_model\_old}. Task evaluation also reused a materialized 32-record training pool. The recorded $0.0\%$ at 20k environment steps over seeds 41--50 is therefore neither held out nor an evaluation of the mixture required by the theorem (Appendix~\ref{app:episodic_z_hard_suite_rerun}).
-
-\subsection{Interaction-budget audit}
-\label{sec:interaction_audit_main}
-
-PPO/A2C/DQN collect 64/32/4 transitions per nominal step. UPI--TRM is absent from the incomplete common-budget attempt; its retained baseline logs do not form a complete comparison. There is no matched UPI--TRM--PPO result (Appendix~\ref{app:equalized_baselines}).
-
-\subsection{Finite-MDP numerical unit test}
-\label{sec:finite_mdp_main}
-
-An exact 64-state, 4-action unit test has zero violations in 80 value and 21 selected-slice CPI rows; it is not an empirical discovery or Cartesian sweep (Appendix~\ref{app:finite_mdp_certificate}).
+\paragraph{Finite-MDP theorem-pipeline unit test.}
+An exact 64-state, 4-action calculation has zero violations in 80
+value/decomposition rows and 21 selected-slice CPI rows. It checks the numeric
+pipeline and theorem constants; it is not learned-model evidence, empirical
+validation, or a Cartesian parameter sweep. Appendix~\ref{app:finite_mdp_certificate}
+gives the construction and retained outputs.
 
 \section{Discussion, Limitations, and Conclusion}
 \label{sec:conclusion}
 
 The main result is a fixed-snapshot decomposition: a finite-depth recurrent evaluator can be compared with any deeper finite reference through a recurrent-path term and a reference-depth Bellman residual. Contraction supplies one optional geometric specialization rather than a model of arbitrary TRM computation. Persistent latents admit the same direct residual argument on a clock-complete augmented MDP, but the historical persistent implementation does not provide the uniform augmented residual, exact centering, or exact-mixture deployment required to instantiate the CPI bound.
 
-The retained empirical records are limited to $4\times4$ Sudoku and do not provide a held-out method comparison. The episodic endpoint did not score its configured mixture, the persistent record is in-sample, the UPI--TRM/PPO protocols are not interaction matched, and projection has a composite forward-pass and training-dynamics effect. Per-seed factorial arithmetic is retained, but checkpoints, the hard-suite dataset, ordered per-instance outcomes, and the original statistical-test script are absent. Three decision-relevant requirements remain: recover or replace the missing persistent checkpoints and run augmented-state diagnostics, run a one-factor-at-a-time bridge, and run a common-pool interaction-matched UPI--TRM/PPO comparison. The historical checkpoint diagnostic is currently blocked by the missing checkpoints and data.
+The retained learned-model evidence is limited to $4\times4$ Sudoku and does
+not provide a held-out method comparison. The episodic endpoint did not score
+its configured mixture, the persistent record is in-sample, and the historical
+protocols are not interaction matched. Recovering or replacing the missing
+persistent checkpoints is required before augmented-state diagnostics can be
+run. The bridge and common-pool matched comparison are also missing. Until
+those experiments exist, the contribution is an analytical decomposition and
+a reproducible finite-state theorem-pipeline unit test, not evidence that the
+historical UPI--TRM implementation improves task performance.
 
 
 
@@ -821,7 +855,7 @@ These are optional comparisons to a memoryless fixed-point reference; none is ne
 Table~\ref{tab:diagnostics} shows the theoretical bound quantities and the practical proxies typically logged during training.
 
 \begin{table}[t]
-\caption{Claim status. ``Measured'' denotes retained finite-sample evidence, not a uniform certificate.}
+\caption{Claim, condition, evidence, and status. Finite-batch measurements are not uniform certificates.}
 \label{tab:claim_status}
 \centering
 \small
@@ -829,20 +863,21 @@ Table~\ref{tab:diagnostics} shows the theoretical bound quantities and the pract
 \toprule
 Claim & Required condition & Evidence / status \\
 \midrule
-Finite-depth value & Frozen policy pair, common closure and norm & Proven; Theorem~\ref{thm:finite_reference_depth} \\
-Persistent direct bound & Complete augmented state, shared frozen map, uniform residual & Valid but uncalibrated; residual not measured uniformly \\
-CPI application & Exact centering and exact deployed mixture & Not instantiated by the historical runs; persistent deployment used parameter interpolation \\
-Persistent / PPO records & Common held-out pool and matched interactions & Per-seed arithmetic is retained; comparison is \emph{not verifiable from supplied evidence} because the pool and interactions differ \\
-Projection / clamping & Complete historical provenance and a controlled achieved modulus & Per-seed arithmetic is retained; mechanism claim is \emph{not verifiable from supplied evidence} \\
-Finite-MDP inequalities & Exact finite-state calculation & Working-tree CSV has 101 rows with zero numerical violations; archive supply is \emph{not verifiable from supplied evidence} \\
+Finite-reference value bound & Frozen policy pair, common closure, initialization, and norm & Proved; Theorem~\ref{thm:finite_reference_depth} \\
+Persistent direct bound & Clock-complete state, shared frozen map, uniform augmented residual & Proved conditionally; not calibrated on the historical checkpoints \\
+CPI application & Exact centering, exact pointwise mixture, and fixed MDP & Proved conditionally; historical persistent deployment used parameter interpolation \\
+Persistent learned-model record & Reconstructible checkpoint, held-out population, and exact policy identity & Task result and diagnostics are \emph{not verifiable from supplied evidence} \\
+Bridge and matched PPO comparison & Registered one-factor bridge and common-pool equal interactions & Missing experiments \\
+Projection mechanism & Train/evaluation cross-design and a certified modulus for contraction claims & Missing experiment; historical mechanism claim is \emph{not verifiable from supplied evidence} \\
+Finite-MDP inequalities & Exact finite-state calculation and retained rows & 101 working-tree rows have zero numerical violations; theorem-pipeline unit test \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-\subsection{Finite-MDP certificate}
+\subsection{Finite-MDP theorem-pipeline unit test}
 \label{app:finite_mdp_certificate}
 
-To check that the residual and CPI inequalities hold as stated in a setting where every quantity is computable, we run a controlled finite MDP. This is not a Sudoku benchmark; it checks the certificate mechanism on a 64-state, 4-action discounted MDP with bounded rewards in $[-1,1]$ and all quantities ($V^\pi$, $Q^\pi$, $A^\pi$, $d_\pi$, $\eta(\pi)$) solved by matrix inversion. We define a scalar contractive evaluator by
+To check that the residual and CPI inequalities hold as stated in a setting where every quantity is computable, we run a controlled finite MDP. This is not a Sudoku benchmark; it checks the theorem pipeline on a 64-state, 4-action discounted MDP with bounded rewards in $[-1,1]$ and all quantities ($V^\pi$, $Q^\pi$, $A^\pi$, $d_\pi$, $\eta(\pi)$) solved by matrix inversion. We define a scalar contractive evaluator by
 \[
 z_{t+1}(s)=U_*(s)+L_z\bigl(z_t(s)-U_*(s)\bigr),
 \qquad
@@ -866,14 +901,14 @@ The working tree contains \texttt{finite\_mdp\_certificate.py}, a \texttt{finite
 \begin{subfigure}[t]{0.48\textwidth}
 \centering
 \includegraphics[width=\linewidth]{results/finite_mdp_certificate/fig_cpi_certificate.png}
-\caption{CPI certificate.}
+\caption{CPI inequality check.}
 \end{subfigure}
-\caption{Finite-MDP certificate diagnostic ($|\mathcal S|{=}64$, $|\mathcal A|{=}4$). Left: value error $\|U_n-V^\pi\|_\infty$ decays with evaluator depth $n$ and stays below the decomposition bound; larger $L_z$ slows the decay. Right: for $\pi_\alpha=(1-\alpha)\pi+\alpha\pi_{\mathrm{cand}}$, the surrogate gap (blue) stays below both the decomposition-based CPI penalty (red) and the tighter $\varepsilon_{A,\mathrm{cand}}$ penalty (green); log scale. All quantities are computed exactly by finite-state dynamic programming.}
+\caption{Finite-MDP theorem-pipeline unit test ($|\mathcal S|{=}64$, $|\mathcal A|{=}4$). Left: value error $\|U_n-V^\pi\|_\infty$ decays with evaluator depth $n$ and stays below the decomposition bound; larger $L_z$ slows the decay. Right: for $\pi_\alpha=(1-\alpha)\pi+\alpha\pi_{\mathrm{cand}}$, the surrogate gap (blue) stays below both the decomposition-based CPI penalty (red) and the tighter $\varepsilon_{A,\mathrm{cand}}$ penalty (green); log scale. All quantities are computed exactly by finite-state dynamic programming.}
 \label{fig:finite_mdp_certificate_main}
 \end{figure}
 
 \begin{table}[t]
-\caption{Theory quantities (used in bounds) and practical diagnostics/proxies typically logged during training.}
+\caption{Compact definition of theorem-facing diagnostics. Each empirical value is batch-specific unless a uniform calculation is stated.}
 \label{tab:diagnostics}
 \centering
 \small
@@ -881,427 +916,18 @@ The working tree contains \texttt{finite\_mdp\_certificate.py}, a \texttt{finite
 \toprule
 Quantity & Appears in & Practical proxy / diagnostic \\
 \midrule
-$L_z^{\mathrm{pre}}$ & Assump.~\ref{ass:Lip} & Finite-diff Lipschitz of $f_\theta$ \emph{before} projection \\
-$L_z^{\mathrm{post}}$ & Assump.~\ref{ass:Lip} & Finite-diff Lipschitz of $\tilde f_\theta{=}\Pi_R\circ f_\theta$ \emph{after} projection \\
-$L_z^{\mathrm{sat}}(R)$ & Prop.~\ref{prop:proj_sat_contraction} & $(R/\rho_R)\,L_z^{\mathrm{pre}}(R)$; effective modulus in the saturated regime \\
-$\rho_R$ & Prop.~\ref{prop:proj_sat_contraction} & $\min$-batch $\|f_\theta(z,y,x)\|_2$ for $z\in B_R$; saturation margin \\
-projection\_active & App.~\ref{app:exp2_sweep} & Fraction of samples where $\|f_\theta(z)\|>R$ (clipped) \\
-$C_z$ & Assump.~\ref{ass:Lip} & Empirical $\|\tilde f_\theta(z_{\mathrm{init}},y,x)-z_{\mathrm{init}}\|$ on batches \\
-$L_V(R)$ & Eq.~\eqref{eq:LV_def}, Prop.~\ref{prop:proj_residual_anchor} & Lipschitz of $V_\psi$ on $B_R$; finite-diff check (Table~\ref{tab:exp1_value_head_lipschitz}) \\
-$\varepsilon_0$ & Prop.~\ref{prop:proj_residual_anchor} & $K$-step TD error of the boundary-normalized zero-latent baseline $B_0$ \\
-$\|U_n-\mathcal{T}^\pi_K U_n\|$ & Proxy only & Held-out $K$-step TD error; proxy for $\varepsilon_{\mathrm{res}}^*$ up to $O(\|U_n-U_*\|)$ \\
-$\bar\varepsilon_{\mathrm{res},n}$ & Cor.~\ref{cor:persistent_cpi_augmented} & Finite-batch augmented residual; not measured uniformly for the historical run \\
-$\varepsilon_{\mathrm{cent}}$ & Thm.~\ref{thm:monotone_with_error} & $\sup_s|\E_{a\sim\pi}\widehat A(s,a)|$ (exactly $0$ if baseline is exact) \\
-$\varepsilon_{A,\mathrm{cand}}$ & Thm.~\ref{thm:monotone_with_error} & Empirical bias of $\E_{a\sim\pi_{\mathrm{cand}}}[\widehat A]$ on replay states \\
-$\KL(\pi_{\mathrm{new}}\|\pi_\phi)$ & App.~\ref{app:implementation} & Distillation projection gap measured on replay states \\
+$L_z^{\mathrm{pre/post}}$ & Assump.~\ref{ass:Lip} & Local finite-difference ratios before/after projection; not global moduli \\
+$\rho_R$, active rate & Prop.~\ref{prop:proj_sat_contraction} & Batch minimum pre-projection norm and fraction with $\|f_\theta(z)\|>R$ \\
+$C_z$, $L_V(R)$ & Assump.~\ref{ass:Lip} & Batch initial displacement and local finite-difference value-head ratio \\
+$\|U_n-\mathcal T_K^\pi U_n\|$ & Remark~\ref{rem:residual_bridge} & $K$-step TD error on a declared diagnostic population \\
+$\bar\varepsilon_{\mathrm{res},n}$ & Cor.~\ref{cor:persistent_cpi_augmented} & Augmented-state residual on a declared diagnostic population \\
+$\varepsilon_{\mathrm{cent}}$ & Thm.~\ref{thm:monotone_with_error} & Statewise current-policy mean of $\widehat A$ \\
+$\varepsilon_{A,\mathrm{cand}}$ & Thm.~\ref{thm:monotone_with_error} & Candidate-policy mean advantage error on declared states \\
+TV / KL deployment gap & App.~\ref{app:implementation} & Exact mixture versus deployed-policy discrepancy on declared states \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-\section{Secondary and Exploratory Diagnostics}
-\label{app:secondary_diagnostics}
-
-The following studies probe mechanisms and implementation behavior. They are not theorem validation and are not used as confirmatory hard-suite evidence unless explicitly stated. Their retained aggregates can be re-read, but checkpoint identity, raw B0/B1 batch identity, and fresh execution are \emph{not verifiable from supplied evidence}.
-
-\paragraph{Finite-difference $L_V$ diagnostic for the main comparison.}
-The retained Exp1 refreeze summary reports a local finite-difference proxy for $L_V$ on frozen B0 states with episodic-$z$, $n_{\mathrm{eval}}{=}8$, and seeds 41--50. Table~\ref{tab:exp1_value_head_lipschitz} gives the seed-aggregated values. The smallest perturbation scale $\epsilon=10^{-5}$ is noisier, but over $\epsilon\in\{3\times 10^{-5}, 10^{-4}, 3\times 10^{-4}, 10^{-3}\}$ both conditions remain in the same-order $0.085$--$0.111$ band. This is a retained local diagnostic, not a certified global Lipschitz bound or a fresh reproduction.
-
-\input{tables/table_exp1_value_head_lipschitz.tex}
-
-\subsection{Spectral normalization instability and a more robust alternative}
-\label{app:sn_instability}
-The contraction assumption (Assumption~\ref{ass:Lip}) is a property of the latent update map $z\mapsto \tilde f_\theta(z,y,x)$.
-We first tried to target it by applying power-iteration spectral normalization~\citep{Miyato2018} to linear layers in the inner recursion, followed by a strict scalar factor.
-On our TRM inner module this turned out to be numerically unstable.
-
-We estimate a local Lipschitz proxy $\hat L_z$ by finite differences:
-sample a small perturbation $\delta$ with $\|\delta\|_2=\varepsilon$ and compute
-$\|\tilde f_\theta(z+\delta,y,x)-\tilde f_\theta(z,y,x)\|_2/\varepsilon$, averaging over random draws.
-We compare six variants: (i) OFF (no normalization, no scaling), (ii) SN-only, (iii) SCALE-only (only explicit per-layer output scaling),
-(iv) SN+SCALE, (v) CLAMP-only (operator-norm clamping without scaling), and (vi) CLAMP+SCALE.
-
-\begin{table}[t]
-\caption{Representative local Lipschitz proxy $\hat L_z$ for the inner latent update map under different contraction-oriented components ($4\times4$ Sudoku batch; $\varepsilon=10^{-3}$). Power-iteration spectral normalization (SN) can cause the proxy to explode in our inner recursion, whereas operator-norm clamping (CLAMP) remains stable. These local values are not global certificates.}
-\label{tab:sn_instability}
-\centering
-\small
-\begin{tabular}{@{}lcc@{}}
-\toprule
-Variant & $\hat L_z$ (proxy) & Status \\
-\midrule
-OFF & $\approx 0.86$ & stable \\
-SN-only & $\approx 2.7\times 10^4$ & exploded \\
-SCALE-only & $\approx 0.85$ & stable \\
-SN+SCALE & $\approx 4.5\times 10^4$ & exploded \\
-CLAMP-only & $\approx 0.6$ & stable \\
-CLAMP+SCALE & $\approx 0.6$ & stable \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-Naively applying power-iteration spectral normalization to this architecture does not give reliable contraction control of the inner recursion. Explicit operator-norm clamping stays numerically stable in this check, but the resulting local proxy does not establish Assumption~\ref{ass:Lip}.
-
-\subsection{Latent collapse: isolating $z\!\to\!z$ clamping from value-head normalization}
-\label{app:latent_collapse_diagnostic}
-
-A natural hypothesis for why $z\!\to\!z$ clamping can hurt success rates is \emph{latent collapse}: the intervention might drive all latent representations toward zero and destroy discriminative information.
-The retained $2\times 2$ diagnostic separates $z\!\to\!z$ clamping from value-head normalization, which also affects $\mathrm{Var}(V)$ but is architecturally separate.
-
-The setup is a $2\times 2$ factorial on the $4\times4$ Sudoku dataset (1--4 empties, single seed, unroll depth $n{=}16$, batch size 128, projection radius $R{=}10$):
-\begin{itemize}
-\item \textbf{Axis 1 ($z\!\to\!z$ clamping):} disabled vs.\ enabled (target $0.9$).
-\item \textbf{Axis 2 (value-head normalization):} OFF (baseline) vs.\ ON (target $L_V=1.0$).
-\end{itemize}
-This gives four conditions: A (both OFF), B ($z\!\to\!z$ ON, value-head OFF), C ($z\!\to\!z$ OFF, value-head ON), D (both ON).
-The retained summary includes pre-projection latent norms $\|z^{(n)}_{\text{pre}}\|$ and total variance $\mathrm{Var}(z^{(n)}_{\text{pre}})$, pairwise cosine similarity, value variance $\mathrm{Var}(V)$, and post-projection norms $\|z^{(n)}_{\text{post}}\|=\|\Pi_R(z^{(n)}_{\text{pre}})\|$.
-
-\begin{table}[t]
-\caption{Latent collapse diagnostic at $n{=}16$ unroll depth.
-Comparing B vs.\ A isolates the $z\!\to\!z$ clamping contrast; comparing C vs.\ A isolates the value-head normalization contrast.
-Pre-projection metrics are measured before the ball projection $\Pi_R$; post-projection norms are $\|z^{(n)}_{\text{post}}\|=\|\Pi_R(z^{(n)}_{\text{pre}})\|$.}
-\label{tab:latent_collapse}
-\centering
-\small
-\begin{tabular}{@{}lccccccc@{}}
-\toprule
-Cond. & $z\!\to\!z$ & V-head & $\|z^{(n)}_{\text{pre}}\|$ & $\mathrm{Var}(z^{(n)}_{\text{pre}})$ & CosSim & $\mathrm{Var}(V)$ & $\|z^{(n)}_{\text{post}}\|$ \\
-\midrule
-A & OFF & OFF & 32.0 & 814.0 & 0.196 & 0.016 & 10.0 \\
-B & ON & OFF & 32.0 & 608.7 & 0.403 & 0.016 & 10.0 \\
-C & OFF & ON & 32.0 & 814.0 & 0.200 & 2493 & 10.0 \\
-D & ON & ON & 32.0 & 608.7 & 0.396 & 2412 & 10.0 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-Three observations stand out. First, clamping is associated with modest clustering, not collapse-to-zero. Comparing B vs.\ A, total variance decreases by $\sim$25\% (ratio 0.75) and pairwise cosine similarity increases by $\sim$0.21, while pre-projection norms remain $\|z^{(n)}_{\text{pre}}\|\approx 32$, well above the projection radius $R{=}10$. Second, the large $\mathrm{Var}(V)$ differences come from value-head normalization, not $z\!\to\!z$ clamping. Comparing C vs.\ A, $\mathrm{Var}(V)$ increases by $\sim$160{,}000$\times$ (from 0.016 to 2493) when value-head normalization is enabled, while B vs.\ A barely moves (ratio $\approx$1.04); earlier observations of exploding $\mathrm{Var}(V)$ in a clamping-enabled condition were confounded by value-head normalization. Third, projection saturation explains the constant post-projection norms: all conditions have pre-projection $\|z^{(n)}_{\text{pre}}\|\approx 32 \gg R{=}10$, so $\Pi_R$ is always active and clips to $\|z^{(n)}_{\text{post}}\|=10$.
-
-Within this single-seed diagnostic, the modest clustering pattern is inconsistent with a simple collapse-to-zero explanation, but it cannot identify the mechanism behind success-rate differences.
-
-A 200-step follow-up associates value-head normalization with clamp-hitting: clamping alone remains stable with targets $\approx-1.7$, value-head normalization alone reaches the $\pm20$ clamps, and the combined cell reaches the positive clamp (target${}=20$ by step 60, $V(s)=20$ by step 100). Short clamping-only runs with value-head normalization disabled remain stable but obtain only ${\approx}10\%$ success at 1k steps. These exploratory observations identify a confound; they do not establish a causal or general training mechanism.
-
-
-
-
-\subsection{Toy-suite sanity check}
-\label{app:toy_feasibility}
-
-The 1--4-empty toy suite is a sanity check because masked random already succeeds 52\% of the time; the depth-mismatch results reported on it (Appendix~\ref{app:depth_mismatch_main}) are calibration only. The full success-rate table is recorded here for completeness.
-
-\begin{table}[t]
-\caption{Toy-suite feasibility ($4\times4$ Sudoku, 1--4 empties): success rate after 5000 training steps. Mean $\pm$ std over 3 seeds.}
-\label{tab:upi_success_only}
-\centering
-\small
-\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}lc@{}}
-\toprule
-Method & Success (\%) \\
-\midrule
-UPI--TRM (persistent-$z$, clamping disabled, $R{=}10$) & \textbf{93.3 $\pm$ 2.3} \\
-UPI--TRM (episodic-$z$, clamping disabled, $R{=}10$) & \textbf{93.3 $\pm$ 2.3} \\
-UPI--TRM (episodic-$z$, clamping enabled, proj.\ off) & \textbf{90.7 $\pm$ 5.0} \\
-Random (masked uniform) & 52.0 \\
-\bottomrule
-\end{tabular*}
-\end{table}
-
-\subsection{Isolation Study: Detailed Tables}
-\label{app:exp1_tables}
-
-Tables~\ref{tab:unroll_sensitivity} and~\ref{tab:radius_sweep} provide the full numeric results for the B0 isolation study (Section~\ref{sec:isolation_study}).
-
-\input{tables/table_exp1_unroll_sensitivity.tex}
-\input{tables/table_exp1_radius_sweep_main.tex}
-
-\subsection{Finite-$R$ Sweep on B0 (Fixed Pair)}
-\label{app:finite_r_b0}
-
-The retained fixed-B0 summary uses $(n_{\mathrm{train}}, n_{\mathrm{eval}})=(2,8)$ from Section~\ref{sec:isolation_study}, radii $\{\text{proj.\ off}, 5, 10, 20, 30, 32, 34, 40, 100\}$, and seed-level means over seeds 41--50. It records endpoint separation and an inactive plateau at $R{\ge}40$; the source pre-projection norm at $R{=}10$ lies in a narrow $p_{05}$--$p_{95}$ band of about $30.6$--$33.2$. The retained finite-batch residual moves non-monotonically in that transition window. Because the checkpoints and raw evaluation batches are absent, this summary does not freshly reproduce the result or identify $\varepsilon_{\mathrm{res}}^*(R)$ end to end.
-
-\begin{figure}[!htbp]
-\centering
-\begin{subfigure}{0.98\linewidth}
-\centering
-\includegraphics[width=\linewidth]{figures/fig_exp1_finite_r_primary_b0.png}
-\caption{Primary stability metrics.}
-\end{subfigure}
-\medskip
-\begin{subfigure}{0.98\linewidth}
-\centering
-\includegraphics[width=\linewidth]{figures/fig_exp1_finite_r_mechanism_b0.png}
-\caption{Mechanism diagnostics.}
-\end{subfigure}
-\medskip
-\begin{subfigure}{0.98\linewidth}
-\centering
-\includegraphics[width=\linewidth]{figures/fig_exp1_finite_r_theory_b0.png}
-\caption{Retained finite-batch theory diagnostics.}
-\end{subfigure}
-\caption{Fixed-pair finite-$R$ sweep on B0 initial states with $n_{\mathrm{train}}{=}2$, $n_{\mathrm{eval}}{=}8$, and seeds 41--50. Top: the primary metrics ($\Delta_V$, $\Delta_z$, argmax agreement, $\Delta_\pi$) move smoothly between the active-projection regime and the inactive plateau, with $R{=}20$ as the cleanest shared intermediate exhibit and $R{\ge}40$ matching \emph{proj.\ off}. Middle: the mechanism diagnostics show why this is not a gradual saturation knob. The saturated rate stays at $1.0$ through $R{\le}32$, drops to $0.2$ at $R{=}34$, and to $0.0$ at $R{\ge}40$, while \texttt{proj\_disp\_proxy} is only a scalar proxy based on norms, not a displacement norm. Bottom: finite-batch theory diagnostics show that the measurable Bellman residual also moves in the same transition window, but non-monotonically in $R$, while $\hat L_V$ remains same-order across radii. This appendix result therefore provides bounded empirical contact for both the truncation channel and the measurable residual channel, but it still does not identify any $R$-dependence of $\varepsilon_{\mathrm{res}}^*$ end-to-end or explain projection dominance on the hard suite.}
-\label{fig:exp1_finite_r_b0}
-\end{figure}
-
-\subsection{Isolation Study: B1 Successor States}
-\label{app:exp1_b1}
-
-We present the full B1 (one-step successor states from B0) results from the isolation study (Section~\ref{sec:isolation_study}).
-
-\textbf{Unroll sensitivity on B1.}
-On successor states, the clamping-enabled condition has lower $\Delta_V$, $\Delta_z$, and $\Delta_\pi$ and higher action agreement at all tested depth mismatches, though absolute instability remains higher than on B0 initial states.
-
-\textbf{Radius sweep on B1.}
-On B1 at \emph{proj.\ off}, the clamping-enabled condition has lower latent drift ($\Delta_z$: $35.3 \to 22.7$, i.e., $1.6\times$), higher action agreement ($47.2\% \to 64.7\%$), and lower value instability $\Delta_V$ ($2.23 \to 1.06$, i.e., $2.1\times$).
-Absolute variability nevertheless remains substantially higher than on B0 initial states.
-
-The main-text claim in Section~\ref{sec:isolation_study} stays anchored on B0 initial states, because B1 is an appendix-only successor-state check and is noisier even though the qualitative direction now matches B0.
-
-\input{tables/table_exp1_radius_sweep_appendix.tex}
-
-\subsection{Projection Dominance Study}
-\label{app:exp2_sweep}
-
-We probed the clamping target $L_z^{\mathrm{target}}\in\{0.9, 0.95, 0.99, 0.999\}$.
-All models are trained on the same $4\times4$ Sudoku suite (1--4 empties) with \texttt{disable\_value\_head\_norm: true}, evaluated at $8\times$ depth mismatch on B0 (initial states).
-
-The target does not control the measured local proxy. Table~\ref{tab:exp2_dial_failure} shows that $\hat L_z^{\mathrm{post}}$ stays in a narrow $0.219$--$0.242$ band across the four target settings, and the ordering does not produce a monotonic ordering in stability metrics. These finite-difference values are not certified global Lipschitz constants.
-
-\input{tables/table_exp2_dial_does_not_control_Lz.tex}
-
-Projection, separately, is a major stabilizer in this exploratory comparison. Table~\ref{tab:exp2_projection_stabilizer} shows that projection at $R{=}10$ improves $\Delta_V$ by $6$--$10\times$ and argmax agreement by $\approx 8$--$10$~pp compared to \emph{proj.\ off}. At $R{=}10$ projection is active $100\%$ of the time, which can mask differences between the clamping conditions.
-
-\input{tables/table_exp2_projection_effect.tex}
-
-In this projection-active regime, the clamping target does not meaningfully vary the local proxy, while projection itself acts as a strong stabilizer. The isolation study therefore supports only a binary clamping-condition contrast at \emph{proj.\ off}, not a tunable or certified post-projection modulus.
-
-\subsection{Projection-Free Dial Range Test}
-\label{app:exp4_projection_free_dial}
-
-Appendix~\ref{app:exp2_sweep} shows that the spectral-norm target $L_z^{\mathrm{target}}$ is not an effective control parameter when projection is active.
-We therefore test a narrower question here: with projection disabled, can inference-time scaling induce a wider range in the local proxy?
-
-With projection disabled (\emph{proj.\ off}, implemented as $\Pi_R=\mathrm{Id}$) and value-head spectral norm disabled, we apply inference-time scalar scaling to the $z\!\to\!z$ update weights of a single trained checkpoint, then measure the achieved pre-projection Lipschitz proxy $L^{\mathrm{pre}}_z$ and stability metrics ($\Delta_V$, argmax agreement) at $8\times$ depth mismatch on 100 B0 samples.
-
-\input{tables/table_exp4_projection_free_dial_range_test.tex}
-
-The achieved $L^{\mathrm{pre}}_z$ span is wide ($\approx 0.52$--$0.95$; spread $\approx 0.43$), so inference-time scaling \emph{can} vary the proxy once projection is disabled. What is not supported is a \emph{monotonic} stability relation: neither $\Delta_V$ nor argmax agreement changes monotonically with $L^{\mathrm{pre}}_z$ in this range. We therefore treat the run as a feasibility check only.
-
-\subsection{Training Stability Ablation}
-\label{app:exp3_projection_ablation}
-
-We ablate projection at \emph{training time} to test whether the ball projection $\Pi_R$ is necessary for stable training, as opposed to its role in evaluation-time mismatch stability (see projection dominance study above).
-
-\input{tables/table_exp3_projection_ablation.tex}
-
-In this easy-suite ablation, all six conditions (clamping enabled/disabled crossed with $\{\text{proj.\ off},10,100\}$) pass the stated stability gate and obtain $94$--$98\%$ success. Thus projection is not necessary for stability within this tested protocol; this is not a general training-stability conclusion.
-
-\subsection{Projection-Free Clamping-Target Sweep (Full Results)}
-\label{app:exp4_projection_free_dial_v2}
-
-The depth-mismatch summary in Appendix~\ref{app:depth_mismatch_main} gives the high-level takeaway.
-Table~\ref{tab:exp4_projection_free_dial_v2} below provides the full numeric results at $8\times$ depth mismatch.
-
-\input{tables/table_exp4_projection_free_dial_v2.tex}
-
-\subsection{Stability--Expressivity Tradeoff (Full Results)}
-\label{app:exp5_tradeoff_curve}
-
-This appendix provides an exploratory stability--expressivity analysis.
-\textbf{Important:} Success rates here (${\approx}6.7\%$) are \emph{not} comparable to Table~\ref{tab:upi_success_only} (${\approx}93\%$) because they use different evaluation protocols: Exp5 uses \emph{matched compute} ($n_\mathrm{eval}{=}2$, \emph{proj.\ off}) to isolate clamping-condition differences, while Table~\ref{tab:upi_success_only} uses $n_\mathrm{eval}{=}2$ with mixed projection settings (clamping disabled: $R{=}10$; clamping enabled: \emph{proj.\ off}). The low matched-compute success in Exp5 reflects the inherent difficulty of solving puzzles with only 2 unroll steps under uniform projection-off evaluation, not model deficiency.
-
-The retained inference-time scaling summary (scales $\in \{1.0, 0.85, 0.70, 0.55\}$, \emph{proj.\ off}, value-head spectral normalization disabled) reports modest stability variation and task success near $6.7\%$, without a pronounced tradeoff in that batch.
-Table~\ref{tab:exp5-tradeoff} provides the numeric results.
-
-\input{tables/table_exp5_tradeoff_curve.tex}
-
-\section{Decision-Relevant Hard-Suite Records}
-\label{app:hard_records}
-
-This section retains the hard-suite task records and reported projection $\times$ clamping aggregates used in the main narrative.
-
-\subsection{Harder $4\times4$ Sudoku (6--8 Empties)}
-\label{app:harder_sudoku_detailed}
-
-The historical manuscript describes a harder suite with 6--8 empty cells and a recorded random-policy success rate of 0\%. The underlying dataset and random-policy run artifact are absent, so this rate is \emph{not verifiable from supplied evidence}.
-
-\subsection{Reported Projection $\times$ Clamping Aggregates on Hard $4\times4$}
-\label{sec:controlled_2x2_main}
-
-The implementation repository retains 40 per-seed logs, four configurations, the launcher, and a parser for a $2\times2$ factorial on the manuscript-described no-mask hard $4\times4$ suite. They reproduce the four displayed cell means and sample standard deviations. The checkpoints, historical dataset, ordered evaluation records, per-instance outcomes, and original statistical-test script are absent, so any causal or contraction-mechanism claim is \emph{not verifiable from supplied evidence}.
-
-\begin{table}[t]
-\caption{Historical no-mask hard $4\times4$ $2\times2$ records (10 seeds per cell). Retained per-seed logs reproduce the cell arithmetic, but checkpoints, dataset and ordered-pool provenance, per-instance outcomes, and the original statistical-test script are absent.}
-\label{tab:controlled_2x2_main}
-\centering
-\small
-\begin{tabular}{@{}lc@{}}
-\toprule
-Condition & Success (\%) \\
-\midrule
-Clamping disabled, proj.\ off & 35.0 $\pm$ 8.9 \\
-Clamping disabled, $R{=}10$ & 48.2 $\pm$ 7.1 \\
-Clamping enabled, proj.\ off & 37.4 $\pm$ 7.8 \\
-Clamping enabled, $R{=}10$ & 50.2 $\pm$ 10.5 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-The historical projection contrast raises success from $36.2\%$ to $49.2\%$ (+13.0pp averaged over clamping status). It is a composite protocol contrast spanning the forward pass and training dynamics (changes to $f_\theta$, $\varepsilon_0$, and the optimizer trajectory), which~\eqref{eq:main_bound_proj} does not model. Averaging over projection status, the clamping-enabled contrast raises success from $41.6\%$ to $43.8\%$ (+2.2pp). The source-reported $p\approx0.6$ is \emph{not verifiable from supplied evidence} because its statistical script is absent; the retained arithmetic does not support a contraction or variance-reduction claim.
-
-\section{Secondary Robustness Diagnostics}
-\label{app:secondary_robustness}
-
-These depth-mismatch curves and discussion details are secondary diagnostics and do not establish hard-suite task performance.
-
-\subsection{Depth-Mismatch Robustness (Isolation Study)}
-\label{sec:isolation_study}
-\label{app:depth_mismatch_main}
-
-To probe evaluation-time robustness as compute changes, we evaluate checkpoints trained at $n_{\mathrm{train}}{=}2$ under deeper unrolls $n_{\mathrm{eval}}\in\{4,8,16\}$ on the 1--4-empty suite and aggregate over seeds 41--50. On B0 initial states at fixed $4\times$ mismatch ($n{=}2\rightarrow 8$), the clamping-enabled condition lowers $\Delta_V$ from $0.166$ to $0.064$ and raises argmax agreement from $90.2\%$ to $95.5\%$; $\Delta_\pi$ stays near zero. This is finite-batch diagnostic contact with the episodic setting, not theorem validation, and it does not establish the global contraction condition or speak to persistent-$z$ behavior on the hard suite.
-
-The detailed tables (Appendix~\ref{app:exp1_tables}) show that moving from \emph{proj.\ off} to $R{=}10$ yields the larger reduction in $\Delta_V$, while Appendix~\ref{app:exp1_b1} gives the same qualitative pattern on B1 successor states with higher noise.
-
-\subsection{Reported 2$\times$2 (Clamping $\times$ Projection) on Hard Suite}
-\label{app:controlled_2x2}
-
-Historical hard-suite comparisons mixed projection settings and therefore confounded the clamping intervention with clipping. Retained per-seed logs reproduce the recorded $2\times2$ arithmetic for the manuscript-described no-mask hard $4\times4$ Sudoku protocol (6--8 empties, 20k steps, 10 seeds), but the dataset, ordered-pool hashes, checkpoints, and per-instance outcomes are absent. A causal mechanism interpretation is \emph{not verifiable from supplied evidence}.
-
-Three readings follow from the aggregate table. Enabling projection raises reported mean success from $36.2\%$ to $49.2\%$ (+13.0pp averaged over clamping status), a composite algorithmic contrast. Clamping adds only a small average contrast: at \emph{proj.\ off} it changes success from $35.0\%$ to $37.4\%$ (+2.4pp), and at $R{=}10$ from $48.2\%$ to $50.2\%$ (+2.0pp). The highest-mean cell is clamping enabled with $R{=}10$ ($50.2\%\pm10.5\%$) versus $48.2\%\pm7.1\%$ for clamping disabled at $R{=}10$; these aggregates do not establish a contraction benefit or variance reduction.
-
-The reported table replaces the older asymmetric narrative: projection has the larger composite success contrast, while clamping has only a small, inconclusive average contrast. The separate depth-mismatch result concerns value stability, not hard-suite return.
-
-\subsection{Discussion details}
-\label{app:discussion_details}
-
-The stability experiments answer different questions, and the shortest consistent reading is:
-Appendix~\ref{sec:isolation_study} gives a binary clamping-condition contrast on \emph{evaluation-time} depth-mismatch stability for B0 initial states;
-Appendix~\ref{app:exp2_sweep} shows that active projection can dominate and mask that effect;
-Appendix~\ref{app:exp3_projection_ablation} shows projection is not required for \emph{training} stability;
-and Appendix~\ref{app:exp4_projection_free_dial_v2} shows that once projection is disabled, the local proxy regains meaningful range.
-Appendix~\ref{app:exp5_tradeoff_curve} is exploratory only: its success rates (${\approx}6.7\%$) use matched compute ($n{=}2$, proj.\ off) and are not directly comparable to Table~\ref{tab:upi_success_only}, which mixes projection settings.
-
-These appendices show two observed contrasts: projection changes success and depth-stability diagnostics through coupled forward-pass and training channels, while disabling projection exposes a wider local-proxy range for inference-time checks. They do not isolate a projection training-stability effect, certify contraction, or establish that clamping improves hard-suite performance.
-
-A naive reading of the older asymmetric comparison would suggest that the clamping intervention is strongly harmful on harder tasks. The reported no-mask 10-seed $2\times2$ aggregates do not support that reading. Projection changes mean success from $36.2\%$ to $49.2\%$, while clamping changes it only from $41.6\%$ to $43.8\%$ averaged over projection settings (+2.2pp) and does not reduce variance under projection. Mathematical contraction is a sufficient error-control condition, but these data do not establish that condition or demonstrate clamping as a hard-task performance dial.
-
-\section{Protocol and Theory-Oriented Historical Run Records}
-\label{app:protocol_records}
-
-This section records the interaction-budget audit, arithmetic from the recorded seed values, and the theory-oriented episodic hard-suite run. The common-budget baseline table lacks standalone provenance in the retained package and is marked accordingly.
-
-\subsection{Interaction-Equalized Baseline Audit}
-\label{app:equalized_baselines}
-
-Table~\ref{tab:hard_suite_anchor} reports the nominal 20k outer-step protocol. Because PPO, A2C, and DQN collect 64, 32, and 4 transitions per outer step, it does not equalize interactions. The source manuscript recorded a baseline-only common-budget attempt, but only partial logs remain and the UPI--TRM arm was never run. We therefore remove those incomplete numbers from active claims and retain only the artifact-status audit below.
-
-\begin{table}[t]
-\caption{Artifact status for the missing interaction-equalized comparison.}
-\label{tab:equalized_baselines}
-\centering
-\small
-\begin{tabularx}{\linewidth}{@{}lXXX@{}}
-\toprule
-Run family & UPI--TRM arm & Standalone provenance & Claim status \\
-\midrule
-Source baseline-only audit & Absent & Partial / incomplete & Numerical rows excluded \\
-Required UPI--TRM vs.\ PPO audit & Required & Not run & Missing experiment \\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-There is therefore no numerical interaction-matched UPI--TRM versus PPO result in this paper.
-
-\subsection{Recorded seed-value arithmetic}
-\label{app:headline_significance}
-
-\begin{table}[t]
-\caption{Historical no-mask hard $4\times4$ execution records (mean $\pm$ sample std across seeds). The UPI artifact cycles 50 episodes over 32 training records also used for training. Architecture-matched rows are manuscript-recorded aggregates; external rows use a different budget unit and lack ordered-pool hashes. These rows are not a comparative experiment. The retained evaluator code defines ``Return'' as the undiscounted episode sum of emitted rewards, distinct from discounted $\eta(\pi)$; the exact producer revision for every historical row is \emph{not verifiable from supplied evidence}.}
-\label{tab:hard_suite_anchor}
-\centering
-\scriptsize
-\begin{tabular}{@{}lccccc@{}}
-\toprule
-Historical record & Recorded budget & Seeds & Success (\%) & Return & Invalid \\
-\midrule
-UPI--TRM (in-sample) & 20k outer updates & 10 & 57.4 $\pm$ 12.2 & -1.82 $\pm$ 2.66 & 0.000 $\pm$ 0.000 \\
-\midrule
-\multicolumn{6}{@{}l}{\emph{Architecture-matched manuscript records (same TRM backbone):}} \\
-TRM+PPO & 20k outer updates & 10 & 32.0 $\pm$ 15.3 & -7.87 $\pm$ 3.65 & 0.000 $\pm$ 0.000 \\
-TRM+A2C & 20k outer updates & 10 & 0.0 $\pm$ 0.0 & -16.81 $\pm$ 0.29 & 0.000 $\pm$ 0.000 \\
-TRM+DQN & 20k outer updates & 10 & 0.0 $\pm$ 0.0 & -18.38 $\pm$ 0.63 & 0.000 $\pm$ 0.000 \\
-\midrule
-\multicolumn{6}{@{}l}{\emph{External SB3 records (flat MLP policy; high invalid-action rates):}} \\
-PPO/A2C/DQN/DQN($n{=}5$) & 20k env steps & 10 & 0.0 $\pm$ 0.0 & $\approx -17.9$ & 0.78--1.00 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-The following calculation preserves the ten seed-level success rates printed in the historical manuscript. The UPI--TRM reevaluation artifact cycles 50 episodes over 32 records from the training split that were also used during training, and it contains no ordered-pool hash. Ten retained PPO logs reproduce its aggregate, but the checkpoints, historical dataset, ordered pool, per-instance outcomes, and exact training revision are absent. A method comparison is therefore \emph{not verifiable from supplied evidence}. For UPI--TRM, the recorded rates are
-\[
-0.56,\ 0.50,\ 0.68,\ 0.50,\ 0.64,\ 0.70,\ 0.74,\ 0.42,\ 0.38,\ 0.62,
-\]
-with mean $57.4\%$ and sample standard deviation $12.2\%$. For the architecture-matched TRM+PPO baseline, the corresponding rates are
-\[
-0.30,\ 0.32,\ 0.12,\ 0.54,\ 0.12,\ 0.56,\ 0.20,\ 0.32,\ 0.42,\ 0.30,
-\]
-with mean $32.0\%$ and sample standard deviation $15.3\%$. Their arithmetic mean difference is $25.4$ percentage points. The protocols use incompatible evaluation provenance and unequal interaction budgets, so no method-level inferential test is warranted and we report none.
-
-\subsection{Theory-Oriented Episodic-$z$ Historical Run}
-\label{app:episodic_z_hard_suite_rerun}
-
-The retained configuration records a theory-oriented run on a manuscript-described no-mask hard $4\times4$ Sudoku suite (6--8 empties, $T{=}16$, 20k environment steps, seeds 41--50). The retained working-tree files do not establish that the protocol was timestamped before execution, and the hard-suite dataset, checkpoints, and per-seed source logs are absent. The configuration jointly changes four factors from the persistent path: episodic-$z$ latents, exact baseline summation, exact $K$-step targets, and explicit-mixture collection. Historical source audit shows that training and task evaluation reused a materialized 32-record \texttt{train/} pool and that the endpoint evaluator scored \texttt{policy\_model\_old}, not the explicit mixture. Diagnostics use a separate fixed 256-instance batch from \texttt{train/} (seed 1729). They are finite-batch diagnostics, not held-out estimates.
-
-The working tree contains \nolinkurl{EPISODIC_Z_RUN_LOG.md},
-\nolinkurl{diagnostics_summary.json}, \nolinkurl{cpi_penalty_grid.json}, and
-\nolinkurl{per_seed_diagnostics.jsonl}. Their presence in the submitted review
-package is \emph{not verifiable from supplied evidence}; even if included, the
-missing source logs and checkpoints prevent rerunning or independently
-reconstructing the endpoint.
-
-Table~\ref{tab:episodic_z_branch_d} reports the recorded old-policy endpoint and derived diagnostics at 20k. The old-policy evaluator records $0.0\%$ success over 10 seeds. The historical protocol labeled this Branch~D by comparing it with the in-sample persistent record, but the two runs differ in interaction budget and four implementation factors. The branch label is bookkeeping, not controlled evidence and not an evaluation of the explicit mixture.
-
-\begin{table}[t]
-\caption{Retained theory-oriented episodic-$z$ records at 20k on the manuscript-described no-mask hard $4\times4$ suite. The task endpoint evaluates only the old policy. Means $\pm$ sample std over 10 seeds unless noted. The retained evaluator code defines ``Return'' as the undiscounted episode sum of shaped rewards and ``Score'' as the final checker score, but the exact historical producer revision is \emph{not verifiable from supplied evidence}. Return is distinct from discounted $\eta(\pi)$.}
-\label{tab:episodic_z_branch_d}
-\centering
-\small
-\begin{tabular}{@{}lc@{}}
-\toprule
-Quantity & Value \\
-\midrule
-Success (\%) & $0.0 \pm 0.0$ \\
-Return & $-21.733 \pm 0.512$ \\
-Score & $3.906 \pm 0.606$ \\
-Invalid & $0.000 \pm 0.000$ \\
-Historical branch label & D (legacy bookkeeping only) \\
-\midrule
-$\varepsilon_{\mathrm{cent}}$ @ 20k & $(1.782 \pm 0.301)\times 10^{-6}$ \\
-$\varepsilon_{\mathrm{res},n}$ @ 20k & $5.047 \pm 0.175$ \\
-projection-active rate @ 20k & $1.0$ \\
-$\rho_R$ @ 20k & $45.2547 \pm 1.3 \times 10^{-5}$ \\
-finite-seed $\hat L_z^{\mathrm{post}}$ @ 20k & $0.600 \pm 0.104$ over 8/10 seeds \\
-saturating seeds & 41, 46 ($\hat L_z^{\mathrm{post}}\ge 1$) \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-At 20k, the retained finite-batch summary reports a numerically small centering defect, projection active on every sampled batch state, and a large finite-depth Bellman residual. None is a uniform certificate. The derived per-seed file identifies seeds 41 and 46 with $\hat L_z^{\mathrm{post}}\ge 1$, making the recorded all-seed mean predicted CPI penalty $+\infty$ for every $\alpha \in \{0.05, 0.10, 0.20, 0.40\}$. Table~\ref{tab:episodic_z_penalty} preserves the corresponding finite-seed arithmetic over the remaining 8/10 seeds.
-
-\begin{table}[t]
-\caption{Predicted CPI penalty at 20k on the episodic-$z$ closure batch. Finite-subset mean $\pm$ sample std is computed over seeds 42, 43, 44, 45, 47, 48, 49, and 50. The all-seed mean is $+\infty$ at every $\alpha$ because seeds 41 and 46 have $\hat L_z^{\mathrm{post}}\ge 1$.}
-\label{tab:episodic_z_penalty}
-\centering
-\small
-\begin{tabular}{@{}lcc@{}}
-\toprule
-$\alpha$ & finite-subset predicted penalty & all-seed mean \\
-\midrule
-0.05 & $5215.11 \pm 164.00$ & $+\infty$ \\
-0.10 & $10809.78 \pm 303.85$ & $+\infty$ \\
-0.20 & $23137.80 \pm 561.71$ & $+\infty$ \\
-0.40 & $52348.56 \pm 1387.43$ & $+\infty$ \\
-\bottomrule
-\end{tabular}
-\end{table}
 
 \section{Notation Summary}
 \label{app:notation}
@@ -1920,7 +1546,10 @@ In the projection-active regime, assuming $L_z^{\mathrm{sat}}(R)<1$ in Propositi
 \frac{2\varepsilon_{\mathrm{CPI}}\,\gamma}{(1-\gamma)^2}\,\alpha^2.
 \label{eq:main_bound_proj}
 \end{align}
-Projection affects both the architectural and truncation terms; the finite-$R$ sweep (Appendix~\ref{app:finite_r_b0}) shows this is a regime diagnostic, not a monotone tuning rule for $R$.
+Projection affects both the architectural and truncation terms. The displayed
+bound does not make $R$ a monotone performance dial because the residual,
+head Lipschitz factor, saturation margin, and optimizer trajectory may all
+change with the projection regime.
 
 \begin{proposition}[Projection-induced contraction on a saturated annulus]
 \label{prop:proj_sat_contraction}
@@ -2205,7 +1834,16 @@ The frozen CPI comparison begins only after the value update and uses the same f
 The repaired implementation stores the carried input and successor latents, the remaining-edit clock, and the behavior log probability in replay. Recomputed episodic latents use the current evaluator, while persistent updates consume the recorded augmented state. The historical persistent runs predate this repair and dropped the carried latent during replay updates.
 
 \textbf{Compute and hardware.}
-Each reported training or evaluation run uses a single device. The main training jobs and retained external PPO/A2C/DQN records, including the 5-step DQN variant, used GPU-enabled batch jobs; the evaluation scripts also support CPU fallback for analysis-only runs. The external JSON files record 50 \texttt{test} episodes but no ordered-pool hashes, and the underlying dataset is absent. Within the architecture-matched group, ``matched'' refers to the shared TRM backbone and checker-shaped reward, not to an established common evaluation pool, identical environment-interaction counts, or constant-factor wall-clock cost. The nominal 20k outer-step protocol gives different interaction budgets across PPO, A2C, and DQN because each collects a different number of transitions per outer step; Appendix~\ref{app:equalized_baselines} reports the missing-audit and artifact status, not validated equalized results. The baseline update rules also carry algorithm-specific overhead; for example, PPO and A2C evaluate policy and value heads in separate forwards through the TRM backbone during optimization, so wall-clock time per update can exceed UPI--TRM.
+Each historical training or evaluation record used a single device. The main
+training jobs and external PPO/A2C/DQN records used GPU-enabled batch jobs;
+the evaluation scripts also support CPU fallback. The external JSON files
+record 50 \texttt{test} episodes but no ordered-pool hashes, and the underlying
+dataset is absent. ``Architecture matched'' refers only to the shared TRM
+backbone and checker-shaped reward. It does not establish a common evaluation
+pool, identical environment-interaction counts, or equal wall-clock cost. The
+nominal 20k outer-step protocol gives different interaction budgets because
+each baseline collects a different number of transitions per outer step. No
+interaction-equalized UPI--TRM/PPO comparison has been run.
 
 \textbf{Advantage estimation.}
 The theory uses the centered estimator~\eqref{eq:Ahat_def_app}; in practice GAE/$(\lambda)$-return variants are also fine for variance reduction. The linear-in-$\alpha$ error term in Theorem~\ref{thm:monotone_with_error} requires \emph{exact} statewise centering $\E_{a\sim\pi}[\widehat{A}(s,a)]=0$. This holds whenever the estimator is constructed to be exactly centered. For Eq.~\eqref{eq:Ahat_def_app}, the baseline $B_V(s)=\E_{b\sim\pi(\cdot|s)}[\widehat Q_V(s,b)]$ must be evaluated exactly; the finite discrete implementation uses explicit summation. With a learned value baseline (as in standard GAE), centering is only approximate and the deterministic bound degrades by the centering defect $\varepsilon_{\mathrm{cent}}$; the naive $O(\varepsilon_A/(1-\gamma))$ penalty is recovered only as a worst-case upper bound when $\varepsilon_{\mathrm{cent}}$ and $\varepsilon_{A,\mathrm{cand}}$ are both controlled by $\varepsilon_A$.
