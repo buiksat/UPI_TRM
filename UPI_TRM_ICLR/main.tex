@@ -132,7 +132,7 @@ We analyze Unrolled Policy Iteration with TRMs (UPI--TRM), which retains the inn
 
 Our primary result (Theorem~\ref{thm:finite_reference_depth}) compares $U_n(s)=V_\psi(z^{(n)}(s),x)$ with any deeper finite reference $U_m$, bounding $\|U_n-V^\pi\|$ by $\|U_n-U_m\|$ plus the Bellman residual of $U_m$. No recurrent convergence is assumed. The finite-horizon specialization in Theorem~\ref{thm:finite_horizon_reference} uses the edit clock and exact absorbing boundary to replace the infinite geometric tail by the number of remaining $K$-step blocks. Theorem~\ref{thm:finite_horizon_cpi} gives time-indexed CPI constants, and Theorem~\ref{thm:deployment_perturbation} quantifies the gap between the exact mixture and a separately deployed policy. These are conditional fixed-snapshot results, not training guarantees.
 
-The evidence has two distinct roles. First, an exactly solvable finite MDP numerically unit-tests the composed value, advantage, and CPI inequalities; it is not an empirical discovery. Second, retained hard-$4\times4$ Sudoku artifacts document historical implementations. The episodic run records $0\%$ success over 10 seeds, but its endpoint evaluator scored only the old-policy component. The persistent evaluator cycled over training records and deployed parameter interpolation rather than the exact pointwise mixture. The checkpoints, hard-suite dataset, ordered evaluation population, and exact training revision are absent, and interaction counts differ. We therefore exclude the old performance and ablation tables and attach no comparative or inferential interpretation to those records.
+The evidence has two distinct roles. First, an exactly solvable finite MDP numerically unit-tests the composed value, advantage, and CPI inequalities; it is not an empirical discovery. Second, retained hard-$4\times4$ Sudoku artifacts document historical implementations. The episodic aggregate records $0\%$ success over 10 seeds, but the retained endpoint rows do not identify the evaluated policy. Historical persistent logs and configuration metadata record training-population reuse and parameter interpolation rather than the exact pointwise mixture. The checkpoints, hard-suite dataset, ordered evaluation population, exact training revision, and exact environment-interaction counters are absent. We therefore exclude the old performance and ablation tables and attach no comparative or inferential interpretation to those records.
 
 \textbf{Scope.} Write $h$ for the remaining edit budget. Episodic latents are Markov on $s=(x,y,h)$. At a fixed snapshot, persistent latents are Markov on the clock-complete state $\bar s=(x,y,z,h)$. Their direct residual certificate needs no latent fixed point or slow drift; slow drift is needed only for the stronger comparison with a memoryless fixed-point reference. Repository audit found that the historical persistent path omitted the carried latent from replay updates, omitted the edit clock from recorded state, and used parameter interpolation for deployment. The hard-suite data and checkpoints are absent, so the original runs cannot be re-executed. The current empirical domain is only $4\times4$ Sudoku.
 
@@ -547,17 +547,17 @@ negative outcome for a future artifact build; we do not claim that report is
 part of a submitted artifact.
 
 \paragraph{Negative episodic record.}
-The theory-oriented episodic configuration reinitialized the latent and used
-exact baseline summation, complete $K$-step segments with terminal masking,
-and explicit-mixture collection. Its bootstrap still came from an EMA target
-rather than the frozen current evaluator. Its endpoint evaluator scored only
-\texttt{policy\_model\_old}, and task evaluation reused a materialized
-32-record training pool. The retained aggregate records $0.0\%$ success at
-the nominal outer-step-20,000 endpoint over seeds 41--50. This is an
-in-sample old-policy endpoint, not an evaluation of the exact mixture and not
-a controlled persistent-versus-episodic comparison. Regeneration from the
-original checkpoints and per-instance outcomes is
-\emph{not verifiable from supplied evidence}.
+The retained episodic configuration requests latent reinitialization, exact
+baseline summation, complete $K$-step segments with terminal masking, and
+explicit-mixture collection. Source tracing of the available revision also
+finds an EMA bootstrap rather than the frozen current evaluator. The producing
+revision, training logs, checkpoints, hard-suite data, and raw per-instance
+outcomes are absent, while the retained endpoint rows identify only a
+\texttt{greedy} evaluation mode. The aggregate records $0.0\%$ success at the
+nominal outer-step-20,000 endpoint over seeds 41--50. Runtime adherence,
+endpoint policy identity, evaluation-population identity, and independent
+regeneration are \emph{not verifiable from supplied evidence}. This record is
+not a controlled persistent-versus-episodic comparison.
 
 \paragraph{Missing decision-changing evidence.}
 Augmented-state diagnostics on successful persistent checkpoints, a
@@ -575,7 +575,7 @@ gives the construction and retained outputs.
 
 A separate deterministic standard-library regression exercises the
 finite-horizon residual, CPI, deployment, terminal, and support-boundary
-formulas. Its registered run has 26,686 passing assertions, including
+formulas. A recorded deterministic execution has 26,686 passing assertions, including
 $H=0$, $K>H$, $\gamma=0$, $\alpha\in\{0,1\}$, an absorbing initial law,
 TV distance one, and incompatible policy supports. The working-tree paths are
 \nolinkurl{experiments/finite_horizon_theory_checks.py} and
@@ -2215,9 +2215,10 @@ record 50 \texttt{test} episodes but no ordered-pool hashes, and the underlying
 dataset is absent. ``Architecture matched'' refers only to the shared TRM
 backbone and checker-shaped reward. It does not establish a common evaluation
 pool, identical environment-interaction counts, or equal wall-clock cost. The
-nominal 20k outer-step protocol gives different interaction budgets because
-each baseline collects a different number of transitions per outer step. No
-interaction-equalized UPI--TRM/PPO comparison has been run.
+algorithms have different collection semantics, but exact historical
+environment-interaction counters were not retained. Budget equality is
+therefore \emph{not verifiable from supplied evidence}. No
+interaction-matched UPI--TRM/PPO comparison has been run.
 
 \textbf{Advantage estimation.}
 The theory uses the centered estimator~\eqref{eq:Ahat_def_app}; in practice GAE/$(\lambda)$-return variants are also fine for variance reduction. The linear-in-$\alpha$ error term in Theorem~\ref{thm:monotone_with_error} requires \emph{exact} statewise centering $\E_{a\sim\pi}[\widehat{A}(s,a)]=0$. This holds whenever the estimator is constructed to be exactly centered. For Eq.~\eqref{eq:Ahat_def_app}, the baseline $B_V(s)=\E_{b\sim\pi(\cdot|s)}[\widehat Q_V(s,b)]$ must be evaluated exactly; the finite discrete implementation uses explicit summation. With a learned value baseline (as in standard GAE), centering is only approximate and the deterministic bound degrades by the centering defect $\varepsilon_{\mathrm{cent}}$; the naive $O(\varepsilon_A/(1-\gamma))$ penalty is recovered only as a worst-case upper bound when $\varepsilon_{\mathrm{cent}}$ and $\varepsilon_{A,\mathrm{cand}}$ are both controlled by $\varepsilon_A$.
