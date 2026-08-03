@@ -45,6 +45,11 @@ cannot enter any confirmatory result.
 - All raw per-instance outcomes, counters, configurations, code commits,
   ordered record hashes, checkpoint hashes, and generation commands must be
   retained before a result can be described as verified.
+- Every fully theory-oriented UPI-TRM cell must set
+  `training_protocol=fixed_base_exact`. Setting
+  `theory_exact_mixture=true` on the legacy training path is insufficient and
+  must be labeled legacy. Historical reconstruction and compatibility cells
+  use `training_protocol=legacy` explicitly.
 
 Fields that must be locked before execution:
 
@@ -113,10 +118,10 @@ architecture-matched TRM+PPO at exactly 80,000 training interactions.
 
 UPI-TRM uses the fully theory-oriented combination of persistent latent,
 clock-complete augmented replay, exact K-step target, exact augmented-state
-baseline summation, and direct pointwise probability-space mixture. PPO uses
-the same recurrent backbone and the same train/test manifests. Both methods
-use the common seeds, ordered 512-record held-out pool, checkpoints, and
-interaction budget.
+baseline summation, direct pointwise probability-space mixture, and
+`training_protocol=fixed_base_exact`. PPO uses the same recurrent backbone and
+the same train/test manifests. Both methods use the common seeds, ordered
+512-record held-out pool, checkpoints, and interaction budget.
 
 The primary estimand is the paired per-seed difference in held-out success at
 80,000 interactions. The primary interval and test are the common

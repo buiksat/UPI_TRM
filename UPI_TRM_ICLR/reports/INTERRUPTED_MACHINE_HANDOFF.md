@@ -1,27 +1,27 @@
-# Interrupted machine handoff
+# ICLR repair handoff
 
 Date: 2026-08-03
 
-The machine was scheduled for removal before the full requested workflow could
-finish. This report distinguishes committed work from missing work.
+This report distinguishes committed implementation and paper work from missing
+scientific evidence.
 
 ## Repositories and branches
 
 - Paper: `/home/buiksat/UPI_TRM`, branch
-  `iclr-evidence-aligned-revision`, current pre-handoff commit `5c5d687`.
+  `iclr-evidence-aligned-revision`, baseline before this update `baf196b`.
 - Code: `/home/buiksat/trm_bellman`, branch `iclr-confirmatory-repair`, commit
-  `111e3a96655d1b3414ba15801a3ebfa393e8e394`.
+  `e61b173` (protocol implementation commit `8109978`).
 - Protected NeurIPS tree: unchanged at tree
   `8dc95739b9830a75409af3d89ba86ac174ae1376` with scoped tracked-file digest
   `32e7967b973bffe2858d340fa793177c298796937790d17ca1463ce7b636cdab`.
 
-The paper repository contains a recovery copy of the four code commits at:
+The paper repository contains a recovery copy of the six code commits at:
 
 `handoff/trm_bellman_iclr-confirmatory-repair.patch.gz`
 
 SHA-256:
 
-`e73a2e6d38df9204f25f07fe5e628a9b89407a50ab28839ee5d7fc0b02e6b071`
+`eb26b8cfe4d98fc1b0c6053d37339f705a9a1137e1652cdf27a04388ea14c2ce`
 
 Apply it to a clone containing base commit `6d5a241027fe72921d5fc039dd6a12434999088b`:
 
@@ -45,40 +45,51 @@ gzip -dc trm_bellman_iclr-confirmatory-repair.patch.gz | git am
   boundary checks.
 - Created claim/evidence, historical provenance, experiment triage,
   confirmatory registry, compute estimate, and run-registry reports.
-- Current clean PDF build: 31 pages, SHA-256
-  `f769d3abd252cc6b5518b0b7390ae41bf432e2594902226bd95acf9eb72cad74`.
-  It had zero undefined citations, undefined references, fatal errors, or
-  overfull boxes, and no detected Type 3 font object.
+- A pre-current-edit source state was reported to build at 31 pages with zero
+  undefined citations, undefined references, fatal errors, or overfull boxes.
+  The current fixed-base wording has not been rebuilt because this host no
+  longer has a TeX engine. See `POST_FIXED_BASE_PAPER_BUILD_ATTEMPT.md`; do not
+  treat the restored stale PDF as the current source build.
 
 ## Code work completed
 
-See the code repository's `reports/ICLR_REPAIR_HANDOFF.md`. The implementation
-now contains clock-complete replay, persistent exact centering, fixed-K segment
-validation, exact live interaction budgets, schema-v3 resume, complete dataset
-provenance, held-out CleanRL evaluation, PPO/DQN boundary fixes, seeded dataset
-builders, and finite-batch augmented-state diagnostic utilities.
+See the code repository's `reports/ICLR_REPAIR_HANDOFF.md` and
+`reports/POST_HANDOFF_EXECUTION_REPORT.md`. The implementation now contains
+clock-complete replay, persistent exact centering, fixed-K segment validation,
+exact live interaction budgets, schema-v4 resume, complete dataset provenance,
+held-out CleanRL evaluation, PPO/DQN boundary fixes, seeded dataset builders,
+and finite-batch augmented-state diagnostic utilities.
 
-Static compilation and diff checks pass. The final focused Buck set passed 120
-of 121 tests, exposed one PPO boundary-check `NameError`, and then passed the
-complete 12-test CleanRL target after that fix. No focused failure remains.
-The next machine still needs to rerun all declared targets before calling the
-repair fully validated.
+The former multi-update exact-mode ambiguity is resolved by the explicit
+`fixed_base_exact` protocol. It collects from a sealed base policy, freezes the
+base recurrent map, fits only the value head, optimizes one candidate policy
+head, and evaluates the exact probability-space mixture without recursively
+promoting it. Legacy behavior remains available but is not labeled exact.
+
+The authoritative partitioned Buck gate passed all 310 declared runtime cases:
+296 cases across 30 targets and 14 logging/checkpoint cases in isolation. The
+isolation avoids a retained TPX parallel-teardown failure in which the test body
+reported `OK`. All six known type-check targets and `git diff --check` passed.
+Every failed or interrupted attempt is retained and hashed in the code report.
 
 ## Open scientific and implementation work
 
-- An adversarial audit found that `is_theory_exact()` still overstates a
-  multi-update training path. The fixed-snapshot theorem is conditional after
-  the value update, but replay/value-policy identity across repeated exact-mode
-  updates needs a deliberate design. The code handoff lists the two valid
-  options. The paper must not call multi-step training theorem aligned before
-  this is resolved.
+- No end-to-end persistent checkpoint diagnostic runner exists. Current
+  utilities summarize supplied tensors, while the historical episodic runner
+  resets the latent and omits the remaining-budget clock.
+- No learned checkpoint is present in either repository. Historical persistent
+  theorem-facing diagnostics are `not verifiable from supplied evidence`.
+- `configs/iclr_confirmatory/` does not exist. The registered unique
+  1,024/256/512 hard train/validation/test split has not been materialized or
+  locked. The lone local 450/50 trivial corpus has incomplete builder
+  provenance and cannot substitute for it.
 - Persistent checkpoint diagnostics, the one-factor bridge, equal-interaction
   UPI-TRM/PPO comparison, projection cross-design, and second domain remain
   missing experiments.
 - The registered minimum Sudoku matrix is at least 245 serial GPU-hours. No
   repaired learned-model run was started.
-- Final proof/evidence/reproducibility reports, anonymous review bundle, GPT Pro
-  review prompt, and final PDF copy were not completed after the code repair.
+- Final proof/evidence/reproducibility reports, an anonymous supplement, and a
+  final evidence-aligned PDF remain incomplete.
 
 ## Push status
 

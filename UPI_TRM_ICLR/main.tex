@@ -2193,7 +2193,7 @@ For the episodic-$z$ variant, use $s_k=(x,y_k,h_k)$, omit the carried latent fro
   \ENDIF
 \ENDFOR
 \STATE Compute target $G^{(K)}$ via~\eqref{eq:GK_def}
-\STATE Update $(\theta,\psi)$ by minimizing $\mathcal{L}_{\mathrm{val}}$, then freeze the evaluator snapshot $F_n$
+\STATE Fit the value head $\psi$; the fixed-base protocol keeps the recurrent map $\theta$ frozen
 \STATE Form advantages $\widehat A$ via centered estimator (see below)
 \STATE Policy-head step with $F_n$ frozen $\to$ candidate $\pi_{\mathrm{cand}}$
 \STATE $\pi_{\mathrm{new}} \gets (1-\alpha)\pi_{\phi} + \alpha\pi_{\mathrm{cand}}$
@@ -2202,7 +2202,7 @@ For the episodic-$z$ variant, use $s_k=(x,y_k,h_k)$, omit the carried latent fro
 \end{algorithmic}
 \end{algorithm}
 
-The frozen CPI comparison begins only after the value update and uses the same fixed recurrent map $F_n$ for the current and candidate action kernels through the mixture step. Any subsequent recurrent-parameter update starts a new snapshot and is outside Theorem~\ref{thm:monotone_with_error}. Source audit found that the historical implementation did not retain the augmented replay state needed for this comparison and used parameter interpolation for deployment. The repaired code takes an explicit post-value-update evaluator snapshot, but the missing hard-suite data and checkpoints prevent a corrected rerun of the recorded experiments.
+The theorem-facing implementation seals the base policy and recurrent map $F_n$ before collection, collects replay from that base, updates only the policy-independent value head, and optimizes one candidate policy head. The explicit mixture is evaluated or deployed without recursively promoting it to the next base. Thus repeated optimizer steps form one fixed-base proposal rather than an exact recursive CPI sequence. A separately retained legacy mode permits recurrent updates and mixture-behavior collection for historical reconstruction, but it is not labeled fixed-base exact. Source audit found that the historical implementation did not retain the augmented replay state needed for this comparison and used parameter interpolation for deployment. The missing hard-suite data and checkpoints prevent a corrected rerun of the recorded experiments.
 
 
 The repaired implementation stores the carried input and successor latents, the remaining-edit clock, and the behavior log probability in replay. Recomputed episodic latents use the current evaluator, while persistent updates consume the recorded augmented state. The historical persistent runs predate this repair and dropped the carried latent during replay updates.
