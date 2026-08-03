@@ -14,6 +14,10 @@ cannot enter any confirmatory result.
   A vector step counts once per environment. Evaluation interactions are
   excluded from this budget and reported separately.
 - Domain: hard 4 by 4 Sudoku with 6 to 8 empty cells.
+- Population rule: every retained puzzle has exactly one valid Sudoku
+  completion. The generator rejects ambiguous puzzles before applying the
+  uniqueness and cross-split checks. This rule is fixed before materialization
+  and before any learned outcome is inspected.
 - Training generator seed: `26080301`.
 - Validation generator seed: `26080302`.
 - Held-out test generator seed: `26080303`.
@@ -23,6 +27,10 @@ cannot enter any confirmatory result.
 - Validation records: 256 unique records.
 - Held-out test records: 512 unique records, evaluated once each in one fixed
   manifest order with no cycling.
+- The validation split is reserved for debug-seed pipeline checks and
+  implementation diagnostics. Confirmatory seeds do not use it for early
+  stopping, checkpoint selection, hyperparameter selection, or reported test
+  estimates.
 - Confirmatory training seeds: `101,102,103,104,105,106,107,108,109,110`.
 - Debug-only seeds: `9001,9002,9003`.
 - Training budget: exactly 80,000 environment interactions per method and
