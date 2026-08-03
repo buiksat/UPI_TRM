@@ -1,0 +1,41 @@
+Finite-MDP theorem-pipeline reproduction
+Source commit: 896af29fb4970964d35505fbb45983a90834828d
+Python: 3.12.13+meta
+gnuplot: 5.4 patchlevel 3
+
+COMMAND
+python3 experiments/finite_mdp_certificate.py --outdir results/finite_mdp_certificate_validation
+
+EXIT STATUS
+0
+
+STDOUT
+The generated absolute repository prefix is normalized below as <REPOSITORY_ROOT>.
+Wrote figures and tables to <REPOSITORY_ROOT>/results/finite_mdp_certificate_validation
+Worst margins: decomposition=-2.943e-01, residual=-2.943e-01, advantage=-1.423e+00, cpi_decomp=0.000e+00, cpi_exact=0.000e+00
+Selected CPI slice: sigma_xi=0.10, L_z=0.20, n=16, beta=1.0, mode=evaluator, max_true_improvement=0.2677, min_positive_gap=1.1163e-03
+
+ROW CONTRACT CHECK
+rows=101 value_rows=80 cpi_rows=21 decomposition_flags_true=101 exact_A_flags_true=101
+
+COMMAND
+python3 experiments/finite_mdp_boundary_checks.py --primary-csv results/finite_mdp_certificate_validation/finite_mdp_summary.csv --out results/finite_mdp_certificate_validation/finite_mdp_boundary_checks.json
+
+EXIT STATUS
+0
+
+STDOUT
+PASS advantage_candidate_centered_cpi_and_exact_mixture
+PASS depth_boundaries
+PASS gamma_zero
+PASS one_step_and_zero_residual
+PASS primary_101_row_contract
+PASS terminal_and_absorbing_boundaries
+PASS zero_advantage_error
+RESULT checks=7 passed=7 failed=0 output=results/finite_mdp_certificate_validation/finite_mdp_boundary_checks.json
+
+DETERMINISM CHECK
+The boundary command was run twice. Both runs produced SHA-256 ee0867af8e24fce5e8b047b08d32fed3225db98c1bb2699e23dd8616dbc9512a.
+
+INTERPRETATION
+This is a deterministic numerical unit test of the finite-MDP theorem pipeline. It is not empirical validation of a learned recurrent evaluator.
