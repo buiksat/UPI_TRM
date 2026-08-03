@@ -191,7 +191,7 @@ z_h^{(0)}(s)=z_{\mathrm{init}}(s),
 \qquad
 z_h^{(q+1)}(s)=F(z_h^{(q)}(s),s),
 \qquad
-U_{h,q}(s)=V_\psi(z_h^{(q)}(s),x).
+U_{h,q}(s)=V_\psi(z_h^{(q)}(s),x,y).
 \]
 
 The map $F$, initialization $z_{\mathrm{init}}$, latent norm, and head

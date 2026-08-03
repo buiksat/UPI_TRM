@@ -42,7 +42,7 @@ Interpretation limits:
   dataset records.
 - Checkpoints, historical data, ordered evaluation outcomes, and the producing
   training commit are absent.
-- A held-out or comparative performance claim is **not verifiable from supplied evidence**.
+- A held-out or comparative performance claim is not verifiable from supplied evidence.
 
 Retain the seed lists and arithmetic for forensic audit only. Do not retain the
 old Welch test as method evidence.
@@ -86,7 +86,7 @@ construction, and collection policy. Its endpoint evaluator scored the old
 policy, not the configured exact mixture, and reused a materialized 32-record
 training pool. Checkpoints, hard data, source logs, raw per-instance outcomes,
 and a pinned producing commit are absent. Exact-mixture endpoint performance
-and diagnostic regeneration are **not verifiable from supplied evidence**.
+and diagnostic regeneration are not verifiable from supplied evidence.
 
 The 0% endpoint and the nonfinite penalty are unfavorable results and must
 remain in this external report even if later corrected runs succeed.
@@ -114,7 +114,7 @@ The projection contrast is +13.0 percentage points averaged over clamping
 status. The clamping-enabled contrast is +2.2 points averaged over projection
 status. Both are historical composite contrasts. The original statistical
 script, checkpoints, data, ordered pool, and per-instance outcomes are absent.
-The source-reported p-value and a causal mechanism claim are **not verifiable from supplied evidence**.
+The source-reported p-value and a causal mechanism claim are not verifiable from supplied evidence.
 
 ### Projection dominance and failed dial
 
@@ -210,7 +210,7 @@ Current paper location and source:
 
 Preserved outcome: excluding the noisiest `1e-5` perturbation, the two
 conditions stay in the same-order 0.085--0.111 local-proxy band. This is not a
-global value-head Lipschitz bound. Fresh execution is **not verifiable from supplied evidence**.
+global value-head Lipschitz bound. Fresh execution is not verifiable from supplied evidence.
 
 ## Single-seed and easy-suite mechanism probes
 
@@ -262,7 +262,7 @@ Current paper location: `main.tex`, `app:harder_sudoku_detailed`.
 
 The manuscript describes 6--8-empty Sudoku and 0% random-policy success. The
 underlying hard dataset and random-policy run are absent. The random success
-rate is **not verifiable from supplied evidence** and should not appear as an
+rate is not verifiable from supplied evidence and should not appear as an
 established fact in the active paper.
 
 ## Material that remains active
@@ -289,4 +289,4 @@ Before physically moving files, create a machine-readable manifest containing:
 
 The archive operation must preserve every retained row and must not rewrite an
 unsupported result as verified. Missing checkpoint, dataset, policy identity,
-or execution provenance remains **not verifiable from supplied evidence**.
+or execution provenance remains not verifiable from supplied evidence.

@@ -139,21 +139,39 @@ Hypothesis: at least one predeclared finite-batch quantity connecting the
 corrected persistent endpoint to the conditional theory is small on the fixed
 held-out diagnostic set.
 
-Run diagnostics for every `B0` and fully theory-oriented endpoint checkpoint,
-not only successful seeds. Retain actual augmented states `(x,y,z,h)` from the
-first 128 held-out records in manifest order. Use depths `n` from the run
+Run diagnostics for every fully theory-oriented endpoint checkpoint, not only
+successful seeds. The committed schema-v4 runner accepts only
+`training_protocol=fixed_base_exact`, persistent latents, shaped rewards,
+complete endpoint policy pairs, and clock-complete state. It therefore cannot
+diagnose legacy `B0` checkpoints. A legacy compatibility adapter would require
+a separate pre-outcome registry amendment and may not relabel incomplete state
+as theorem aligned. Retain actual augmented states `(x,y,z,h)` from the first
+128 held-out records in manifest order. Use depths `n` from the run
 configuration and `m in {n+1,n+2,n+4}`. Use diagnostic RNG seed `26080321`.
 For Monte Carlo K-step estimates, use 256 independent rollouts per retained
-state.
+state. Perturb the actual input latent by a fixed joint L2 norm of `0.01` using
+seed `26080321`.
 
-Report per seed, clock, and policy:
+The registered implementation is code commit
+`ac624cda806b455c2ec191bc90718fc084ecc7bd`, configuration
+`configs/iclr_confirmatory/persistent_diagnostics.json`. This records runner
+readiness only. It does not lock the common experiment fields or authorize a
+confirmatory run.
+
+Report per seed and clock. Label the policy associated with each quantity;
+Bellman residuals are current-policy quantities, while the candidate policy
+enters only the declared advantage-discrepancy and deployment comparisons:
 
 - exact finite-batch one-step augmented Bellman residual;
 - Monte Carlo K-step residual estimate and standard error, separately from
   realized-path TD errors;
-- exact statewise centering defect;
-- candidate-policy bias;
-- direct-mixture versus deployed-policy TV, KL, and support mismatch rate;
+- reconstructed exact-summation/recentering identity and its statewise defect;
+- finite-depth candidate discrepancy
+  `|E_{pi_cand}[A_n-A_m]|`, explicitly not the theorem's uniform
+  `epsilon_A,cand`;
+- direct-mixture versus the production deployment-distribution callback TV,
+  KL, and support mismatch rate; the full episode evaluation loop remains a
+  separate test;
 - recurrent path length, depth discrepancy, per-depth increments, local ratio
   undefined rate, and value-head drift;
 - sensitivity to the actual, reset, and predeclared perturbed initial latents;
@@ -167,6 +185,10 @@ state `scope: finite_batch`. No diagnostic is called a uniform certificate.
 If the required endpoint checkpoint does not retain the base and candidate
 proposal needed to reconstruct deployment, the deployment claim is exactly
 `not verifiable from supplied evidence`.
+
+The reconstructed centering statistic does not recover the saved training-time
+advantage estimator. Without a retained training-time estimator artifact, that
+claim is exactly `not verifiable from supplied evidence`.
 
 ## C4: projection train/evaluation cross-design
 

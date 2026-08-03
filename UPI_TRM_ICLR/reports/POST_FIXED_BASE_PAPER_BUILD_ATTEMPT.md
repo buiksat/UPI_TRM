@@ -45,5 +45,5 @@ restored from the untouched pre-existing GPT Pro review bundle:
 
 These restored files predate the current source edit. They are stale and are
 not evidence of a successful current build. Current PDF syntax, page count,
-font status, and visual layout are **not verifiable from supplied evidence**
+font status, and visual layout are not verifiable from supplied evidence
 on this host until a TeX toolchain is available.

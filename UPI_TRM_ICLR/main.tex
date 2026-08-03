@@ -130,7 +130,7 @@ Tiny Recursive Models (TRMs)~\citep{TRM2025} obtain predictions through iterativ
 
 We analyze Unrolled Policy Iteration with TRMs (UPI--TRM), which retains the inner recurrence, uses a scalar value head to score candidate plan edits, and places environment transitions only in the outer checker-guided MDP. The analysis fixes the MDP, recurrence, value head, initialization, and policy pair. It is not an end-to-end theorem for SGD, TD learning, BPTT, or distillation. Euclidean projection can supply forward invariance, and exact baseline summation can supply the statewise centering needed by the CPI step, but these are conditions on a frozen snapshot rather than guarantees about how training reaches it.
 
-Our primary result (Theorem~\ref{thm:finite_reference_depth}) compares $U_n(s)=V_\psi(z^{(n)}(s),x)$ with any deeper finite reference $U_m$, bounding $\|U_n-V^\pi\|$ by $\|U_n-U_m\|$ plus the Bellman residual of $U_m$. No recurrent convergence is assumed. The finite-horizon specialization in Theorem~\ref{thm:finite_horizon_reference} uses the edit clock and exact absorbing boundary to replace the infinite geometric tail by the number of remaining $K$-step blocks. Theorem~\ref{thm:finite_horizon_cpi} gives time-indexed CPI constants, and Theorem~\ref{thm:deployment_perturbation} quantifies the gap between the exact mixture and a separately deployed policy. These are conditional fixed-snapshot results, not training guarantees.
+Our primary result (Theorem~\ref{thm:finite_reference_depth}) compares $U_n(s)=V_\psi(z^{(n)}(s),x,y)$ with any deeper finite reference $U_m$, bounding $\|U_n-V^\pi\|$ by $\|U_n-U_m\|$ plus the Bellman residual of $U_m$. No recurrent convergence is assumed. The finite-horizon specialization in Theorem~\ref{thm:finite_horizon_reference} uses the edit clock and exact absorbing boundary to replace the infinite geometric tail by the number of remaining $K$-step blocks. Theorem~\ref{thm:finite_horizon_cpi} gives time-indexed CPI constants, and Theorem~\ref{thm:deployment_perturbation} quantifies the gap between the exact mixture and a separately deployed policy. These are conditional fixed-snapshot results, not training guarantees.
 
 The evidence has two distinct roles. First, an exactly solvable finite MDP numerically unit-tests the composed value, advantage, and CPI inequalities; it is not an empirical discovery. Second, retained hard-$4\times4$ Sudoku artifacts document historical implementations. The episodic aggregate records $0\%$ success over 10 seeds, but the retained endpoint rows do not identify the evaluated policy. Historical persistent logs and configuration metadata record training-population reuse and parameter interpolation rather than the exact pointwise mixture. The checkpoints, hard-suite dataset, ordered evaluation population, exact training revision, and exact environment-interaction counters are absent. We therefore exclude the old performance and ablation tables and attach no comparative or inferential interpretation to those records.
 
@@ -171,7 +171,7 @@ The original TRM, given input $x$ and plan $y_t$, runs an inner loop that update
 \(
 z^{(k+1)} = (\Pi_R \circ f_\theta)(z^{(k)}, y_t, x).
 \)
-The second is a scalar value head $V_\psi$ that produces the unrolled evaluator output $U_n(s_t)=V_\psi(z_t^{(n)},x)$ with episodic state $s_t=(x,y_t,h_t)$, where $h_t$ is the remaining edit budget, and scores candidate plans in the outer CPI loop.
+The second is a scalar value head $V_\psi$ that produces the unrolled evaluator output $U_n(s_t)=V_\psi(z_t^{(n)},x,y_t)$ with episodic state $s_t=(x,y_t,h_t)$, where $h_t$ is the remaining edit budget, and scores candidate plans in the outer CPI loop. The implemented head consumes the latent, instance, and current plan, but not $h_t$ directly. The clock remains part of the Markov state because it determines termination, rewards, successors, and Bellman targets.
 
 In the plan-space MDP the external episodic state is $s_t=(x,y_t,h_t)$, the action is an edit $a_t$, and a nonterminal transition sets $y_{t+1}=\mathrm{edit}(y_t,a_t;x)$ and $h_{t+1}=h_t-1$; solving, a terminal STOP action, or exhausting the budget sends the process to $s_{\mathrm{abs}}$. Budget exhaustion is treated as termination, not as a separately bootstrapped truncation. A checker score $c(x,y)$ supplies reward, optionally via potential shaping~\citep{Ng1999Shaping} $r=r_0+\gamma\Phi(s')-\Phi(s)$ with $\Phi=c$. The latent $z$ is \emph{not} part of the environment state in the episodic analysis; it is internal computation used to evaluate $s_t$. The resulting process is a discounted MDP $(\mathcal S,\mathcal A,P,r,\rho,\gamma)$ with $\gamma\in[0,1)$ and $K\ge 1$. All theoretical statements fix one parameter snapshot: the MDP, recurrence, initialization, value head, current policy $\pi$, and candidate policy $\pi_{\mathrm{cand}}$ do not change while the displayed quantities are evaluated. The formal results assume finite or countable state and action spaces and use ordinary sup norms; the proofs also apply when only the relevant policy-pair closure and supported action sets are finite or countable. Rewards are bounded and the relevant closure is invariant under $\pi$ almost surely. This setting covers every reported experiment. Appendix~\ref{app:adv_closure_full} states the additional domination and total-variation requirements for a general-kernel extension. Increasing $n$ spends more computation inside one state evaluation but does not change the environment horizon or search depth, so the analysis tracks evaluator truncation error inside a fixed external MDP.
 
@@ -179,7 +179,7 @@ In the plan-space MDP the external episodic state is $s_t=(x,y_t,h_t)$, the acti
 In \emph{episodic-$z$}, the latent is reinitialized from the current plan at each edit step, so $s=(x,y,h)$ is Markov. In \emph{persistent-$z$}, the latent is carried across edits, matching the original TRM. With persistent latents the next-state distribution depends jointly on $(x,y,z,h)$, since the same plan paired with a different carried latent or remaining budget can produce a different policy output or termination event. Treating $(x,y)$ as the state in this regime is a non-Markov approximation. Appendix~\ref{app:persistent_latent} lifts the finite-depth residual certificate directly to $\bar s=(x,y,z,h)$; this step needs no latent fixed point or slow drift. A separate slow-drift assumption is required only for comparison with a memoryless fixed-point reference.
 
 \textbf{Notation.}
-For one common initialization $z^{(0)}(s)=z_{\mathrm{init}}(x,y)$, which deliberately ignores the clock, let $z^{(j)}(s)$ be the latent after $j$ applications of the frozen recurrent map and let $U_j(s)=V_\psi(z^{(j)}(s),x)$. At the absorbing state, every $U_j$ uses the same depth-independent normalization from Appendix~\ref{app:shaping_convention}. Only the optional contractive specialization uses the latent fixed point $z^*$ and $U_*(s)=V_\psi(z^*(s),x)$. We write $\|f\|_{\infty,\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}:=\sup_{s\in\mathcal{R}_{\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}\cup\{s_{\mathrm{abs}}\}}|f(s)|$ for the ordinary sup-norm over the advantage-evaluation closure used by CPI. This closure contains states reachable under $\pi$ and the one-step successors needed to evaluate actions supported by $\pi$ and $\pi_{\mathrm{cand}}$, and is invariant under subsequent $\pi$ dynamics almost surely (Appendix~\ref{app:adv_closure_full}; full notation in Appendix~\ref{app:notation}). We use one shared absorbing atom $s_{\mathrm{abs}}$ for both episodic and augmented notation.
+For one common initialization $z^{(0)}(s)=z_{\mathrm{init}}(x,y)$, which deliberately ignores the clock, let $z^{(j)}(s)$ be the latent after $j$ applications of the frozen recurrent map and let $U_j(s)=V_\psi(z^{(j)}(s),x,y)$. At the absorbing state, every $U_j$ uses the same depth-independent normalization from Appendix~\ref{app:shaping_convention}. Only the optional contractive specialization uses the latent fixed point $z^*$ and $U_*(s)=V_\psi(z^*(s),x,y)$. We write $\|f\|_{\infty,\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}:=\sup_{s\in\mathcal{R}_{\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}\cup\{s_{\mathrm{abs}}\}}|f(s)|$ for the ordinary sup-norm over the advantage-evaluation closure used by CPI. This closure contains states reachable under $\pi$ and the one-step successors needed to evaluate actions supported by $\pi$ and $\pi_{\mathrm{cand}}$, and is invariant under subsequent $\pi$ dynamics almost surely (Appendix~\ref{app:adv_closure_full}; full notation in Appendix~\ref{app:notation}). We use one shared absorbing atom $s_{\mathrm{abs}}$ for both episodic and augmented notation.
 
 \section{UPI--TRM Algorithm}
 \label{sec:algorithm}
@@ -195,7 +195,7 @@ Algorithm~\ref{alg:upi} alternates three phases: collect edit trajectories, fit 
   \STATE Set $s_t=(x,y_t,h_t)$; for persistent-$z$, set $\bar s_t=(x,y_t,z_t,h_t)$
   \STATE \textbf{Latent input:} episodic-$z$ uses $z_t\gets z_{\mathrm{init}}(x,y_t)$; persistent-$z$ uses the carried pre-unroll $z_t$
   \STATE \textbf{Evaluator:} $z_t^{(n)} \gets (\Pi_R \circ f_\theta)^{\circ n}(z_t,y_t,x)$
-  \STATE \textbf{Value:} $U_n(s_t)\gets V_\psi(z_t^{(n)},x)$ in episodic-$z$; $\widetilde U_n(\bar s_t)\gets V_\psi(z_t^{(n)},x)$ in persistent-$z$
+  \STATE \textbf{Value:} $U_n(s_t)\gets V_\psi(z_t^{(n)},x,y_t)$ in episodic-$z$; $\widetilde U_n(\bar s_t)\gets V_\psi(z_t^{(n)},x,y_t)$ in persistent-$z$
   \STATE \textbf{Action:} sample $a_t\sim\pi_\phi(\cdot\mid y_t,z_t^{(n)},x)$ and apply the edit; observe $r_t$, $y_{t+1}$, and terminal flag $d_t$; set $h_{t+1}=h_t-1$
   \IF{$d_t$ or $h_{t+1}=0$}
     \STATE Store $(s_t,a_t,r_t,s_{\mathrm{abs}})$ in episodic-$z$, or $(\bar s_t,a_t,r_t,s_{\mathrm{abs}})$ in persistent-$z$
@@ -221,7 +221,7 @@ Persistent-$z$ is handled in Appendix~\ref{app:persistent_latent}, and the initi
 
 \section{Bellman Residuals and an Optional Contractive Regime}
 \label{sec:contraction}
-We train $U_n$ by $K$-step bootstrapped regression with loss $\mathcal{L}_{\mathrm{val}}=\E_{s_0\sim\mu}[(V_\psi(z^{(n)}(s_0),x_0)-\mathrm{sg}(G^{(K)}))^2]$, where $G^{(K)}=\sum_{k<K}\gamma^k r_k + \gamma^K \bar V(s_K)$ is the $K$-step bootstrap target. The $K$-step Bellman operator $\mathcal T^\pi_K$ is the standard $\gamma^K$-contraction with fixed point $V^\pi$~\citep{SuttonBarto2018,Puterman1994}.
+We train $U_n$ by $K$-step bootstrapped regression with loss $\mathcal{L}_{\mathrm{val}}=\E_{s_0\sim\mu}[(V_\psi(z^{(n)}(s_0),x_0,y_0)-\mathrm{sg}(G^{(K)}))^2]$, where $G^{(K)}=\sum_{k<K}\gamma^k r_k + \gamma^K \bar V(s_K)$ is the $K$-step bootstrap target. The $K$-step Bellman operator $\mathcal T^\pi_K$ is the standard $\gamma^K$-contraction with fixed point $V^\pi$~\citep{SuttonBarto2018,Puterman1994}.
 
 The primary finite-reference-depth result in Section~\ref{sec:error_bounds} uses Bellman contraction but does not assume that the recurrent computation converges. It assumes sup-norm residual control on the relevant closure; we do not prove a general $L^2(\mu)\to\|\cdot\|_\infty$ conversion. A separate, optional assumption below makes a latent fixed-point specialization available. Bellman contraction is operator-level; inner-evaluator contraction of $z\mapsto\tilde f_\theta(z,y,x)$ controls a recurrent path within one frozen forward pass and by itself gives no TD- or training-convergence guarantee.
 
@@ -262,7 +262,7 @@ and therefore permits any finite unroll depth to serve as the reference.
 
 \begin{theorem}[Finite-reference-depth value decomposition]
 \label{thm:finite_reference_depth}
-Fix either a finite or countable MDP, or a finite or countable policy-pair closure whose action supports under $\pi$ and $\pi_{\mathrm{cand}}$ are finite or countable. Fix one frozen parameter snapshot, the policy pair $(\pi,\pi_{\mathrm{cand}})$, one measurable recurrent map shared by every depth, a common measurable initialization $z^{(0)}(s)=z_{\mathrm{init}}(x,y)$ that ignores the clock, $K\ge1$, and one latent norm on $\mathcal Z\subseteq\mathbb R^d$. Let $V_\psi:\mathcal Z\times\mathcal X\to\mathbb R$ be a measurable scalar value head. For every $j$, define $z^{(j)}$ by iterating that same map from that same initialization and set $U_j(s)=V_\psi(z^{(j)}(s),x)$. Let $\mathcal R_{\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}\cup\{s_{\mathrm{abs}}\}$ contain the states reachable under $\pi$ and every one-step successor required by actions supported by either policy, and require it to be invariant under subsequent $\pi$ transitions almost surely. Assume rewards and $U_j$, $j\in\{n,\ldots,m\}$, are bounded on this closure; every depth uses the common boundary value $U_j(s_{\mathrm{abs}})=-C_{\max}$; and $\mathcal T_K^\pi$ maps bounded real functions on the closure to bounded real functions on the same closure. All displayed norms are ordinary sup norms on this closure. Then, for any finite integers $0\le n<m$,
+Fix either a finite or countable MDP, or a finite or countable policy-pair closure whose action supports under $\pi$ and $\pi_{\mathrm{cand}}$ are finite or countable. Fix one frozen parameter snapshot, the policy pair $(\pi,\pi_{\mathrm{cand}})$, one measurable recurrent map shared by every depth, a common measurable initialization $z^{(0)}(s)=z_{\mathrm{init}}(x,y)$ that ignores the clock, $K\ge1$, and one latent norm on $\mathcal Z\subseteq\mathbb R^d$. Let $V_\psi:\mathcal Z\times\mathcal X\times\mathcal Y\to\mathbb R$ be a measurable scalar value head. For every $j$, define $z^{(j)}$ by iterating that same map from that same initialization and set $U_j(s)=V_\psi(z^{(j)}(s),x,y)$. Let $\mathcal R_{\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}\cup\{s_{\mathrm{abs}}\}$ contain the states reachable under $\pi$ and every one-step successor required by actions supported by either policy, and require it to be invariant under subsequent $\pi$ transitions almost surely. Assume rewards and $U_j$, $j\in\{n,\ldots,m\}$, are bounded on this closure; every depth uses the common boundary value $U_j(s_{\mathrm{abs}})=-C_{\max}$; and $\mathcal T_K^\pi$ maps bounded real functions on the closure to bounded real functions on the same closure. All displayed norms are ordinary sup norms on this closure. Then, for any finite integers $0\le n<m$,
 \begin{align}
 \|U_n - V^\pi\|_{\infty,\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}
 &\le
@@ -271,7 +271,7 @@ Fix either a finite or countable MDP, or a finite or countable policy-pair closu
 \underbrace{\frac{\|U_m-\mathcal T_K^\pi U_m\|_{\infty,\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}}{1-\gamma^K}}_{\text{reference-depth residual}}.
 \label{eq:finite_reference_depth}
 \end{align}
-If, in addition, the scalar head is $L_V$-Lipschitz in its latent argument uniformly in $x$, then
+If, in addition, the scalar head is $L_V$-Lipschitz in its latent argument uniformly over relevant $(x,y)$ while $(x,y)$ is held fixed, then
 \begin{align}
 \|U_n-U_m\|_{\infty,\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}
 &\le
@@ -317,7 +317,7 @@ L_z\;\le\;L_z^{\mathrm{sat}}(R)\;:=\;\frac{R}{\rho_R}\,L_z^{\mathrm{pre}}(R),
 \end{equation}
 and Proposition~\ref{prop:proj_residual_anchor} bounds the residual relative to the boundary-normalized zero-latent baseline
 \[
-B_0(x,y):=V_\psi(0,x),
+B_0(x,y):=V_\psi(0,x,y),
 \qquad
 B_0(s_{\mathrm{abs}}):=-C_{\max}.
 \]
@@ -472,7 +472,7 @@ finite-batch residual relates to it only through the truncation gap in
 Remark~\ref{rem:residual_bridge}. The retained historical records do not
 contain the checkpoints and byte-identified diagnostic population needed to
 regenerate these quantities, so calibration on the successful persistent
-implementation is \emph{not verifiable from supplied evidence}.
+implementation is not verifiable from supplied evidence.
 
 \begin{corollary}[Sufficient condition for one-step improvement]
 \label{cor:one_step_improvement_condition}
@@ -538,7 +538,7 @@ training records, omitted the carried latent from replay updates, and omitted
 the remaining-edit clock from the recorded state. The historical persistent
 checkpoints, hard-suite data, ordered outcomes, and producer revision are
 absent. Its held-out performance interpretation and theorem-facing diagnostics
-are therefore \emph{not verifiable from supplied evidence}. Historical projection/clamping
+are therefore not verifiable from supplied evidence. Historical projection/clamping
 and baseline aggregates are excluded from the active evidence narrative for
 the same provenance reason. They do not establish a controlled projection
 mechanism, contraction, or relative performance. The internal report
@@ -556,7 +556,7 @@ outcomes are absent, while the retained endpoint rows identify only a
 \texttt{greedy} evaluation mode. The aggregate records $0.0\%$ success at the
 nominal outer-step-20,000 endpoint over seeds 41--50. Runtime adherence,
 endpoint policy identity, evaluation-population identity, and independent
-regeneration are \emph{not verifiable from supplied evidence}. This record is
+regeneration are not verifiable from supplied evidence. This record is
 not a controlled persistent-versus-episodic comparison.
 
 \paragraph{Missing decision-changing evidence.}
@@ -591,9 +591,10 @@ The main result is a fixed-snapshot decomposition: a finite-depth recurrent eval
 The retained learned-model evidence is limited to $4\times4$ Sudoku and does
 not provide a held-out method comparison. The episodic endpoint did not score
 its configured mixture, the persistent record is in-sample, and the historical
-protocols are not interaction matched. Recovering or replacing the missing
-persistent checkpoints is required before augmented-state diagnostics can be
-run. The bridge and common-pool matched comparison are also missing. Until
+protocols are not interaction matched. A registered augmented-state diagnostic
+runner now exists, but recovering or replacing the missing persistent
+checkpoints and hard held-out manifest is required before it can produce a
+learned-model result. The bridge and common-pool matched comparison are also missing. Until
 those experiments exist, the contribution is an analytical decomposition and
 a reproducible finite-state theorem-pipeline unit test, not evidence that the
 historical UPI--TRM implementation improves task performance.
@@ -665,8 +666,10 @@ Moreover, for $z^{(0)}=z_{\mathrm{init}}(x,y)$,
 \end{equation}
 \end{proposition}
 
+Assume the scalar head is uniformly Lipschitz in its latent argument while the
+instance and plan are held fixed: for every relevant $(x,y)$,
 \begin{equation}
-\bigl|V_\psi(z,x)-V_\psi(z',x)\bigr|
+\bigl|V_\psi(z,x,y)-V_\psi(z',x,y)\bigr|
 \;\le\;
 L_V\,\norm{z-z'}.
 \label{eq:LV_def}
@@ -674,7 +677,7 @@ L_V\,\norm{z-z'}.
 
 \begin{assumption}[Bounded value head on the invariant region]
 \label{ass:bounded_value_head}
-There exists $V_{\max}<\infty$ such that $|V_\psi(z,x)| \le V_{\max}$ and $|V_{\bar\psi}(z,x)| \le V_{\max}$ on the invariant region.
+There exists $V_{\max}<\infty$ such that $|V_\psi(z,x,y)| \le V_{\max}$ and $|V_{\bar\psi}(z,x,y)| \le V_{\max}$ on the invariant region.
 \end{assumption}
 
 For $\pi_{\mathrm{new}} = (1-\alpha)\pi + \alpha\pi_{\mathrm{cand}}$:
@@ -725,7 +728,7 @@ or, for stochastic initialization, $\bar\rho(dx,dy,dz,dh)=\rho(dx,dy,dh)\nu_0(dz
 
 Assume the edit/reward kernels, $F_n$, $V_\psi$, and both policy kernels are measurable; rewards and the evaluator are bounded; and the augmented advantage-evaluation closure is measurable, contains the one-step successors under both action supports, and is $\bar\pi$-forward invariant almost surely. Define
 \begin{equation}
-\widetilde U_n(\bar s):=V_\psi(F_n(x,y,z),x),
+\widetilde U_n(\bar s):=V_\psi(F_n(x,y,z),x,y),
 \qquad
 \widetilde U_n(s_{\mathrm{abs}}):=-C_{\max},
 \label{eq:persistent_un_value}
@@ -785,7 +788,7 @@ Corollary~\ref{cor:persistent_cpi_augmented} is a result on $\bar s=(x,y,z,h)$, 
 \label{sec:twotimescale_persistent}
 
 Slow drift is needed only for the stronger architectural comparison between the actual transient evaluator and the memoryless reference
-$\widetilde U_*(x,y,z,h):=V_\psi(z^*(x,y),x)$, with $\widetilde U_*(s_{\mathrm{abs}})=-C_{\max}$. For this subsection, additionally assume $z^*(x,y)$ is measurable, $\widetilde U_*$ is bounded and measurable on the augmented closure, and the tracking conditions below hold uniformly over nonabsorbing trajectory segments formed by one action supported by either policy followed by $\bar\pi$ dynamics. These include every initial augmented state in the support of $\bar\rho$ and every starting state used to generate a one-deviation trajectory in the augmented closure. Let $e:\YY\to\mathcal E_y$ be a fixed plan embedding and write $\|y-y'\|_{\mathcal E}:=\|e(y)-e(y')\|_{\mathcal E_y}$.
+$\widetilde U_*(x,y,z,h):=V_\psi(z^*(x,y),x,y)$, with $\widetilde U_*(s_{\mathrm{abs}})=-C_{\max}$. For this subsection, additionally assume $z^*(x,y)$ is measurable, $\widetilde U_*$ is bounded and measurable on the augmented closure, and the tracking conditions below hold uniformly over nonabsorbing trajectory segments formed by one action supported by either policy followed by $\bar\pi$ dynamics. These include every initial augmented state in the support of $\bar\rho$ and every starting state used to generate a one-deviation trajectory in the augmented closure. Let $e:\YY\to\mathcal E_y$ be a fixed plan embedding and write $\|y-y'\|_{\mathcal E}:=\|e(y)-e(y')\|_{\mathcal E_y}$.
 
 \begin{assumption}[Slow drift of fixed points]
 \label{ass:twotimescale}
@@ -879,9 +882,9 @@ Finite-horizon sharpening & Clock-complete stages, exact common boundary, recurs
 Persistent direct bound & Clock-complete state, shared frozen map, uniform augmented residual & Proved conditionally; not calibrated on the historical checkpoints \\
 CPI application & Exact centering, exact pointwise mixture, and fixed MDP & Proved conditionally; historical persistent deployment used parameter interpolation \\
 Deployment perturbation & Uniform TV or KL on a closure invariant under both policies & Proved; Theorem~\ref{thm:deployment_perturbation}; no historical instantiation \\
-Persistent learned-model record & Reconstructible checkpoint, held-out population, and exact policy identity & Task result and diagnostics are \emph{not verifiable from supplied evidence} \\
+Persistent learned-model record & Reconstructible checkpoint, held-out population, and exact policy identity & Task result and diagnostics are not verifiable from supplied evidence \\
 Bridge and matched PPO comparison & Registered one-factor bridge and common-pool equal interactions & Missing experiments \\
-Projection mechanism & Train/evaluation cross-design and a certified modulus for contraction claims & Missing experiment; historical mechanism claim is \emph{not verifiable from supplied evidence} \\
+Projection mechanism & Train/evaluation cross-design and a certified modulus for contraction claims & Missing experiment; historical mechanism claim is not verifiable from supplied evidence \\
 Finite-MDP inequalities & Exact finite-state calculation and retained rows & 101 working-tree rows have zero numerical violations; theorem-pipeline unit test \\
 Finite-horizon formulas & Terminal, support, and deployment boundary cases & 26,686 assertions in the working-tree regression; theorem-pipeline test only \\
 \bottomrule
@@ -903,7 +906,7 @@ with $z_0(s)=0$, so both the truncation term and the $K$-step residuals are know
 
 Figure~\ref{fig:finite_mdp_certificate_main} shows two checks. Left: for $\gamma{=}0.9$, $K{=}3$, $\sigma_\xi{=}0.05$, the value error decays with $n$ and worsens as $L_z\to 1$, staying below the contractive specialization of Theorem~\ref{thm:finite_reference_depth}. Right: on an evaluator-based candidate slice ($L_z{=}0.2$, $n{=}16$, $\sigma_\xi{=}0.1$, $\beta{=}1$), the surrogate gap $\widehat L_\pi(\pi_\alpha)-\eta(\pi_\alpha)$ is positive and stays below both the decomposition-based CPI penalty and the tighter $\varepsilon_{A,\mathrm{cand}}$ penalty for every tested $\alpha$ (log scale; the bound is conservative). Corollary~\ref{cor:finite_depth_residual_certificate} is directly checkable here because $\|U_n-\mathcal{T}^\pi_K U_n\|_\infty$ is computable. The script checks 80 value/decomposition rows ($4$ $L_z$ values by $20$ depths) and 21 $\alpha$ rows on this selected CPI slice, with zero violations; it does not constitute a full Cartesian sweep over $(L_z,n,K,\sigma_\xi,\alpha)$.
 
-The working tree contains \texttt{finite\_mdp\_certificate.py}, a \texttt{finite\_mdp\_summary.csv} with 80 \texttt{value\_curve} and 21 \texttt{cpi\_curve} rows whose certificate flags are true, and \texttt{finite\_mdp\_certificate\_validation.log}. Their presence in the submitted review package is \emph{not verifiable from supplied evidence}.
+The working tree contains \texttt{finite\_mdp\_certificate.py}, a \texttt{finite\_mdp\_summary.csv} with 80 \texttt{value\_curve} and 21 \texttt{cpi\_curve} rows whose certificate flags are true, and \texttt{finite\_mdp\_certificate\_validation.log}. Their presence in the submitted review package is not verifiable from supplied evidence.
 
 \begin{figure}[t]
 \centering
@@ -933,11 +936,11 @@ Quantity & Appears in & Practical proxy / diagnostic \\
 $L_z^{\mathrm{pre/post}}$ & Assump.~\ref{ass:Lip} & Local finite-difference ratios before/after projection; not global moduli \\
 $\rho_R$, active rate & Prop.~\ref{prop:proj_sat_contraction} & Batch minimum pre-projection norm and fraction with $\|f_\theta(z)\|>R$ \\
 $C_z$, $L_V(R)$ & Assump.~\ref{ass:Lip} & Batch initial displacement and local finite-difference value-head ratio \\
-$\|U_n-\mathcal T_K^\pi U_n\|$ & Remark~\ref{rem:residual_bridge} & $K$-step TD error on a declared diagnostic population \\
-$\bar\varepsilon_{\mathrm{res},n}$ & Cor.~\ref{cor:persistent_cpi_augmented} & Augmented-state residual on a declared diagnostic population \\
-$\varepsilon_{\mathrm{cent}}$ & Thm.~\ref{thm:monotone_with_error} & Statewise current-policy mean of $\widehat A$ \\
-$\varepsilon_{A,\mathrm{cand}}$ & Thm.~\ref{thm:monotone_with_error} & Candidate-policy mean advantage error on declared states \\
-TV / KL deployment gap & Thm.~\ref{thm:deployment_perturbation} & Exact mixture versus deployed-policy discrepancy on a declared recursive closure \\
+$\|U_n-\mathcal T_K^\pi U_n\|$ & Remark~\ref{rem:residual_bridge} & Monte Carlo $K$-step operator estimate and standard error on retained states; distinct from realized-path TD error \\
+$\bar\varepsilon_{\mathrm{res},n}$ & Cor.~\ref{cor:persistent_cpi_augmented} & Exact one-step and Monte Carlo $K$-step augmented-state residual diagnostics at depths $n$ and $m$ \\
+$\varepsilon_{\mathrm{cent}}$ & Thm.~\ref{thm:monotone_with_error} & Reconstructed exact action sum after configured recentering; not saved training-time evidence \\
+$D_{A,\mathrm{cand}}^{n,m}$ & Finite-reference diagnostic & Batch $|\E_{\pi_{\mathrm{cand}}}[\widehat A_n-\widehat A_m]|$; not the theorem's uniform $\varepsilon_{A,\mathrm{cand}}$ \\
+TV / KL deployment gap & Thm.~\ref{thm:deployment_perturbation} & Exact mixture versus production distribution callback on retained states; not a uniform closure bound \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -1115,7 +1118,7 @@ head $V_\psi$. For every depth $q\ge0$, use the common construction
 \[
 z_h^{(q+1)}(s)=F(z_h^{(q)}(s),s),
 \qquad
-U_{h,q}(s)=V_\psi(z_h^{(q)}(s),x),
+U_{h,q}(s)=V_\psi(z_h^{(q)}(s),x,y),
 \]
 and assign $U_{h,q}(s_{\mathrm{abs}})=b$ for every $h$ and $q$. The true
 stage value has the same boundary, $V_h^\pi(s_{\mathrm{abs}})=b$, and all
@@ -1146,7 +1149,7 @@ $\epsilon_m^{(h)}:=\max_{1\le r\le h}\epsilon_{r,m}$,
 +\frac{1-\gamma^{KJ_h}}{1-\gamma^K}\epsilon_m^{(h)}.
 \label{eq:fh_finite_reference_uniform}
 \end{align}
-If $V_\psi$ is $L_V$-Lipschitz in the common latent norm, then
+If $V_\psi$ is uniformly $L_V$-Lipschitz in the common latent norm while $(x,y)$ is held fixed, then
 \begin{align}
 D_{h;n,m}
 &\le L_V\sum_{q=n}^{m-1}
@@ -1984,7 +1987,7 @@ Applying this with $u=f_\theta(z,y,x)$ and $v=f_\theta(z',y,x)$ for $z,z'\in B_R
 \label{prop:proj_residual_anchor}
 Fix any anchor map $z_{\mathrm{anc}}:\XX\to B_R$ that depends only on the instance $x$, and define
 \begin{align*}
-B_{\mathrm{anc}}(x,y)&:=V_\psi(z_{\mathrm{anc}}(x),x), &
+B_{\mathrm{anc}}(x,y)&:=V_\psi(z_{\mathrm{anc}}(x),x,y), &
 B_{\mathrm{anc}}(s_{\mathrm{abs}})&:=-C_{\max}, \\
 \varepsilon_{\mathrm{anc}}
 &:=
@@ -1998,8 +2001,8 @@ D_{\mathrm{anc}}(R)
 \qquad
 L_V(R)
 :=
-\sup_x\sup_{\substack{z,z'\in B_R\\ z\neq z'}}
-\frac{|V_\psi(z,x)-V_\psi(z',x)|}{\|z-z'\|_2}.
+\sup_{(x,y)}\sup_{\substack{z,z'\in B_R\\ z\neq z'}}
+\frac{|V_\psi(z,x,y)-V_\psi(z',x,y)|}{\|z-z'\|_2}.
 \]
 Then
 \begin{equation}
@@ -2012,7 +2015,7 @@ Then
 \end{equation}
 In the special case $z_{\mathrm{anc}}(x)\equiv 0$,
 \begin{align*}
-B_0(x,y)&:=V_\psi(0,x), &
+B_0(x,y)&:=V_\psi(0,x,y), &
 B_0(s_{\mathrm{abs}})&:=-C_{\max}, \\
 \varepsilon_{\mathrm{res}}^*
 &\le
@@ -2049,7 +2052,7 @@ Since both $z^*(x,y)$ and $z_{\mathrm{anc}}(x)$ lie in $B_R$,
 \begin{align*}
 |U_*(x,y)-B_{\mathrm{anc}}(x,y)|
 &=
-|V_\psi(z^*(x,y),x)-V_\psi(z_{\mathrm{anc}}(x),x)| \\
+|V_\psi(z^*(x,y),x,y)-V_\psi(z_{\mathrm{anc}}(x),x,y)| \\
 &\le
 L_V(R)\,\|z^*(x,y)-z_{\mathrm{anc}}(x)\|_2
 \;\le\;
@@ -2217,7 +2220,7 @@ backbone and checker-shaped reward. It does not establish a common evaluation
 pool, identical environment-interaction counts, or equal wall-clock cost. The
 algorithms have different collection semantics, but exact historical
 environment-interaction counters were not retained. Budget equality is
-therefore \emph{not verifiable from supplied evidence}. No
+therefore not verifiable from supplied evidence. No
 interaction-matched UPI--TRM/PPO comparison has been run.
 
 \textbf{Advantage estimation.}
