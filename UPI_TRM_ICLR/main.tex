@@ -20,7 +20,7 @@
 \usepackage{xcolor}
 \usepackage{hyperref}
 \hypersetup{
-  pdftitle={Finite-Reference Error Bounds for Recurrent Evaluators in Tiny Recursive Models},
+  pdftitle={Finite-Reference Error Bounds for Recurrent Evaluators in Policy Improvement},
   pdfauthor={},
   pdfcreator={},
   pdfproducer={},
@@ -110,7 +110,7 @@
 % TITLE & AUTHOR
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\title{Finite-Reference Error Bounds for Recurrent Evaluators in Tiny Recursive Models}
+\title{Finite-Reference Error Bounds for Recurrent Evaluators in Policy Improvement}
 
 \author{%
   Anonymous Author(s)
@@ -120,7 +120,7 @@
 
 \maketitle
 \begin{abstract}
-We study the fixed-snapshot error of a finite-depth recurrent value evaluator inside a discounted plan-edit MDP. For finite reference depths $m>n$, the depth-$n$ error is bounded by its discrepancy from the depth-$m$ evaluator plus the depth-$m$ Bellman residual divided by $1-\gamma^K$. A Lipschitz value head controls the discrepancy by the recurrent path length from $n$ to $m$. The result permits transient computation and assumes no latent fixed point; a contractive fixed-point bound is only a specialization. Persistent latents admit the same direct residual argument on the clock-complete augmented state $(x,y,z,h)$, where $h$ is the remaining edit budget. Propagating either value bound through conservative policy improvement additionally requires exact statewise centering and pointwise deployment of the exact policy mixture. A 64-state finite-MDP calculation numerically unit-tests the composed inequalities. Empirically, our scope is limited to $4\times4$ Sudoku. Retained theory-oriented episodic logs report $0\%$ over 10 seeds, but the endpoint evaluator scored only the old policy rather than the configured explicit mixture. The retained persistent and baseline records are in-sample or lack a common evaluation population and use unequal interaction budgets. We therefore treat them only as historical implementation records, not as a held-out comparison or theory validation.
+We study fixed-snapshot error bounds for a finite-depth recurrent value evaluator inside policy improvement. For finite reference depths $m>n$, value error is controlled by the depth discrepancy $\|U_n-U_m\|$ and a Bellman residual at depth $m$; a recurrent path bounds the first term without assuming a latent fixed point. For an edit budget $H$, a stagewise analysis replaces the infinite-horizon residual factor by $(1-\gamma^{K\lceil h/K\rceil})/(1-\gamma^K)$ at clock $h$. Persistent latents use the clock-complete augmented state $(x,y,z,h)$ and one shared frozen recurrent transition map. We also give finite-horizon conservative-policy-improvement bounds under exact statewise centering and exact probability-space mixing, plus a deployment perturbation bound under a uniform total-variation or KL condition. Finite-state regression tests check the theorem pipeline and boundary cases; they are not learned-model validation. The retained $4\times4$ Sudoku records are in-sample, unmatched, or missing reconstructible checkpoints, so we make no historical performance comparison. Finite-batch diagnostics do not instantiate the uniform theorem assumptions.
 \end{abstract}
 
 \section{Introduction}
@@ -130,7 +130,7 @@ Tiny Recursive Models (TRMs)~\citep{TRM2025} obtain predictions through iterativ
 
 We analyze Unrolled Policy Iteration with TRMs (UPI--TRM), which retains the inner recurrence, uses a scalar value head to score candidate plan edits, and places environment transitions only in the outer checker-guided MDP. The analysis fixes the MDP, recurrence, value head, initialization, and policy pair. It is not an end-to-end theorem for SGD, TD learning, BPTT, or distillation. Euclidean projection can supply forward invariance, and exact baseline summation can supply the statewise centering needed by the CPI step, but these are conditions on a frozen snapshot rather than guarantees about how training reaches it.
 
-Our primary result (Theorem~\ref{thm:finite_reference_depth}) compares $U_n(s)=V_\psi(z^{(n)}(s),x)$ with any deeper finite reference $U_m$ for $m>n$. It bounds $\|U_n-V^\pi\|$ by $\|U_n-U_m\|$ plus the Bellman residual of $U_m$ divided by $1-\gamma^K$, and controls the first term by the recurrent path length for a Lipschitz head. No recurrent convergence is assumed. A forward-invariant contraction geometrically bounds that path and recovers the fixed-point formula as $m\to\infty$. Corollary~\ref{cor:epsA_dials} transfers the value bound to centered advantage error, and Theorem~\ref{thm:monotone_with_error} supplies a one-step CPI statement only for exact centering and direct deployment of the exact mixture.
+Our primary result (Theorem~\ref{thm:finite_reference_depth}) compares $U_n(s)=V_\psi(z^{(n)}(s),x)$ with any deeper finite reference $U_m$, bounding $\|U_n-V^\pi\|$ by $\|U_n-U_m\|$ plus the Bellman residual of $U_m$. No recurrent convergence is assumed. The finite-horizon specialization in Theorem~\ref{thm:finite_horizon_reference} uses the edit clock and exact absorbing boundary to replace the infinite geometric tail by the number of remaining $K$-step blocks. Theorem~\ref{thm:finite_horizon_cpi} gives time-indexed CPI constants, and Theorem~\ref{thm:deployment_perturbation} quantifies the gap between the exact mixture and a separately deployed policy. These are conditional fixed-snapshot results, not training guarantees.
 
 The evidence has two distinct roles. First, an exactly solvable finite MDP numerically unit-tests the composed value, advantage, and CPI inequalities; it is not an empirical discovery. Second, retained hard-$4\times4$ Sudoku artifacts document historical implementations. The episodic run records $0\%$ success over 10 seeds, but its endpoint evaluator scored only the old-policy component. The persistent evaluator cycled over training records and deployed parameter interpolation rather than the exact pointwise mixture. The checkpoints, hard-suite dataset, ordered evaluation population, and exact training revision are absent, and interaction counts differ. We therefore exclude the old performance and ablation tables and attach no comparative or inferential interpretation to those records.
 
@@ -138,10 +138,10 @@ The evidence has two distinct roles. First, an exactly solvable finite MDP numer
 
 \textbf{Contributions.}
 \begin{itemize}[leftmargin=1.2em,topsep=0pt,itemsep=2pt]
-\item A fixed-point-free finite-reference-depth value and path decomposition, with the contractive fixed-point result as a specialization (Theorem~\ref{thm:finite_reference_depth}).
+\item Fixed-point-free finite-reference value and path bounds, including a finite-horizon sharpening with exact terminal handling (Theorems~\ref{thm:finite_reference_depth} and~\ref{thm:finite_horizon_reference}).
 \item A direct finite-depth certificate for persistent state on the augmented MDP, separated from an optional slow-drift comparison (Corollary~\ref{cor:persistent_cpi_augmented}).
-\item A conditional bridge from these value errors to CPI under exact centering and exact-mixture deployment (Theorem~\ref{thm:monotone_with_error}); this is a fixed-snapshot result, not a training theorem.
-\item A numerical finite-MDP unit test and an audit of historical $4\times4$ Sudoku records, including their in-sample evaluation, deployment, and provenance limitations.
+\item Finite-horizon CPI under exact centering and exact mixing, with TV/KL perturbation bounds for a deployed policy (Theorems~\ref{thm:finite_horizon_cpi} and~\ref{thm:deployment_perturbation}).
+\item Deterministic theorem-pipeline regression tests and an evidence audit that excludes unsupported historical performance claims.
 \end{itemize}
 
 \begin{figure}[t]
@@ -173,7 +173,7 @@ z^{(k+1)} = (\Pi_R \circ f_\theta)(z^{(k)}, y_t, x).
 \)
 The second is a scalar value head $V_\psi$ that produces the unrolled evaluator output $U_n(s_t)=V_\psi(z_t^{(n)},x)$ with episodic state $s_t=(x,y_t,h_t)$, where $h_t$ is the remaining edit budget, and scores candidate plans in the outer CPI loop.
 
-In the plan-space MDP the external episodic state is $s_t=(x,y_t,h_t)$, the action is an edit $a_t$, and a nonterminal transition sets $y_{t+1}=\mathrm{edit}(y_t,a_t;x)$ and $h_{t+1}=h_t-1$; solving, a terminal STOP action, or exhausting the budget sends the process to $s_{\mathrm{abs}}$. Budget exhaustion is treated as termination, not as a separately bootstrapped truncation. A checker score $c(x,y)$ supplies reward, optionally via potential shaping~\citep{Ng1999Shaping} $r=r_0+\gamma\Phi(s')-\Phi(s)$ with $\Phi=c$. The latent $z$ is \emph{not} part of the environment state in the episodic analysis; it is internal computation used to evaluate $s_t$. The resulting process is a discounted MDP $(\mathcal S,\mathcal A,P,r,\rho,\gamma)$ with $\gamma\in(0,1)$ and $K\ge 1$. All theoretical statements fix one parameter snapshot: the MDP, recurrence, initialization, value head, current policy $\pi$, and candidate policy $\pi_{\mathrm{cand}}$ do not change while the displayed quantities are evaluated. The formal results assume finite or countable state and action spaces and use ordinary sup norms; the proofs also apply when only the relevant policy-pair closure and supported action sets are finite or countable. Rewards are bounded and the relevant closure is invariant under $\pi$ almost surely. This setting covers every reported experiment. Appendix~\ref{app:adv_closure_full} states the additional domination and total-variation requirements for a general-kernel extension. Increasing $n$ spends more computation inside one state evaluation but does not change the environment horizon or search depth, so the analysis tracks evaluator truncation error inside a fixed external MDP.
+In the plan-space MDP the external episodic state is $s_t=(x,y_t,h_t)$, the action is an edit $a_t$, and a nonterminal transition sets $y_{t+1}=\mathrm{edit}(y_t,a_t;x)$ and $h_{t+1}=h_t-1$; solving, a terminal STOP action, or exhausting the budget sends the process to $s_{\mathrm{abs}}$. Budget exhaustion is treated as termination, not as a separately bootstrapped truncation. A checker score $c(x,y)$ supplies reward, optionally via potential shaping~\citep{Ng1999Shaping} $r=r_0+\gamma\Phi(s')-\Phi(s)$ with $\Phi=c$. The latent $z$ is \emph{not} part of the environment state in the episodic analysis; it is internal computation used to evaluate $s_t$. The resulting process is a discounted MDP $(\mathcal S,\mathcal A,P,r,\rho,\gamma)$ with $\gamma\in[0,1)$ and $K\ge 1$. All theoretical statements fix one parameter snapshot: the MDP, recurrence, initialization, value head, current policy $\pi$, and candidate policy $\pi_{\mathrm{cand}}$ do not change while the displayed quantities are evaluated. The formal results assume finite or countable state and action spaces and use ordinary sup norms; the proofs also apply when only the relevant policy-pair closure and supported action sets are finite or countable. Rewards are bounded and the relevant closure is invariant under $\pi$ almost surely. This setting covers every reported experiment. Appendix~\ref{app:adv_closure_full} states the additional domination and total-variation requirements for a general-kernel extension. Increasing $n$ spends more computation inside one state evaluation but does not change the environment horizon or search depth, so the analysis tracks evaluator truncation error inside a fixed external MDP.
 
 \textbf{Episodic-$z$ vs.\ persistent-$z$.}
 In \emph{episodic-$z$}, the latent is reinitialized from the current plan at each edit step, so $s=(x,y,h)$ is Markov. In \emph{persistent-$z$}, the latent is carried across edits, matching the original TRM. With persistent latents the next-state distribution depends jointly on $(x,y,z,h)$, since the same plan paired with a different carried latent or remaining budget can produce a different policy output or termination event. Treating $(x,y)$ as the state in this regime is a non-Markov approximation. Appendix~\ref{app:persistent_latent} lifts the finite-depth residual certificate directly to $\bar s=(x,y,z,h)$; this step needs no latent fixed point or slow drift. A separate slow-drift assumption is required only for comparison with a memoryless fixed-point reference.
@@ -572,10 +572,20 @@ pipeline and theorem constants; it is not learned-model evidence, empirical
 validation, or a Cartesian parameter sweep. Appendix~\ref{app:finite_mdp_certificate}
 gives the construction and retained outputs.
 
+A separate deterministic standard-library regression exercises the
+finite-horizon residual, CPI, deployment, terminal, and support-boundary
+formulas. Its registered run has 26,686 passing assertions, including
+$H=0$, $K>H$, $\gamma=0$, $\alpha\in\{0,1\}$, an absorbing initial law,
+TV distance one, and incompatible policy supports. The working-tree paths are
+\nolinkurl{experiments/finite_horizon_theory_checks.py} and
+\nolinkurl{reports/THEORY_EXTENSION_DERIVATION.md}; we do not claim that either
+path is present in a submitted archive. This is a theorem-pipeline regression,
+not empirical evidence for a learned recurrent evaluator.
+
 \section{Discussion, Limitations, and Conclusion}
 \label{sec:conclusion}
 
-The main result is a fixed-snapshot decomposition: a finite-depth recurrent evaluator can be compared with any deeper finite reference through a recurrent-path term and a reference-depth Bellman residual. Contraction supplies one optional geometric specialization rather than a model of arbitrary TRM computation. Persistent latents admit the same direct residual argument on a clock-complete augmented MDP, but the historical persistent implementation does not provide the uniform augmented residual, exact centering, or exact-mixture deployment required to instantiate the CPI bound.
+The main result is a fixed-snapshot decomposition: a finite-depth recurrent evaluator can be compared with any deeper finite reference through a recurrent-path term and a reference-depth Bellman residual. The finite-horizon version uses the remaining edit clock rather than an infinite geometric tail. Contraction supplies one optional specialization rather than a model of arbitrary TRM computation. Persistent latents admit the same direct argument on a clock-complete augmented MDP. A deployed policy differing from the exact mixture incurs an explicit uniform TV/KL perturbation term, but a batch diagnostic alone does not instantiate it. The historical persistent implementation provides none of the uniform quantities required by these results.
 
 The retained learned-model evidence is limited to $4\times4$ Sudoku and does
 not provide a held-out method comparison. The episodic endpoint did not score
@@ -864,12 +874,15 @@ Table~\ref{tab:diagnostics} shows the theoretical bound quantities and the pract
 Claim & Required condition & Evidence / status \\
 \midrule
 Finite-reference value bound & Frozen policy pair, common closure, initialization, and norm & Proved; Theorem~\ref{thm:finite_reference_depth} \\
+Finite-horizon sharpening & Clock-complete stages, exact common boundary, recursive closure & Proved; Theorem~\ref{thm:finite_horizon_reference} \\
 Persistent direct bound & Clock-complete state, shared frozen map, uniform augmented residual & Proved conditionally; not calibrated on the historical checkpoints \\
 CPI application & Exact centering, exact pointwise mixture, and fixed MDP & Proved conditionally; historical persistent deployment used parameter interpolation \\
+Deployment perturbation & Uniform TV or KL on a closure invariant under both policies & Proved; Theorem~\ref{thm:deployment_perturbation}; no historical instantiation \\
 Persistent learned-model record & Reconstructible checkpoint, held-out population, and exact policy identity & Task result and diagnostics are \emph{not verifiable from supplied evidence} \\
 Bridge and matched PPO comparison & Registered one-factor bridge and common-pool equal interactions & Missing experiments \\
 Projection mechanism & Train/evaluation cross-design and a certified modulus for contraction claims & Missing experiment; historical mechanism claim is \emph{not verifiable from supplied evidence} \\
 Finite-MDP inequalities & Exact finite-state calculation and retained rows & 101 working-tree rows have zero numerical violations; theorem-pipeline unit test \\
+Finite-horizon formulas & Terminal, support, and deployment boundary cases & 26,686 assertions in the working-tree regression; theorem-pipeline test only \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -923,7 +936,7 @@ $\|U_n-\mathcal T_K^\pi U_n\|$ & Remark~\ref{rem:residual_bridge} & $K$-step TD 
 $\bar\varepsilon_{\mathrm{res},n}$ & Cor.~\ref{cor:persistent_cpi_augmented} & Augmented-state residual on a declared diagnostic population \\
 $\varepsilon_{\mathrm{cent}}$ & Thm.~\ref{thm:monotone_with_error} & Statewise current-policy mean of $\widehat A$ \\
 $\varepsilon_{A,\mathrm{cand}}$ & Thm.~\ref{thm:monotone_with_error} & Candidate-policy mean advantage error on declared states \\
-TV / KL deployment gap & App.~\ref{app:implementation} & Exact mixture versus deployed-policy discrepancy on declared states \\
+TV / KL deployment gap & Thm.~\ref{thm:deployment_perturbation} & Exact mixture versus deployed-policy discrepancy on a declared recursive closure \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -1052,6 +1065,366 @@ If one prefers the standard normalization $V(s_{\mathrm{abs}})=0$, use the shift
 $\tilde{\Phi}(s):=\Phi(s)-C_{\max}$.
 This adds the constant reward $(1-\gamma)C_{\max}$ to every transition and shifts all returns by $+C_{\max}$ independently of the policy.
 Accordingly, performance differences and optimal policies are unchanged.
+
+\section{Finite-Horizon and Deployment-Aware Bounds}
+\label{app:finite_horizon_extensions}
+
+This section uses the finite edit clock directly. All statements are for
+finite or countable state and action spaces and ordinary suprema. Fix
+$0\le\gamma<1$, an integer horizon $H\ge0$, and one shared absorbing atom with
+value
+\[
+b:=V^\pi(s_{\mathrm{abs}})=-C_{\max},
+\qquad
+r_{\mathrm{abs}}=(1-\gamma)b.
+\]
+Thus $b=r_{\mathrm{abs}}+\gamma b$. Every reward interval below includes
+$r_{\mathrm{abs}}$.
+
+For each $h\in\{1,\ldots,H\}$, let $\mathcal R_h$ be a finite or countable
+clock-complete nonabsorbing stage closure. A transition from stage $h$ enters
+$\mathcal R_{h-1}$ or $s_{\mathrm{abs}}$, and a stage-$1$ transition is
+absorbing. The closure contains the current-policy reachable states, every
+one-deviation successor for actions supported by the current or candidate
+policy, and every recursive current-policy successor needed by the backups
+below. In particular, it is forward invariant under those stage kernels. For
+$1\le\ell\le h$, define
+\begin{align}
+(\mathcal T_{h:\ell}^{\pi}W)(s)
+&:=\E\!\left[
+\sum_{i=0}^{\ell-1}\gamma^i r_i
++\gamma^\ell W(S_\ell)
+\mid S_0=s,\ A_i\sim\pi
+\right],
+\label{eq:fh_stage_operator}
+\end{align}
+where an absorbed trajectory remains at the shared atom and
+$W(s_{\mathrm{abs}})=b$. Truncating when the clock reaches zero is therefore
+equivalent to padding a longer backup with absorbing self-loops.
+
+\begin{theorem}[Finite-horizon residual and finite-reference bound]
+\label{thm:finite_horizon_reference}
+Fix $0\le\gamma<1$, $H\ge0$, and $K\ge1$. Assume the finite or countable
+stage closures contain the current-policy reachable states, the one-deviation
+successors of every action supported by the current or candidate policy, and
+all recursive current-policy successors used by $\mathcal T_{h:\ell}^{\pi}$.
+Fix one frozen recurrent map $F$, a common initialization
+$z_h^{(0)}(s)=z_{\mathrm{init}}(s)$, one latent norm, and one bounded scalar
+head $V_\psi$. For every depth $q\ge0$, use the common construction
+\[
+z_h^{(q+1)}(s)=F(z_h^{(q)}(s),s),
+\qquad
+U_{h,q}(s)=V_\psi(z_h^{(q)}(s),x),
+\]
+and assign $U_{h,q}(s_{\mathrm{abs}})=b$ for every $h$ and $q$. The true
+stage value has the same boundary, $V_h^\pi(s_{\mathrm{abs}})=b$, and all
+displayed functions and rewards are bounded on the recursive closure. For
+$h\ge1$, let
+\begin{align}
+\ell_h&:=\min\{K,h\},
+&J_h&:=\left\lceil\frac{h}{K}\right\rceil,
+\notag\\
+\epsilon_{h,m}
+&:=\left\|U_{h,m}
+-\mathcal T_{h:\ell_h}^{\pi}U_{h-\ell_h,m}\right\|_{\infty,h},
+&D_{h;n,m}&:=\|U_{h,n}-U_{h,m}\|_{\infty,h},
+\label{eq:fh_residual_def}
+\end{align}
+where $U_{0,m}=b$. Then, for finite depths $0\le n<m$,
+\begin{align}
+\|U_{h,n}-V_h^\pi\|_{\infty,h}
+&\le D_{h;n,m}
++\sum_{j=0}^{J_h-1}\gamma^{jK}\epsilon_{h-jK,m}.
+\label{eq:fh_finite_reference}
+\end{align}
+Consequently, with
+$\epsilon_m^{(h)}:=\max_{1\le r\le h}\epsilon_{r,m}$,
+\begin{align}
+\|U_{h,n}-V_h^\pi\|_{\infty,h}
+&\le D_{h;n,m}
++\frac{1-\gamma^{KJ_h}}{1-\gamma^K}\epsilon_m^{(h)}.
+\label{eq:fh_finite_reference_uniform}
+\end{align}
+If $V_\psi$ is $L_V$-Lipschitz in the common latent norm, then
+\begin{align}
+D_{h;n,m}
+&\le L_V\sum_{q=n}^{m-1}
+\sup_{s\in\mathcal R_h}
+\|z_h^{(q+1)}(s)-z_h^{(q)}(s)\|.
+\label{eq:fh_path_bound}
+\end{align}
+For $h=0$, set $J_0=0$; every sum is empty and the error is zero. In a
+persistent-state application, $s=(x,y,z,h)$ and both policy kernels must use
+the same frozen recurrent map that determines the carried-latent transition.
+\end{theorem}
+
+\begin{proof}
+Write $e_{h,m}:=\|U_{h,m}-V_h^\pi\|_{\infty,h}$ and $e_{0,m}=0$. Since
+$V_h^\pi=\mathcal T_{h:\ell_h}^\pi V_{h-\ell_h}^\pi$, the triangle inequality
+and the stage-operator contraction give
+\begin{align*}
+e_{h,m}
+&\le \epsilon_{h,m}
++\left\|\mathcal T_{h:\ell_h}^\pi U_{h-\ell_h,m}
+-\mathcal T_{h:\ell_h}^\pi V_{h-\ell_h}^\pi\right\|_{\infty,h}\\
+&\le \epsilon_{h,m}+\gamma^{\ell_h}e_{h-\ell_h,m}.
+\end{align*}
+On paths absorbed inside the block, the terminal-function difference is zero
+because both functions equal $b$. Unrolling the recursion yields residuals at
+clocks $h,h-K,\ldots,h-(J_h-1)K$ with weights
+$1,\gamma^K,\ldots,\gamma^{(J_h-1)K}$. The final partial block multiplies
+$e_{0,m}=0$, proving the residual sum. Bounding every residual by
+$\epsilon_m^{(h)}$ gives the geometric factor. Adding and subtracting
+$U_{h,m}$ proves Eqs.~\eqref{eq:fh_finite_reference}--
+\eqref{eq:fh_finite_reference_uniform}. Finally, Lipschitzness and telescoping
+the common recurrent path from depth $n$ to $m$ prove
+Eq.~\eqref{eq:fh_path_bound}.
+\end{proof}
+
+The next result uses the exact finite-horizon performance
+\[
+\eta_H(\pi):=\E\!\left[
+\sum_{t=0}^{H-1}\gamma^t r_t+\gamma^H b
+\right],
+\]
+where early terminal trajectories are padded by the absorbing self-loop. Let
+$d_t^\pi$ be the probability law before decision $t$, including absorbed
+mass, and define every advantage to be zero at the absorbing atom.
+
+\begin{theorem}[Finite-horizon CPI with centered evaluation error]
+\label{thm:finite_horizon_cpi}
+Fix $0\le\gamma<1$, $H\ge0$, bounded rewards, and the exact common terminal
+boundary $b$. Fix a current stage policy $\pi_h$, a candidate
+$\pi_{\mathrm{cand},h}$, and
+the exact pointwise mixture
+\[
+\pi_{\alpha,h}=(1-\alpha)\pi_h
++\alpha\pi_{\mathrm{cand},h},
+\qquad \alpha\in[0,1].
+\]
+All three policies act in the same fixed time-indexed MDP. Their finite or
+countable recursive stage closure contains the complete support of $d_t^\pi$
+and $d_t^{\pi_\alpha}$ for every $t$, the one-step successors of actions
+supported by $\pi_h$ or $\pi_{\mathrm{cand},h}$, and all later successors
+needed by both occupancy laws. Define
+\begin{align}
+\delta_h(s)
+&:=\E_{a\sim\pi_{\mathrm{cand},h}(\cdot\mid s)}[A_h^\pi(s,a)],
+&\epsilon_{\mathrm{CPI},h}&:=\sup_s|\delta_h(s)|.
+\label{eq:fh_cpi_delta}
+\end{align}
+Let $\widehat A_h$ be exactly statewise centered under the current policy,
+\begin{align}
+\E_{a\sim\pi_h(\cdot\mid s)}[\widehat A_h(s,a)]&=0,
+\label{eq:fh_centering}
+\end{align}
+and let the finite candidate-policy bias be
+\begin{align}
+\epsilon_{A,\mathrm{cand},h}
+&:=\sup_s\left|
+\E_{a\sim\pi_{\mathrm{cand},h}(\cdot\mid s)}
+[\widehat A_h(s,a)-A_h^\pi(s,a)]
+\right|.
+\label{eq:fh_candidate_bias}
+\end{align}
+Define the estimated surrogate
+\begin{align}
+\widehat L_{H,\pi}(\pi_\alpha)
+&:=\eta_H(\pi)+\sum_{t=0}^{H-1}\gamma^t
+\E_{\substack{s\sim d_t^\pi,\\
+a\sim\pi_{\alpha,H-t}(\cdot\mid s)}}
+[\widehat A_{H-t}(s,a)].
+\label{eq:fh_estimated_surrogate}
+\end{align}
+Then
+\begin{align}
+\eta_H(\pi_\alpha)
+\ge{}&\widehat L_{H,\pi}(\pi_\alpha)
+-\alpha\sum_{t=0}^{H-1}\gamma^t
+\epsilon_{A,\mathrm{cand},H-t}
+\notag\\
+&-2\alpha\sum_{t=0}^{H-1}\gamma^t
+\epsilon_{\mathrm{CPI},H-t}[1-(1-\alpha)^t].
+\label{eq:fh_cpi_exact_coupling}
+\end{align}
+Using $1-(1-\alpha)^t\le\alpha t$ gives
+\begin{align}
+\eta_H(\pi_\alpha)
+\ge{}&\widehat L_{H,\pi}(\pi_\alpha)
+-\alpha\sum_{t=0}^{H-1}\gamma^t
+\epsilon_{A,\mathrm{cand},H-t}
+-2\alpha^2\sum_{t=0}^{H-1}t\gamma^t
+\epsilon_{\mathrm{CPI},H-t}.
+\label{eq:fh_cpi_quadratic}
+\end{align}
+For uniform bounds $\epsilon_{A,\mathrm{cand},h}\le
+\epsilon_{A,\mathrm{cand}}$ and
+$\epsilon_{\mathrm{CPI},h}\le\epsilon_{\mathrm{CPI}}$, set
+\begin{align}
+G_H(q)&:=\sum_{t=0}^{H-1}q^t=\frac{1-q^H}{1-q},
+&S_H(\gamma)&:=\sum_{t=0}^{H-1}t\gamma^t.
+\label{eq:fh_GS_def}
+\end{align}
+The two penalties become, respectively,
+\begin{align}
+&\alpha\epsilon_{A,\mathrm{cand}}G_H(\gamma)
++2\alpha\epsilon_{\mathrm{CPI}}
+[G_H(\gamma)-G_H(\gamma(1-\alpha))],
+\label{eq:fh_cpi_uniform_exact}\\
+&\alpha\epsilon_{A,\mathrm{cand}}G_H(\gamma)
++2\alpha^2\epsilon_{\mathrm{CPI}}S_H(\gamma).
+\label{eq:fh_cpi_uniform_quadratic}
+\end{align}
+For $H=0$, define $G_0=S_0=0$; the policies have identical performance and
+all penalties vanish.
+\end{theorem}
+
+\begin{proof}
+The time-indexed performance-difference identity is
+\begin{align}
+\eta_H(\pi_\alpha)-\eta_H(\pi)
+&=\alpha\sum_{t=0}^{H-1}\gamma^t
+\E_{s\sim d_t^{\pi_\alpha}}[\delta_{H-t}(s)].
+\label{eq:fh_performance_difference}
+\end{align}
+It follows by telescoping the stage Bellman equations; the terminal term
+cancels because both policies use $b$. Couple the exact mixture with the
+current policy while the two trajectories share a state. With probability
+$1-\alpha$, choose the current-policy component and use the same action and
+transition randomness. Thus
+\begin{align}
+\|d_t^{\pi_\alpha}-d_t^\pi\|_1
+&\le2[1-(1-\alpha)^t]\le2\alpha t.
+\label{eq:fh_occupancy_coupling}
+\end{align}
+Replacing $d_t^{\pi_\alpha}$ by $d_t^\pi$ in
+Eq.~\eqref{eq:fh_performance_difference} therefore incurs at most the final
+term of Eq.~\eqref{eq:fh_cpi_exact_coupling}. Exact centering eliminates the
+current-policy component of
+$\E_{a\sim\pi_{\alpha,h}}[A_h^\pi-\widehat A_h]$ pointwise. The remaining
+candidate component is bounded by
+$\alpha\epsilon_{A,\mathrm{cand},h}$, proving the first penalty and
+Eq.~\eqref{eq:fh_cpi_exact_coupling}. The union bound in
+Eq.~\eqref{eq:fh_occupancy_coupling} proves
+Eq.~\eqref{eq:fh_cpi_quadratic}. Summing the two geometric series gives
+Eqs.~\eqref{eq:fh_cpi_uniform_exact}--
+\eqref{eq:fh_cpi_uniform_quadratic}. Empty sums prove the $H=0$ case.
+\end{proof}
+
+\begin{theorem}[Deployment perturbation from the exact mixture]
+\label{thm:deployment_perturbation}
+Fix $0\le\gamma<1$. Let
+$\pi_\alpha=(1-\alpha)\pi+\alpha\pi_{\mathrm{cand}}$ be the exact mixture
+and let $\widetilde\pi$ be the deployed policy in the same fixed MDP. Let
+$\mathcal D$ be either the full state space or a closure containing the
+initial-law support that is recursively forward invariant under both policies.
+For every $s\in\mathcal D$, define
+\[
+\mathcal A_{\mathcal D}(s)
+:=\operatorname{supp}\pi_\alpha(\cdot\mid s)
+\cup\operatorname{supp}\widetilde\pi(\cdot\mid s),
+\]
+and require $\mathcal D$ to contain every one-step successor of every action
+in $\mathcal A_{\mathcal D}(s)$, including states reachable only through
+deployed-policy support. Suppose all such transition rewards, including the
+absorbing self-loop, lie in $[r_{\min},r_{\max}]$, and write
+$\Delta_r=r_{\max}-r_{\min}$. If
+\begin{align}
+\sup_{s\in\mathcal D}
+\operatorname{TV}(\widetilde\pi(\cdot\mid s),
+\pi_\alpha(\cdot\mid s))&\le\delta,
+\label{eq:deployment_uniform_tv}
+\end{align}
+then
+\begin{align}
+|\eta(\widetilde\pi)-\eta(\pi_\alpha)|
+&\le\frac{\Delta_r\delta}{(1-\gamma)^2}
+\le\frac{2R_{\max}\delta}{(1-\gamma)^2}
+\quad\text{when }|r|\le R_{\max}.
+\label{eq:deployment_tv_bound}
+\end{align}
+For a horizon $H$, assume corresponding stage domains $\mathcal D_h$ are
+recursively invariant under both policies, use one exact terminal boundary
+$b$, and impose Eq.~\eqref{eq:deployment_uniform_tv} uniformly over all
+stages. Then
+\begin{align}
+|\eta_H(\widetilde\pi)-\eta_H(\pi_\alpha)|
+&\le\Delta_r\delta\sum_{t=0}^{H-1}
+\gamma^tG_{H-t}(\gamma)
+\notag\\
+&=\frac{\Delta_r\delta}{1-\gamma}
+[G_H(\gamma)-H\gamma^H].
+\label{eq:deployment_tv_finite_horizon}
+\end{align}
+The finite-horizon right-hand side is zero for $H=0$. If the state is the
+persistent augmented state $(x,y,z,h)$, both policies must share the frozen
+recurrent map that determines the carried-latent transition; changing it would
+change the MDP and is outside this theorem.
+\end{theorem}
+
+\begin{proof}
+For the exact-mixture action value,
+\begin{align*}
+\operatorname{osc}_{a\in\mathcal A_{\mathcal D}(s)}
+Q^{\pi_\alpha}(s,a)
+&\le\frac{\Delta_r}{1-\gamma}.
+\end{align*}
+The total-variation expectation inequality and
+$\E_{a\sim\pi_\alpha}A^{\pi_\alpha}(s,a)=0$ give
+\[
+\left|\E_{a\sim\widetilde\pi}
+A^{\pi_\alpha}(s,a)\right|
+\le\frac{\Delta_r\delta}{1-\gamma}.
+\]
+The performance-difference identity under $\widetilde\pi$ proves
+Eq.~\eqref{eq:deployment_tv_bound}. With $h$ decisions left, the common
+terminal boundary cancels and
+$\operatorname{osc}_a Q_h^{\pi_\alpha}\le\Delta_r G_h(\gamma)$. Summing the
+time-indexed performance-difference identity gives the first line of
+Eq.~\eqref{eq:deployment_tv_finite_horizon}; expanding $G_{H-t}$ gives its
+closed form. The empty sum gives the $H=0$ case.
+\end{proof}
+
+\begin{corollary}[Either-direction uniform-KL deployment bound]
+\label{cor:deployment_pinsker}
+Under Theorem~\ref{thm:deployment_perturbation}, suppose either
+\begin{align*}
+\sup_{s\in\mathcal D}
+D_{\mathrm{KL}}(\widetilde\pi(\cdot\mid s)\|\pi_\alpha(\cdot\mid s))
+&\le\kappa,
+\quad\text{or}\\
+\sup_{s\in\mathcal D}
+D_{\mathrm{KL}}(\pi_\alpha(\cdot\mid s)\|\widetilde\pi(\cdot\mid s))
+&\le\kappa,
+\end{align*}
+for a finite $\kappa$. Then Pinsker's inequality gives
+$\delta\le\sqrt{\kappa/2}$, so
+\begin{align}
+|\eta(\widetilde\pi)-\eta(\pi_\alpha)|
+&\le\frac{\Delta_r}{(1-\gamma)^2}\sqrt{\frac{\kappa}{2}}.
+\label{eq:deployment_kl_bound}
+\end{align}
+The same substitution in Eq.~\eqref{eq:deployment_tv_finite_horizon} gives
+the finite-horizon corollary. If the selected KL direction is infinite because
+the supports are incompatible, no finite Pinsker bound follows; the TV result
+remains available if Eq.~\eqref{eq:deployment_uniform_tv} is established.
+\end{corollary}
+
+\begin{proof}
+Pinsker's inequality in either stated direction bounds the symmetric total
+variation distance by $\sqrt{\kappa/2}$. Substitute this value for $\delta$ in
+Eqs.~\eqref{eq:deployment_tv_bound} and
+\eqref{eq:deployment_tv_finite_horizon}.
+\end{proof}
+
+\begin{remark}[Uniform assumptions versus finite-batch diagnostics]
+\label{rem:deployment_uniform_scope}
+The residual, centering, TV, and KL conditions above are uniform on their
+declared recursive closures. A replay-batch mean, batch maximum, held-out
+finite maximum, or local finite-difference proxy is only a finite-batch
+diagnostic and does not instantiate these theorems. No retained historical
+checkpoint is claimed to satisfy the new conditions.
+\end{remark}
 
 \section{CPI Derivation for Mixture Policies}
 \label{app:cpi_derivation}
