@@ -10,20 +10,21 @@ scientific evidence.
 - Paper: `/home/buiksat/UPI_TRM`, branch
   `iclr-evidence-aligned-revision`, baseline before this update `baf196b`.
 - Code: `/home/buiksat/trm_bellman`, branch `iclr-confirmatory-repair`, commit
-  `6400959bb7932095e6f82b84a3619a73539fe193` (protocol implementation commit
+  `8d79ba79917a7be8b14540bedb600f51076738c7` (protocol implementation commit
   `8109978`; persistent diagnostic runner commit `ac624cd`; schema-v5 identity
-  hardening commit `6400959`).
+  hardening commit `6400959`; corpus builder `94a7199`; materialized corpus
+  `8d79ba7`).
 - Protected NeurIPS tree: unchanged at tree
   `8dc95739b9830a75409af3d89ba86ac174ae1376` with scoped tracked-file digest
   `32e7967b973bffe2858d340fa793177c298796937790d17ca1463ce7b636cdab`.
 
-The paper repository contains an exact Git bundle for the seven code commits at:
+The paper repository contains an exact Git bundle for the ten code commits at:
 
 `handoff/trm_bellman_iclr-confirmatory-repair.bundle`
 
 SHA-256:
 
-`52547a3a7dfebd1521b917be9adbf8abbe218203d2bdbabf96c8c07f59b893bd`
+`22299bf3b7efcfad8dd8cc474c2813fbfbf6d92536b7c288711ed3205de7ab60`
 
 Fetch it into a clone containing base commit
 `6d5a241027fe72921d5fc039dd6a12434999088b`:
@@ -35,8 +36,8 @@ git switch iclr-confirmatory-repair-recovered
 ```
 
 `git bundle verify` passes, and fetching into a repository containing the base
-commit reproduces tree `a001d2c13dcd024f87e4d44d7eb910405817cf5d`, exactly
-matching code commit `6400959`. The older `.patch.gz` file is retained only as
+commit reproduces tree `400d42e3395b26cea2e98bc60620bb8a9c5348d7`, exactly
+matching code commit `8d79ba7`. The older `.patch.gz` file is retained only as
 the prior six-commit recovery artifact; it does not contain the diagnostic
 runner or schema-v5 commit.
 
@@ -95,21 +96,21 @@ hashed in the code report.
 ## Open scientific and implementation work
 
 - The strict persistent checkpoint runner exists at code commit `6400959`, but
-  no learned checkpoint or hard held-out manifest exists from which to produce
-  a diagnostic output bundle.
+  no learned checkpoint exists from which to produce a diagnostic output
+  bundle. The hard held-out manifest now exists at `8d79ba7`.
 - No learned checkpoint is present in either repository. Historical persistent
   theorem-facing diagnostics are `not verifiable from supplied evidence`.
 - `configs/iclr_confirmatory/persistent_diagnostics.json` registers the
-  diagnostic protocol. The unique 1,024/256/512 hard
-  train/validation/test split has not been materialized or locked. The lone
-  local 450/50 trivial corpus has incomplete builder provenance and cannot
-  substitute for it.
+  diagnostic protocol. The unique 1,024/256/512 hard train/validation/test
+  split is materialized, byte-rebuilt, and locked by manifest hashes. The
+  strict diagnostic provenance file still awaits the locked environment and
+  action-mask configuration.
 - Learned persistent diagnostic outputs, the one-factor bridge,
   equal-interaction UPI-TRM/PPO comparison, projection cross-design, and second
   domain remain missing experiments.
-- Checkpoint run identity is no longer the next implementation dependency.
-  Materializing and hashing the registered hard splits is now the blocking
-  execution step.
+- Checkpoint run identity and raw dataset materialization are no longer the
+  next dependencies. Exact-budget PPO, per-instance evaluation artifacts,
+  executable cell configs, and the final registry lock now block debug smokes.
 - The registered minimum Sudoku matrix is at least 245 serial GPU-hours. No
   repaired learned-model run was started.
 - Final proof/evidence/reproducibility reports, an anonymous supplement, and a

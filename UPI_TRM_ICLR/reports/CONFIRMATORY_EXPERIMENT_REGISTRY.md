@@ -65,13 +65,20 @@ Fields that must be locked before execution:
 | --- | --- |
 | Code commit | `TBD-BEFORE-RUN` |
 | Configuration schema hash | `TBD-BEFORE-RUN` |
-| Training manifest SHA-256 | `TBD-BEFORE-RUN` |
-| Validation manifest SHA-256 | `TBD-BEFORE-RUN` |
-| Held-out manifest SHA-256 | `TBD-BEFORE-RUN` |
+| Training manifest SHA-256 | `8def4f59387c1ab9466d043c40a7fdd3c7c670e2778b8d949295811ae7b6088a` |
+| Validation manifest SHA-256 | `4644a3b1bb8b6e384896888154c9e56252368c1fc2f32962b089ade95a5bc1f2` |
+| Held-out manifest SHA-256 | `163a083a9f5744b7cc485663b269b89acc3103d9e1ec64c7e93f78e36fa79d40` |
 | Environment configuration SHA-256 | `TBD-BEFORE-RUN` |
 | Action-mask configuration SHA-256 | `TBD-BEFORE-RUN` |
 | Environment lock SHA-256 | `TBD-BEFORE-RUN` |
 | Output root | `results/iclr_confirmatory/TBD-BEFORE-RUN` |
+
+The three dataset fields were materialized before any learned outcome at code
+commit `8d79ba79917a7be8b14540bedb600f51076738c7`. The dataset lock record is
+`CODE_REPO/configs/iclr_confirmatory/dataset.json`, SHA-256
+`27660695d7dec8a61c3ac200672842eee77730cd7808a01b28c964931e85edc3`.
+Filling these fields does not lock the registry while the remaining fields are
+`TBD-BEFORE-RUN`.
 
 ## C1: one-factor bridge
 

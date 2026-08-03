@@ -8,7 +8,7 @@ Paper parent commit: `bd72f7a1377c8602f7b2b2eae4a68dc5ee3612cf`
 
 Code branch: `iclr-confirmatory-repair`
 
-Code commit: `6400959bb7932095e6f82b84a3619a73539fe193`
+Current code bundle commit: `8d79ba79917a7be8b14540bedb600f51076738c7`
 
 ## Code evidence incorporated
 
@@ -67,17 +67,17 @@ learned result.
 
 ## Recovery and artifact state
 
-The exact eight-commit code recovery bundle is:
+The exact ten-commit code recovery bundle is:
 
 `handoff/trm_bellman_iclr-confirmatory-repair.bundle`
 
 SHA-256:
 
-`52547a3a7dfebd1521b917be9adbf8abbe218203d2bdbabf96c8c07f59b893bd`
+`22299bf3b7efcfad8dd8cc474c2813fbfbf6d92536b7c288711ed3205de7ab60`
 
 `git bundle verify` passes. A fetch into a detached worktree at base commit
 `6d5a241027fe72921d5fc039dd6a12434999088b` reproduces tree
-`a001d2c13dcd024f87e4d44d7eb910405817cf5d`, exactly matching `6400959`.
+`400d42e3395b26cea2e98bc60620bb8a9c5348d7`, exactly matching `8d79ba7`.
 
 The paper artifact inventory records this bundle as implementation provenance
 only. It remains incomplete and not anonymous-release-ready.
@@ -89,8 +89,9 @@ Current `main.tex` SHA-256:
 ## Evidence boundary
 
 No learned checkpoint exists in the code or paper repository. The hard
-1,024/256/512 train/validation/test split and immutable manifests have not been
-materialized. Consequently:
+1,024/256/512 train/validation/test split and immutable manifests are now
+materialized at `8d79ba7`; this supplies diagnostic inputs but no learned
+endpoint. Consequently:
 
 - persistent learned-checkpoint diagnostics: not verifiable from supplied evidence
 - historical training-time centering: not verifiable from supplied evidence
@@ -114,12 +115,11 @@ current build.
 
 ## Next execution dependency
 
-Checkpoint schema 5 now binds the producer commit, source blobs, training
-seed, run ID, effective configuration, runtime, initialization, parent
-lineage, and complete live-resume state. The next blocker is to materialize and
-hash the registered hard splits. Then finish the bridge and matched-PPO
-configuration matrix, run debug-only smokes on the reserved debug seeds, and
-execute persistent diagnostics, the one-factor bridge, and the
-equal-interaction comparison in that order.
+Checkpoint schema 5 binds the producer commit, source blobs, training seed,
+run ID, effective configuration, runtime, initialization, parent lineage, and
+complete live-resume state. The raw split gate is also closed. The next
+blockers are exact-budget PPO, per-instance output retention, the bridge and
+matched-PPO configuration matrix, and the remaining registry lock fields.
+Only then may debug-only smokes run on the reserved debug seeds.
 
 No result was fabricated or inferred from an unexecuted experiment.

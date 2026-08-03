@@ -12,7 +12,7 @@
     "It is not a supplement manifest and does not assert execution provenance.",
     "No current anonymous supplement archive exists.",
     "Some historical episodic artifacts contain absolute protected paths and must not be released without staged-copy anonymization.",
-    "The code recovery bundle includes the tested schema-v5 checkpoint contract and persistent-diagnostic runner but contains no learned checkpoint or experiment output."
+    "The code recovery bundle includes the tested schema-v5 checkpoint contract, persistent-diagnostic runner, and immutable confirmatory corpus but contains no learned checkpoint or experiment output."
   ],
   "entries": [
     {
@@ -125,11 +125,39 @@
     {
       "path": "../handoff/trm_bellman_iclr-confirmatory-repair.bundle",
       "kind": "code_branch_git_bundle",
-      "sha256": "52547a3a7dfebd1521b917be9adbf8abbe218203d2bdbabf96c8c07f59b893bd",
-      "bytes": 304706,
-      "source_code_commit": "6400959bb7932095e6f82b84a3619a73539fe193",
-      "source_tree": "a001d2c13dcd024f87e4d44d7eb910405817cf5d",
+      "sha256": "22299bf3b7efcfad8dd8cc474c2813fbfbf6d92536b7c288711ed3205de7ab60",
+      "bytes": 487752,
+      "source_code_commit": "8d79ba79917a7be8b14540bedb600f51076738c7",
+      "source_tree": "400d42e3395b26cea2e98bc60620bb8a9c5348d7",
       "status": "verified_exact_tree_implementation_only_no_learned_output"
+    },
+    {
+      "path": "CODE_BUNDLE:configs/iclr_confirmatory/dataset.json",
+      "kind": "confirmatory_dataset_lock",
+      "sha256": "27660695d7dec8a61c3ac200672842eee77730cd7808a01b28c964931e85edc3",
+      "source_code_commit": "8d79ba79917a7be8b14540bedb600f51076738c7",
+      "status": "verified_from_code_bundle_no_learned_output"
+    },
+    {
+      "path": "CODE_BUNDLE:data/iclr-confirmatory-sudoku4x4-v1/manifests/train.json",
+      "kind": "confirmatory_training_manifest",
+      "sha256": "8def4f59387c1ab9466d043c40a7fdd3c7c670e2778b8d949295811ae7b6088a",
+      "records": 1024,
+      "status": "verified_from_code_bundle"
+    },
+    {
+      "path": "CODE_BUNDLE:data/iclr-confirmatory-sudoku4x4-v1/manifests/validation.json",
+      "kind": "confirmatory_validation_manifest",
+      "sha256": "4644a3b1bb8b6e384896888154c9e56252368c1fc2f32962b089ade95a5bc1f2",
+      "records": 256,
+      "status": "verified_from_code_bundle"
+    },
+    {
+      "path": "CODE_BUNDLE:data/iclr-confirmatory-sudoku4x4-v1/manifests/test.json",
+      "kind": "confirmatory_heldout_manifest",
+      "sha256": "163a083a9f5744b7cc485663b269b89acc3103d9e1ec64c7e93f78e36fa79d40",
+      "records": 512,
+      "status": "verified_from_code_bundle"
     }
   ]
 }
