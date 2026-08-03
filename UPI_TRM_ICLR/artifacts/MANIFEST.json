@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "manifest_state": "initial_pre_repair_inventory",
+  "created_date": "2026-08-03",
+  "source_branch": "iclr-evidence-aligned-revision",
+  "source_commit": "0fc168dd144f46d68517437df75b72ecfb777d7f",
+  "hash_algorithm": "sha256",
+  "complete": false,
+  "anonymous_release_ready": false,
+  "notes": [
+    "This inventory records files present in the working tree before the current repair.",
+    "It is not a supplement manifest and does not assert execution provenance.",
+    "No current anonymous supplement archive exists.",
+    "Some historical episodic artifacts contain absolute protected paths and must not be released without staged-copy anonymization."
+  ],
+  "entries": [
+    {
+      "path": "main.tex",
+      "kind": "paper_source",
+      "sha256": "b9638f7de9ce0efcd15756a2a20c05e107f7297df571cb1b4dd3c1d23060fb3b",
+      "status": "baseline_source"
+    },
+    {
+      "path": "build/main_pre_repair.pdf",
+      "kind": "baseline_build_pdf",
+      "sha256": "00d0d235e208c36d2a8cbd2d06b74acfb2454099819f54084df94862459ef5c3",
+      "bytes": 1170606,
+      "status": "built_from_isolated_clean_copy"
+    },
+    {
+      "path": "build/main_pre_repair.log",
+      "kind": "baseline_build_log",
+      "sha256": "84ba0cb8a58c22410645cbb8508ceecc574c36e395b644dcde08d11e17c7a75c",
+      "bytes": 45854,
+      "status": "built_from_isolated_clean_copy"
+    },
+    {
+      "path": "experiments/finite_mdp_certificate.py",
+      "kind": "theorem_unit_test_generator",
+      "sha256": "1571aaabd0d383b58da4be3f26be7115e218b4b7a34736116f098eb4e723d922",
+      "status": "present_fresh_rerun_pending"
+    },
+    {
+      "path": "results/finite_mdp_certificate_validation/finite_mdp_summary.csv",
+      "kind": "theorem_unit_test_rows",
+      "sha256": "52875311ee5d7144ffce5afc2853c746440de5810836c631bc69f8fdb85996d6",
+      "bytes": 27301,
+      "status": "present_existing_validation"
+    },
+    {
+      "path": "reports/finite_mdp_certificate_validation.log",
+      "kind": "theorem_unit_test_stdout",
+      "sha256": "396b996d965f7fdb5530e71c7eb3f1e329aa1e24b087a6692a79b13296b10ad6",
+      "status": "present_contains_absolute_output_path"
+    },
+    {
+      "path": "results/episodic_z_hard_suite_20k_seed41_50/summary.json",
+      "kind": "historical_episodic_aggregate",
+      "sha256": "1f88c0080b6be4fead2bd4bf798b45194680136e6b3f4a0d61693bb761410aa8",
+      "bytes": 5189,
+      "status": "historical_contains_absolute_protected_paths"
+    },
+    {
+      "path": "results/episodic_z_hard_suite_20k_seed41_50/per_seed_eval.jsonl",
+      "kind": "historical_episodic_per_seed_evaluation",
+      "sha256": "b366b0048cf42fa0606635d6f31308c3eed5db57b0cfbccc02795a1cbd78963d",
+      "status": "historical_contains_absolute_protected_paths"
+    },
+    {
+      "path": "results/episodic_z_hard_suite_20k_seed41_50/diagnostics_summary.json",
+      "kind": "historical_episodic_diagnostic_aggregate",
+      "sha256": "f898d523658dcb72c7357a638c3a1cbcbfab80d668625712933b9acf91f3674f",
+      "status": "finite_batch_diagnostic_only"
+    },
+    {
+      "path": "results/episodic_z_hard_suite_20k_seed41_50/per_seed_diagnostics.jsonl",
+      "kind": "historical_episodic_per_seed_diagnostics",
+      "sha256": "42b799695dc86c1417ba72f9684c3550546ec74391633601ba3e943057e5e265",
+      "status": "finite_batch_diagnostic_contains_absolute_protected_paths"
+    },
+    {
+      "path": "results/episodic_z_hard_suite_20k_seed41_50/cpi_penalty_grid.json",
+      "kind": "historical_episodic_derived_penalties",
+      "sha256": "c3f47b836838ddc5a836036168d4855c03625a541b072d42cc72bc706de7e579",
+      "status": "finite_batch_derived_artifact_regeneration_script_unregistered"
+    },
+    {
+      "path": "results/persistent_upi_20k/per_seed_eval.csv",
+      "kind": "historical_persistent_per_seed_evaluation",
+      "sha256": "a98daec5e44f5d7ee1c82ebe463488b420d1d2f4f992dccf2765663b9b3e45f4",
+      "status": "historical_in_sample"
+    },
+    {
+      "path": "results/persistent_upi_20k/summary.json",
+      "kind": "historical_persistent_aggregate",
+      "sha256": "35432c11effedb17a999983d99a1f5a7addb297508fb0015c49bde9aa77a0c18",
+      "bytes": 859,
+      "status": "historical_in_sample_checkpoints_absent"
+    },
+    {
+      "path": "EPISODIC_Z_RUN_LOG.md",
+      "kind": "historical_narrative_log",
+      "sha256": "170c685e0baef6fb32723ba303f5203433aa5dedb007de94a72122e9063c8499",
+      "status": "present_provenance_incomplete"
+    },
+    {
+      "path": "TABLE1_PROVENANCE.md",
+      "kind": "historical_claim_provenance_note",
+      "sha256": "20486fc70d1a13af511fa2ade9d610c53b138fdce6a14983888e560af90d4060",
+      "status": "present_historical_only"
+    },
+    {
+      "path": "REEVAL_LOG.md",
+      "kind": "historical_reevaluation_note",
+      "sha256": "2e06a60524f6ddebb1f49b582b469570ec0941f4dd78a880b6c6a647e0343aee",
+      "status": "present_historical_only"
+    },
+    {
+      "path": "EXPERIMENTS_PROTOCOL.md",
+      "kind": "historical_protocol_note",
+      "sha256": "1bcf0a92b52bcb72109cbf593711e8eeb4722c41265859ad754299c5450632e0",
+      "status": "present_not_confirmatory_registry"
+    }
+  ]
+}
