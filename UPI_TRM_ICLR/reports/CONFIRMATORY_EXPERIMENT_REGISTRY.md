@@ -140,7 +140,7 @@ corrected persistent endpoint to the conditional theory is small on the fixed
 held-out diagnostic set.
 
 Run diagnostics for every fully theory-oriented endpoint checkpoint, not only
-successful seeds. The committed schema-v4 runner accepts only
+successful seeds. The committed schema-v5 runner accepts only
 `training_protocol=fixed_base_exact`, persistent latents, shaped rewards,
 complete endpoint policy pairs, and clock-complete state. It therefore cannot
 diagnose legacy `B0` checkpoints. A legacy compatibility adapter would require
@@ -153,7 +153,7 @@ state. Perturb the actual input latent by a fixed joint L2 norm of `0.01` using
 seed `26080321`.
 
 The registered implementation is code commit
-`ac624cda806b455c2ec191bc90718fc084ecc7bd`, configuration
+`6400959bb7932095e6f82b84a3619a73539fe193`, configuration
 `configs/iclr_confirmatory/persistent_diagnostics.json`. This records runner
 readiness only. It does not lock the common experiment fields or authorize a
 confirmatory run.

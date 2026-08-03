@@ -12,7 +12,7 @@
     "It is not a supplement manifest and does not assert execution provenance.",
     "No current anonymous supplement archive exists.",
     "Some historical episodic artifacts contain absolute protected paths and must not be released without staged-copy anonymization.",
-    "The code recovery bundle includes the tested persistent-diagnostic runner but contains no learned checkpoint or experiment output."
+    "The code recovery bundle includes the tested schema-v5 checkpoint contract and persistent-diagnostic runner but contains no learned checkpoint or experiment output."
   ],
   "entries": [
     {
@@ -125,10 +125,10 @@
     {
       "path": "../handoff/trm_bellman_iclr-confirmatory-repair.bundle",
       "kind": "code_branch_git_bundle",
-      "sha256": "5a3a9aea4237dc4f7bbd1edc212abdbf0291ada60004c174e71e8b23f75a90c0",
-      "bytes": 254678,
-      "source_code_commit": "ac624cda806b455c2ec191bc90718fc084ecc7bd",
-      "source_tree": "4ed3d025eb97e1eed0dd671952bf980102c81da2",
+      "sha256": "52547a3a7dfebd1521b917be9adbf8abbe218203d2bdbabf96c8c07f59b893bd",
+      "bytes": 304706,
+      "source_code_commit": "6400959bb7932095e6f82b84a3619a73539fe193",
+      "source_tree": "a001d2c13dcd024f87e4d44d7eb910405817cf5d",
       "status": "verified_exact_tree_implementation_only_no_learned_output"
     }
   ]

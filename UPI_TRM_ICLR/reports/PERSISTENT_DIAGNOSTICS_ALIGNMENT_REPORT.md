@@ -8,11 +8,11 @@ Paper parent commit: `bd72f7a1377c8602f7b2b2eae4a68dc5ee3612cf`
 
 Code branch: `iclr-confirmatory-repair`
 
-Code commit: `ac624cda806b455c2ec191bc90718fc084ecc7bd`
+Code commit: `6400959bb7932095e6f82b84a3619a73539fe193`
 
 ## Code evidence incorporated
 
-The implementation now contains a strict schema-v4 persistent-checkpoint
+The implementation now contains a strict schema-v5 persistent-checkpoint
 diagnostic runner and a registered fixed protocol. It retains clock-complete
 augmented occurrences `(x,y,z,h)`, computes exact one-step and Monte Carlo
 K-step operator residuals at `n` and registered reference depths, checks the
@@ -20,12 +20,14 @@ production exact-baseline and deployment-distribution callbacks, measures
 finite-depth/path/carry/clock diagnostics, and emits deterministic finite-batch
 artifacts with source and dataset provenance.
 
-The final code validation is:
+The final code validation after the schema-v5 hardening is:
 
-- 311 passing runtime cases across 31 non-logging targets;
-- 14 passing logging/checkpoint cases in isolation;
-- 325 total runtime cases, zero failures;
-- 16 passing focused diagnostic/runtime and packaged CLI typechecks;
+- 322 unique runtime cases across 33 non-logging targets after an isolated
+  rerun of two cases whose combined invocation lost TPX result files despite
+  both unittest bodies reporting `OK`;
+- 22 passing logging/checkpoint cases in isolation;
+- 344 total unique runtime cases, zero assertion failures;
+- 48 passing focused schema/diagnostic cases;
 - packaged CLI build passed;
 - the full `rl` typecheck reports nine pre-existing errors outside the new
   files and no persistent-diagnostic error.
@@ -59,22 +61,23 @@ The diagnostic table and C3 registry now distinguish:
 - a retained-state production distribution-callback comparison from a uniform
   deployment bound or a full episode-loop test.
 
-The claim ledger and review matrix record the runner as implemented at code
-commit `ac624cd`. They do not promote any learned result.
+The claim ledger and review matrix record the runner as introduced at code
+commit `ac624cd` and hardened to schema 5 at `6400959`. They do not promote any
+learned result.
 
 ## Recovery and artifact state
 
-The exact seven-commit code recovery bundle is:
+The exact eight-commit code recovery bundle is:
 
 `handoff/trm_bellman_iclr-confirmatory-repair.bundle`
 
 SHA-256:
 
-`5a3a9aea4237dc4f7bbd1edc212abdbf0291ada60004c174e71e8b23f75a90c0`
+`52547a3a7dfebd1521b917be9adbf8abbe218203d2bdbabf96c8c07f59b893bd`
 
 `git bundle verify` passes. A fetch into a detached worktree at base commit
 `6d5a241027fe72921d5fc039dd6a12434999088b` reproduces tree
-`4ed3d025eb97e1eed0dd671952bf980102c81da2`, exactly matching `ac624cd`.
+`a001d2c13dcd024f87e4d44d7eb910405817cf5d`, exactly matching `6400959`.
 
 The paper artifact inventory records this bundle as implementation provenance
 only. It remains incomplete and not anonymous-release-ready.
@@ -111,11 +114,12 @@ current build.
 
 ## Next execution dependency
 
-Before confirmatory training, bind the producer commit, training seed, run ID,
-and complete live-resume identity through checkpoint schema 5 or an equivalent
-immutable external run manifest. Then materialize and hash the registered hard
-splits, finish the bridge and matched-PPO configuration matrix, run debug-only
-smokes on the reserved debug seeds, and execute persistent diagnostics, the
-one-factor bridge, and the equal-interaction comparison in that order.
+Checkpoint schema 5 now binds the producer commit, source blobs, training
+seed, run ID, effective configuration, runtime, initialization, parent
+lineage, and complete live-resume state. The next blocker is to materialize and
+hash the registered hard splits. Then finish the bridge and matched-PPO
+configuration matrix, run debug-only smokes on the reserved debug seeds, and
+execute persistent diagnostics, the one-factor bridge, and the
+equal-interaction comparison in that order.
 
 No result was fabricated or inferred from an unexecuted experiment.
