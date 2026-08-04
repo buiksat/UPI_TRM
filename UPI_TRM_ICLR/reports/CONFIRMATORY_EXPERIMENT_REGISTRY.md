@@ -5,8 +5,8 @@ Status: **REGISTERED, NOT AUTHORIZED, NO CONFIRMATORY RUN HAS STARTED**
 The executable registry is
 `CODE_REPO/configs/iclr_confirmatory/run_matrix.json`, SHA-256
 `d2c064de22b6cb90a569f7b1000c2dd40087a40153a5070b0cdbd12ac0d22b81`.
-Its status is `registered_not_authorized`. The bound producer is code commit
-`e4c924cc721e9f4f356789eba03a09f6c8ca1913`. Changing a registered cell,
+Its status is `registered_not_authorized`. The bound producer is pushed code
+commit `1880b41c196109add997f1663190ca36d6b70be5`. Changing a registered cell,
 seed, budget, data manifest, schedule, architecture field, or configuration
 layer requires a documented pre-outcome registry amendment and a new hash.
 
@@ -19,7 +19,8 @@ not be described as registered or completed experiments.
 
 | Field | Registered value |
 | --- | --- |
-| Producer code commit | `e4c924cc721e9f4f356789eba03a09f6c8ca1913` |
+| Producer code commit | `1880b41c196109add997f1663190ca36d6b70be5` |
+| Producer-source manifest SHA-256 | `ff7eb54793cd7a0cf26cc5b9df14a5caf6c57b3f0aefdd901194ae532b515747` |
 | Run-matrix SHA-256 | `d2c064de22b6cb90a569f7b1000c2dd40087a40153a5070b0cdbd12ac0d22b81` |
 | Training manifest SHA-256 | `8def4f59387c1ab9466d043c40a7fdd3c7c670e2778b8d949295811ae7b6088a` |
 | Validation manifest SHA-256 | `4644a3b1bb8b6e384896888154c9e56252368c1fc2f32962b089ade95a5bc1f2` |
@@ -70,7 +71,11 @@ so there is no single configuration hash for the matrix.
   per-instance outcomes, counters, effective configurations, checkpoint
   hashes, and ordered record hashes must be retained.
 - An infrastructure rerun keeps the original cell and seed and requires a
-  documented diagnosis. Failed and null runs remain in the registry.
+  documented diagnosis. The initial execution uses attempt index `0`; each
+  retry uses a new higher attempt index bound into its lock, effective-config
+  hash, checkpoint directory, evaluation directory, and log path. Existing
+  attempt evidence is never deleted or overwritten. Failed and null runs
+  remain in the registry.
 
 ## C1: one-factor bridge
 
@@ -154,6 +159,11 @@ runs test configuration locking, training, checkpointing, exact interaction
 accounting, evaluation, and artifact publication. They are excluded from all
 confirmatory estimates and cannot change this registry.
 
+This retained debug bundle was produced by pre-amendment code commit
+`e4c924cc721e9f4f356789eba03a09f6c8ca1913`. It does not exercise the later
+attempt-index paths. New debug or confirmatory execution requires regenerated
+schema-3 locks bound to the current producer above; old locks are not reused.
+
 | Artifact | SHA-256 |
 | --- | --- |
 | `results/confirmatory_locks/debug_seed9001/index.json` | `3b130e9441561f6ade7ffeba19780933f9ce27f5331874117c8952db6e641a5e` |
@@ -209,3 +219,14 @@ manifests are not registered. Result status: `missing experiment`.
    statistics, or failure rules.
 5. No result enters the paper until its run-registry row and every expected
    raw artifact exist and reproduce.
+
+## Pre-outcome infrastructure amendment: 2026-08-04
+
+Producer commit `e4c924cc721e9f4f356789eba03a09f6c8ca1913` was replaced by
+`1880b41c196109add997f1663190ca36d6b70be5` before authorization and before any
+confirmatory run. The amendment adds immutable attempt-indexed evidence paths,
+standalone-PAR byte binding, fail-closed action masking and archive scans,
+diagnostic normalization, and regression coverage. The seed list, cells,
+budgets, splits, endpoint, analysis plan, and `run_matrix.json` bytes are
+unchanged. No confirmatory outcome existed or was inspected when this
+amendment was made.

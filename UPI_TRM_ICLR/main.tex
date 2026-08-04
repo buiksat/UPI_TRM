@@ -348,7 +348,7 @@ B_0(s_{\mathrm{abs}}):=-C_{\max}.
 \varepsilon_{\mathrm{res}}^*\;\le\;\varepsilon_0\;+\;(1+\gamma^K)\,L_V(R)\,R,
 \label{eq:eps_res_proj}
 \end{equation}
-with $\varepsilon_0:=\|B_0-\mathcal{T}^\pi_K B_0\|_{\infty,\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}$. Projection thus enters both the architectural term (through $L_V(R)R$) and the truncation term (through $L_z^{\mathrm{sat}}(R)$ and $C_z\le 2R$). The experiments report finite-sample proxies for this regime. They do not certify the uniform $\rho_R$ and Lipschitz assumptions; the finite-batch $U_n$ Bellman residual upper-bounds $\varepsilon_{\mathrm{res}}^*$ only up to the truncation gap (Remark~\ref{rem:residual_bridge}).
+with $\varepsilon_0:=\|B_0-\mathcal{T}^\pi_K B_0\|_{\infty,\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}$. Projection thus enters both the architectural term (through $L_V(R)R$) and the truncation term (through $L_z^{\mathrm{sat}}(R)$ and $C_z\le 2R$). The retained experiments do not report these quantities for the successful persistent implementation. Future finite-batch measurements would be diagnostics, not certificates of the uniform $\rho_R$ and Lipschitz assumptions. Likewise, a batch $U_n$ Bellman residual is only a proxy: the global sup-norm $U_n$ residual enters the upper bound on $\varepsilon_{\mathrm{res}}^*$ together with the truncation gap (Remark~\ref{rem:residual_bridge}).
 
 \begin{corollary}[Finite-depth residual certificate]
 \label{cor:finite_depth_residual_certificate}
@@ -616,9 +616,13 @@ not provide a held-out method comparison. The episodic endpoint does not
 establish that it scored its configured mixture, the persistent record is
 in-sample, and the historical
 protocols are not interaction matched. A registered augmented-state diagnostic
-runner and an immutable disjoint train/validation/test corpus now exist, but a
-compatible successful persistent checkpoint is still missing. The bridge and
-common-pool matched comparison are also missing. Until
+runner and an immutable corpus with input- and record-disjoint
+train/validation/test splits now exist. Completed grids are not disjoint: the
+corpus covers 283 of the 288 valid $4\times4$ completions, and 494 of 512 test
+inputs share their completion with a training input. The test split therefore
+measures constraint satisfaction on unseen givens, not generalization to unseen
+solution grids. A compatible successful persistent checkpoint is still
+missing. The bridge and common-pool matched comparison are also missing. Until
 those experiments exist, the contribution is an analytical decomposition and
 a reproducible finite-state theorem-pipeline unit test, not evidence that the
 historical UPI--TRM implementation improves task performance.

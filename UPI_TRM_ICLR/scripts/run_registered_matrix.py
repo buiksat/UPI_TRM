@@ -18,6 +18,12 @@ from typing import Any, Sequence
 LOCK_PREFIX = "[CONFIRMATORY_LOCK] "
 
 
+def validate_attempt_index(value: object) -> int:
+    if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+        raise RuntimeError("Attempt index must be a non-negative integer.")
+    return value
+
+
 def canonical_json_bytes(value: Any) -> bytes:
     return (
         json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
@@ -124,6 +130,7 @@ def run_command(
     cell: str,
     seed: int,
     layers: Sequence[str],
+    attempt_index: int,
     expected_commit: str,
     effective_config_sha256: str | None,
 ) -> list[str]:
@@ -147,6 +154,8 @@ def run_command(
         str(seed),
         "--run-id",
         run_id,
+        "--attempt-index",
+        str(validate_attempt_index(attempt_index)),
         "--confirmatory",
         "--confirmatory-cell",
         cell,
@@ -222,6 +231,7 @@ def prepare_locks(args: argparse.Namespace) -> None:
     cells = select_requested(list(cells_by_name), args.cells, "cells")
     seeds = select_requested(spec["seeds"], args.seeds, "seeds")
     devices = list(args.cuda_visible_devices)
+    attempt_index = validate_attempt_index(args.attempt_index)
     if not devices or len(devices) != len(set(devices)):
         raise RuntimeError("CUDA device list must be nonempty and unique.")
     if args.output.exists():
@@ -253,6 +263,7 @@ def prepare_locks(args: argparse.Namespace) -> None:
                 cell=cell,
                 seed=seed,
                 layers=cells_by_name[cell],
+                attempt_index=attempt_index,
                 expected_commit=commit,
                 effective_config_sha256=None,
             )
@@ -289,8 +300,10 @@ def prepare_locks(args: argparse.Namespace) -> None:
                 "confirmatory_tier": args.tier,
                 "run_id": run_id,
                 "training_seed": seed,
+                "attempt_index": attempt_index,
                 "producer_git_commit": commit,
                 "registry_sha256": registry_sha256,
+                "lock_schema_version": 3,
             }
             for field, expected in expected_fields.items():
                 if lock.get(field) != expected:
@@ -326,6 +339,7 @@ def prepare_locks(args: argparse.Namespace) -> None:
                     ],
                     "cuda_visible_devices": device,
                     "effective_config_sha256": lock["effective_config_sha256"],
+                    "attempt_index": attempt_index,
                     "lock_file": lock_name,
                     "lock_sha256": sha256_bytes(lock_bytes),
                     "run_id": run_id,
@@ -334,7 +348,8 @@ def prepare_locks(args: argparse.Namespace) -> None:
             )
 
         index = {
-            "bundle_schema_version": 1,
+            "bundle_schema_version": 2,
+            "attempt_index": attempt_index,
             "excluded_from_confirmatory": args.tier == "debug",
             "producer_git_commit": commit,
             "registry_sha256": registry_sha256,
@@ -366,11 +381,14 @@ def validate_lock_bundle(bundle: Path) -> tuple[dict[str, Any], list[dict[str, A
     if sha256_file(index_path) != expected_hash:
         raise RuntimeError("Lock index checksum mismatch.")
     runs = index.get("runs")
+    attempt_index = validate_attempt_index(index.get("attempt_index"))
     if not isinstance(runs, list) or len(runs) != index.get("run_count"):
         raise RuntimeError("Lock index run count is inconsistent.")
     for record in runs:
         if not isinstance(record, dict):
             raise RuntimeError("Malformed lock index record.")
+        if validate_attempt_index(record.get("attempt_index")) != attempt_index:
+            raise RuntimeError("Lock record attempt differs from its bundle.")
         lock_path = bundle / str(record["lock_file"])
         if sha256_file(lock_path) != record["lock_sha256"]:
             raise RuntimeError(f"Lock checksum mismatch: {lock_path.name}.")
@@ -389,6 +407,7 @@ def execute_one_debug(
 ) -> dict[str, Any]:
     run_id = str(record["run_id"])
     device = str(record["cuda_visible_devices"])
+    attempt_index = validate_attempt_index(record.get("attempt_index"))
     command = run_command(
         par=par,
         code_root=code_root,
@@ -398,12 +417,14 @@ def execute_one_debug(
         cell=str(record["cell"]),
         seed=int(record["seed"]),
         layers=cells_by_name[str(record["cell"])],
+        attempt_index=attempt_index,
         expected_commit=str(index["producer_git_commit"]),
         effective_config_sha256=str(record["effective_config_sha256"]),
     )
-    log_dir = evidence_root / "logs"
+    attempt_name = f"attempt_{attempt_index:04d}"
+    log_dir = evidence_root / "logs" / run_id / attempt_name
     log_dir.mkdir(parents=True, exist_ok=True)
-    log_path = log_dir / f"{run_id}.log"
+    log_path = log_dir / "run.log"
     if log_path.exists():
         raise RuntimeError(f"Refusing to overwrite debug log {log_path}.")
     environment = os.environ.copy()
@@ -422,8 +443,14 @@ def execute_one_debug(
         os.fsync(log_handle.fileno())
     if completed.returncode != 0:
         raise RuntimeError(f"Debug run failed for {run_id}; see {log_path}.")
-    artifact_dir = evidence_root / "evaluations" / run_id / "env_steps_000000000080"
-    checkpoint_dir = evidence_root / "checkpoints" / run_id
+    artifact_dir = (
+        evidence_root
+        / "evaluations"
+        / run_id
+        / attempt_name
+        / "env_steps_000000000080"
+    )
+    checkpoint_dir = evidence_root / "checkpoints" / run_id / attempt_name
     if not artifact_dir.is_dir():
         raise RuntimeError(f"Debug evaluation artifact is missing for {run_id}.")
     checkpoints = sorted(path for path in checkpoint_dir.iterdir() if path.is_file())
@@ -434,13 +461,14 @@ def execute_one_debug(
         "artifact_files": {
             path.name: sha256_file(path) for path in artifact_files
         },
+        "attempt_index": attempt_index,
         "cell": record["cell"],
         "checkpoint_files": {
             path.name: sha256_file(path) for path in checkpoints
         },
         "environment_interactions": 80,
         "excluded_from_confirmatory": True,
-        "log_file": log_path.name,
+        "log_file": log_path.relative_to(evidence_root / "logs").as_posix(),
         "log_sha256": sha256_file(log_path),
         "run_id": run_id,
         "seed": record["seed"],
@@ -494,7 +522,8 @@ def execute_debug(args: argparse.Namespace) -> None:
 
     results.sort(key=lambda value: str(value["run_id"]))
     execution = {
-        "execution_schema_version": 1,
+        "execution_schema_version": 2,
+        "attempt_index": validate_attempt_index(index.get("attempt_index")),
         "excluded_from_confirmatory": True,
         "lock_index_sha256": sha256_file(bundle / "index.json"),
         "producer_git_commit": index["producer_git_commit"],
@@ -503,7 +532,9 @@ def execute_debug(args: argparse.Namespace) -> None:
         "runs": results,
         "tier": "debug",
     }
-    output_path = evidence_root / "debug_execution_index.json"
+    output_path = evidence_root / (
+        f"debug_execution_attempt_{index['attempt_index']:04d}_index.json"
+    )
     if output_path.exists():
         raise RuntimeError(f"Refusing to overwrite {output_path}.")
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -527,6 +558,15 @@ def parse_args() -> argparse.Namespace:
     prepare.add_argument("--cells", nargs="+")
     prepare.add_argument("--seeds", nargs="+", type=int)
     prepare.add_argument("--cuda-visible-devices", nargs="+", default=["0"])
+    prepare.add_argument(
+        "--attempt-index",
+        type=int,
+        default=0,
+        help=(
+            "Execution attempt bound into locks and evidence paths. Use 0 for "
+            "the initial run and a new higher value for each documented retry."
+        ),
+    )
     prepare.set_defaults(handler=prepare_locks)
 
     execute = subparsers.add_parser("execute-debug")

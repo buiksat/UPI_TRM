@@ -5,9 +5,8 @@ This matrix records the repair baseline at commit `0fc168dd144f46d68517437df75b7
 `CODE_REPO/` denotes the implementation repository. `PROTECTED_REPO/` denotes the protected historical repository. These logical prefixes avoid embedding workstation identity in a release-facing report.
 
 The latest implementation evidence is code commit
-`e4c924cc721e9f4f356789eba03a09f6c8ca1913`. All 33 declared runtime targets
-passed 397/397 tests. The focused source/registration/lock gate passed 57/57
-tests, and the preceding combined focused gate passed 198/198. Type checking
+`1880b41c196109add997f1663190ca36d6b70be5`. All 33 declared runtime targets
+passed 409/409 tests in one retained invocation. Type checking
 remains non-green because of pre-existing debt: the last full-graph audit has
 21 failing type targets, including nine pre-existing errors in the `rl`
 target. These test results close mechanics only.

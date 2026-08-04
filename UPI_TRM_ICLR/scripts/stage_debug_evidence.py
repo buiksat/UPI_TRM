@@ -68,7 +68,20 @@ def validate_and_copy_run(
     producer_commit: str,
 ) -> dict[str, Any]:
     run_id = str(execution_record["run_id"])
+    attempt_index = execution_record.get("attempt_index")
+    if attempt_index is not None and (
+        isinstance(attempt_index, bool)
+        or not isinstance(attempt_index, int)
+        or attempt_index < 0
+    ):
+        raise RuntimeError(f"Invalid attempt index for {run_id}.")
     require_equal(lock_record["run_id"], run_id, "lock run ID", run_id)
+    require_equal(
+        attempt_index,
+        lock_record.get("attempt_index"),
+        "attempt index",
+        run_id,
+    )
     require_equal(execution_record["seed"], lock_record["seed"], "seed", run_id)
     require_equal(execution_record["cell"], lock_record["cell"], "cell", run_id)
     require_equal(
@@ -80,12 +93,13 @@ def validate_and_copy_run(
     if not execution_record.get("excluded_from_confirmatory"):
         raise RuntimeError(f"Run {run_id} is not marked debug-only.")
 
-    artifact_source = (
-        evidence_root
-        / "evaluations"
-        / run_id
-        / "env_steps_000000000080"
+    attempt_parts = (
+        [] if attempt_index is None else [f"attempt_{attempt_index:04d}"]
     )
+    artifact_source = evidence_root / "evaluations" / run_id
+    for part in attempt_parts:
+        artifact_source /= part
+    artifact_source /= "env_steps_000000000080"
     if not artifact_source.is_dir():
         raise RuntimeError(f"Evaluation artifact directory is missing for {run_id}.")
     observed_names = sorted(path.name for path in artifact_source.iterdir())
@@ -158,6 +172,8 @@ def validate_and_copy_run(
     )
 
     checkpoint_root = evidence_root / "checkpoints" / run_id
+    for part in attempt_parts:
+        checkpoint_root /= part
     for name, expected_hash in execution_record["checkpoint_files"].items():
         require_equal(
             sha256_file(checkpoint_root / name),
@@ -179,11 +195,14 @@ def validate_and_copy_run(
         run_id,
     )
 
-    destination = stage / "runs" / run_id / "env_steps_000000000080"
+    destination = stage / "runs" / run_id
+    for part in attempt_parts:
+        destination /= part
+    destination /= "env_steps_000000000080"
     destination.mkdir(parents=True)
     for name in ARTIFACT_NAMES:
         shutil.copyfile(artifact_source / name, destination / name)
-    return {
+    record = {
         "artifact_files": dict(expected_hashes),
         "cell": execution_record["cell"],
         "checkpoint_files": dict(execution_record["checkpoint_files"]),
@@ -197,6 +216,9 @@ def validate_and_copy_run(
         "seed": execution_record["seed"],
         "summary": summary,
     }
+    if attempt_index is not None:
+        record["attempt_index"] = attempt_index
+    return record
 
 
 def main() -> None:
@@ -212,8 +234,26 @@ def main() -> None:
     if output.exists():
         raise RuntimeError(f"Refusing to overwrite {output}.")
     lock_index = validate_lock_bundle(lock_bundle)
-    execution_path = evidence_root / "debug_execution_index.json"
+    attempt_index = lock_index.get("attempt_index")
+    if attempt_index is None:
+        execution_path = evidence_root / "debug_execution_index.json"
+    elif (
+        isinstance(attempt_index, bool)
+        or not isinstance(attempt_index, int)
+        or attempt_index < 0
+    ):
+        raise RuntimeError("Lock bundle attempt index is invalid.")
+    else:
+        execution_path = evidence_root / (
+            f"debug_execution_attempt_{attempt_index:04d}_index.json"
+        )
     execution = load_json(execution_path)
+    require_equal(
+        execution.get("attempt_index"),
+        attempt_index,
+        "execution attempt index",
+        "bundle",
+    )
     require_equal(execution["tier"], "debug", "execution tier", "bundle")
     if not execution.get("excluded_from_confirmatory"):
         raise RuntimeError("Execution index is not marked debug-only.")
@@ -276,6 +316,9 @@ def main() -> None:
             "runs": records,
             "tier": "debug",
         }
+        if attempt_index is not None:
+            manifest["artifact_schema_version"] = 2
+            manifest["attempt_index"] = attempt_index
         manifest_bytes = canonical_json_bytes(manifest)
         (stage / "MANIFEST.json").write_bytes(manifest_bytes)
         (stage / "MANIFEST.json.sha256").write_text(

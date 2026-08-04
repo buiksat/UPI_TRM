@@ -3,7 +3,7 @@
 Baseline source commit: `0fc168dd144f46d68517437df75b72ecfb777d7f`
 
 Last implementation evidence update: code commit
-`e4c924cc721e9f4f356789eba03a09f6c8ca1913` on branch
+`1880b41c196109add997f1663190ca36d6b70be5` on branch
 `iclr-confirmatory-repair`.
 
 This ledger distinguishes a mathematical implication from evidence that its
@@ -46,10 +46,11 @@ No current anonymous supplement archive exists. Statements below refer to files 
 ## Implementation-facing claims
 
 These rows record the post-repair implementation state at code commit
-`e4c924cc721e9f4f356789eba03a09f6c8ca1913`. The final invocation of all 33
-declared runtime targets passed 397/397 tests. The focused
-source/registration/lock gate passed 57/57 tests, and the preceding combined
-focused gate passed 198/198 tests. Type checking is not green: the last full
+`1880b41c196109add997f1663190ca36d6b70be5`. One invocation of all 33
+declared runtime targets passed 409/409 tests. The retained log is
+`CODE_REPO/reports/POST_CLAUDE_REVIEW_FULL_UNITTESTS.log`, SHA-256
+`516c5952c3e61752a0fc700a51aa07d8f28dd1e1309ae6fa303fa1b36c060b98`.
+Type checking is not green: the last full
 graph audit retains 21
 failing type targets from pre-existing debt, including nine pre-existing
 errors in the `rl` target. These results verify tested mechanics only; they do
@@ -70,7 +71,7 @@ comparison.
 | I10 | Confirmatory checkpoints resume exactly and fail closed before live mutation | Explicit run/seed/config/source/runtime/initialization/parent identity; Python, NumPy, Torch CPU/CUDA, environment, sampler, replay, gradients, optimizers, and schedulers; validation before mutable state restore | Schema-v5 save/resume in `CODE_REPO/upi_trm_train.py`; identity helpers in `CODE_REPO/utils/run_identity.py` | Episodic and persistent round trips; source-to-HEAD and unsafe-index rejection; shadow validation; actual counters; uninterrupted versus resume equivalence for the next real CPU value/policy optimizer update; mocked all-device CUDA RNG path | Implemented and unit-tested at `6400959`. Real CUDA resume equivalence and nonconstant-scheduler multi-record equivalence are `not verifiable from supplied evidence`. |
 | I11 | Dataset generators are local, deterministic, and split-disjoint | Local seeded RNGs, no global RNG mutation, byte-identical output for equal seed, exact registered counts, unique solutions, and zero input/record overlap | `CODE_REPO/dataset/build_iclr_confirmatory_4x4.py`; retained corpus and manifests under `CODE_REPO/data/iclr-confirmatory-sudoku4x4-v1/` | Cross-process and detached-checkout byte-identical rebuilds; exact 1,024/256/512 counts; shared provenance hashes; mutation, overwrite, source-binding, duplicate-refill, solution, and disjointness checks | `verified from artifact` for the retained generated corpus at `8d79ba7`. This is input provenance, not learned-model evidence. |
 | I12 | Artifact construction is deterministic and anonymous | Staged copy, no source mutation, normalized timestamps, identity scan, exclusions, checksums, and byte-identical rebuild | `CODE_REPO/scripts/build_artifact_zip.sh` and repository-archive smoke test | Two-build equality, source-tree hash, forced identity-leak failure, and a complete supplement | Staged copying, timestamp normalization, checksums, and a portable-archive smoke test exist. The full artifact claim is `not verifiable from supplied evidence`. |
-| I13 | A registered checkpoint and evaluation artifact are bound to immutable producer, assignment, and parent lineage | Clean tracked source equal to HEAD; embedded producer-source manifest equal to the checkout; exact cell/tier/run/seed/config/data/budget/architecture/initialization assignment; canonical runtime; stable hashes; source revalidation around publication; no-overwrite atomic writes; parent counters agree | `CODE_REPO/utils/run_identity.py`; `CODE_REPO/utils/source_identity.py`; schema-v5 and artifact-publication paths in `CODE_REPO/upi_trm_train.py`; `CODE_REPO/rl/persistent_diagnostic_checkpoint.py` | Source, dirty-tree, unsafe-index, assignment/config/runtime/lineage, mutation-during-load, and overwrite tests; focused lock gate 57/57; eight content-addressed debug locks and staged run artifacts produced by `e4c924c` | Fail-closed identity and publication mechanics are implemented, tested, and instantiated by the excluded debug bundle. No confirmatory learned checkpoint exists. Real-CUDA resume equivalence remains open under I10. |
+| I13 | A registered checkpoint and evaluation artifact are bound to immutable producer, assignment, attempt, and parent lineage | Clean tracked source equal to HEAD; embedded producer-source manifest equal to the checkout and, for a standalone archive, equal to its behavior-source member bytes; exact cell/tier/run/seed/attempt/config/data/budget/architecture/initialization assignment; canonical runtime; stable hashes; source revalidation around publication; no-overwrite atomic writes; parent counters agree | `CODE_REPO/utils/run_identity.py`; `CODE_REPO/utils/source_identity.py`; schema-v5 and artifact-publication paths in `CODE_REPO/upi_trm_train.py`; `CODE_REPO/rl/persistent_diagnostic_checkpoint.py` | Source, archive-byte tampering, missing/extra archive members, dirty-tree, unsafe-index, assignment/config/runtime/lineage, mutation-during-load, attempt-path collision, and overwrite tests. Eight pre-amendment debug locks and staged run artifacts remain bound to `e4c924c`; new locks must bind `1880b41c`. | Fail-closed identity, attempt isolation, and publication mechanics are implemented and tested. The excluded debug bundle is historical execution evidence for the pre-amendment path only. No confirmatory learned checkpoint exists. Real-CUDA resume equivalence remains open under I10. |
 
 ## Empirical and numerical claims
 
