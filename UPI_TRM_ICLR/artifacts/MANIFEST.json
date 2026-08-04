@@ -1,45 +1,60 @@
 {
   "schema_version": 1,
-  "manifest_state": "initial_pre_repair_inventory",
+  "manifest_state": "working_evidence_inventory",
   "created_date": "2026-08-03",
   "source_branch": "iclr-evidence-aligned-revision",
-  "source_commit": "0fc168dd144f46d68517437df75b72ecfb777d7f",
+  "source_commit": "c0c6acae8d591acbd99441eb3b17b6d2306df50d",
+  "source_code_commit": "e4c924cc721e9f4f356789eba03a09f6c8ca1913",
   "hash_algorithm": "sha256",
   "complete": false,
   "anonymous_release_ready": false,
   "notes": [
-    "This inventory records files present in the working tree before the current repair.",
-    "It is not a supplement manifest and does not assert execution provenance.",
+    "This working inventory is based on paper commit c0c6acae8d591acbd99441eb3b17b6d2306df50d before the report and registry update.",
+    "It is not a complete supplement manifest; debug execution provenance is confined to the nested debug manifest and run registry.",
     "No current anonymous supplement archive exists.",
     "Some historical episodic artifacts contain absolute protected paths and must not be released without staged-copy anonymization.",
-    "The code recovery bundle includes the tested schema-v5 checkpoint contract, persistent-diagnostic runner, and immutable confirmatory corpus but contains no learned checkpoint or experiment output."
+    "The historical code recovery bundle ends at code commit 8d79ba79917a7be8b14540bedb600f51076738c7 and excludes all later implementation work through e4c924cc721e9f4f356789eba03a09f6c8ca1913.",
+    "A complete current code recovery bundle is present and verified, but its Git history contains identity metadata and is not anonymous-release-ready.",
+    "The recorded pre-repair PDF and log bytes are absent from the current tree; only their historical hashes remain.",
+    "The seed-9001 debug evidence is excluded from confirmatory analyses. Its nested manifest binds the staged execution index and 32 staged evaluation files plus external checkpoint and log hashes, but the external checkpoint and log bytes are not in this inventory.",
+    "The confirmatory registry status is registered_not_authorized, and no confirmatory training run has executed."
   ],
   "entries": [
     {
       "path": "main.tex",
       "kind": "paper_source",
-      "sha256": "b9638f7de9ce0efcd15756a2a20c05e107f7297df571cb1b4dd3c1d23060fb3b",
-      "status": "baseline_source"
+      "sha256": "f1f7bb567578dbf1b4a3ab1d7c3db4cfdf3acee8b6e7fb9f818a8239550344e7",
+      "bytes": 126813,
+      "status": "current_working_source_pending_paper_commit"
     },
     {
       "path": "build/main_pre_repair.pdf",
       "kind": "baseline_build_pdf",
       "sha256": "00d0d235e208c36d2a8cbd2d06b74acfb2454099819f54084df94862459ef5c3",
       "bytes": 1170606,
-      "status": "built_from_isolated_clean_copy"
+      "present": false,
+      "status": "not verifiable from supplied evidence"
     },
     {
       "path": "build/main_pre_repair.log",
       "kind": "baseline_build_log",
       "sha256": "84ba0cb8a58c22410645cbb8508ceecc574c36e395b644dcde08d11e17c7a75c",
       "bytes": 45854,
-      "status": "built_from_isolated_clean_copy"
+      "present": false,
+      "status": "not verifiable from supplied evidence"
     },
     {
       "path": "experiments/finite_mdp_certificate.py",
       "kind": "theorem_unit_test_generator",
       "sha256": "1571aaabd0d383b58da4be3f26be7115e218b4b7a34736116f098eb4e723d922",
-      "status": "present_fresh_rerun_pending"
+      "status": "present_outputs_byte_reproduced"
+    },
+    {
+      "path": "experiments/finite_mdp_boundary_checks.py",
+      "kind": "theorem_unit_test_boundary_generator",
+      "sha256": "86127165ba952291f9fb6a8b1303684a63d96e58d9b7465f252f6c342d2429e3",
+      "bytes": 25007,
+      "status": "byte_reproduced_outputs"
     },
     {
       "path": "results/finite_mdp_certificate_validation/finite_mdp_summary.csv",
@@ -47,6 +62,48 @@
       "sha256": "52875311ee5d7144ffce5afc2853c746440de5810836c631bc69f8fdb85996d6",
       "bytes": 27301,
       "status": "present_existing_validation"
+    },
+    {
+      "path": "results/finite_mdp_certificate_validation/fig_value_decomposition.png",
+      "kind": "paper_visible_theorem_unit_test_figure",
+      "sha256": "e2d6e1fcf9be297ca76d114ba4a0fd57bba7aa6f6120010f513d306d778cc26f",
+      "bytes": 99236,
+      "status": "byte_reproduced_from_registered_generator"
+    },
+    {
+      "path": "results/finite_mdp_certificate_validation/fig_cpi_certificate.png",
+      "kind": "paper_visible_theorem_unit_test_figure",
+      "sha256": "2b2b37d6dd9b956cbf40ec7456ddb2ecf4e7173fc35b04a855d3b2e26ee4e661",
+      "bytes": 70231,
+      "status": "byte_reproduced_from_registered_generator"
+    },
+    {
+      "path": "results/finite_mdp_certificate_validation/finite_mdp_boundary_checks.json",
+      "kind": "theorem_unit_test_boundary_results",
+      "sha256": "ee0867af8e24fce5e8b047b08d32fed3225db98c1bb2699e23dd8616dbc9512a",
+      "bytes": 4304,
+      "status": "byte_reproduced_7_of_7_groups_passed"
+    },
+    {
+      "path": "experiments/finite_horizon_theory_checks.py",
+      "kind": "finite_horizon_theorem_unit_test",
+      "sha256": "dbb19311ccca6c18e3d2ab3dfa61c9bc2740f6ebc019c8ff3ff0a1f392f9eb15",
+      "bytes": 41574,
+      "status": "present_and_rerun"
+    },
+    {
+      "path": "reports/finite_horizon_theory_checks.stdout.json",
+      "kind": "finite_horizon_theorem_unit_test_output",
+      "sha256": "2bcd3fadd5ad7094b397e492b711d524f65c52d7fe6efea6062922e105a0d8e6",
+      "bytes": 1565,
+      "status": "byte_reproduced_26686_checks_passed"
+    },
+    {
+      "path": "reports/finite_horizon_theory_checks_stress.stdout.json",
+      "kind": "finite_horizon_theorem_stress_output",
+      "sha256": "d2d4b47d08cde84536053fb06aa3c4180a2ea239dd7daa60deb3248f1d0d2da4",
+      "bytes": 1575,
+      "status": "byte_reproduced_261814_checks_passed"
     },
     {
       "path": "reports/finite_mdp_certificate_validation.log",
@@ -129,7 +186,23 @@
       "bytes": 487752,
       "source_code_commit": "8d79ba79917a7be8b14540bedb600f51076738c7",
       "source_tree": "400d42e3395b26cea2e98bc60620bb8a9c5348d7",
-      "status": "verified_exact_tree_implementation_only_no_learned_output"
+      "status": "verified_exact_historical_tree_ends_at_8d79ba7_excludes_current_code_e4c924c_no_learned_output"
+    },
+    {
+      "path": "../handoff/trm_bellman_iclr-confirmatory-repair_e4c924c_full.bundle",
+      "kind": "current_code_complete_git_recovery_bundle",
+      "sha256": "5a357c0caa118907426da517aa0a7dc8df4f980fbe38ae9f8a13d0a6035e5ed4",
+      "bytes": 91779510,
+      "source_code_commit": "e4c924cc721e9f4f356789eba03a09f6c8ca1913",
+      "source_tree": "c1eeed790105ca63e77e937db794cdfa305e92a5",
+      "status": "verified_complete_recovery_bundle_not_anonymous_release_ready"
+    },
+    {
+      "path": "../handoff/trm_bellman_iclr-confirmatory-repair_e4c924c_full.bundle.sha256",
+      "kind": "current_code_complete_git_recovery_bundle_checksum",
+      "sha256": "3b9e37aab6aab1b6cee9ff87a54b4097cc0ac575e2a780dc80b0b7688ff6a9df",
+      "bytes": 123,
+      "status": "present"
     },
     {
       "path": "CODE_BUNDLE:configs/iclr_confirmatory/dataset.json",
@@ -137,6 +210,79 @@
       "sha256": "27660695d7dec8a61c3ac200672842eee77730cd7808a01b28c964931e85edc3",
       "source_code_commit": "8d79ba79917a7be8b14540bedb600f51076738c7",
       "status": "verified_from_code_bundle_no_learned_output"
+    },
+    {
+      "path": "CODE_CURRENT:configs/iclr_confirmatory/run_matrix.json",
+      "kind": "registered_run_matrix",
+      "sha256": "d2c064de22b6cb90a569f7b1000c2dd40087a40153a5070b0cdbd12ac0d22b81",
+      "bytes": 3275,
+      "source_code_commit": "e4c924cc721e9f4f356789eba03a09f6c8ca1913",
+      "status": "registered_not_authorized"
+    },
+    {
+      "path": "CODE_CURRENT:configs/iclr_confirmatory/producer_source_manifest.json",
+      "kind": "producer_source_manifest",
+      "sha256": "cde7db24bbc528019670cba82579d470d23390d44835554416c1545a597eec0f",
+      "bytes": 8024,
+      "source_code_commit": "e4c924cc721e9f4f356789eba03a09f6c8ca1913",
+      "status": "verified_current_code_external_to_paper_repository"
+    },
+    {
+      "path": "reports/POST_REPAIR_RUNTIME_TEST_REPORT.md",
+      "kind": "post_repair_runtime_test_report",
+      "sha256": "a3916900b31bd5f5e96aed438a8a718540688d2e2115dbc1cfbb86e22885ac53",
+      "bytes": 1712,
+      "source_code_commit": "e4c924cc721e9f4f356789eba03a09f6c8ca1913",
+      "status": "397_of_397_declared_runtime_tests_passed"
+    },
+    {
+      "path": "reports/FINAL_PROOF_AUDIT.md",
+      "kind": "final_proof_audit",
+      "sha256": "66a738ee65ccd42abcd91294823d82a7cf6dad27cc9f3f61bb579e6be05c50ee",
+      "bytes": 6555,
+      "status": "pass_no_surviving_mathematical_finding"
+    },
+    {
+      "path": "reports/FINAL_CLAIM_EVIDENCE_AUDIT.md",
+      "kind": "final_claim_evidence_audit",
+      "sha256": "c17d95f6cedfcd9c0d99761b462555e16904d16f7512b8403d38fe6ca4e62e0d",
+      "bytes": 10151,
+      "status": "pass_for_active_manuscript_release_evidence_incomplete"
+    },
+    {
+      "path": "reports/FINAL_REPRODUCIBILITY_AUDIT.md",
+      "kind": "final_reproducibility_audit",
+      "sha256": "4449e7fa051de3ddc3fb83a9a5d2ff0aa01ce44158247b42bdf67fa0d35466fd",
+      "bytes": 11345,
+      "status": "staged_evidence_pass_release_package_blocked"
+    },
+    {
+      "path": "reports/FINAL_BUILD_ATTEMPT.md",
+      "kind": "final_build_attempt",
+      "sha256": "2f25b5fb023474b85330d61345fded20bc4af0c10c0ef74551154d4e1d140f00",
+      "bytes": 993,
+      "status": "blocked_missing_tex_toolchain"
+    },
+    {
+      "path": "reports/FINITE_MDP_REPRODUCTION_REPORT.md",
+      "kind": "finite_mdp_reproduction_report",
+      "sha256": "8e804e968c936478b4be099a1595d2f6c917364a4534f9243fae97f0d5f473e3",
+      "bytes": 6342,
+      "status": "current_provenance_correction_recorded"
+    },
+    {
+      "path": "reports/CLAIM_EVIDENCE_LEDGER.md",
+      "kind": "claim_evidence_ledger",
+      "sha256": "dc177ee36a22f605f24c193d39dd189a81327f4b91c1d8c52b29bd81db723c29",
+      "bytes": 31258,
+      "status": "current"
+    },
+    {
+      "path": "results/RUN_REGISTRY.jsonl",
+      "kind": "run_registry",
+      "sha256": "cc84060e08ac2a8d79b75aaf8d585bcc687efa19822f0edae96129aa4eb0f5b4",
+      "bytes": 21527,
+      "status": "three_theorem_tests_eight_debug_smokes_zero_confirmatory_runs"
     },
     {
       "path": "CODE_BUNDLE:data/iclr-confirmatory-sudoku4x4-v1/manifests/train.json",
@@ -158,6 +304,124 @@
       "sha256": "163a083a9f5744b7cc485663b269b89acc3103d9e1ec64c7e93f78e36fa79d40",
       "records": 512,
       "status": "verified_from_code_bundle"
+    },
+    {
+      "path": "results/confirmatory_locks/debug_seed9001/index.json",
+      "kind": "debug_preflight_lock_index",
+      "sha256": "3b130e9441561f6ade7ffeba19780933f9ce27f5331874117c8952db6e641a5e",
+      "bytes": 3329,
+      "source_code_commit": "e4c924cc721e9f4f356789eba03a09f6c8ca1913",
+      "runs": 8,
+      "seed": 9001,
+      "status": "verified_debug_only_excluded_from_confirmatory"
+    },
+    {
+      "path": "results/confirmatory_locks/debug_seed9001/index.json.sha256",
+      "kind": "debug_preflight_lock_index_checksum",
+      "sha256": "649323855bfdea086c0639cb86eda74a9ca449978b56ad34a3e4f368ade5c131",
+      "bytes": 77,
+      "status": "present"
+    },
+    {
+      "path": "results/confirmatory_locks/debug_seed9001/debug-b0_i00-seed9001.lock.json",
+      "kind": "debug_preflight_lock",
+      "sha256": "fe757e3320f4aab7c1c536a4f70af33acb8c2727738749ae4442030525a2a4f9",
+      "bytes": 4809,
+      "cell": "B0_I00",
+      "seed": 9001,
+      "status": "verified_debug_only_excluded_from_confirmatory"
+    },
+    {
+      "path": "results/confirmatory_locks/debug_seed9001/debug-bz_i10-seed9001.lock.json",
+      "kind": "debug_preflight_lock",
+      "sha256": "fd438f3a65a67e9dbb06ab2c5030690abc152faca8ff52ab2e8ea377461f7b4a",
+      "bytes": 4875,
+      "cell": "Bz_I10",
+      "seed": 9001,
+      "status": "verified_debug_only_excluded_from_confirmatory"
+    },
+    {
+      "path": "results/confirmatory_locks/debug_seed9001/debug-bd_i01-seed9001.lock.json",
+      "kind": "debug_preflight_lock",
+      "sha256": "682e63f7b27af4b5d583ad5c757e0c96cf2013a08ddf6176c9b0cbb2cd45f69d",
+      "bytes": 4887,
+      "cell": "Bd_I01",
+      "seed": 9001,
+      "status": "verified_debug_only_excluded_from_confirmatory"
+    },
+    {
+      "path": "results/confirmatory_locks/debug_seed9001/debug-bt-seed9001.lock.json",
+      "kind": "debug_preflight_lock",
+      "sha256": "a54ee491137888cd9fa059ccbfb0593744ed02a3705447a23681f91cbdcae3f5",
+      "bytes": 4859,
+      "cell": "Bt",
+      "seed": 9001,
+      "status": "verified_debug_only_excluded_from_confirmatory"
+    },
+    {
+      "path": "results/confirmatory_locks/debug_seed9001/debug-bb-seed9001.lock.json",
+      "kind": "debug_preflight_lock",
+      "sha256": "04f07d4680e1068bc3b646081fe35afdf83e8c62a0b55ec101cdabde5621cbe0",
+      "bytes": 4859,
+      "cell": "Bb",
+      "seed": 9001,
+      "status": "verified_debug_only_excluded_from_confirmatory"
+    },
+    {
+      "path": "results/confirmatory_locks/debug_seed9001/debug-i11-seed9001.lock.json",
+      "kind": "debug_preflight_lock",
+      "sha256": "8e64755c2f5e15cac8ecadd88fb71082568655f5245ae0303d7d35abf2c12513",
+      "bytes": 4874,
+      "cell": "I11",
+      "seed": 9001,
+      "status": "verified_debug_only_excluded_from_confirmatory"
+    },
+    {
+      "path": "results/confirmatory_locks/debug_seed9001/debug-upi_trm-seed9001.lock.json",
+      "kind": "debug_preflight_lock",
+      "sha256": "98ce4c08fcaf224ae9b7f1cbaf8451b954d44614c838f791589e284bc4ddfab2",
+      "bytes": 4104,
+      "cell": "UPI_TRM",
+      "seed": 9001,
+      "status": "verified_debug_only_excluded_from_confirmatory"
+    },
+    {
+      "path": "results/confirmatory_locks/debug_seed9001/debug-trm_ppo-seed9001.lock.json",
+      "kind": "debug_preflight_lock",
+      "sha256": "1535bfcb86f91cfa5688f3a9e0846b0383d888021b416e6c1d0d1e8f557c10b6",
+      "bytes": 5136,
+      "cell": "TRM_PPO",
+      "seed": 9001,
+      "status": "verified_debug_only_excluded_from_confirmatory"
+    },
+    {
+      "path": "artifacts/debug_smoke/seed9001/MANIFEST.json",
+      "kind": "debug_smoke_nested_artifact_manifest",
+      "sha256": "056b98f4163aec9fede0d0b734006055b9f7b4bce2f21ee5edb8e107c73c63ca",
+      "bytes": 13843,
+      "source_code_commit": "e4c924cc721e9f4f356789eba03a09f6c8ca1913",
+      "lock_index_sha256": "3b130e9441561f6ade7ffeba19780933f9ce27f5331874117c8952db6e641a5e",
+      "runs": 8,
+      "staged_evaluation_files": 32,
+      "staged_per_instance_rows": 2048,
+      "training_environment_interactions_per_run": 80,
+      "evaluation_records_per_run": 256,
+      "status": "verified_debug_only_excluded_from_confirmatory_external_checkpoint_and_log_bytes_not_staged"
+    },
+    {
+      "path": "artifacts/debug_smoke/seed9001/execution_index.json",
+      "kind": "debug_smoke_execution_index",
+      "sha256": "a87adfa399296fd9f1af5903e66ea54cb92042d728364938e89cf732b07ab9ab",
+      "bytes": 6623,
+      "runs": 8,
+      "status": "verified_debug_only_excluded_from_confirmatory"
+    },
+    {
+      "path": "artifacts/debug_smoke/seed9001/MANIFEST.json.sha256",
+      "kind": "debug_smoke_nested_artifact_manifest_checksum",
+      "sha256": "fc76cfe5f4b8b3bdc01432272f12e89ccf653e7a97d2f3d8ee802259e9bb3bbb",
+      "bytes": 80,
+      "status": "present"
     }
   ]
 }
