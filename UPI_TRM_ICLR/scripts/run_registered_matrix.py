@@ -298,11 +298,22 @@ def prepare_locks(args: argparse.Namespace) -> None:
                         f"Lock field {field} for {run_id} is {lock.get(field)!r}; "
                         f"expected {expected!r}."
                     )
-            runtime_environment = lock["effective_config"]["runtime_fingerprint"][
-                "determinism_environment"
-            ]
-            if runtime_environment.get("CUDA_VISIBLE_DEVICES") != device:
-                raise RuntimeError(f"Lock GPU binding is wrong for {run_id}.")
+            effective_config = lock.get("effective_config")
+            if not isinstance(effective_config, dict):
+                raise RuntimeError(f"Lock effective config is missing for {run_id}.")
+            runtime_fingerprint = effective_config.get("runtime_fingerprint")
+            if runtime_fingerprint is not None:
+                runtime_environment = runtime_fingerprint[
+                    "determinism_environment"
+                ]
+                if runtime_environment.get("CUDA_VISIBLE_DEVICES") != device:
+                    raise RuntimeError(f"Lock GPU binding is wrong for {run_id}.")
+            else:
+                runtime_hash = effective_config.get("runtime_fingerprint_sha256")
+                if not isinstance(runtime_hash, str) or len(runtime_hash) != 64:
+                    raise RuntimeError(
+                        f"Lock runtime fingerprint hash is missing for {run_id}."
+                    )
             lock_bytes = canonical_json_bytes(lock)
             lock_name = f"{run_id}.lock.json"
             (stage / lock_name).write_bytes(lock_bytes)
