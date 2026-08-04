@@ -1,253 +1,211 @@
 # Confirmatory experiment registry
 
-Status: **DRAFT, NOT LOCKED, NO CONFIRMATORY RUN IS AUTHORIZED**
+Status: **REGISTERED, NOT AUTHORIZED, NO CONFIRMATORY RUN HAS STARTED**
 
-Created before inspecting any repaired-run outcome. This registry becomes
-locked only after every `TBD-BEFORE-RUN` field is replaced, the generated data
-and ordered evaluation manifests are hashed, the repaired code commit is
-recorded, and that version is committed. Debug runs use a separate seed set and
-cannot enter any confirmatory result.
+The executable registry is
+`CODE_REPO/configs/iclr_confirmatory/run_matrix.json`, SHA-256
+`d2c064de22b6cb90a569f7b1000c2dd40087a40153a5070b0cdbd12ac0d22b81`.
+Its status is `registered_not_authorized`. The bound producer is code commit
+`e4c924cc721e9f4f356789eba03a09f6c8ca1913`. Changing a registered cell,
+seed, budget, data manifest, schedule, architecture field, or configuration
+layer requires a documented pre-outcome registry amendment and a new hash.
+
+The current executable matrix contains six C1 bridge cells and two C2 matched
+cells. C3 diagnostics, C4 projection experiments, and C5 second-domain work
+are not executable cells in this matrix. They remain follow-on work and may
+not be described as registered or completed experiments.
+
+## Locked identities
+
+| Field | Registered value |
+| --- | --- |
+| Producer code commit | `e4c924cc721e9f4f356789eba03a09f6c8ca1913` |
+| Run-matrix SHA-256 | `d2c064de22b6cb90a569f7b1000c2dd40087a40153a5070b0cdbd12ac0d22b81` |
+| Training manifest SHA-256 | `8def4f59387c1ab9466d043c40a7fdd3c7c670e2778b8d949295811ae7b6088a` |
+| Validation manifest SHA-256 | `4644a3b1bb8b6e384896888154c9e56252368c1fc2f32962b089ade95a5bc1f2` |
+| Held-out test manifest SHA-256 | `163a083a9f5744b7cc485663b269b89acc3103d9e1ec64c7e93f78e36fa79d40` |
+| Dataset lock | `CODE_REPO/configs/iclr_confirmatory/dataset.json` |
+| Runtime output | `$UPI_TRM_EVIDENCE_ROOT/iclr-confirmatory-v1` |
+| Standalone environment-lock SHA-256 | `not verifiable from supplied evidence` |
+
+Each prepared run lock records its complete effective configuration,
+configuration-layer hashes, dataset-provenance hash, runtime fingerprint,
+device, seed, cell, and run ID. Effective-configuration hashes differ by cell,
+so there is no single configuration hash for the matrix.
 
 ## Common protocol
 
-- Training interaction: one call to a training environment's `step` method.
-  A vector step counts once per environment. Evaluation interactions are
-  excluded from this budget and reported separately.
 - Domain: hard 4 by 4 Sudoku with 6 to 8 empty cells.
-- Population rule: every retained puzzle has exactly one valid Sudoku
-  completion. The generator rejects ambiguous puzzles before applying the
-  uniqueness and cross-split checks. This rule is fixed before materialization
-  and before any learned outcome is inspected.
-- Training generator seed: `26080301`.
-- Validation generator seed: `26080302`.
-- Held-out test generator seed: `26080303`.
-- The three generated record sets must be pairwise disjoint by canonical
-  record hash. Any overlap aborts all registered runs.
-- Training records: 1,024 unique records.
-- Validation records: 256 unique records.
-- Held-out test records: 512 unique records, evaluated once each in one fixed
-  manifest order with no cycling.
-- The validation split is reserved for debug-seed pipeline checks and
-  implementation diagnostics. Confirmatory seeds do not use it for early
-  stopping, checkpoint selection, hyperparameter selection, or reported test
-  estimates.
-- Confirmatory training seeds: `101,102,103,104,105,106,107,108,109,110`.
-- Debug-only seeds: `9001,9002,9003`.
-- Training budget: exactly 80,000 environment interactions per method and
-  seed.
-- Reporting checkpoints: 10,000, 20,000, 40,000, and 80,000 interactions.
-- Primary endpoint: held-out exact-checker success at 80,000 interactions.
-- Secondary endpoints: undiscounted shaped episode return, exact-checker
-  score, invalid-action rate, recurrent forward passes, action-value
-  evaluations, optimizer updates, wall time, peak device memory, and all
-  theorem-facing finite-batch diagnostics declared below.
-- No early stopping and no best-checkpoint selection. Infrastructure failures
-  remain in the registry. A rerun is permitted only after a documented
-  infrastructure diagnosis, using the original seed and configuration.
-- Per-seed means use sample standard deviation. Paired method differences use
-  a hierarchical bootstrap over seeds and held-out instances with 10,000
-  resamples and analysis seed `26080311`, plus the exact paired sign-flip test
-  over ten seed-level differences.
-- Repeated evaluation instances are not treated as independent training
-  seeds.
-- All raw per-instance outcomes, counters, configurations, code commits,
-  ordered record hashes, checkpoint hashes, and generation commands must be
-  retained before a result can be described as verified.
-- Every fully theory-oriented UPI-TRM cell must set
-  `training_protocol=fixed_base_exact`. Setting
-  `theory_exact_mixture=true` on the legacy training path is insufficient and
-  must be labeled legacy. Historical reconstruction and compatibility cells
-  use `training_protocol=legacy` explicitly.
-
-Fields that must be locked before execution:
-
-| Field | Required value |
-| --- | --- |
-| Code commit | `TBD-BEFORE-RUN` |
-| Configuration schema hash | `TBD-BEFORE-RUN` |
-| Training manifest SHA-256 | `8def4f59387c1ab9466d043c40a7fdd3c7c670e2778b8d949295811ae7b6088a` |
-| Validation manifest SHA-256 | `4644a3b1bb8b6e384896888154c9e56252368c1fc2f32962b089ade95a5bc1f2` |
-| Held-out manifest SHA-256 | `163a083a9f5744b7cc485663b269b89acc3103d9e1ec64c7e93f78e36fa79d40` |
-| Environment configuration SHA-256 | `TBD-BEFORE-RUN` |
-| Action-mask configuration SHA-256 | `TBD-BEFORE-RUN` |
-| Environment lock SHA-256 | `TBD-BEFORE-RUN` |
-| Output root | `results/iclr_confirmatory/TBD-BEFORE-RUN` |
-
-The three dataset fields were materialized before any learned outcome at code
-commit `8d79ba79917a7be8b14540bedb600f51076738c7`. The dataset lock record is
-`CODE_REPO/configs/iclr_confirmatory/dataset.json`, SHA-256
-`27660695d7dec8a61c3ac200672842eee77730cd7808a01b28c964931e85edc3`.
-Filling these fields does not lock the registry while the remaining fields are
-`TBD-BEFORE-RUN`.
+- A training interaction is one call to a training environment's `step`
+  method. Evaluation interactions are excluded from the 80,000-interaction
+  training budget and reported separately.
+- Training, validation, and held-out generator seeds are `26080301`,
+  `26080302`, and `26080303`, respectively.
+- The materialized splits contain 1,024 training, 256 validation, and 512
+  held-out test records. Their canonical record hashes must be pairwise
+  disjoint. Any overlap aborts execution.
+- Confirmatory evaluation uses every held-out record once in fixed manifest
+  order with no cycling. Debug evaluation uses the validation split only.
+- Confirmatory seeds are `101,102,103,104,105,106,107,108,109,110`.
+  Debug-only seeds are `9001,9002,9003`.
+- Every confirmatory run uses exactly 80,000 training environment
+  interactions. Reporting checkpoints are 10,000, 20,000, 40,000, and
+  80,000 interactions.
+- The common TRM dimensions are hidden size 64, two H cycles, two L cycles,
+  one L layer, and puzzle-embedding dimension zero.
+- Every cell sets `policy_epsilon=0`; no epsilon-random action overlay changes
+  the registered deployment distributions.
+- Initialization is random and paired by training seed. Loading a checkpoint
+  is forbidden.
+- The primary endpoint is held-out exact-checker success at 80,000
+  interactions. There is no early stopping or best-checkpoint selection.
+- Secondary endpoints include undiscounted shaped episode return, checker
+  score, invalid-action rate, recurrent updates, logit and value evaluations,
+  optimizer updates, wall time, and peak device memory.
+- Per-seed summaries use the sample standard deviation. Paired method
+  differences use a hierarchical bootstrap over seeds and held-out instances
+  with 10,000 resamples and analysis seed `26080311`, plus an exact paired
+  sign-flip test over the ten seed-level differences.
+- Repeated test records are not treated as independent training seeds. All
+  per-instance outcomes, counters, effective configurations, checkpoint
+  hashes, and ordered record hashes must be retained.
+- An infrastructure rerun keeps the original cell and seed and requires a
+  documented diagnosis. Failed and null runs remain in the registry.
 
 ## C1: one-factor bridge
 
-Hypothesis: one predeclared factor or the `F_z` by `F_d` interaction explains
-the historical persistent versus episodic gap under a corrected held-out,
-clock-complete protocol.
+The registered question is whether one factor, or the predeclared latent by
+deployment interaction, explains the historical persistent-versus-episodic
+gap under corrected data, interaction counting, and clock-complete replay.
 
-Reference cell `B0` keeps the reconstructible historical algorithm choices:
-persistent latent, parameter-interpolated deployment, historical target,
-historical baseline, and clock-complete replay. It uses the common data,
-architecture, optimizer, learning-rate schedule, depth, discount, projection,
-clamping, interaction budget, checkpoints, and seeds above. This is a valid
-implementation comparison cell, not a theorem-aligned cell.
+All six cells use the legacy training protocol, `K=1`, the same architecture,
+optimizer, schedules, projection/clamping settings, data, seed, and budget.
+`B0_I00` is the reference. It uses a persistent latent, historical EMA target,
+historical batch-centered baseline, and stochastic evaluation of the deployed
+parameter-interpolated actor. Clock-complete replay is retained. The invalid
+plan-only replay implementation is not reintroduced.
 
-Primary one-factor cells change exactly one setting from `B0`:
-
-| Cell | Only changed factor |
-| --- | --- |
-| `Bz` | persistent latent to episodic latent |
-| `Bd` | parameter-interpolated deployment to the direct pointwise probability-space mixture |
-| `Bt` | historical target to the exact K-step target with terminal masking and incomplete-segment rejection |
-| `Bb` | historical baseline to exact action summation on the complete augmented state |
-
-`Bs-legacy` runs the incomplete plan-only replay representation only as a
-compatibility diagnostic. It is excluded from confirmatory performance
-contrasts and cannot be called theorem aligned.
-
-The predeclared interaction uses four cells with the same fixed settings for
-all other factors:
-
-| Cell | Latent | Deployment |
+| Cell | Configuration layers | Registered change from `B0_I00` |
 | --- | --- | --- |
-| `I00` | persistent | parameter interpolation |
-| `I01` | persistent | exact mixture |
-| `I10` | episodic | parameter interpolation |
-| `I11` | episodic | exact mixture |
+| `B0_I00` | `bridge_base.yaml`, `bridge_b0.yaml` | Reference |
+| `Bz_I10` | reference plus `bridge_bz.yaml` | Persistent latent to episodic reset |
+| `Bd_I01` | reference plus `bridge_bd.yaml` | Checkpoint evaluator samples the exact probability-space mixture of the retained pre-interpolation base/candidate pair |
+| `Bt` | reference plus `bridge_bt.yaml` | Bootstrap network changes from the EMA target to the current evaluator |
+| `Bb` | reference plus `bridge_bb.yaml` | Batch-centered baseline changes to exact action summation |
+| `I11` | reference plus `bridge_i11.yaml` | Episodic reset and exact-mixture checkpoint evaluator |
 
-Primary estimands are the paired 80,000-interaction success differences
-`Bz-B0`, `Bd-B0`, `Bt-B0`, and `Bb-B0`. Apply Holm correction across these four
-tests. The interaction estimand is
-`(I11-I10)-(I01-I00)` and is secondary. Report every cell and every failed or
-null run.
+Two interpretation constraints are part of the registration:
 
-Failure rule: if no single contrast survives correction and the interaction is
-also inconclusive, report that the gap remains unexplained. Do not choose a new
-factor after seeing these outcomes.
+1. `Bd_I01` does not train with the direct exact mixture. Its training path is
+   identical to `B0_I00`; only the record-local stochastic checkpoint
+   evaluator changes. The estimand is therefore a paired evaluator/deployment
+   contrast on the retained pre-interpolation policy pair.
+2. Because `K=1` is fixed, `Bt` is specifically an EMA-target-versus-current-
+   evaluator bootstrap contrast. It is not evidence about a general
+   multistep target.
 
-## C2: interaction-matched UPI-TRM versus PPO
+The four primary paired success contrasts at 80,000 interactions are
+`Bz_I10-B0_I00`, `Bd_I01-B0_I00`, `Bt-B0_I00`, and `Bb-B0_I00`. Apply Holm
+correction across these four tests. The secondary interaction is
 
-Hypothesis: corrected UPI-TRM has higher held-out success than
-architecture-matched TRM+PPO at exactly 80,000 training interactions.
+```text
+(I11 - Bz_I10) - (Bd_I01 - B0_I00).
+```
 
-UPI-TRM uses the fully theory-oriented combination of persistent latent,
-clock-complete augmented replay, exact K-step target, exact augmented-state
-baseline summation, direct pointwise probability-space mixture, and
-`training_protocol=fixed_base_exact`. PPO uses the same recurrent backbone and
-the same train/test manifests. Both methods use the common seeds, ordered
-512-record held-out pool, checkpoints, and interaction budget.
+Report all six cells, including failed, null, and negative runs. If no primary
+contrast survives correction and the interaction is inconclusive, report
+that the gap remains unexplained. `Bs_legacy` is explicitly non-executable.
 
-The primary estimand is the paired per-seed difference in held-out success at
-80,000 interactions. The primary interval and test are the common
-hierarchical bootstrap and exact sign-flip test. Curves indexed by environment
-interactions are primary. Curves indexed by recurrent forward passes and wall
-time are secondary. No unpaired Welch test is used.
+## C2: interaction-matched UPI-TRM versus TRM+PPO
 
-Decision rule: if the interval does not support a positive difference, remove
-the performance-superiority claim and present the work as analysis. Preserve
-the null or negative result.
+The registered question is whether the corrected UPI-TRM endpoint has higher
+held-out success than the registered TRM+PPO endpoint after exactly 80,000
+training interactions. The two cells use the same seeds, split manifests,
+ordered test pool, checkpoints, interaction budget, and TRM dimensions.
 
-## C3: persistent theorem-facing diagnostics
+| Cell | Training and evaluation semantics |
+| --- | --- |
+| `UPI_TRM` | `fixed_base_exact`; persistent latent; clock-complete replay; exact `K=1` target; exact action-summed baseline; one record-local stochastic rollout from the exact probability-space mixture |
+| `TRM_PPO` | PPO with episodic latent reset and joint/full-backbone optimization; one deterministic greedy rollout per held-out record |
 
-Hypothesis: at least one predeclared finite-batch quantity connecting the
-corrected persistent endpoint to the conditional theory is small on the fixed
-held-out diagnostic set.
+This is an interaction-matched comparison between complete deployed
+algorithms. It is not a controlled objective-only contrast. Sharing the TRM
+model class and dimensions does not imply trainable-parameter parity:
+UPI-TRM uses a fixed recurrent base/current map under `fixed_base_exact`, while
+PPO optimizes its full backbone. The latent semantics also differ, and the
+registered evaluators compare a sampled exact mixture with a greedy PPO
+policy. These predeclared differences limit causal attribution. Compute is
+reported separately through recurrent updates, model evaluations, optimizer
+steps, wall time, and memory.
 
-Run diagnostics for every fully theory-oriented endpoint checkpoint, not only
-successful seeds. The committed schema-v5 runner accepts only
-`training_protocol=fixed_base_exact`, persistent latents, shaped rewards,
-complete endpoint policy pairs, and clock-complete state. It therefore cannot
-diagnose legacy `B0` checkpoints. A legacy compatibility adapter would require
-a separate pre-outcome registry amendment and may not relabel incomplete state
-as theorem aligned. Retain actual augmented states `(x,y,z,h)` from the first
-128 held-out records in manifest order. Use depths `n` from the run
-configuration and `m in {n+1,n+2,n+4}`. Use diagnostic RNG seed `26080321`.
-For Monte Carlo K-step estimates, use 256 independent rollouts per retained
-state. Perturb the actual input latent by a fixed joint L2 norm of `0.01` using
-seed `26080321`.
+The primary estimand is the paired per-seed held-out success difference at
+80,000 interactions. Use the common hierarchical bootstrap and exact
+seed-level sign-flip test. Curves indexed by environment interactions are
+primary; compute-indexed and wall-time curves are secondary. Do not use an
+unpaired Welch test. If the interval does not support a positive difference,
+remove the performance-superiority claim and preserve the null or negative
+result.
 
-The registered implementation is code commit
-`6400959bb7932095e6f82b84a3619a73539fe193`, configuration
-`configs/iclr_confirmatory/persistent_diagnostics.json`. This records runner
-readiness only. It does not lock the common experiment fields or authorize a
-confirmatory run.
+## Completed debug-only execution
 
-Report per seed and clock. Label the policy associated with each quantity;
-Bellman residuals are current-policy quantities, while the candidate policy
-enters only the declared advantage-discrepancy and deployment comparisons:
+All eight registered cells completed an 80-interaction pipeline smoke run with
+seed `9001` and one evaluation over the 256-record validation split. These
+runs test configuration locking, training, checkpointing, exact interaction
+accounting, evaluation, and artifact publication. They are excluded from all
+confirmatory estimates and cannot change this registry.
 
-- exact finite-batch one-step augmented Bellman residual;
-- Monte Carlo K-step residual estimate and standard error, separately from
-  realized-path TD errors;
-- reconstructed exact-summation/recentering identity and its statewise defect;
-- finite-depth candidate discrepancy
-  `|E_{pi_cand}[A_n-A_m]|`, explicitly not the theorem's uniform
-  `epsilon_A,cand`;
-- direct-mixture versus the production deployment-distribution callback TV,
-  KL, and support mismatch rate; the full episode evaluation loop remains a
-  separate test;
-- recurrent path length, depth discrepancy, per-depth increments, local ratio
-  undefined rate, and value-head drift;
-- sensitivity to the actual, reset, and predeclared perturbed initial latents;
-- carried-latent continuity and inter-edit drift;
-- remaining-budget strata;
-- current/candidate shared-map identity hash;
-- projection-active rate and latent norms.
+| Artifact | SHA-256 |
+| --- | --- |
+| `results/confirmatory_locks/debug_seed9001/index.json` | `3b130e9441561f6ade7ffeba19780933f9ce27f5331874117c8952db6e641a5e` |
+| `artifacts/debug_smoke/seed9001/MANIFEST.json` | `056b98f4163aec9fede0d0b734006055b9f7b4bce2f21ee5edb8e107c73c63ca` |
 
-Summaries include maximum, 99th percentile, median, and mean. Every output must
-state `scope: finite_batch`. No diagnostic is called a uniform certificate.
-If the required endpoint checkpoint does not retain the base and candidate
-proposal needed to reconstruct deployment, the deployment claim is exactly
+The staged manifest binds eight per-cell effective-configuration hashes,
+compute snapshots, metadata, per-instance rows, summaries, logs, and available
+checkpoint hashes to the producer commit and run-matrix hash. Seeds `9002` and
+`9003` have not been executed. No confirmatory outcome has been inspected
+because confirmatory execution remains blocked by the matrix status.
+
+## Follow-on work outside the executable matrix
+
+### Persistent theorem-facing diagnostics
+
+The intended diagnostics include augmented Bellman residuals, reconstructed
+centering, exact-mixture deployment discrepancy, recurrent path length,
+depth discrepancy, local ratios, value drift, initial-latent sensitivity,
+carried-latent drift, clock strata, shared-map identity, projection-active
+rate, and latent norms. Every result must be labeled `scope: finite_batch`.
+The current eight-cell run matrix does not register or authorize a diagnostic
+run, and no eligible 80,000-interaction endpoint exists. Result status:
+`missing experiment`.
+
+Without a retained training-time advantage-estimator artifact, the historical
+training-time centering claim is exactly
 `not verifiable from supplied evidence`.
 
-The reconstructed centering statistic does not recover the saved training-time
-advantage estimator. Without a retained training-time estimator artifact, that
-claim is exactly `not verifiable from supplied evidence`.
+### Projection train/evaluation cross-design
 
-## C4: projection train/evaluation cross-design
+The proposed `R_train in {off,10}` by `R_eval in {off,10}` design is not in
+the current run matrix. Its seeds, cells, and effective configurations must be
+registered before execution. Result status: `missing experiment`.
 
-Hypothesis: the trained projection effect contains separable training and
-frozen forward-pass components.
+### Second verifier-guided domain
 
-Train with `R_train in {off,10}` and evaluate every frozen checkpoint under
-`R_eval in {off,10}`. Other settings follow the fully theory-oriented UPI-TRM
-cell. The primary frozen-checkpoint estimand is the paired test-time
-`R_eval=10` minus `R_eval=off` success difference. The training-radius effect
-and interaction are secondary. Report success, return, action agreement,
-value change, augmented residual, recurrent path length, projection-active
-rate, latent norms, and depth discrepancy.
+The proposed domain remains 8-puzzle, selected for its exact verifier and
+plan-edit structure. Its data counts, horizon, budget, cells, and immutable
+manifests are not registered. Result status: `missing experiment`.
 
-Use the terms `projection enabled` and `clamping enabled`. Do not infer a
-global contraction modulus from a local proxy or from success.
+## Amendment and authorization rules
 
-## C5: second verifier-guided domain
-
-Selected before running a performance pilot: 8-puzzle.
-
-Selection basis: exact verifier, deterministic transitions, fixed edit budget,
-negligible random success, and direct compatibility with plan editing. The
-selection is not based on preliminary performance. Generator seeds are
-`26080401` for training, `26080402` for validation, and `26080403` for held-out
-test data. The exact record counts, horizon, and interaction budget remain
-`TBD-BEFORE-RUN` until the environment and costed smoke test exist.
-
-Required methods are corrected UPI-TRM, the same-backbone PPO baseline, and the
-bridge cell selected by this predeclared rule: choose the bridge factor with
-the largest absolute corrected paired effect from C1; break ties in the fixed
-order `F_z`, `F_d`, `F_t`, `F_b`. This selection is secondary and must be
-reported as transferred from C1, not as a new confirmatory discovery.
-
-If the transfer fails, retain the failure and narrow the paper's scope.
-
-## Lock and amendment rules
-
-1. Only commits made before the first confirmatory training action may fill the
-   `TBD-BEFORE-RUN` fields or clarify an ambiguity.
-2. After lock, amendments correct infrastructure defects only. Each amendment
-   records the old text, new text, reason, timestamp, and whether any outcome
+1. Confirmatory execution remains prohibited while the authoritative matrix
+   status is `registered_not_authorized`.
+2. A status change must be committed before the first confirmatory training
+   action and must preserve the producer, dataset, cell, seed, budget, and
+   analysis identities above unless a documented pre-outcome amendment changes
+   them.
+3. After authorization, amendments may correct infrastructure defects only.
+   Record the old text, new text, reason, timestamp, and whether any outcome
    was inspected.
-3. Debug results cannot alter seeds, budget, endpoint, evaluation pool,
+4. Debug results cannot alter seeds, budget, endpoint, evaluation pool,
    statistics, or failure rules.
-4. No result enters the paper until its run registry entry and all expected
-   raw artifacts exist and reproduce.
+5. No result enters the paper until its run-registry row and every expected
+   raw artifact exist and reproduce.

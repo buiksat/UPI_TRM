@@ -16,10 +16,15 @@ make clean
 make pdf
 ```
 
-The two commands completed successfully. The retained build products are:
+The two commands were recorded as completing successfully. Their expected
+paths were:
 
 - `build/main_pre_repair.pdf`
 - `build/main_pre_repair.log`
+
+Those two files are absent from the current supplied worktree. The hashes and
+diagnostics below are a historical execution record; independent validation
+from the current bytes is `not verifiable from supplied evidence`.
 
 ## PDF result
 

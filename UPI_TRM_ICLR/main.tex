@@ -262,7 +262,30 @@ and therefore permits any finite unroll depth to serve as the reference.
 
 \begin{theorem}[Finite-reference-depth value decomposition]
 \label{thm:finite_reference_depth}
-Fix either a finite or countable MDP, or a finite or countable policy-pair closure whose action supports under $\pi$ and $\pi_{\mathrm{cand}}$ are finite or countable. Fix one frozen parameter snapshot, the policy pair $(\pi,\pi_{\mathrm{cand}})$, one measurable recurrent map shared by every depth, a common measurable initialization $z^{(0)}(s)=z_{\mathrm{init}}(x,y)$ that ignores the clock, $K\ge1$, and one latent norm on $\mathcal Z\subseteq\mathbb R^d$. Let $V_\psi:\mathcal Z\times\mathcal X\times\mathcal Y\to\mathbb R$ be a measurable scalar value head. For every $j$, define $z^{(j)}$ by iterating that same map from that same initialization and set $U_j(s)=V_\psi(z^{(j)}(s),x,y)$. Let $\mathcal R_{\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}\cup\{s_{\mathrm{abs}}\}$ contain the states reachable under $\pi$ and every one-step successor required by actions supported by either policy, and require it to be invariant under subsequent $\pi$ transitions almost surely. Assume rewards and $U_j$, $j\in\{n,\ldots,m\}$, are bounded on this closure; every depth uses the common boundary value $U_j(s_{\mathrm{abs}})=-C_{\max}$; and $\mathcal T_K^\pi$ maps bounded real functions on the closure to bounded real functions on the same closure. All displayed norms are ordinary sup norms on this closure. Then, for any finite integers $0\le n<m$,
+Fix one discounted MDP $(\mathcal S,\mathcal A,P,r,\rho,\gamma)$ with
+$\gamma\in[0,1)$, an integer $K\ge1$, and the fixed policy pair
+$(\pi,\pi_{\mathrm{cand}})$. Let the finite or countable set
+$\mathcal C:=\mathcal R_{\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}
+\cup\{s_{\mathrm{abs}}\}$ contain the support reachable from $\rho$ under
+$\pi$ and every one-step successor required by an action supported by either
+policy. Require the supported action sets of both policies on $\mathcal C$ to
+be finite or countable and $\mathcal C$ to be invariant under subsequent
+$\pi$ transitions almost surely. The atom $s_{\mathrm{abs}}$ is the common
+absorbing self-loop with reward $(\gamma-1)C_{\max}$, so its
+policy-independent value is $b:=V^\pi(s_{\mathrm{abs}})=-C_{\max}$. Fix one
+frozen parameter snapshot,
+one measurable recurrent map shared by every depth, a common measurable
+initialization $z^{(0)}(s)=z_{\mathrm{init}}(x,y)$ that ignores the clock, and
+one latent norm on $\mathcal Z\subseteq\mathbb R^d$. Let
+$V_\psi:\mathcal Z\times\mathcal X\times\mathcal Y\to\mathbb R$ be a
+measurable scalar value head. For every $j$, define $z^{(j)}$ by iterating
+that same map from that same initialization and set
+$U_j(s)=V_\psi(z^{(j)}(s),x,y)$, with the common boundary
+$U_j(s_{\mathrm{abs}})=b$. Assume rewards and $U_j$,
+$j\in\{n,\ldots,m\}$, are bounded on $\mathcal C$, and
+$\mathcal T_K^\pi$ maps bounded real functions on $\mathcal C$ to bounded
+real functions on $\mathcal C$. All displayed norms are ordinary sup norms
+on $\mathcal C$. Then, for any finite integers $0\le n<m$,
 \begin{align}
 \|U_n - V^\pi\|_{\infty,\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}
 &\le
@@ -589,12 +612,13 @@ not empirical evidence for a learned recurrent evaluator.
 The main result is a fixed-snapshot decomposition: a finite-depth recurrent evaluator can be compared with any deeper finite reference through a recurrent-path term and a reference-depth Bellman residual. The finite-horizon version uses the remaining edit clock rather than an infinite geometric tail. Contraction supplies one optional specialization rather than a model of arbitrary TRM computation. Persistent latents admit the same direct argument on a clock-complete augmented MDP. A deployed policy differing from the exact mixture incurs an explicit uniform TV/KL perturbation term, but a batch diagnostic alone does not instantiate it. The historical persistent implementation provides none of the uniform quantities required by these results.
 
 The retained learned-model evidence is limited to $4\times4$ Sudoku and does
-not provide a held-out method comparison. The episodic endpoint did not score
-its configured mixture, the persistent record is in-sample, and the historical
+not provide a held-out method comparison. The episodic endpoint does not
+establish that it scored its configured mixture, the persistent record is
+in-sample, and the historical
 protocols are not interaction matched. A registered augmented-state diagnostic
-runner now exists, but recovering or replacing the missing persistent
-checkpoints and hard held-out manifest is required before it can produce a
-learned-model result. The bridge and common-pool matched comparison are also missing. Until
+runner and an immutable disjoint train/validation/test corpus now exist, but a
+compatible successful persistent checkpoint is still missing. The bridge and
+common-pool matched comparison are also missing. Until
 those experiments exist, the contribution is an analytical decomposition and
 a reproducible finite-state theorem-pipeline unit test, not evidence that the
 historical UPI--TRM implementation improves task performance.
@@ -820,7 +844,8 @@ For a discrete domain, Assumption~\ref{ass:twotimescale} is simply an additional
 Only the augmented closure for the frozen policy pair is relevant; no global smoothness claim outside that closure is needed.
 \end{remark}
 
-At nonabsorbing times define $e_t=\|z_t-z^*(x,y_t)\|$ and $\kappa_n=L_z^n$.
+For this optional subsection fix $n\ge 1$. At nonabsorbing times define
+$e_t=\|z_t-z^*(x,y_t)\|$ and $\kappa_n=L_z^n<1$.
 \begin{lemma}[Drift bound for persistent-$z$]
 \label{lem:drift_bound}
 Under Assumptions~\ref{ass:Lip} and~\ref{ass:twotimescale}, every transition for which both $\bar s_t$ and $\bar s_{t+1}$ are nonabsorbing satisfies
@@ -883,7 +908,7 @@ Persistent direct bound & Clock-complete state, shared frozen map, uniform augme
 CPI application & Exact centering, exact pointwise mixture, and fixed MDP & Proved conditionally; historical persistent deployment used parameter interpolation \\
 Deployment perturbation & Uniform TV or KL on a closure invariant under both policies & Proved; Theorem~\ref{thm:deployment_perturbation}; no historical instantiation \\
 Persistent learned-model record & Reconstructible checkpoint, held-out population, and exact policy identity & Task result and diagnostics are not verifiable from supplied evidence \\
-Bridge and matched PPO comparison & Registered one-factor bridge and common-pool equal interactions & Missing experiments \\
+Bridge and matched PPO comparison & Registered one-factor bridge and common-pool equal interactions & missing experiment \\
 Projection mechanism & Train/evaluation cross-design and a certified modulus for contraction claims & Missing experiment; historical mechanism claim is not verifiable from supplied evidence \\
 Finite-MDP inequalities & Exact finite-state calculation and retained rows & 101 working-tree rows have zero numerical violations; theorem-pipeline unit test \\
 Finite-horizon formulas & Terminal, support, and deployment boundary cases & 26,686 assertions in the working-tree regression; theorem-pipeline test only \\
@@ -904,7 +929,7 @@ U_n=z_n,
 \]
 with $z_0(s)=0$, so both the truncation term and the $K$-step residuals are known in closed form. From $U_n$ we form the centered estimator $\widehat A_{U_n}$, set $\pi_{\mathrm{cand}}(\cdot\mid s)=\mathrm{softmax}(\beta\,\widehat A_{U_n}(s,\cdot))$, and compute $\eta(\pi_\alpha)$ and $\widehat L_\pi(\pi_\alpha)$ for $\pi_\alpha=(1-\alpha)\pi+\alpha\pi_{\mathrm{cand}}$ via matrix inversion.
 
-Figure~\ref{fig:finite_mdp_certificate_main} shows two checks. Left: for $\gamma{=}0.9$, $K{=}3$, $\sigma_\xi{=}0.05$, the value error decays with $n$ and worsens as $L_z\to 1$, staying below the contractive specialization of Theorem~\ref{thm:finite_reference_depth}. Right: on an evaluator-based candidate slice ($L_z{=}0.2$, $n{=}16$, $\sigma_\xi{=}0.1$, $\beta{=}1$), the surrogate gap $\widehat L_\pi(\pi_\alpha)-\eta(\pi_\alpha)$ is positive and stays below both the decomposition-based CPI penalty and the tighter $\varepsilon_{A,\mathrm{cand}}$ penalty for every tested $\alpha$ (log scale; the bound is conservative). Corollary~\ref{cor:finite_depth_residual_certificate} is directly checkable here because $\|U_n-\mathcal{T}^\pi_K U_n\|_\infty$ is computable. The script checks 80 value/decomposition rows ($4$ $L_z$ values by $20$ depths) and 21 $\alpha$ rows on this selected CPI slice, with zero violations; it does not constitute a full Cartesian sweep over $(L_z,n,K,\sigma_\xi,\alpha)$.
+Figure~\ref{fig:finite_mdp_certificate_main} shows two checks. Left: for $\gamma{=}0.9$, $K{=}3$, $\sigma_\xi{=}0.05$, the value error decays with $n$ and worsens as $L_z\to 1$, staying below the contractive specialization of Theorem~\ref{thm:finite_reference_depth}. Right: on an evaluator-based candidate slice ($L_z{=}0.2$, $n{=}16$, $\sigma_\xi{=}0.1$, $\beta{=}1$), the surrogate gap $\widehat L_\pi(\pi_\alpha)-\eta(\pi_\alpha)$ is positive for every tested $\alpha>0$ and stays below both the decomposition-based CPI penalty and the tighter $\varepsilon_{A,\mathrm{cand}}$ penalty for every tested $\alpha$ (log scale; the bound is conservative). At $\alpha=0$, the gap and both penalties are zero. Corollary~\ref{cor:finite_depth_residual_certificate} is directly checkable here because $\|U_n-\mathcal{T}^\pi_K U_n\|_\infty$ is computable. The script checks 80 value/decomposition rows ($4$ $L_z$ values by $20$ depths) and 21 $\alpha$ rows on this selected CPI slice, with zero violations; it does not constitute a full Cartesian sweep over $(L_z,n,K,\sigma_\xi,\alpha)$.
 
 The working tree contains \texttt{finite\_mdp\_certificate.py}, a \texttt{finite\_mdp\_summary.csv} with 80 \texttt{value\_curve} and 21 \texttt{cpi\_curve} rows whose certificate flags are true, and \texttt{finite\_mdp\_certificate\_validation.log}. Their presence in the submitted review package is not verifiable from supplied evidence.
 
@@ -912,12 +937,12 @@ The working tree contains \texttt{finite\_mdp\_certificate.py}, a \texttt{finite
 \centering
 \begin{subfigure}[t]{0.48\textwidth}
 \centering
-\includegraphics[width=\linewidth]{results/finite_mdp_certificate/fig_value_decomposition.png}
+\includegraphics[width=\linewidth]{results/finite_mdp_certificate_validation/fig_value_decomposition.png}
 \caption{Value-error decomposition.}
 \end{subfigure}\hfill
 \begin{subfigure}[t]{0.48\textwidth}
 \centering
-\includegraphics[width=\linewidth]{results/finite_mdp_certificate/fig_cpi_certificate.png}
+\includegraphics[width=\linewidth]{results/finite_mdp_certificate_validation/fig_cpi_certificate.png}
 \caption{CPI inequality check.}
 \end{subfigure}
 \caption{Finite-MDP theorem-pipeline unit test ($|\mathcal S|{=}64$, $|\mathcal A|{=}4$). Left: value error $\|U_n-V^\pi\|_\infty$ decays with evaluator depth $n$ and stays below the decomposition bound; larger $L_z$ slows the decay. Right: for $\pi_\alpha=(1-\alpha)\pi+\alpha\pi_{\mathrm{cand}}$, the surrogate gap (blue) stays below both the decomposition-based CPI penalty (red) and the tighter $\varepsilon_{A,\mathrm{cand}}$ penalty (green); log scale. All quantities are computed exactly by finite-state dynamic programming.}

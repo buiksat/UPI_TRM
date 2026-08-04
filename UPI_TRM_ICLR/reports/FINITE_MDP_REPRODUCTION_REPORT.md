@@ -9,12 +9,23 @@ The existing generator remained unchanged, so the primary CSV contract is still 
 ## Execution context
 
 - Repository branch: `iclr-evidence-aligned-revision`
-- Source commit at execution: `896af29fb4970964d35505fbb45983a90834828d`
+- Base HEAD recorded by the original execution log:
+  `896af29fb4970964d35505fbb45983a90834828d`
+- First commit containing the complete two-script pipeline:
+  `77f73e18dc2f649fe6d284de722f9e7f716c652d`
 - Python: `3.12.13+meta`
 - gnuplot: `5.4 patchlevel 3`
 - Generator: `experiments/finite_mdp_certificate.py`
 - Boundary suite: `experiments/finite_mdp_boundary_checks.py`
 - Retained command output: `reports/finite_mdp_reproduction.stdout.txt`
+
+The original stdout's `Source commit` field records the base HEAD, not a clean
+producer for both commands: the boundary script was then uncommitted and was
+first committed at `77f73e1`. The generator bytes already exist at `896af29`
+with SHA-256 `1571aaab...`; the boundary-script bytes exist at `77f73e1` with
+SHA-256 `86127165...`. The complete pipeline is therefore reproducible from
+`77f73e1`, not from `896af29` alone. A fresh current-tree rerun reproduced the
+CSV, boundary JSON, and both paper-visible PNGs byte for byte.
 
 ## Commands
 

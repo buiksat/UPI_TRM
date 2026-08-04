@@ -259,11 +259,16 @@ def main() -> None:
             for record in execution_runs
         ]
         records.sort(key=lambda record: record["run_id"])
+        execution_index_name = "execution_index.json"
+        shutil.copyfile(execution_path, stage / execution_index_name)
         manifest = {
             "artifact_schema_version": 1,
             "description": "Debug-only pipeline smoke evidence; not confirmatory evidence.",
             "excluded_from_confirmatory": True,
-            "external_execution_index_sha256": sha256_file(execution_path),
+            "execution_index": {
+                "path": execution_index_name,
+                "sha256": sha256_file(execution_path),
+            },
             "lock_index_sha256": execution["lock_index_sha256"],
             "producer_git_commit": execution["producer_git_commit"],
             "registry_sha256": execution["registry_sha256"],

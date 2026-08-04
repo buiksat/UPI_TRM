@@ -8,7 +8,7 @@ Paper parent commit: `bd72f7a1377c8602f7b2b2eae4a68dc5ee3612cf`
 
 Code branch: `iclr-confirmatory-repair`
 
-Current code bundle commit: `8d79ba79917a7be8b14540bedb600f51076738c7`
+Current implementation commit: `e4c924cc721e9f4f356789eba03a09f6c8ca1913`
 
 ## Code evidence incorporated
 
@@ -20,20 +20,19 @@ production exact-baseline and deployment-distribution callbacks, measures
 finite-depth/path/carry/clock diagnostics, and emits deterministic finite-batch
 artifacts with source and dataset provenance.
 
-The final code validation after the schema-v5 hardening is:
+Validation through the current implementation commit is:
 
-- 322 unique runtime cases across 33 non-logging targets after an isolated
-  rerun of two cases whose combined invocation lost TPX result files despite
-  both unittest bodies reporting `OK`;
-- 22 passing logging/checkpoint cases in isolation;
-- 344 total unique runtime cases, zero assertion failures;
-- 48 passing focused schema/diagnostic cases;
-- packaged CLI build passed;
-- the full `rl` typecheck reports nine pre-existing errors outside the new
-  files and no persistent-diagnostic error.
+- all 33 declared runtime targets passed 397/397 tests;
+- the focused source/registration/lock gate passed 57/57 tests;
+- the preceding combined focused gate passed 198/198 tests;
+- the packaged Buck CLI executed all eight debug cells;
+- type checking is not green: 21 type targets in the last full-graph audit retain
+  pre-existing debt, including nine pre-existing errors in the `rl` target.
 
-The authoritative code report is
-`CODE_REPO/reports/PERSISTENT_CHECKPOINT_DIAGNOSTICS_REPORT.md`.
+The earlier runner-specific report is
+`CODE_REPO/reports/PERSISTENT_CHECKPOINT_DIAGNOSTICS_REPORT.md`. The newer
+registration, evaluator, accounting, and source-binding changes are identified
+by implementation commit `e4c924c` and the staged artifacts below.
 
 ## Paper corrections
 
@@ -62,12 +61,13 @@ The diagnostic table and C3 registry now distinguish:
   deployment bound or a full episode-loop test.
 
 The claim ledger and review matrix record the runner as introduced at code
-commit `ac624cd` and hardened to schema 5 at `6400959`. They do not promote any
+commit `ac624cd`, hardened to schema 5 at `6400959`, and integrated with the
+fail-closed confirmatory execution path at `e4c924c`. They do not promote any
 learned result.
 
 ## Recovery and artifact state
 
-The exact ten-commit code recovery bundle is:
+The retained ten-commit code recovery bundle is:
 
 `handoff/trm_bellman_iclr-confirmatory-repair.bundle`
 
@@ -78,20 +78,51 @@ SHA-256:
 `git bundle verify` passes. A fetch into a detached worktree at base commit
 `6d5a241027fe72921d5fc039dd6a12434999088b` reproduces tree
 `400d42e3395b26cea2e98bc60620bb8a9c5348d7`, exactly matching `8d79ba7`.
+The bundle stops at `8d79ba7`; it does not contain the later execution changes
+through `e4c924c` and is not a complete recovery bundle for the current code.
+A separate full recovery bundle now reaches `e4c924c` and verifies as complete,
+but its Git history contains identity metadata and is not anonymous-release-ready.
 
 The paper artifact inventory records this bundle as implementation provenance
 only. It remains incomplete and not anonymous-release-ready.
 
-Current `main.tex` SHA-256:
+Current `main.tex` SHA-256 at this report update:
 
-`76566fab5aef995a8bdd5581d30cc2d4da237128a6c0d22cc858f6bcece4a660`
+`f1f7bb567578dbf1b4a3ab1d7c3db4cfdf3acee8b6e7fb9f818a8239550344e7`
+
+## Debug execution evidence
+
+The debug lock index is
+`results/confirmatory_locks/debug_seed9001/index.json`, SHA-256
+`3b130e9441561f6ade7ffeba19780933f9ce27f5331874117c8952db6e641a5e`.
+It binds producer commit `e4c924c`, registry hash, exact configuration layers,
+effective-configuration hashes, and individual lock hashes for eight cells:
+`B0_I00`, `Bz_I10`, `Bd_I01`, `Bt`, `Bb`, `I11`, `UPI_TRM`, and `TRM_PPO`.
+
+The staged evidence manifest is
+`artifacts/debug_smoke/seed9001/MANIFEST.json`, SHA-256
+`056b98f4163aec9fede0d0b734006055b9f7b4bce2f21ee5edb8e107c73c63ca`.
+Every cell uses debug seed 9001, records exactly 80 training environment
+interactions in its compute snapshot, and evaluates 256 distinct records from
+the immutable validation split. Each run retains evaluation metadata, one
+ordered per-instance row per record, a row-derived summary, compute counters,
+checkpoint hashes, and log hashes. The lock index, execution index, every run,
+and the staged manifest declare `excluded_from_confirmatory=true`.
+
+These artifacts verify configuration routing, exact counters, evaluation
+policy selection, noncycling evaluation, and immutable publication. Their
+success rates, returns, and between-cell differences are debug outcomes. They
+are not bridge evidence, not an interaction-matched UPI--TRM/PPO result, and
+not evidence that a learned checkpoint satisfies a theorem assumption.
 
 ## Evidence boundary
 
-No learned checkpoint exists in the code or paper repository. The hard
-1,024/256/512 train/validation/test split and immutable manifests are now
-materialized at `8d79ba7`; this supplies diagnostic inputs but no learned
-endpoint. Consequently:
+No reconstructible successful persistent checkpoint or confirmatory endpoint
+exists in the code or paper repository. Eight debug checkpoints after 80
+training interactions are staged solely to validate execution mechanics. The
+hard 1,024/256/512 train/validation/test split and immutable manifests are
+materialized at `8d79ba7`; this supplies diagnostic inputs but no successful
+learned endpoint. Consequently:
 
 - persistent learned-checkpoint diagnostics: not verifiable from supplied evidence
 - historical training-time centering: not verifiable from supplied evidence
@@ -99,7 +130,8 @@ endpoint. Consequently:
 - one-factor bridge outcome: not verifiable from supplied evidence
 - equal-interaction UPI-TRM/PPO outcome: not verifiable from supplied evidence
 
-The registry remains draft and no confirmatory run is authorized.
+The executable matrix and debug locks exist, but the matrix status remains
+`registered_not_authorized`. No confirmatory run is authorized.
 
 ## Paper validation
 
@@ -115,11 +147,13 @@ current build.
 
 ## Next execution dependency
 
-Checkpoint schema 5 binds the producer commit, source blobs, training seed,
-run ID, effective configuration, runtime, initialization, parent lineage, and
-complete live-resume state. The raw split gate is also closed. The next
-blockers are exact-budget PPO, per-instance output retention, the bridge and
-matched-PPO configuration matrix, and the remaining registry lock fields.
-Only then may debug-only smokes run on the reserved debug seeds.
+Checkpoint schema 5 and the current runtime bind the producer commit, embedded
+source manifest, training seed, run ID, effective configuration, runtime,
+initialization, parent lineage, and complete live-resume state. Exact-budget
+PPO, per-instance output retention, the executable bridge/matched matrix, and
+debug publication mechanics are closed. The remaining blockers are
+confirmatory authorization and execution, successful-checkpoint persistent
+diagnostics, real-CUDA resume equivalence, separate distilled-policy
+evaluation, and a deterministic anonymous supplement rebuild.
 
 No result was fabricated or inferred from an unexecuted experiment.
