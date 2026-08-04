@@ -43,9 +43,9 @@ commit reproduces tree `400d42e3395b26cea2e98bc60620bb8a9c5348d7`, exactly
 matching code commit `8d79ba7`. This bundle does not contain the later code
 work through `e4c924c`, including the exact-budget runner, registered cell
 configs, source-identity checks, lock tooling, or debug executions. Do not use
-it as recovery media for the current implementation. The older `.patch.gz`
-file is retained only as the prior six-commit recovery artifact; it does not
-contain the diagnostic runner or schema-v5 commit.
+it as recovery media for the current implementation. The superseded
+six-commit `.patch.gz` recovery artifact was removed; it did not contain the
+diagnostic runner or schema-v5 commit.
 
 A separate standalone recovery bundle now contains the complete current code
 history through `e4c924cc721e9f4f356789eba03a09f6c8ca1913`:

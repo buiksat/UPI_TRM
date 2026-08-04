@@ -18,7 +18,6 @@ scripts/scratch*.md
 /build/*
 !/build/upi_trm_iclr_template_baseline.pdf
 !/build/upi_trm_iclr_template_baseline.log
-!/build/iclr_template_baseline_build_pass1.stdout.log
 !/build/iclr_template_baseline_build_pass5_clean.stdout.log
 !/build/upi_trm_iclr_revised.pdf
 !/build/upi_trm_iclr_revised.log
