@@ -3,13 +3,13 @@
   "manifest_state": "working_evidence_inventory",
   "created_date": "2026-08-03",
   "source_branch": "iclr-evidence-aligned-revision",
-  "source_commit": "c0c6acae8d591acbd99441eb3b17b6d2306df50d",
+  "source_commit": "5b475631d237cc53fc1c8b49a0a076ed140d4694",
   "source_code_commit": "e4c924cc721e9f4f356789eba03a09f6c8ca1913",
   "hash_algorithm": "sha256",
   "complete": false,
   "anonymous_release_ready": false,
   "notes": [
-    "This working inventory is based on paper commit c0c6acae8d591acbd99441eb3b17b6d2306df50d before the report and registry update.",
+    "The audited manuscript and evidence snapshot is paper commit 5b475631d237cc53fc1c8b49a0a076ed140d4694; later closeout metadata does not alter main.tex.",
     "It is not a complete supplement manifest; debug execution provenance is confined to the nested debug manifest and run registry.",
     "No current anonymous supplement archive exists.",
     "Some historical episodic artifacts contain absolute protected paths and must not be released without staged-copy anonymization.",
@@ -252,9 +252,16 @@
     {
       "path": "reports/FINAL_REPRODUCIBILITY_AUDIT.md",
       "kind": "final_reproducibility_audit",
-      "sha256": "4449e7fa051de3ddc3fb83a9a5d2ff0aa01ce44158247b42bdf67fa0d35466fd",
-      "bytes": 11345,
+      "sha256": "2af8fcd5f4c3d6f630b5033d7be1e1b4a99acec57e67c0e55758227958e167ff",
+      "bytes": 11148,
       "status": "staged_evidence_pass_release_package_blocked"
+    },
+    {
+      "path": "reports/FINAL_REVISION_REPORT.md",
+      "kind": "final_revision_report",
+      "sha256": "6c51e7231205905615e1fdba09ef344c4b0ce3301989ea9a4d91a1a78cd24ee9",
+      "bytes": 6076,
+      "status": "below_threshold_missing_decision_changing_experiments"
     },
     {
       "path": "reports/FINAL_BUILD_ATTEMPT.md",

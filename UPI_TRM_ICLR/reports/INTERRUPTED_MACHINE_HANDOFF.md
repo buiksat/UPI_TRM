@@ -8,8 +8,9 @@ scientific evidence.
 ## Repositories and branches
 
 - Paper: `/home/buiksat/UPI_TRM`, branch
-  `iclr-evidence-aligned-revision`, evidence base before this report update
-  `c0c6acae8d591acbd99441eb3b17b6d2306df50d`.
+  `iclr-evidence-aligned-revision`, audited evidence snapshot
+  `5b475631d237cc53fc1c8b49a0a076ed140d4694`. The closeout report follows
+  without changing the audited manuscript.
 - Code: `/home/buiksat/trm_bellman`, branch `iclr-confirmatory-repair`, commit
   `e4c924cc721e9f4f356789eba03a09f6c8ca1913`. Earlier milestones include
   protocol implementation `8109978`, persistent diagnostic runner `ac624cd`,

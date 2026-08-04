@@ -29,11 +29,11 @@ archive. `artifacts/MANIFEST.json` correctly declares `complete=false` and
 - The run matrix remains `registered_not_authorized`. It registers ten
   confirmatory seeds, `101` through `110`, and three debug seeds, `9001`
   through `9003`. No confirmatory training run is recorded.
-- The paper evidence base is commit
-  `c0c6acae8d591acbd99441eb3b17b6d2306df50d` plus uncommitted final audit and
-  manuscript changes. The final working `main.tex` SHA-256 is
+- The audited paper source and evidence were frozen in commit
+  `5b475631d237cc53fc1c8b49a0a076ed140d4694`. The final `main.tex` SHA-256 is
   `f1f7bb567578dbf1b4a3ab1d7c3db4cfdf3acee8b6e7fb9f818a8239550344e7`.
-  A final immutable paper commit did not exist during this audit.
+  The later closeout commit adds report and manifest metadata without changing
+  the audited manuscript.
 
 ## Structured-file validation
 
@@ -218,9 +218,6 @@ claims remain **not verifiable from supplied evidence**.
 6. GPU debug training was run with deterministic algorithms and cuDNN
    determinism disabled. Seeds and checkpoints permit continuation, but a
    byte-identical fresh GPU retrain is not guaranteed.
-7. Commit the final paper evidence tree and refresh every hash after the last
-   manuscript or report edit. Until then, a final immutable paper source is
-   **not verifiable from supplied evidence**.
-8. Confirmatory bridge, matched PPO, projection cross-design, persistent
+7. Confirmatory bridge, matched PPO, projection cross-design, persistent
    checkpoint diagnostics, and second-domain results have not run. This is a
    scientific evidence gap, not a failure of the verified debug artifacts.
