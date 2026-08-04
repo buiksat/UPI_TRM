@@ -3,18 +3,19 @@
   "manifest_state": "working_evidence_inventory",
   "created_date": "2026-08-03",
   "source_branch": "iclr-evidence-aligned-revision",
-  "source_commit": "5b475631d237cc53fc1c8b49a0a076ed140d4694",
-  "source_code_commit": "e4c924cc721e9f4f356789eba03a09f6c8ca1913",
+  "source_commit": "c1b10eb668ab1c7aac4dfaeeb32d9f55b60ed841",
+  "source_code_commit": "1880b41c196109add997f1663190ca36d6b70be5",
   "hash_algorithm": "sha256",
   "complete": false,
   "anonymous_release_ready": false,
   "notes": [
-    "The audited manuscript and evidence snapshot is paper commit 5b475631d237cc53fc1c8b49a0a076ed140d4694; later closeout metadata does not alter main.tex.",
+    "The audited manuscript and evidence snapshot is paper commit c1b10eb668ab1c7aac4dfaeeb32d9f55b60ed841; the subsequent manifest and review-bundle metadata commit does not alter main.tex.",
     "It is not a complete supplement manifest; debug execution provenance is confined to the nested debug manifest and run registry.",
-    "No current anonymous supplement archive exists.",
+    "No complete anonymous supplement archive exists; the paper-only review bundle and anonymous code archive are recorded separately.",
     "Some historical episodic artifacts contain absolute protected paths and must not be released without staged-copy anonymization.",
-    "The historical code recovery bundle ends at code commit 8d79ba79917a7be8b14540bedb600f51076738c7 and excludes all later implementation work through e4c924cc721e9f4f356789eba03a09f6c8ca1913.",
-    "A complete current code recovery bundle is present and verified, but its Git history contains identity metadata and is not anonymous-release-ready.",
+    "The historical code recovery bundle ends at code commit 8d79ba79917a7be8b14540bedb600f51076738c7 and excludes all later implementation work through 1880b41c196109add997f1663190ca36d6b70be5.",
+    "The full Git recovery bundle ending at e4c924cc721e9f4f356789eba03a09f6c8ca1913 is historical and is superseded by the pushed code branch at 1880b41c196109add997f1663190ca36d6b70be5.",
+    "The current anonymous code archive is external to the paper repository and was rebuilt byte-identically, content-scanned, and checksum-verified.",
     "The recorded pre-repair PDF and log bytes are absent from the current tree; only their historical hashes remain.",
     "The seed-9001 debug evidence is excluded from confirmatory analyses. Its nested manifest binds the staged execution index and 32 staged evaluation files plus external checkpoint and log hashes, but the external checkpoint and log bytes are not in this inventory.",
     "The confirmatory registry status is registered_not_authorized, and no confirmatory training run has executed."
@@ -23,9 +24,10 @@
     {
       "path": "main.tex",
       "kind": "paper_source",
-      "sha256": "f1f7bb567578dbf1b4a3ab1d7c3db4cfdf3acee8b6e7fb9f818a8239550344e7",
-      "bytes": 126813,
-      "status": "current_working_source_pending_paper_commit"
+      "sha256": "04f44579ac3053d581a7aafc60c52f5b13407cb24084a76731746f5d1d853389",
+      "bytes": 127294,
+      "source_commit": "c1b10eb668ab1c7aac4dfaeeb32d9f55b60ed841",
+      "status": "audited_source_at_c1b10eb"
     },
     {
       "path": "build/main_pre_repair.pdf",
@@ -186,20 +188,20 @@
       "bytes": 487752,
       "source_code_commit": "8d79ba79917a7be8b14540bedb600f51076738c7",
       "source_tree": "400d42e3395b26cea2e98bc60620bb8a9c5348d7",
-      "status": "verified_exact_historical_tree_ends_at_8d79ba7_excludes_current_code_e4c924c_no_learned_output"
+      "status": "verified_exact_historical_tree_ends_at_8d79ba7_excludes_later_code_through_1880b41_no_learned_output"
     },
     {
       "path": "../handoff/trm_bellman_iclr-confirmatory-repair_e4c924c_full.bundle",
-      "kind": "current_code_complete_git_recovery_bundle",
+      "kind": "historical_code_complete_git_recovery_bundle",
       "sha256": "5a357c0caa118907426da517aa0a7dc8df4f980fbe38ae9f8a13d0a6035e5ed4",
       "bytes": 91779510,
       "source_code_commit": "e4c924cc721e9f4f356789eba03a09f6c8ca1913",
       "source_tree": "c1eeed790105ca63e77e937db794cdfa305e92a5",
-      "status": "verified_complete_recovery_bundle_not_anonymous_release_ready"
+      "status": "verified_historical_recovery_bundle_superseded_by_pushed_code_commit_1880b41_not_anonymous_release_ready"
     },
     {
       "path": "../handoff/trm_bellman_iclr-confirmatory-repair_e4c924c_full.bundle.sha256",
-      "kind": "current_code_complete_git_recovery_bundle_checksum",
+      "kind": "historical_code_complete_git_recovery_bundle_checksum",
       "sha256": "3b9e37aab6aab1b6cee9ff87a54b4097cc0ac575e2a780dc80b0b7688ff6a9df",
       "bytes": 123,
       "status": "present"
@@ -216,24 +218,40 @@
       "kind": "registered_run_matrix",
       "sha256": "d2c064de22b6cb90a569f7b1000c2dd40087a40153a5070b0cdbd12ac0d22b81",
       "bytes": 3275,
-      "source_code_commit": "e4c924cc721e9f4f356789eba03a09f6c8ca1913",
+      "source_code_commit": "1880b41c196109add997f1663190ca36d6b70be5",
       "status": "registered_not_authorized"
     },
     {
       "path": "CODE_CURRENT:configs/iclr_confirmatory/producer_source_manifest.json",
       "kind": "producer_source_manifest",
-      "sha256": "cde7db24bbc528019670cba82579d470d23390d44835554416c1545a597eec0f",
+      "sha256": "ff7eb54793cd7a0cf26cc5b9df14a5caf6c57b3f0aefdd901194ae532b515747",
       "bytes": 8024,
-      "source_code_commit": "e4c924cc721e9f4f356789eba03a09f6c8ca1913",
+      "source_code_commit": "1880b41c196109add997f1663190ca36d6b70be5",
       "status": "verified_current_code_external_to_paper_repository"
     },
     {
       "path": "reports/POST_REPAIR_RUNTIME_TEST_REPORT.md",
-      "kind": "post_repair_runtime_test_report",
+      "kind": "historical_post_repair_runtime_test_report",
       "sha256": "a3916900b31bd5f5e96aed438a8a718540688d2e2115dbc1cfbb86e22885ac53",
       "bytes": 1712,
       "source_code_commit": "e4c924cc721e9f4f356789eba03a09f6c8ca1913",
-      "status": "397_of_397_declared_runtime_tests_passed"
+      "status": "historical_e4c924c_397_of_397_declared_runtime_tests_passed"
+    },
+    {
+      "path": "reports/POST_CLAUDE_REVIEW_REPAIR_REPORT.md",
+      "kind": "post_claude_review_repair_report",
+      "sha256": "66b128e6443fb355ebf60a677ac974841540fa10d0f8310813a33ed15524d1e7",
+      "bytes": 3149,
+      "source_code_commit": "1880b41c196109add997f1663190ca36d6b70be5",
+      "status": "409_of_409_declared_runtime_tests_passed_review_findings_repaired"
+    },
+    {
+      "path": "CODE_CURRENT:reports/POST_CLAUDE_REVIEW_FULL_UNITTESTS.log",
+      "kind": "post_claude_review_full_test_log",
+      "sha256": "516c5952c3e61752a0fc700a51aa07d8f28dd1e1309ae6fa303fa1b36c060b98",
+      "bytes": 667,
+      "source_code_commit": "1880b41c196109add997f1663190ca36d6b70be5",
+      "status": "409_of_409_declared_runtime_tests_passed"
     },
     {
       "path": "reports/FINAL_PROOF_AUDIT.md",
@@ -280,9 +298,33 @@
     {
       "path": "reports/CLAIM_EVIDENCE_LEDGER.md",
       "kind": "claim_evidence_ledger",
-      "sha256": "dc177ee36a22f605f24c193d39dd189a81327f4b91c1d8c52b29bd81db723c29",
-      "bytes": 31258,
+      "sha256": "eb42a80969fb96d8383a75c38acbaec4f53cfb67213bdfbb501805e3e36db182",
+      "bytes": 31528,
       "status": "current"
+    },
+    {
+      "path": "../UPI_TRM_ICLR_REVIEW_BUNDLE_2026-08-04.zip",
+      "kind": "paper_review_bundle",
+      "sha256": "821442683f3fc67bd23ee73bebf61a700f79b98791f12758aa69787d9b877de7",
+      "bytes": 651136,
+      "source_commit": "c1b10eb668ab1c7aac4dfaeeb32d9f55b60ed841",
+      "status": "paper_only_review_bundle_three_files_verified"
+    },
+    {
+      "path": "CODE_CURRENT:artifact/upi_trm_repository.zip",
+      "kind": "anonymous_code_archive",
+      "sha256": "c60c67772ad65aa97265e0bc596b57e73f883920f66611dac6b322f03bdf11b0",
+      "bytes": 70482343,
+      "source_code_commit": "1880b41c196109add997f1663190ca36d6b70be5",
+      "status": "verified_byte_identical_rebuild_and_forbidden_token_scan"
+    },
+    {
+      "path": "CODE_CURRENT:artifact/upi_trm_repository.zip.sha256",
+      "kind": "anonymous_code_archive_checksum",
+      "sha256": "d049e1b050d351350d66c6813ade947b097e86c3972b16649938f0a18c139788",
+      "bytes": 89,
+      "source_code_commit": "1880b41c196109add997f1663190ca36d6b70be5",
+      "status": "checksum_verified"
     },
     {
       "path": "results/RUN_REGISTRY.jsonl",
