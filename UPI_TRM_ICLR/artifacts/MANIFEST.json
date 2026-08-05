@@ -509,8 +509,8 @@
     {
       "path": "review/THEORY_ONLY_REVIEW_PROMPT.md",
       "kind": "theory_only_review_prompt",
-      "sha256": "7c5037c2651dec8df21b8ec8626fc359f68d21e4443defb8f3ce307a3b2a91cf",
-      "bytes": 3648,
+      "sha256": "60207db987d6f2218fbf6be1d2cd5c83ebc48d82c8ec0a956aadc08984438784",
+      "bytes": 12102,
       "paper_source_commit": "594e21bed2d8f717228346d19a74665a8c81d1c9",
       "status": "current_review_prompt",
       "manuscript_evidence": false
@@ -528,20 +528,20 @@
     {
       "path": "reports/FINAL_THEORY_ONLY_BUILD_REPORT.md",
       "kind": "final_theory_only_build_report",
-      "sha256": "592607e7ca4c3201677f3b097dcbd0770f5f5547b35ebb10c87e583b6dd0fb17",
+      "sha256": "30e8ff249847b1c343b96e679276d67246536068461dab210be0ceebb98bb2af",
       "bytes": 3043,
       "paper_source_commit": "594e21bed2d8f717228346d19a74665a8c81d1c9",
       "status": "current_build_and_visual_inspection_report",
       "manuscript_evidence": false
     },
     {
-      "path": "../UPI_TRM_ICLR_REVIEW_BUNDLE_2026-08-04.zip",
+      "path": "../UPI_TRM_ICLR_THEORY_REVIEW_BUNDLE_2026-08-05.zip",
       "kind": "paper_review_bundle",
-      "sha256": "f0aafa5414a4231f0018e91d015a986ccde76c2de8fba6fac42f8f05d7cfb324",
-      "bytes": 514642,
+      "sha256": "059db820976e938962eca671c082340760fc0311ee4ddd2735a95deea39bb57c",
+      "bytes": 522755,
       "paper_source_commit": "594e21bed2d8f717228346d19a74665a8c81d1c9",
-      "status": "current_theory_only_three_file_review_bundle",
-      "scope": "review_prompt_pdf_and_tex_only",
+      "status": "current_theory_only_four_file_review_bundle",
+      "scope": "review_prompt_pdf_tex_and_bibliography_only",
       "manuscript_evidence": false
     },
     {
