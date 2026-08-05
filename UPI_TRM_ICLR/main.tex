@@ -242,7 +242,7 @@ Algorithm~\ref{alg:upi} alternates three phases: collect edit trajectories, fit 
 
 The simplest exactly centered episodic and augmented-state corollaries of Theorem~\ref{thm:monotone_with_error} require exact statewise baseline evaluation and the explicit mixture step. In the persistent case, centering and the mixture identity are conditional on the full augmented state. The master theorem also permits a signed centering defect. A clipped surrogate, trust-region update, parameter interpolation, or distilled approximation is a different policy: the exact-mixture occupancy term does not apply to it directly, but Corollary~\ref{cor:combined_cpi_deployment} covers it when a uniform TV or KL discrepancy from the explicit mixture is established on the deployment domain.
 
-Persistent-$z$ is handled in Appendix~\ref{app:persistent_latent}, and the initialization condition in Appendix~\ref{app:implementation} gives $C_z\le 2R$. Per update, the dominant cost is $O(T \cdot |\mathcal A| \cdot n)$ inner-evaluator unrolls: $T$ states per trajectory, $|\mathcal A|$ unrolls each for exact baseline summation, and depth $n$ per unroll.
+Persistent-$z$ is handled in Appendix~\ref{app:persistent_latent}, and the initialization condition in Appendix~\ref{app:implementation} gives $C_z\le 2R$. In a finite discrete-action implementation that computes the exactly centered baseline by explicit summation and uses one depth-$n$ evaluator unroll for each action term, the evaluator portion costs $O(T\,|\mathcal A|\,n)$ recurrent-map applications: $T$ states per trajectory, $|\mathcal A|$ action terms per state, and depth $n$ per term. For general action spaces, exact kernel integration has implementation-dependent cost.
 
 
 
@@ -558,15 +558,16 @@ Thus a finite recurrent path and a residual at any deeper finite depth feed dire
 For the exact pointwise probability-space mixture
 $\pi_\alpha=(1-\alpha)\pi+\alpha\pi_{\mathrm{cand}}$, the Bernoulli mixture
 selector yields a sharper occupancy constant than a generic policy
-perturbation argument. The resulting policy-shift term is $O(\alpha^2)$ near
-$\alpha=0$, with an exact denominator that depends on $\alpha$.
-\begin{assumption}[Uniform advantage error on states visited by $\pi$]
+perturbation argument. On a common domain with a fixed advantage span, the
+resulting policy-shift term is $O(\alpha^2)$ near $\alpha=0$, with an exact
+denominator that depends on $\alpha$.
+\begin{assumption}[Uniform advantage error on $\mathcal C_\pi$]
 \label{ass:Ahat_error_bound}
 For some $\varepsilon_A\ge 0$:
 \begin{equation}
 |\widehat{A}(s,a) - A^\pi(s,a)| \le \varepsilon_A
 \end{equation}
-for every relevant $s$ and for $\pi(da\mid s)$- and
+for every $s\in\mathcal C_\pi$ and for $\pi(da\mid s)$- and
 $\pi_{\mathrm{cand}}(da\mid s)$-almost every $a$.
 \end{assumption}
 
@@ -718,6 +719,12 @@ $\varepsilon_{\mathrm{CPI}}:=
 \end{equation}
 \end{theorem}
 
+Theorem~\ref{thm:monotone_with_error} is pointwise in $\alpha$: its
+$\mathcal C_{\mathrm{mix}}$ and the resulting span $\Delta_g$ need only be
+valid for the selected mixture weight and may depend on that choice. An
+interval certificate instead fixes the common policy-pair domain and all
+constants as in Corollary~\ref{cor:one_step_improvement_condition}.
+
 Assumption~\ref{ass:Ahat_error_bound} is one sufficient condition implying
 $\varepsilon_{A,\mathrm{cand}}\le\varepsilon_A$; it is not required for the
 signed master inequality. Equation~\eqref{eq:centering_condition} holds when
@@ -736,7 +743,24 @@ itself calibrate these uniform quantities.
 
 \begin{corollary}[Span-based safe mixture step]
 \label{cor:one_step_improvement_condition}
-Under exact centering, define
+In the setting of Theorem~\ref{thm:monotone_with_error}, fix one measurable
+common policy-pair domain $\mathcal C_{\mathrm{pair}}$ from
+Definition~\ref{def:mixture_deployment_domains}, with
+$\mathcal C_\pi\subseteq\mathcal C_{\mathrm{pair}}$. Use the same estimator
+$\widehat A$, exact centering on $\mathcal C_\pi$, and one finite
+candidate-bias constant $\varepsilon_{A,\mathrm{cand}}$ from
+Eq.~\eqref{eq:epsA0_def} for every $\alpha\in[0,1]$; these objects do not
+depend on $\alpha$. Define, once on $\mathcal C_{\mathrm{pair}}$,
+\begin{align}
+g(s)
+&:=\E_{a\sim\pi_{\mathrm{cand}}(\cdot\mid s)}[A^\pi(s,a)],
+&
+\Delta_g
+&:=\sup_{s\in\mathcal C_{\mathrm{pair}}}g(s)
+-\inf_{s\in\mathcal C_{\mathrm{pair}}}g(s),
+\label{eq:pair_span_def}
+\end{align}
+and assume this function is bounded and measurable there. Let
 \begin{equation}
 \widehat g
 :=\E_{s\sim d_\pi,\,a\sim\pi_{\mathrm{cand}}(\cdot\mid s)}
@@ -745,20 +769,33 @@ Under exact centering, define
 M:=\widehat g-\varepsilon_{A,\mathrm{cand}}.
 \label{eq:M_safe_step}
 \end{equation}
-Then $\eta(\pi_\alpha)\ge\eta(\pi)$ is certified whenever
+Then, simultaneously for every $\alpha\in[0,1]$,
+\begin{equation}
+\eta(\pi_\alpha)-\eta(\pi)
+\ge
+\frac{\alpha}{1-\gamma}
+\left[
+M-
+\frac{\gamma\alpha\Delta_g}{1-\gamma+\gamma\alpha}
+\right].
+\label{eq:safe_step_interval_bound}
+\end{equation}
+Thus $\eta(\pi_\alpha)\ge\eta(\pi)$ is certified whenever
 \begin{equation}
 M\ge
 \frac{\gamma\alpha\Delta_g}{1-\gamma+\gamma\alpha}.
 \label{eq:sufficient_improvement_condition}
 \end{equation}
-The boundary cases are:
+The zero step is always equality. The sharp nonredundant boundary cases for
+positive steps are:
 \begin{itemize}[leftmargin=1.2em,topsep=2pt,itemsep=1pt]
 \item if $\gamma=0$ and $M\ge0$, every $\alpha\in[0,1]$ is certified;
-\item if $M<0$, no positive step is certified; if $M=0$, a positive step
-is certified only in the equality cases $\gamma=0$ or $\Delta_g=0$;
-\item if $M\ge\Delta_g$, every $\alpha\in[0,1]$ is certified; more sharply,
-for $\gamma>0$, $M\ge\gamma\Delta_g$ already certifies every step;
-\item if $0<M<\Delta_g$ and $\gamma>0$, every
+\item if $M<0$, no positive step is certified by this bound;
+\item if $\gamma>0$ and $M=0$, a positive step is certified only when
+$\Delta_g=0$, in which case every step is certified with a zero lower bound;
+\item if $\gamma>0$, $M>0$, and $M\ge\gamma\Delta_g$, every
+$\alpha\in[0,1]$ is certified;
+\item if $\gamma>0$ and $0<M<\gamma\Delta_g$, every
 \begin{equation}
 \alpha\le
 \min\!\left\{1,
@@ -766,7 +803,7 @@ for $\gamma>0$, $M\ge\gamma\Delta_g$ already certifies every step;
 \right\}
 \label{eq:explicit_safe_step}
 \end{equation}
-is certified.
+is certified. Here $\Delta_g-M>0$.
 \end{itemize}
 Under Corollary~\ref{cor:candidate_overlap}, one may use
 $\varepsilon_{A,\mathrm{cand}}\le2\gamma B_{n,m}\tau_\infty$, with
@@ -776,7 +813,8 @@ $\tau_\infty\le1$ recovering the previous fallback.
 Theorem~\ref{thm:monotone_with_error} applies to the exact mixture;
 distillation and parameter interpolation are different policies. They are
 covered only after a deployment discrepancy is established. The policy-shift
-term is $O(\alpha^2)$ near zero, not a polynomial quadratic for all $\alpha$.
+term is $O(\alpha^2)$ near zero when its domain and span are held fixed, not
+a polynomial quadratic for all $\alpha$.
 
 \begin{corollary}[One-step parameter dependence]
 \label{cor:cpi_dials_main}
@@ -802,7 +840,7 @@ L_V\,\frac{L_z^{\,n}}{1-L_z}\,C_z
 
 Corollary~\ref{cor:cpi_dials_main} is the optional fixed-point specialization of the overlap-aware finite-reference penalty $2\alpha\gamma\tau_\infty B_{n,m}/(1-\gamma)$. It makes the one-step dependence on $(L_z,n,K,\alpha)$ explicit. For $n\ge1$, its recurrent term vanishes as $L_z\to0$; together with $\varepsilon_{\mathrm{res}}^*\to0$, this recovers the exact-mixture CPI expression. At $n=0$, the displayed recurrent term instead tends to $L_VC_z$ and no such claim is made. Finite-difference values are local monitoring quantities and certify no global modulus below one.
 
-A projection-aware version of \eqref{eq:main_bound_dials} substitutes $\varepsilon_0+(1+\gamma^K)L_V(R)R$ for $\varepsilon_{\mathrm{res}}^*$ and the conditional analytic upper bound $\overline L_z^{\mathrm{sat}}(R)$ for $L_z$; the full statement is Eq.~\eqref{eq:main_bound_proj} in Appendix~\ref{app:projection_theory}. The saturated-regime upper bound depends multiplicatively on both $R/\rho_R$ and $L_z^{\mathrm{pre}}(R)$, and local proxies certify neither global factor. For $n\ge1$, a smaller established global upper bound on $L_z$ or larger $n$ reduces $L_z^n$; smaller $\alpha$ is safer; larger $K$ tightens $1/(1-\gamma^K)$ at the cost of a $K$-dependent residual. Persistent-$z$ uses the direct augmented-state residual of Appendix~\ref{app:persistent_latent}; slow drift enters only the optional comparison to a memoryless fixed-point reference.
+A projection-aware version of \eqref{eq:main_bound_dials} substitutes $\varepsilon_0+(1+\gamma^K)L_V(R)R$ for $\varepsilon_{\mathrm{res}}^*$ and the conditional analytic upper bound $\overline L_z^{\mathrm{sat}}(R)$ for $L_z$; the full statement is Eq.~\eqref{eq:main_bound_proj} in Appendix~\ref{app:projection_theory}. The saturated-regime upper bound depends multiplicatively on both $R/\rho_R$ and $L_z^{\mathrm{pre}}(R)$, and local proxies certify neither global factor. For $n\ge1$, a smaller established global upper bound on $L_z$ or larger $n$ reduces $L_z^n$; holding a common domain and the displayed bounds fixed, smaller $\alpha$ is safer; larger $K$ tightens $1/(1-\gamma^K)$ at the cost of a $K$-dependent residual. Persistent-$z$ uses the direct augmented-state residual of Appendix~\ref{app:persistent_latent}; slow drift enters only the optional comparison to a memoryless fixed-point reference.
 
 \section{Discussion, Limitations, and Conclusion}
 \label{sec:conclusion}
@@ -906,14 +944,20 @@ Moreover, for $z^{(0)}=z_{\mathrm{init}}(x,y)$,
 \end{equation}
 \end{proposition}
 
-Assume the scalar head is uniformly Lipschitz in its latent argument while the
-instance and plan are held fixed: for every relevant $(x,y)$,
+For any result below that invokes $L_V$ on a declared nonabsorbing domain
+$\mathcal D^\circ$, let $\mathcal Z_{\mathcal D}(s)$ be the set of latent
+arguments compared by that result at $s$. Assume the scalar head is uniformly
+Lipschitz while the instance and plan are held fixed: for every
+$s\in\mathcal D^\circ$ and all $z,z'\in\mathcal Z_{\mathcal D}(s)$,
 \begin{equation}
-\bigl|V_\psi(z,x,y)-V_\psi(z',x,y)\bigr|
+\bigl|V_\psi(z,x(s),y(s))-V_\psi(z',x(s),y(s))\bigr|
 \;\le\;
 L_V\,\norm{z-z'}.
 \label{eq:LV_def}
 \end{equation}
+For a contractive specialization one may take
+$\mathcal Z_{\mathcal D}(s)=\mathcal Z_{\mathrm{inv}}$; a pathwise result
+needs the condition only at the latent pairs it displays.
 
 \begin{assumption}[Bounded value head on the invariant region]
 \label{ass:bounded_value_head}
@@ -1084,18 +1128,18 @@ This direct result is Bellman contraction on the actual finite-depth augmented e
 
 \begin{remark}[Scope of the direct augmented-state certificate]
 \label{rem:persistent_augmented_scope}
-Corollary~\ref{cor:persistent_cpi_augmented} is a result on $\bar s=(x,y,z,h)$, not on the plan marginal $(x,y)$. Its exact-centering condition averages actions conditional on the full $\bar s$, and its mixture identity must hold pointwise on the augmented closure. Finite-batch maxima are diagnostics, not uniform certificates.
+Corollary~\ref{cor:persistent_cpi_augmented} is a result on $\bar s=(x,y,z,h)$, not on the plan marginal $(x,y)$. Its exact-centering condition averages actions conditional on the full $\bar s$, and its mixture identity must hold pointwise on the augmented mixture-occupancy domain $\bar{\mathcal C}_{\mathrm{mix}}$. Finite-batch maxima are diagnostics, not uniform certificates.
 \end{remark}
 
 \begin{lemma}[Finite-path carried-latent comparison]
 \label{lem:persistent_finite_path}
 Let $z_{t+1}=F_t(z_t)$ for $t=0,\ldots,T-1$, and let
-$\xi_0,\ldots,\xi_T$ be an arbitrary reference path. Suppose, on each
-relevant segment,
+$\xi_0,\ldots,\xi_T$ be an arbitrary reference path. Suppose along these
+paths that, for every $t=0,\ldots,T-1$,
 \[
-\|F_t(z)-F_t(\xi_t)\|
+\|F_t(z_t)-F_t(\xi_t)\|
 \le
-\kappa_t\|z-\xi_t\|,
+\kappa_t\|z_t-\xi_t\|,
 \qquad
 d_t:=\|F_t(\xi_t)-\xi_{t+1}\|.
 \]
@@ -1128,7 +1172,7 @@ are bounded uniformly over every declared nonabsorbing start and trajectory.
 \label{sec:twotimescale_persistent}
 
 Slow drift is needed only for the stronger architectural comparison between the actual transient evaluator and the memoryless reference
-$\widetilde U_*(x,y,z,h):=V_\psi(z^*(x,y),x,y)$, with $\widetilde U_*(s_{\mathrm{abs}})=-C_{\max}$. For this subsection, additionally assume $z^*(x,y)$ is measurable, $\widetilde U_*$ is bounded and measurable on the augmented closure, and every relevant carried latent lies in $\mathcal Z_{\mathrm{inv}}$. In the stochastic-initialization case, require $\nu_0(\mathcal Z_{\mathrm{inv}}\mid x,y,h)=1$ for $\rho$-almost every $(x,y,h)$. Assume the tracking conditions below hold uniformly over nonabsorbing trajectory segments formed by one action drawn under either policy followed by $\bar\pi$ dynamics. These include $\bar\rho$-almost every initial augmented state and every starting state used to generate a one-deviation trajectory in the augmented closure. Let $e:\YY\to\mathcal E_y$ be a fixed plan embedding and write $\|y-y'\|_{\mathcal E}:=\|e(y)-e(y')\|_{\mathcal E_y}$.
+$\widetilde U_*(x,y,z,h):=V_\psi(z^*(x,y),x,y)$, with $\widetilde U_*(s_{\mathrm{abs}})=-C_{\max}$. For this subsection, additionally assume $z^*(x,y)$ is measurable and $\widetilde U_*$ is bounded and measurable on the augmented closure. Assume the tracking conditions below hold uniformly over nonabsorbing trajectory segments formed by one action drawn under either policy followed by $\bar\pi$ dynamics, and assume every carried latent on those segments lies in $\mathcal Z_{\mathrm{inv}}$. These segments include $\bar\rho$-almost every initial augmented state and every starting state used to generate a one-deviation trajectory in the augmented closure. In the stochastic-initialization case, require $\nu_0(\mathcal Z_{\mathrm{inv}}\mid x,y,h)=1$ for $\rho$-almost every $(x,y,h)$. Let $e:\YY\to\mathcal E_y$ be a fixed plan embedding and write $\|y-y'\|_{\mathcal E}:=\|e(y)-e(y')\|_{\mathcal E_y}$.
 
 \begin{assumption}[Slow drift of fixed points]
 \label{ass:twotimescale}
@@ -1226,7 +1270,7 @@ Table~\ref{tab:notation} lists additional symbols used in proofs.
 \caption{Additional symbols and notations}
 \label{tab:notation}
 \begin{center}
-\begin{tabular}{ll}
+\begin{tabularx}{\linewidth}{@{}lX@{}}
 \toprule
 Symbol & Meaning \\
 \midrule
@@ -1242,14 +1286,15 @@ $\bar\varepsilon_{\mathrm{res},*}$ & Augmented residual of the fixed-point refer
 $L_{z^*}$, $\Delta y_{\max}$, $E_0$ & Slow-drift parameters \\
 $\varepsilon_A$, $\bar\varepsilon_A$ & Episodic / augmented advantage error bounds \\
 $\varepsilon_{\mathrm{res}}^*$ & Architectural residual at $U_*$ \\
-$g$, $\Delta_g$ & Candidate expected advantage / its mixture-domain span \\
+$g$, $\Delta_g$ & Candidate expected advantage / span on the declared mixture or pair domain \\
+$\mathcal C_{\mathrm{pair}}$ & Common $\pi$/$\pi_{\mathrm{cand}}$-invariant domain for step intervals \\
 $c$, $b(s)$, $\Xi_\alpha$ & Signed centering and candidate estimator defects \\
 $\tau(s)$, $\delta_{\mathrm{dep}}$ & Policy overlap / deployment TV radius \\
 $\varepsilon_{\mathrm{CPI}}$ & Uniform scalar bound on $|g|$ \\
 $\kappa_n = L_z^n$ & Contraction after $n$ steps \\
 $B_V(s)$ & Baseline: $\E_{b \sim \pi}[\widehat{Q}_V(s,b)]$ \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{center}
 \end{table}
 
@@ -1306,7 +1351,36 @@ $\rho(\mathcal D_{\mathrm{dep}})=1$ and is recursively invariant under both
 $\pi_\alpha$ and $\widetilde\pi$. The CPI span theorem uses
 $\mathcal C_{\mathrm{mix}}$; the deployment theorem uses
 $\mathcal D_{\mathrm{dep}}$.
+
+For a certificate simultaneous over more than one mixture weight, a
+measurable common policy-pair domain $\mathcal C_{\mathrm{pair}}$ satisfies
+\begin{equation}
+\rho(\mathcal C_{\mathrm{pair}})=1,
+\qquad
+P_\pi(\mathcal C_{\mathrm{pair}}\mid s)
+=P_{\pi_{\mathrm{cand}}}(\mathcal C_{\mathrm{pair}}\mid s)=1
+\quad\text{for every }s\in\mathcal C_{\mathrm{pair}}.
+\label{eq:pair_domain_invariance}
+\end{equation}
+By linearity of policy-induced kernels, every exact mixture $\pi_\alpha$
+also leaves $\mathcal C_{\mathrm{pair}}$ invariant. Thus
+$\mathcal C_{\mathrm{pair}}$ is a valid single choice of
+$\mathcal C_{\mathrm{mix}}$ for every $\alpha\in[0,1]$.
 \end{definition}
+
+\begin{remark}[Recovering candidate invariance from a positive mixture]
+\label{rem:positive_mixture_pair_domain}
+Let $\alpha_0>0$. If a measurable set $\mathcal E$ is invariant under
+$\pi$ and $\pi_{\alpha_0}$, then for every $s\in\mathcal E$,
+\[
+1=P_{\pi_{\alpha_0}}(\mathcal E\mid s)
+=(1-\alpha_0)P_\pi(\mathcal E\mid s)
++\alpha_0P_{\pi_{\mathrm{cand}}}(\mathcal E\mid s),
+\]
+and $P_\pi(\mathcal E\mid s)=1$ forces
+$P_{\pi_{\mathrm{cand}}}(\mathcal E\mid s)=1$. This implication does not
+follow at $\alpha_0=0$ without separately assuming candidate invariance.
+\end{remark}
 
 In finite or countable spaces these domains can be constructed with the usual
 positive-probability reachable sets and action supports. On arbitrary
@@ -2106,6 +2180,12 @@ Eq.~\eqref{eq:main_theorem_occupancy}.
 \end{proof}
 
 \begin{proof}[Proof of Corollary~\ref{cor:one_step_improvement_condition}]
+The invariance of $\mathcal C_{\mathrm{pair}}$ under both endpoint policies
+implies its invariance under every $\pi_\alpha$. Hence
+Theorem~\ref{thm:monotone_with_error} applies for each
+$\alpha\in[0,1]$ with the same choice
+$\mathcal C_{\mathrm{mix}}=\mathcal C_{\mathrm{pair}}$, the same
+$\Delta_g$, and the same estimator-bias bound.
 Exact centering gives
 $\widehat L_\pi(\pi_\alpha)=
 \eta(\pi)+\alpha\widehat g/(1-\gamma)$.
@@ -2117,12 +2197,25 @@ Eq.~\eqref{eq:main_theorem_occupancy} therefore gives
 \left[M-\frac{\gamma\alpha\Delta_g}
 {1-\gamma+\gamma\alpha}\right].
 \]
-This proves Eq.~\eqref{eq:sufficient_improvement_condition}. For
-$\gamma>0$ and $0<M<\Delta_g$, rearrangement gives
-$\alpha\le M(1-\gamma)/[\gamma(\Delta_g-M)]$; intersecting with
-$[0,1]$ gives Eq.~\eqref{eq:explicit_safe_step}. Direct substitution gives
-the remaining boundary cases, including equality when $M=0$ and either
-$\gamma=0$ or $\Delta_g=0$.
+This proves Eqs.~\eqref{eq:safe_step_interval_bound}
+and~\eqref{eq:sufficient_improvement_condition}. For
+\[
+\varphi(\alpha)
+:=\frac{\gamma\alpha\Delta_g}{1-\gamma+\gamma\alpha},
+\qquad
+\varphi'(\alpha)
+=\frac{\gamma\Delta_g(1-\gamma)}
+{(1-\gamma+\gamma\alpha)^2}\ge0.
+\]
+Thus $\varphi(0)=0$ and
+$\max_{\alpha\in[0,1]}\varphi(\alpha)=\varphi(1)=\gamma\Delta_g$.
+If $\gamma>0$ and $0<M<\gamma\Delta_g$, then
+$M<\Delta_g$ because $\gamma<1$, so $\Delta_g-M>0$; rearrangement gives
+$\alpha\le M(1-\gamma)/[\gamma(\Delta_g-M)]$, and intersection with
+$[0,1]$ gives Eq.~\eqref{eq:explicit_safe_step}. The monotonicity and direct
+substitution give the remaining stated cases, including
+$M=0$, $\gamma>0$, and $\Delta_g=0$, where the certificate's lower bound
+is zero.
 \end{proof}
 
 \subsection{Proof of Corollary~\ref{cor:finite_depth_residual_certificate}}

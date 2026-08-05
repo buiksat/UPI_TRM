@@ -3,27 +3,46 @@
 You are independently reviewing the revised canonical UPI--TRM ICLR theory paper. The attached archive contains:
 
 - `main.tex`, the canonical source;
-- `main.pdf`, the compiled paper; and
-- `trm_rl.bib`, the bibliography.
+- `main.pdf`, the compiled paper;
+- `trm_rl.bib`, the bibliography;
+- `Makefile`, the canonical build path;
+- `iclr2026_conference.sty` and `iclr2026_conference.bst`, the exact ICLR
+  template files used by the paper;
+- `algorithm.sty`, `algorithmic.sty`, and `fancyhdr.sty`, the local style
+  dependencies selected by this source; and
+- `figures/trm_to_mdp_bridge.tex`, the TikZ source included by `main.tex`.
 
-Read all three files completely. Treat `main.tex` as the source of truth and use `main.pdf` to audit the rendered artifact. Do not assume that a theorem is correct because the prose says it is. Re-derive every material claim before accepting or criticizing it.
+Read `main.tex`, `main.pdf`, and `trm_rl.bib` completely. Inspect the build
+and figure sources where relevant. Treat `main.tex` as the source of truth
+and use `main.pdf` to audit the rendered artifact. Do not assume that a
+theorem is correct because the prose says it is. Re-derive every material
+claim before accepting or criticizing it.
+
+From a fresh extraction with a standard TeX Live installation, reproduce the
+paper by running `make pdf`. The archive contains every repository-local
+source dependency used by that command; disposable build products are
+intentionally excluded.
 
 Review the paper as a mathematically demanding ICLR theory reviewer. Concentrate on:
 
 1. theorem correctness, quantifiers, domains, measurability, boundedness, and policy dependence;
 2. the absorber convention and the separation between value domains and nonabsorbing latent-path domains;
 3. the measurable `B_b(C)` Bellman theorem and its continuous persistent-latent application;
-4. exact probability-space mixing, the occupancy TV constant, the signed estimator-defect identity, advantage-span CPI penalty, and safe-step cases;
-5. every factor of two, sign, denominator, and `t` versus `t+1` index in TV and coupling arguments;
-6. policy-overlap refinements, including the one-step and K-step factors;
-7. finite-horizon residual blocks, stagewise spans, partial final blocks, terminal cancellation, and the `H=0`, `h=0`, `K>h`, and `gamma=0` cases;
-8. the first-mismatch deployment theorem, standard-Borel coupling assumptions, Pinsker cap, combined CPI/deployment result, and claimed attainment example;
-9. persistent state `(x,y,z,h)`, carried pre-unroll versus post-unroll latents, the shared frozen recurrent map, finite-path comparison, and the limits of recurrent-map discrepancy claims;
-10. projection invariance, nonexpansiveness, strict-contraction conditions, `L_z=0`, and the state-dependent anchor result;
-11. consistency of constants and assumptions across the abstract, main text, appendices, proofs, limitations, conclusion, algorithms, and notation table;
-12. novelty and related-work wording, checking that established primitives are not claimed as new;
-13. bibliography accuracy using only what can be verified from the supplied files; and
-14. PDF quality, including equation rendering, page breaks, anonymous authorship, references, algorithms, and proof placement.
+4. exact probability-space mixing, the occupancy TV constant, the signed
+   estimator-defect identity, and the advantage-span CPI penalty;
+5. the distinction between the fixed-$\alpha$ mixture domain and the common
+   $\pi$/$\pi_{\mathrm{cand}}$-invariant domain used by the safe-step interval,
+   including all safe-step boundary cases;
+6. every factor of two, sign, denominator, and `t` versus `t+1` index in TV and coupling arguments;
+7. policy-overlap refinements, including the one-step and K-step factors;
+8. finite-horizon residual blocks, stagewise spans, partial final blocks, terminal cancellation, and the `H=0`, `h=0`, `K>h`, and `gamma=0` cases;
+9. the first-mismatch deployment theorem, standard-Borel coupling assumptions, Pinsker cap, combined CPI/deployment result, and claimed attainment example;
+10. persistent state `(x,y,z,h)`, carried pre-unroll versus post-unroll latents, the shared frozen recurrent map, finite-path comparison, and the limits of recurrent-map discrepancy claims;
+11. projection invariance, nonexpansiveness, strict-contraction conditions, `L_z=0`, and the state-dependent anchor result;
+12. consistency of constants and assumptions across the abstract, main text, appendices, proofs, limitations, conclusion, algorithms, and notation table;
+13. novelty and related-work wording, checking that established primitives are not claimed as new;
+14. bibliography accuracy using only what can be verified from the supplied files; and
+15. PDF quality, including equation rendering, page breaks, anonymous authorship, references, algorithms, and proof placement.
 
 Check these identities and boundary cases independently:
 
