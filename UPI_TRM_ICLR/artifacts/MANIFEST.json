@@ -1,33 +1,31 @@
 {
-  "schema_version": 1,
-  "manifest_state": "working_evidence_inventory",
+  "schema_version": 2,
+  "manifest_state": "theory_only_revision_inventory",
   "created_date": "2026-08-03",
   "source_branch": "iclr-evidence-aligned-revision",
-  "source_commit": "c1b10eb668ab1c7aac4dfaeeb32d9f55b60ed841",
-  "source_code_commit": "1880b41c196109add997f1663190ca36d6b70be5",
+  "source_commit": "594e21bed2d8f717228346d19a74665a8c81d1c9",
+  "source_code_commit": "97dbf56fb02bd34c7ebdea7e9a81bac5d5e7d08e",
   "hash_algorithm": "sha256",
   "complete": false,
   "anonymous_release_ready": false,
   "notes": [
-    "The audited manuscript and evidence snapshot is paper commit c1b10eb668ab1c7aac4dfaeeb32d9f55b60ed841; the subsequent manifest and review-bundle metadata commit does not alter main.tex.",
-    "It is not a complete supplement manifest; debug execution provenance is confined to the nested debug manifest and run registry.",
-    "No complete anonymous supplement archive exists; the paper-only review bundle and anonymous code archive are recorded separately.",
-    "Some historical episodic artifacts contain absolute protected paths and must not be released without staged-copy anonymization.",
-    "The historical code recovery bundle ends at code commit 8d79ba79917a7be8b14540bedb600f51076738c7 and excludes all later implementation work through 1880b41c196109add997f1663190ca36d6b70be5.",
-    "The full Git recovery bundle ending at e4c924cc721e9f4f356789eba03a09f6c8ca1913 is historical and is superseded by the pushed code branch at 1880b41c196109add997f1663190ca36d6b70be5.",
-    "The current anonymous code archive is external to the paper repository and was rebuilt byte-identically, content-scanned, and checksum-verified.",
-    "The recorded pre-repair PDF and log bytes are absent from the current tree; only their historical hashes remain.",
-    "The seed-9001 debug evidence is excluded from confirmatory analyses. Its nested manifest binds the staged execution index and 32 staged evaluation files plus external checkpoint and log hashes, but the external checkpoint and log bytes are not in this inventory.",
-    "The confirmatory registry status is registered_not_authorized, and no confirmatory training run has executed."
+    "This is a working repository inventory, not a complete anonymous supplement manifest.",
+    "The current main.tex is committed at 594e21bed2d8f717228346d19a74665a8c81d1c9 and explicitly reports no learned-task result, numerical theorem check, ablation, or method comparison.",
+    "All theorem-pipeline scripts and outputs are repository-only regressions absent from main.tex; they are not proof, empirical validation, or manuscript evidence.",
+    "Historical learned outputs and seed-9001 debug artifacts are repository archive only, absent from main.tex, and cannot support the repaired implementation.",
+    "The repaired implementation is committed at 97dbf56fb02bd34c7ebdea7e9a81bac5d5e7d08e; all 33 Buck python_unittest targets passed 397 tests with zero failures, and both retained entry points built successfully.",
+    "The confirmatory matrix status is registered_not_authorized, and no confirmatory training run has executed.",
+    "Some archived episodic artifacts contain absolute protected paths and must not enter a release without staged-copy anonymization.",
+    "Historical review bundles, code archives, test logs, and audit reports remain snapshots of their named commits and do not describe the current worktrees."
   ],
   "entries": [
     {
       "path": "main.tex",
       "kind": "paper_source",
-      "sha256": "04f44579ac3053d581a7aafc60c52f5b13407cb24084a76731746f5d1d853389",
-      "bytes": 127294,
-      "source_commit": "c1b10eb668ab1c7aac4dfaeeb32d9f55b60ed841",
-      "status": "audited_source_at_c1b10eb"
+      "sha256": "69f3eb3f3b1951780714fc82ec216476d2d724fc999229a415c46b9e12d4b625",
+      "bytes": 115773,
+      "source_commit": "594e21bed2d8f717228346d19a74665a8c81d1c9",
+      "status": "current_theory_only_committed_source"
     },
     {
       "path": "build/main_pre_repair.pdf",
@@ -35,7 +33,8 @@
       "sha256": "00d0d235e208c36d2a8cbd2d06b74acfb2454099819f54084df94862459ef5c3",
       "bytes": 1170606,
       "present": false,
-      "status": "not verifiable from supplied evidence"
+      "status": "not verifiable from supplied evidence",
+      "manuscript_evidence": false
     },
     {
       "path": "build/main_pre_repair.log",
@@ -43,143 +42,294 @@
       "sha256": "84ba0cb8a58c22410645cbb8508ceecc574c36e395b644dcde08d11e17c7a75c",
       "bytes": 45854,
       "present": false,
-      "status": "not verifiable from supplied evidence"
+      "status": "not verifiable from supplied evidence",
+      "manuscript_evidence": false
     },
     {
       "path": "experiments/finite_mdp_certificate.py",
       "kind": "theorem_unit_test_generator",
       "sha256": "1571aaabd0d383b58da4be3f26be7115e218b4b7a34736116f098eb4e723d922",
-      "status": "present_outputs_byte_reproduced"
+      "status": "repository_only_regression_not_manuscript_evidence",
+      "scope": "repository_only_regression_absent_from_main_tex",
+      "manuscript_evidence": false
     },
     {
       "path": "experiments/finite_mdp_boundary_checks.py",
       "kind": "theorem_unit_test_boundary_generator",
       "sha256": "86127165ba952291f9fb6a8b1303684a63d96e58d9b7465f252f6c342d2429e3",
       "bytes": 25007,
-      "status": "byte_reproduced_outputs"
+      "status": "repository_only_regression_not_manuscript_evidence",
+      "scope": "repository_only_regression_absent_from_main_tex",
+      "manuscript_evidence": false
     },
     {
       "path": "results/finite_mdp_certificate_validation/finite_mdp_summary.csv",
       "kind": "theorem_unit_test_rows",
       "sha256": "52875311ee5d7144ffce5afc2853c746440de5810836c631bc69f8fdb85996d6",
       "bytes": 27301,
-      "status": "present_existing_validation"
+      "status": "repository_only_regression_not_manuscript_evidence",
+      "scope": "repository_only_regression_absent_from_main_tex",
+      "manuscript_evidence": false
     },
     {
       "path": "results/finite_mdp_certificate_validation/fig_value_decomposition.png",
-      "kind": "paper_visible_theorem_unit_test_figure",
+      "kind": "repository_only_theorem_unit_test_figure",
       "sha256": "e2d6e1fcf9be297ca76d114ba4a0fd57bba7aa6f6120010f513d306d778cc26f",
       "bytes": 99236,
-      "status": "byte_reproduced_from_registered_generator"
+      "status": "repository_only_regression_not_manuscript_evidence",
+      "scope": "repository_only_regression_absent_from_main_tex",
+      "manuscript_evidence": false
     },
     {
       "path": "results/finite_mdp_certificate_validation/fig_cpi_certificate.png",
-      "kind": "paper_visible_theorem_unit_test_figure",
+      "kind": "repository_only_theorem_unit_test_figure",
       "sha256": "2b2b37d6dd9b956cbf40ec7456ddb2ecf4e7173fc35b04a855d3b2e26ee4e661",
       "bytes": 70231,
-      "status": "byte_reproduced_from_registered_generator"
+      "status": "repository_only_regression_not_manuscript_evidence",
+      "scope": "repository_only_regression_absent_from_main_tex",
+      "manuscript_evidence": false
     },
     {
       "path": "results/finite_mdp_certificate_validation/finite_mdp_boundary_checks.json",
       "kind": "theorem_unit_test_boundary_results",
       "sha256": "ee0867af8e24fce5e8b047b08d32fed3225db98c1bb2699e23dd8616dbc9512a",
       "bytes": 4304,
-      "status": "byte_reproduced_7_of_7_groups_passed"
+      "status": "repository_only_regression_not_manuscript_evidence",
+      "scope": "repository_only_regression_absent_from_main_tex",
+      "manuscript_evidence": false
     },
     {
       "path": "experiments/finite_horizon_theory_checks.py",
       "kind": "finite_horizon_theorem_unit_test",
       "sha256": "dbb19311ccca6c18e3d2ab3dfa61c9bc2740f6ebc019c8ff3ff0a1f392f9eb15",
       "bytes": 41574,
-      "status": "present_and_rerun"
+      "status": "repository_only_regression_not_manuscript_evidence",
+      "scope": "repository_only_regression_absent_from_main_tex",
+      "manuscript_evidence": false
     },
     {
       "path": "reports/finite_horizon_theory_checks.stdout.json",
       "kind": "finite_horizon_theorem_unit_test_output",
       "sha256": "2bcd3fadd5ad7094b397e492b711d524f65c52d7fe6efea6062922e105a0d8e6",
       "bytes": 1565,
-      "status": "byte_reproduced_26686_checks_passed"
+      "status": "repository_only_regression_not_manuscript_evidence",
+      "scope": "repository_only_regression_absent_from_main_tex",
+      "manuscript_evidence": false
     },
     {
       "path": "reports/finite_horizon_theory_checks_stress.stdout.json",
       "kind": "finite_horizon_theorem_stress_output",
       "sha256": "d2d4b47d08cde84536053fb06aa3c4180a2ea239dd7daa60deb3248f1d0d2da4",
       "bytes": 1575,
-      "status": "byte_reproduced_261814_checks_passed"
+      "status": "repository_only_regression_not_manuscript_evidence",
+      "scope": "repository_only_regression_absent_from_main_tex",
+      "manuscript_evidence": false
+    },
+    {
+      "path": "experiments/corollary_6_2_exact_checks.py",
+      "kind": "exact_arithmetic_theorem_unit_test_generator",
+      "sha256": "992702b6019ff0597491982a96b7e9b565ee2aefa27e192ba0ee647db81135f3",
+      "bytes": 25371,
+      "source_commit": "594e21bed2d8f717228346d19a74665a8c81d1c9",
+      "run_id": "corollary_6_2_exact_checks_20260804",
+      "command": "python3 experiments/corollary_6_2_exact_checks.py --output results/finite_mdp_certificate_validation/corollary_6_2_exact_checks.json",
+      "arithmetic_scope": "fractions.Fraction exact rational arithmetic; explicit infinity and symbolic countable-chain identities are declared symbolic relations",
+      "status": "repository_only_regression_not_manuscript_evidence",
+      "scope": "repository_only_regression_absent_from_main_tex",
+      "manuscript_evidence": false
+    },
+    {
+      "path": "results/finite_mdp_certificate_validation/corollary_6_2_exact_checks.json",
+      "kind": "exact_arithmetic_theorem_unit_test_results",
+      "sha256": "a79fac9e9cf0b95ee57f7ecf3d08c780accd21f227b0ff520ed189a0f59c0455",
+      "bytes": 6754,
+      "run_id": "corollary_6_2_exact_checks_20260804",
+      "case_count": 4,
+      "checks": 146,
+      "status": "repository_only_regression_not_manuscript_evidence",
+      "scope": "repository_only_regression_absent_from_main_tex",
+      "manuscript_evidence": false
+    },
+    {
+      "path": "reports/COROLLARY_6_2_EXACT_REGRESSION_REPORT.md",
+      "kind": "exact_arithmetic_theorem_unit_test_report",
+      "sha256": "2c29b82fc2259c2f1a41579c160af2733c58a8f5cf0e09deacdd9d595ffae657",
+      "bytes": 2690,
+      "run_id": "corollary_6_2_exact_checks_20260804",
+      "status": "repository_only_regression_not_manuscript_evidence",
+      "scope": "repository_only_regression_absent_from_main_tex",
+      "manuscript_evidence": false
+    },
+    {
+      "path": "experiments/finite_plan_edit_bridge_exact.py",
+      "kind": "exact_arithmetic_theorem_bridge_generator",
+      "sha256": "fd9a8dd9aadbee5ca19c4f0caeab2b9500250d56091fa31aff9586dd638dedca",
+      "bytes": 19968,
+      "source_commit": "594e21bed2d8f717228346d19a74665a8c81d1c9",
+      "run_id": "finite_plan_edit_bridge_exact_20260804",
+      "command": "python3 experiments/finite_plan_edit_bridge_exact.py --output results/finite_mdp_certificate_validation/finite_plan_edit_bridge_exact.json",
+      "arithmetic_scope": "fractions.Fraction exact rational arithmetic over the current hand-constructed 10-case finite plan-edit registry",
+      "selection_provenance": "not preregistered; expected outcome labels encoded in source; absence of outcome-informed construction is not verifiable from supplied evidence",
+      "status": "repository_only_regression_not_manuscript_evidence",
+      "scope": "repository_only_regression_absent_from_main_tex",
+      "manuscript_evidence": false
+    },
+    {
+      "path": "results/finite_mdp_certificate_validation/finite_plan_edit_bridge_exact.json",
+      "kind": "exact_arithmetic_theorem_bridge_results",
+      "sha256": "b9c2338b12dcf584ad522335cc1f8db2c3c38f2734d7ad6f1f51229153c920c5",
+      "bytes": 32391,
+      "run_id": "finite_plan_edit_bridge_exact_20260804",
+      "case_count": 10,
+      "checks": 285,
+      "positive_certificates": 4,
+      "vacuous_certificates": 6,
+      "status": "repository_only_regression_not_manuscript_evidence",
+      "scope": "repository_only_regression_absent_from_main_tex",
+      "manuscript_evidence": false
+    },
+    {
+      "path": "reports/FINITE_PLAN_EDIT_EXACT_BRIDGE_REPORT.md",
+      "kind": "exact_arithmetic_theorem_bridge_report",
+      "sha256": "f6c286c97453cec0e8c93ec5f0c2786795bcffc8a9e71fd87bc17ecf99896f35",
+      "bytes": 3991,
+      "run_id": "finite_plan_edit_bridge_exact_20260804",
+      "status": "repository_only_regression_not_manuscript_evidence",
+      "scope": "repository_only_regression_absent_from_main_tex",
+      "manuscript_evidence": false
+    },
+    {
+      "path": "experiments/projection_modulus_exact_checks.py",
+      "kind": "exact_arithmetic_projection_theorem_unit_test_generator",
+      "sha256": "f5cca90caf527441cf8c02921d22a2807c29910cb9867ff22b639302a9e437b0",
+      "bytes": 7381,
+      "source_commit": "594e21bed2d8f717228346d19a74665a8c81d1c9",
+      "run_id": "projection_modulus_exact_checks_20260804",
+      "command": "python3 experiments/projection_modulus_exact_checks.py --output results/finite_mdp_certificate_validation/projection_modulus_exact_checks.json",
+      "arithmetic_scope": "fractions.Fraction exact rational arithmetic on three saturating two-point maps",
+      "status": "repository_only_regression_not_manuscript_evidence",
+      "scope": "repository_only_regression_absent_from_main_tex",
+      "manuscript_evidence": false
+    },
+    {
+      "path": "results/finite_mdp_certificate_validation/projection_modulus_exact_checks.json",
+      "kind": "exact_arithmetic_projection_theorem_unit_test_results",
+      "sha256": "d6806c787ad8fd706131c50dfcb1b29c32df51788bce6407ad2b39914d3988fd",
+      "bytes": 2051,
+      "run_id": "projection_modulus_exact_checks_20260804",
+      "case_count": 3,
+      "assertions": 41,
+      "status": "repository_only_regression_not_manuscript_evidence",
+      "scope": "repository_only_regression_absent_from_main_tex",
+      "manuscript_evidence": false
+    },
+    {
+      "path": "reports/PROJECTION_MODULUS_EXACT_REGRESSION_REPORT.md",
+      "kind": "exact_arithmetic_projection_theorem_unit_test_report",
+      "sha256": "f26a82e97d733bceda97105398a6d88175facf7dcd660ef33b6e5a3a597e42ed",
+      "bytes": 1823,
+      "run_id": "projection_modulus_exact_checks_20260804",
+      "status": "repository_only_regression_not_manuscript_evidence",
+      "scope": "repository_only_regression_absent_from_main_tex",
+      "manuscript_evidence": false
     },
     {
       "path": "reports/finite_mdp_certificate_validation.log",
       "kind": "theorem_unit_test_stdout",
       "sha256": "396b996d965f7fdb5530e71c7eb3f1e329aa1e24b087a6692a79b13296b10ad6",
-      "status": "present_contains_absolute_output_path"
+      "status": "repository_only_regression_not_manuscript_evidence",
+      "scope": "repository_only_regression_absent_from_main_tex",
+      "manuscript_evidence": false
     },
     {
       "path": "results/episodic_z_hard_suite_20k_seed41_50/summary.json",
       "kind": "historical_episodic_aggregate",
       "sha256": "1f88c0080b6be4fead2bd4bf798b45194680136e6b3f4a0d61693bb761410aa8",
       "bytes": 5189,
-      "status": "historical_contains_absolute_protected_paths"
+      "status": "repository_archive_only_historical_contains_absolute_protected_paths",
+      "scope": "repository_archive_only_absent_from_main_tex",
+      "manuscript_evidence": false
     },
     {
       "path": "results/episodic_z_hard_suite_20k_seed41_50/per_seed_eval.jsonl",
       "kind": "historical_episodic_per_seed_evaluation",
       "sha256": "b366b0048cf42fa0606635d6f31308c3eed5db57b0cfbccc02795a1cbd78963d",
-      "status": "historical_contains_absolute_protected_paths"
+      "status": "repository_archive_only_historical_contains_absolute_protected_paths",
+      "scope": "repository_archive_only_absent_from_main_tex",
+      "manuscript_evidence": false
     },
     {
       "path": "results/episodic_z_hard_suite_20k_seed41_50/diagnostics_summary.json",
       "kind": "historical_episodic_diagnostic_aggregate",
       "sha256": "f898d523658dcb72c7357a638c3a1cbcbfab80d668625712933b9acf91f3674f",
-      "status": "finite_batch_diagnostic_only"
+      "status": "repository_archive_only_finite_batch_diagnostic_only",
+      "scope": "repository_archive_only_absent_from_main_tex",
+      "manuscript_evidence": false
     },
     {
       "path": "results/episodic_z_hard_suite_20k_seed41_50/per_seed_diagnostics.jsonl",
       "kind": "historical_episodic_per_seed_diagnostics",
       "sha256": "42b799695dc86c1417ba72f9684c3550546ec74391633601ba3e943057e5e265",
-      "status": "finite_batch_diagnostic_contains_absolute_protected_paths"
+      "status": "repository_archive_only_finite_batch_diagnostic_contains_absolute_protected_paths",
+      "scope": "repository_archive_only_absent_from_main_tex",
+      "manuscript_evidence": false
     },
     {
       "path": "results/episodic_z_hard_suite_20k_seed41_50/cpi_penalty_grid.json",
       "kind": "historical_episodic_derived_penalties",
       "sha256": "c3f47b836838ddc5a836036168d4855c03625a541b072d42cc72bc706de7e579",
-      "status": "finite_batch_derived_artifact_regeneration_script_unregistered"
+      "status": "repository_archive_only_finite_batch_derived_artifact_regeneration_script_unregistered",
+      "scope": "repository_archive_only_absent_from_main_tex",
+      "manuscript_evidence": false
     },
     {
       "path": "results/persistent_upi_20k/per_seed_eval.csv",
       "kind": "historical_persistent_per_seed_evaluation",
       "sha256": "a98daec5e44f5d7ee1c82ebe463488b420d1d2f4f992dccf2765663b9b3e45f4",
-      "status": "historical_in_sample"
+      "status": "repository_archive_only_historical_in_sample",
+      "scope": "repository_archive_only_absent_from_main_tex",
+      "manuscript_evidence": false
     },
     {
       "path": "results/persistent_upi_20k/summary.json",
       "kind": "historical_persistent_aggregate",
       "sha256": "35432c11effedb17a999983d99a1f5a7addb297508fb0015c49bde9aa77a0c18",
       "bytes": 859,
-      "status": "historical_in_sample_checkpoints_absent"
+      "status": "repository_archive_only_historical_in_sample_checkpoints_absent",
+      "scope": "repository_archive_only_absent_from_main_tex",
+      "manuscript_evidence": false
     },
     {
       "path": "EPISODIC_Z_RUN_LOG.md",
       "kind": "historical_narrative_log",
       "sha256": "170c685e0baef6fb32723ba303f5203433aa5dedb007de94a72122e9063c8499",
-      "status": "present_provenance_incomplete"
+      "status": "repository_archive_only_present_provenance_incomplete",
+      "scope": "repository_archive_only_absent_from_main_tex",
+      "manuscript_evidence": false
     },
     {
       "path": "TABLE1_PROVENANCE.md",
       "kind": "historical_claim_provenance_note",
       "sha256": "20486fc70d1a13af511fa2ade9d610c53b138fdce6a14983888e560af90d4060",
-      "status": "present_historical_only"
+      "status": "repository_archive_only_present_historical_only",
+      "scope": "repository_archive_only_absent_from_main_tex",
+      "manuscript_evidence": false
     },
     {
       "path": "REEVAL_LOG.md",
       "kind": "historical_reevaluation_note",
       "sha256": "2e06a60524f6ddebb1f49b582b469570ec0941f4dd78a880b6c6a647e0343aee",
-      "status": "present_historical_only"
+      "status": "repository_archive_only_present_historical_only",
+      "scope": "repository_archive_only_absent_from_main_tex",
+      "manuscript_evidence": false
     },
     {
       "path": "EXPERIMENTS_PROTOCOL.md",
       "kind": "historical_protocol_note",
       "sha256": "1bcf0a92b52bcb72109cbf593711e8eeb4722c41265859ad754299c5450632e0",
-      "status": "present_not_confirmatory_registry"
+      "status": "repository_archive_only_present_not_confirmatory_registry",
+      "scope": "repository_archive_only_absent_from_main_tex",
+      "manuscript_evidence": false
     },
     {
       "path": "../handoff/trm_bellman_iclr-confirmatory-repair.bundle",
@@ -188,7 +338,8 @@
       "bytes": 487752,
       "source_code_commit": "8d79ba79917a7be8b14540bedb600f51076738c7",
       "source_tree": "400d42e3395b26cea2e98bc60620bb8a9c5348d7",
-      "status": "verified_exact_historical_tree_ends_at_8d79ba7_excludes_later_code_through_1880b41_no_learned_output"
+      "status": "verified_exact_historical_tree_ends_at_8d79ba7_excludes_later_code_through_1880b41_no_learned_output",
+      "manuscript_evidence": false
     },
     {
       "path": "../handoff/trm_bellman_iclr-confirmatory-repair_e4c924c_full.bundle",
@@ -197,37 +348,71 @@
       "bytes": 91779510,
       "source_code_commit": "e4c924cc721e9f4f356789eba03a09f6c8ca1913",
       "source_tree": "c1eeed790105ca63e77e937db794cdfa305e92a5",
-      "status": "verified_historical_recovery_bundle_superseded_by_pushed_code_commit_1880b41_not_anonymous_release_ready"
+      "status": "repository_archive_only_verified_historical_recovery_bundle_superseded_by_pushed_code_commit_1880b41_not_anonymous_release_ready",
+      "scope": "repository_archive_only_absent_from_main_tex",
+      "manuscript_evidence": false
     },
     {
       "path": "../handoff/trm_bellman_iclr-confirmatory-repair_e4c924c_full.bundle.sha256",
       "kind": "historical_code_complete_git_recovery_bundle_checksum",
       "sha256": "3b9e37aab6aab1b6cee9ff87a54b4097cc0ac575e2a780dc80b0b7688ff6a9df",
       "bytes": 123,
-      "status": "present"
+      "status": "repository_archive_only_present",
+      "scope": "repository_archive_only_absent_from_main_tex",
+      "manuscript_evidence": false
     },
     {
       "path": "CODE_BUNDLE:configs/iclr_confirmatory/dataset.json",
       "kind": "confirmatory_dataset_lock",
       "sha256": "27660695d7dec8a61c3ac200672842eee77730cd7808a01b28c964931e85edc3",
       "source_code_commit": "8d79ba79917a7be8b14540bedb600f51076738c7",
-      "status": "verified_from_code_bundle_no_learned_output"
+      "status": "verified_from_code_bundle_no_learned_output",
+      "manuscript_evidence": false
     },
     {
       "path": "CODE_CURRENT:configs/iclr_confirmatory/run_matrix.json",
       "kind": "registered_run_matrix",
       "sha256": "d2c064de22b6cb90a569f7b1000c2dd40087a40153a5070b0cdbd12ac0d22b81",
       "bytes": 3275,
-      "source_code_commit": "1880b41c196109add997f1663190ca36d6b70be5",
-      "status": "registered_not_authorized"
+      "source_code_commit": "97dbf56fb02bd34c7ebdea7e9a81bac5d5e7d08e",
+      "status": "registered_not_authorized",
+      "manuscript_evidence": false
     },
     {
       "path": "CODE_CURRENT:configs/iclr_confirmatory/producer_source_manifest.json",
       "kind": "producer_source_manifest",
-      "sha256": "ff7eb54793cd7a0cf26cc5b9df14a5caf6c57b3f0aefdd901194ae532b515747",
+      "sha256": "a3b340633f14583675703e4b9205abeac8eb20b01f993aadeb1655994b4aeede",
       "bytes": 8024,
-      "source_code_commit": "1880b41c196109add997f1663190ca36d6b70be5",
-      "status": "verified_current_code_external_to_paper_repository"
+      "source_code_commit": "97dbf56fb02bd34c7ebdea7e9a81bac5d5e7d08e",
+      "status": "current_committed_producer_source_manifest",
+      "manuscript_evidence": false
+    },
+    {
+      "path": "CODE_CURRENT:reports/GPT_PRO_REPAIR_FULL_UNITTESTS.log",
+      "kind": "retained_failed_pre_final_test_log",
+      "sha256": "9c3e5f100b134120d11da08c988443b66dc75c71ab5bd0a69289dc964d75990e",
+      "bytes": 6247,
+      "source_code_commit": "97dbf56fb02bd34c7ebdea7e9a81bac5d5e7d08e",
+      "status": "retained_failed_pre_final_evidence_408_passed_1_failed",
+      "manuscript_evidence": false
+    },
+    {
+      "path": "CODE_CURRENT:reports/GPT_PRO_REPAIR_FINAL_UNITTESTS_20260804.log",
+      "kind": "final_full_test_log",
+      "sha256": "27b61cca2e48784dd992688faa6f9d13a8eec8570903d09306bd20fec8ce9e0e",
+      "bytes": 3612,
+      "source_code_commit": "97dbf56fb02bd34c7ebdea7e9a81bac5d5e7d08e",
+      "status": "verified_33_targets_397_passed_0_failed",
+      "manuscript_evidence": false
+    },
+    {
+      "path": "CODE_CURRENT:reports/GPT_PRO_REPAIR_FINAL_BUILDS_20260804.log",
+      "kind": "final_entry_point_build_log",
+      "sha256": "209a6e0f463a9a7681cd2757dde7233f15e7bbb5c73871889cbbfa0b933ee26c",
+      "bytes": 527,
+      "source_code_commit": "97dbf56fb02bd34c7ebdea7e9a81bac5d5e7d08e",
+      "status": "verified_training_and_persistent_diagnostics_entry_points_built",
+      "manuscript_evidence": false
     },
     {
       "path": "reports/POST_REPAIR_RUNTIME_TEST_REPORT.md",
@@ -235,7 +420,9 @@
       "sha256": "a3916900b31bd5f5e96aed438a8a718540688d2e2115dbc1cfbb86e22885ac53",
       "bytes": 1712,
       "source_code_commit": "e4c924cc721e9f4f356789eba03a09f6c8ca1913",
-      "status": "historical_e4c924c_397_of_397_declared_runtime_tests_passed"
+      "status": "repository_archive_only_historical_test_record_for_e4c924c_not_current_worktree_validation",
+      "scope": "repository_archive_only_absent_from_main_tex",
+      "manuscript_evidence": false
     },
     {
       "path": "reports/POST_CLAUDE_REVIEW_REPAIR_REPORT.md",
@@ -243,7 +430,9 @@
       "sha256": "66b128e6443fb355ebf60a677ac974841540fa10d0f8310813a33ed15524d1e7",
       "bytes": 3149,
       "source_code_commit": "1880b41c196109add997f1663190ca36d6b70be5",
-      "status": "409_of_409_declared_runtime_tests_passed_review_findings_repaired"
+      "status": "historical_test_record_for_1880b41_not_current_worktree_validation",
+      "scope": "repository_archive_only",
+      "manuscript_evidence": false
     },
     {
       "path": "CODE_CURRENT:reports/POST_CLAUDE_REVIEW_FULL_UNITTESTS.log",
@@ -251,64 +440,109 @@
       "sha256": "516c5952c3e61752a0fc700a51aa07d8f28dd1e1309ae6fa303fa1b36c060b98",
       "bytes": 667,
       "source_code_commit": "1880b41c196109add997f1663190ca36d6b70be5",
-      "status": "409_of_409_declared_runtime_tests_passed"
+      "status": "historical_test_record_for_1880b41_not_current_worktree_validation",
+      "scope": "repository_archive_only",
+      "manuscript_evidence": false
     },
     {
       "path": "reports/FINAL_PROOF_AUDIT.md",
       "kind": "final_proof_audit",
       "sha256": "66a738ee65ccd42abcd91294823d82a7cf6dad27cc9f3f61bb579e6be05c50ee",
       "bytes": 6555,
-      "status": "pass_no_surviving_mathematical_finding"
+      "status": "historical_report_superseded_by_theory_only_scope",
+      "scope": "repository_archive_only",
+      "manuscript_evidence": false
     },
     {
       "path": "reports/FINAL_CLAIM_EVIDENCE_AUDIT.md",
       "kind": "final_claim_evidence_audit",
       "sha256": "c17d95f6cedfcd9c0d99761b462555e16904d16f7512b8403d38fe6ca4e62e0d",
       "bytes": 10151,
-      "status": "pass_for_active_manuscript_release_evidence_incomplete"
+      "status": "historical_report_superseded_by_theory_only_scope",
+      "scope": "repository_archive_only",
+      "manuscript_evidence": false
     },
     {
       "path": "reports/FINAL_REPRODUCIBILITY_AUDIT.md",
       "kind": "final_reproducibility_audit",
       "sha256": "2af8fcd5f4c3d6f630b5033d7be1e1b4a99acec57e67c0e55758227958e167ff",
       "bytes": 11148,
-      "status": "staged_evidence_pass_release_package_blocked"
+      "status": "historical_report_superseded_by_theory_only_scope",
+      "scope": "repository_archive_only",
+      "manuscript_evidence": false
     },
     {
       "path": "reports/FINAL_REVISION_REPORT.md",
       "kind": "final_revision_report",
       "sha256": "6c51e7231205905615e1fdba09ef344c4b0ce3301989ea9a4d91a1a78cd24ee9",
       "bytes": 6076,
-      "status": "below_threshold_missing_decision_changing_experiments"
+      "status": "historical_report_superseded_by_theory_only_scope",
+      "scope": "repository_archive_only",
+      "manuscript_evidence": false
     },
     {
       "path": "reports/FINAL_BUILD_ATTEMPT.md",
       "kind": "final_build_attempt",
       "sha256": "2f25b5fb023474b85330d61345fded20bc4af0c10c0ef74551154d4e1d140f00",
       "bytes": 993,
-      "status": "blocked_missing_tex_toolchain"
+      "status": "historical_report_superseded_by_theory_only_scope",
+      "scope": "repository_archive_only",
+      "manuscript_evidence": false
     },
     {
       "path": "reports/FINITE_MDP_REPRODUCTION_REPORT.md",
       "kind": "finite_mdp_reproduction_report",
       "sha256": "8e804e968c936478b4be099a1595d2f6c917364a4534f9243fae97f0d5f473e3",
       "bytes": 6342,
-      "status": "current_provenance_correction_recorded"
+      "status": "historical_report_superseded_by_theory_only_scope",
+      "scope": "repository_archive_only",
+      "manuscript_evidence": false
     },
     {
       "path": "reports/CLAIM_EVIDENCE_LEDGER.md",
       "kind": "claim_evidence_ledger",
-      "sha256": "eb42a80969fb96d8383a75c38acbaec4f53cfb67213bdfbb501805e3e36db182",
-      "bytes": 31528,
-      "status": "current"
+      "sha256": "ff89186a5b7b3480d15ffa8a33879934ac47795a02d2b024e67090b01bea7e5b",
+      "bytes": 10512,
+      "status": "current_theory_only_claim_ledger",
+      "manuscript_evidence": false
+    },
+    {
+      "path": "review/THEORY_ONLY_REVIEW_PROMPT.md",
+      "kind": "theory_only_review_prompt",
+      "sha256": "7c5037c2651dec8df21b8ec8626fc359f68d21e4443defb8f3ce307a3b2a91cf",
+      "bytes": 3648,
+      "paper_source_commit": "594e21bed2d8f717228346d19a74665a8c81d1c9",
+      "status": "current_review_prompt",
+      "manuscript_evidence": false
+    },
+    {
+      "path": "build/main_iclr_final.pdf",
+      "kind": "final_theory_only_pdf",
+      "sha256": "f15d1c1d453477e56148bd24af34cdd6dd658d29558ac41d78dee735bc3ddce6",
+      "bytes": 491061,
+      "pages": 29,
+      "source_commit": "594e21bed2d8f717228346d19a74665a8c81d1c9",
+      "status": "current_clean_build",
+      "manuscript_evidence": false
+    },
+    {
+      "path": "reports/FINAL_THEORY_ONLY_BUILD_REPORT.md",
+      "kind": "final_theory_only_build_report",
+      "sha256": "592607e7ca4c3201677f3b097dcbd0770f5f5547b35ebb10c87e583b6dd0fb17",
+      "bytes": 3043,
+      "paper_source_commit": "594e21bed2d8f717228346d19a74665a8c81d1c9",
+      "status": "current_build_and_visual_inspection_report",
+      "manuscript_evidence": false
     },
     {
       "path": "../UPI_TRM_ICLR_REVIEW_BUNDLE_2026-08-04.zip",
       "kind": "paper_review_bundle",
-      "sha256": "821442683f3fc67bd23ee73bebf61a700f79b98791f12758aa69787d9b877de7",
-      "bytes": 651136,
-      "source_commit": "c1b10eb668ab1c7aac4dfaeeb32d9f55b60ed841",
-      "status": "paper_only_review_bundle_three_files_verified"
+      "sha256": "f0aafa5414a4231f0018e91d015a986ccde76c2de8fba6fac42f8f05d7cfb324",
+      "bytes": 514642,
+      "paper_source_commit": "594e21bed2d8f717228346d19a74665a8c81d1c9",
+      "status": "current_theory_only_three_file_review_bundle",
+      "scope": "review_prompt_pdf_and_tex_only",
+      "manuscript_evidence": false
     },
     {
       "path": "CODE_CURRENT:artifact/upi_trm_repository.zip",
@@ -316,7 +550,9 @@
       "sha256": "c60c67772ad65aa97265e0bc596b57e73f883920f66611dac6b322f03bdf11b0",
       "bytes": 70482343,
       "source_code_commit": "1880b41c196109add997f1663190ca36d6b70be5",
-      "status": "verified_byte_identical_rebuild_and_forbidden_token_scan"
+      "status": "historical_snapshot_not_current_worktree",
+      "scope": "repository_archive_only",
+      "manuscript_evidence": false
     },
     {
       "path": "CODE_CURRENT:artifact/upi_trm_repository.zip.sha256",
@@ -324,35 +560,41 @@
       "sha256": "d049e1b050d351350d66c6813ade947b097e86c3972b16649938f0a18c139788",
       "bytes": 89,
       "source_code_commit": "1880b41c196109add997f1663190ca36d6b70be5",
-      "status": "checksum_verified"
+      "status": "historical_snapshot_not_current_worktree",
+      "scope": "repository_archive_only",
+      "manuscript_evidence": false
     },
     {
       "path": "results/RUN_REGISTRY.jsonl",
       "kind": "run_registry",
-      "sha256": "cc84060e08ac2a8d79b75aaf8d585bcc687efa19822f0edae96129aa4eb0f5b4",
-      "bytes": 21527,
-      "status": "three_theorem_tests_eight_debug_smokes_zero_confirmatory_runs"
+      "sha256": "d830671a35cc30d50a9b98647b1caecf08db04d9c9e4ac845a2eca4e80bc2078",
+      "bytes": 28250,
+      "status": "repository_only_six_theorem_regressions_eight_debug_archives_zero_confirmatory_runs",
+      "manuscript_evidence": false
     },
     {
       "path": "CODE_BUNDLE:data/iclr-confirmatory-sudoku4x4-v1/manifests/train.json",
       "kind": "confirmatory_training_manifest",
       "sha256": "8def4f59387c1ab9466d043c40a7fdd3c7c670e2778b8d949295811ae7b6088a",
       "records": 1024,
-      "status": "verified_from_code_bundle"
+      "status": "verified_from_code_bundle",
+      "manuscript_evidence": false
     },
     {
       "path": "CODE_BUNDLE:data/iclr-confirmatory-sudoku4x4-v1/manifests/validation.json",
       "kind": "confirmatory_validation_manifest",
       "sha256": "4644a3b1bb8b6e384896888154c9e56252368c1fc2f32962b089ade95a5bc1f2",
       "records": 256,
-      "status": "verified_from_code_bundle"
+      "status": "verified_from_code_bundle",
+      "manuscript_evidence": false
     },
     {
       "path": "CODE_BUNDLE:data/iclr-confirmatory-sudoku4x4-v1/manifests/test.json",
       "kind": "confirmatory_heldout_manifest",
       "sha256": "163a083a9f5744b7cc485663b269b89acc3103d9e1ec64c7e93f78e36fa79d40",
       "records": 512,
-      "status": "verified_from_code_bundle"
+      "status": "verified_from_code_bundle",
+      "manuscript_evidence": false
     },
     {
       "path": "results/confirmatory_locks/debug_seed9001/index.json",
@@ -362,14 +604,18 @@
       "source_code_commit": "e4c924cc721e9f4f356789eba03a09f6c8ca1913",
       "runs": 8,
       "seed": 9001,
-      "status": "verified_debug_only_excluded_from_confirmatory"
+      "status": "verified_debug_only_excluded_from_confirmatory",
+      "scope": "repository_debug_archive_only_absent_from_main_tex",
+      "manuscript_evidence": false
     },
     {
       "path": "results/confirmatory_locks/debug_seed9001/index.json.sha256",
       "kind": "debug_preflight_lock_index_checksum",
       "sha256": "649323855bfdea086c0639cb86eda74a9ca449978b56ad34a3e4f368ade5c131",
       "bytes": 77,
-      "status": "present"
+      "status": "present",
+      "scope": "repository_debug_archive_only_absent_from_main_tex",
+      "manuscript_evidence": false
     },
     {
       "path": "results/confirmatory_locks/debug_seed9001/debug-b0_i00-seed9001.lock.json",
@@ -378,7 +624,9 @@
       "bytes": 4809,
       "cell": "B0_I00",
       "seed": 9001,
-      "status": "verified_debug_only_excluded_from_confirmatory"
+      "status": "verified_debug_only_excluded_from_confirmatory",
+      "scope": "repository_debug_archive_only_absent_from_main_tex",
+      "manuscript_evidence": false
     },
     {
       "path": "results/confirmatory_locks/debug_seed9001/debug-bz_i10-seed9001.lock.json",
@@ -387,7 +635,9 @@
       "bytes": 4875,
       "cell": "Bz_I10",
       "seed": 9001,
-      "status": "verified_debug_only_excluded_from_confirmatory"
+      "status": "verified_debug_only_excluded_from_confirmatory",
+      "scope": "repository_debug_archive_only_absent_from_main_tex",
+      "manuscript_evidence": false
     },
     {
       "path": "results/confirmatory_locks/debug_seed9001/debug-bd_i01-seed9001.lock.json",
@@ -396,7 +646,9 @@
       "bytes": 4887,
       "cell": "Bd_I01",
       "seed": 9001,
-      "status": "verified_debug_only_excluded_from_confirmatory"
+      "status": "verified_debug_only_excluded_from_confirmatory",
+      "scope": "repository_debug_archive_only_absent_from_main_tex",
+      "manuscript_evidence": false
     },
     {
       "path": "results/confirmatory_locks/debug_seed9001/debug-bt-seed9001.lock.json",
@@ -405,7 +657,9 @@
       "bytes": 4859,
       "cell": "Bt",
       "seed": 9001,
-      "status": "verified_debug_only_excluded_from_confirmatory"
+      "status": "verified_debug_only_excluded_from_confirmatory",
+      "scope": "repository_debug_archive_only_absent_from_main_tex",
+      "manuscript_evidence": false
     },
     {
       "path": "results/confirmatory_locks/debug_seed9001/debug-bb-seed9001.lock.json",
@@ -414,7 +668,9 @@
       "bytes": 4859,
       "cell": "Bb",
       "seed": 9001,
-      "status": "verified_debug_only_excluded_from_confirmatory"
+      "status": "verified_debug_only_excluded_from_confirmatory",
+      "scope": "repository_debug_archive_only_absent_from_main_tex",
+      "manuscript_evidence": false
     },
     {
       "path": "results/confirmatory_locks/debug_seed9001/debug-i11-seed9001.lock.json",
@@ -423,7 +679,9 @@
       "bytes": 4874,
       "cell": "I11",
       "seed": 9001,
-      "status": "verified_debug_only_excluded_from_confirmatory"
+      "status": "verified_debug_only_excluded_from_confirmatory",
+      "scope": "repository_debug_archive_only_absent_from_main_tex",
+      "manuscript_evidence": false
     },
     {
       "path": "results/confirmatory_locks/debug_seed9001/debug-upi_trm-seed9001.lock.json",
@@ -432,7 +690,9 @@
       "bytes": 4104,
       "cell": "UPI_TRM",
       "seed": 9001,
-      "status": "verified_debug_only_excluded_from_confirmatory"
+      "status": "verified_debug_only_excluded_from_confirmatory",
+      "scope": "repository_debug_archive_only_absent_from_main_tex",
+      "manuscript_evidence": false
     },
     {
       "path": "results/confirmatory_locks/debug_seed9001/debug-trm_ppo-seed9001.lock.json",
@@ -441,7 +701,9 @@
       "bytes": 5136,
       "cell": "TRM_PPO",
       "seed": 9001,
-      "status": "verified_debug_only_excluded_from_confirmatory"
+      "status": "verified_debug_only_excluded_from_confirmatory",
+      "scope": "repository_debug_archive_only_absent_from_main_tex",
+      "manuscript_evidence": false
     },
     {
       "path": "artifacts/debug_smoke/seed9001/MANIFEST.json",
@@ -455,7 +717,9 @@
       "staged_per_instance_rows": 2048,
       "training_environment_interactions_per_run": 80,
       "evaluation_records_per_run": 256,
-      "status": "verified_debug_only_excluded_from_confirmatory_external_checkpoint_and_log_bytes_not_staged"
+      "status": "verified_debug_only_excluded_from_confirmatory_external_checkpoint_and_log_bytes_not_staged",
+      "scope": "repository_debug_archive_only_absent_from_main_tex",
+      "manuscript_evidence": false
     },
     {
       "path": "artifacts/debug_smoke/seed9001/execution_index.json",
@@ -463,14 +727,23 @@
       "sha256": "a87adfa399296fd9f1af5903e66ea54cb92042d728364938e89cf732b07ab9ab",
       "bytes": 6623,
       "runs": 8,
-      "status": "verified_debug_only_excluded_from_confirmatory"
+      "status": "verified_debug_only_excluded_from_confirmatory",
+      "scope": "repository_debug_archive_only_absent_from_main_tex",
+      "manuscript_evidence": false
     },
     {
       "path": "artifacts/debug_smoke/seed9001/MANIFEST.json.sha256",
       "kind": "debug_smoke_nested_artifact_manifest_checksum",
       "sha256": "fc76cfe5f4b8b3bdc01432272f12e89ccf653e7a97d2f3d8ee802259e9bb3bbb",
       "bytes": 80,
-      "status": "present"
+      "status": "present",
+      "scope": "repository_debug_archive_only_absent_from_main_tex",
+      "manuscript_evidence": false
     }
-  ]
+  ],
+  "source_tree": "85f0a324247c72e914ca22f711d699a89133ad7e",
+  "source_code_tree": "a8d20155dad37ca6754a1857f3a800e0576c2b52",
+  "manuscript_scope": "theory_only_no_numerical_or_learned_results",
+  "confirmatory_registry_status": "registered_not_authorized",
+  "confirmatory_training_runs": 0
 }

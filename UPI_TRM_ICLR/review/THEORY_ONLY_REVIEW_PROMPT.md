@@ -53,6 +53,18 @@ does require executable evidence.
 9. Check all references, theorem numbering, notation, anonymity, PDF rendering,
    and duplicate or broken hyperlink destinations.
 
+## Bundle Identity
+
+The expected manuscript files are:
+
+- `paper.tex`: SHA-256
+  `69f3eb3f3b1951780714fc82ec216476d2d724fc999229a415c46b9e12d4b625`
+- `paper.pdf`: SHA-256
+  `f15d1c1d453477e56148bd24af34cdd6dd658d29558ac41d78dee735bc3ddce6`
+  and 29 pages
+
+Report a bundle-integrity finding if either hash or the PDF page count differs.
+
 ## Output
 
 Lead with verified findings ordered by severity. For each finding, cite exact
