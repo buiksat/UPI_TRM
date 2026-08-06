@@ -1,3 +1,0 @@
-pdflatex -interaction=nonstopmode -halt-on-error -file-line-error main.tex
-make: pdflatex: No such file or directory
-make: *** [Makefile:6: pdf] Error 127

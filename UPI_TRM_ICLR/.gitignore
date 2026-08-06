@@ -1,8 +1,4 @@
-# Local scratch / session logs (do not commit)
-scripts/scratch.md
-scripts/scratch*.md
-
-# Root LaTeX build products (curated PDFs/logs under build/ are tracked).
+# Root LaTeX build products.
 /main.aux
 /main.bbl
 /main.blg
@@ -13,15 +9,3 @@ scripts/scratch*.md
 /main.pdf
 /main.synctex.gz
 /main.toc
-
-# Local inspection and superseded build attempts.
-/build/*
-!/build/upi_trm_iclr_template_baseline.pdf
-!/build/upi_trm_iclr_template_baseline.log
-!/build/iclr_template_baseline_build_pass5_clean.stdout.log
-!/build/upi_trm_iclr_revised.pdf
-!/build/upi_trm_iclr_revised.log
-!/build/iclr_revised_final_build.stdout.log
-
-# Retained numerical-certificate validation log.
-!/reports/finite_mdp_certificate_validation.log

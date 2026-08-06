@@ -1,7 +1,3 @@
-# Preserve producer-emitted whitespace in retained build logs.
-build/*.log -whitespace
-results/finite_mdp_certificate_validation/*.csv -whitespace
-
 # Local vendored package files are preserved byte-for-byte.
 algorithm.sty -whitespace
 algorithmic.sty -whitespace
