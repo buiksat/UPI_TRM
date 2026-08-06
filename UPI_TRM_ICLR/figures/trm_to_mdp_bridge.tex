@@ -31,7 +31,7 @@ Iterate the inner refinement across multiple passes of $f_\theta$, continuously 
 Unroll the evaluator for depth $n$.\\[2pt]
 {\centering
 $\begin{aligned}
-z^{(k+1)} &= (\Pi_R \circ f_\theta)(z^{(k)}, y_t, x)\\
+z^{(k+1)} &= \widetilde f_\theta(z^{(k)}, y_t, x)\\
 U_n(s_t) &= V_\psi(z_t^{(n)},x,y_t)\\
 \widetilde U_n(\bar s_t) &= V_\psi(z_t^{(n)},x,y_t)
 \end{aligned}$\par
