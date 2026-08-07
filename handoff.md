@@ -1,15 +1,15 @@
 # UPI--TRM paper handoff
 
-Date: 2026-08-06
+Date: 2026-08-07
 
 ## Resume point
 
 - Repository: `https://github.com/buiksat/UPI_TRM.git`
 - Branch: `iclr-evidence-aligned-revision`
-- Last substantive commit: `8165170 Add GPT Pro theory review prompt`
-- At handoff creation, local `HEAD` and `origin/iclr-evidence-aligned-revision` both pointed to `8165170` and the worktree was clean.
+- Paper-theory anchor used by the implementation synchronization: `2107125 Tighten UPI-TRM theory and pseudocode`.
+- Resolve and record the actual branch `HEAD` before review. Prompt and handoff maintenance may be newer than the paper-theory anchor.
 - Canonical paper directory: `UPI_TRM_ICLR/`
-- Current task state: the paper revision and repository cleanup are complete. The next step is an independent GPT Pro theory and algorithm review, followed by a new Codex editing session only if that review finds verified repairs or worthwhile theory improvements.
+- Current task state: the paper revision and repository cleanup are complete. The next step is an independent ChatGPT Pro review of both the canonical paper and the synchronized implementation, followed by a new Codex editing session only for independently verified repairs.
 
 On a new machine:
 
@@ -30,7 +30,6 @@ The active paper uses these files:
 UPI_TRM_ICLR/
 ├── .gitattributes
 ├── .gitignore
-├── GPT_PRO_THEORY_REVIEW_PROMPT.md
 ├── Makefile
 ├── algorithm.sty
 ├── algorithmic.sty
@@ -43,6 +42,8 @@ UPI_TRM_ICLR/
 ├── main.pdf
 └── trm_rl.bib
 ```
+
+The current cross-repository review prompt lives in the implementation repository at `reports/CHATGPT_PRO_CODE_AND_PAPER_REVIEW_PROMPT.md`. It is intentionally outside the canonical paper source tree.
 
 `main.tex` and `trm_rl.bib` are tracked. `main.pdf` is intentionally ignored by `UPI_TRM_ICLR/.gitignore`, so a fresh clone will not contain the current PDF. Rebuild it locally.
 
@@ -62,9 +63,9 @@ make pdf
 
 Last validated artifact before this handoff:
 
-- page count: 34 pages;
-- file size: 536,967 bytes;
-- SHA-256: `b1e07cc67aef054ecad140a56f624b1858a05fd1ae3e5516a3ebb25b9bcd6ac0`;
+- page count: 38 pages;
+- file size: 561,399 bytes;
+- SHA-256: `b5c639f0d01c4f0e8b10b801c610c632d1d4dd3c0ed6eb9590f1bd1157a8c805`;
 - no missing inputs;
 - no undefined references or citations;
 - no duplicate labels;
@@ -83,7 +84,7 @@ Inspect the complete diff before committing. Do not edit `main.pdf` directly.
 
 ## Latest paper changes
 
-Commit `c2168d2` revised `main.tex` and removed stale artifacts. The important mathematical changes are:
+The current branch through `2107125` contains these important mathematical changes:
 
 1. **Domain-relative recurrent contraction.** Assumption “Domain-relative forward-invariant contraction” now fixes a declared nonabsorbing domain `\(\mathcal D^\circ\)`. Invariance, contraction, initialization, and input-specific fixed-point claims use that same domain. A global condition over all input pairs is only a sufficient special case.
 2. **Projection specialization.** “Projection-induced contraction on a saturated annulus” binds `\(x\)` and `\(y\)` through `\(s\in\mathcal C^\circ\)` and concludes contraction only on that domain. It preserves
@@ -158,35 +159,28 @@ Preserve these points in every future revision:
 - Preserve `\(\operatorname{TV}(p,q)=\tfrac12\|p-q\|_1\)` in finite or countable settings and do not add an extra factor of two to span-TV inequalities.
 - Keep novelty claims conservative. The contribution is a domain-specific synthesis and composition, not priority claims for standard Bellman, Banach, occupancy, or coupling tools.
 
-## GPT Pro review workflow
+## ChatGPT Pro cross-repository review workflow
 
-The tracked file `UPI_TRM_ICLR/GPT_PRO_THEORY_REVIEW_PROMPT.md` is the final prompt for a new GPT Pro session. It tells GPT Pro to:
+Use the tracked implementation file `reports/CHATGPT_PRO_CODE_AND_PAPER_REVIEW_PROMPT.md` for a new ChatGPT Pro session. It requires direct review of both repositories, an exact-source paper build, complete implementation dependency tracing, adversarial verification, and a written report. It keeps the work theory- and parity-focused and prohibits experiments.
 
-- read `main.tex`, `main.pdf`, and `trm_rl.bib` completely;
-- review only theory and algorithms, not experiments;
-- adversarially re-derive the central results;
-- look for valid, useful theory improvements;
-- separate required repairs from optional future extensions;
-- produce a complete standalone implementation prompt for a brand-new Codex session.
-
-For the GPT Pro session, provide exactly these four files unless the user asks for a different package:
+Give ChatGPT Pro direct read access to these branches:
 
 ```text
-main.tex
-main.pdf
-trm_rl.bib
-GPT_PRO_THEORY_REVIEW_PROMPT.md
+/home/buiksat/trm_bellman  branch full-implementation
+/home/buiksat/UPI_TRM     branch iclr-evidence-aligned-revision
 ```
 
-Do not include styles, figures, logs, build intermediates, old prompts, reports, or unrelated files in the review ZIP. GPT Pro is reviewing the supplied source and PDF, not reproducing the LaTeX build.
+If the review environment cannot access those paths, clone the two remotes into a temporary directory and check out the named branches. If only file uploads are available, export both exact commits outside either repository and upload the complete clean trees plus the new prompt. Do not commit generated ZIP files or review bundles.
 
-When GPT Pro returns its review, do not implement findings mechanically. Re-derive each proposed repair against the current repository. Implement only verified corrections and high-value improvements that fit the established scope. Preserve every central constant unless a complete derivation proves it wrong.
+The prompt requires a blind pass before ChatGPT Pro reads prior review reports. Treat every prior finding and verdict as a hypothesis. When ChatGPT Pro returns its report, re-derive each proposed repair against the current repositories before editing anything.
 
 ## Git history and next action
 
 Relevant commits, newest first:
 
 ```text
+2107125 Tighten UPI-TRM theory and pseudocode
+1ff4624 Add cross-machine paper handoff
 8165170 Add GPT Pro theory review prompt
 e222885 update (removed the remaining historical handoff bundles)
 c2168d2 Strengthen contraction theory and prune stale artifacts
@@ -195,8 +189,8 @@ c2168d2 Strengthen contraction theory and prune stale artifacts
 
 Next action:
 
-1. Rebuild `main.pdf` on the new machine.
-2. Send the four-file set above to a new GPT Pro session with `GPT_PRO_THEORY_REVIEW_PROMPT.md` as the prompt.
-3. Save GPT Pro's complete response.
-4. Start a new Codex session using the standalone implementation prompt generated by GPT Pro.
-5. Let Codex edit and rebuild the paper only after independently confirming the proposed mathematics.
+1. Confirm both named branches are current and record their exact commit SHAs.
+2. Start a new ChatGPT Pro session with direct access to both repositories and use `reports/CHATGPT_PRO_CODE_AND_PAPER_REVIEW_PROMPT.md` from the implementation repository.
+3. Save ChatGPT Pro's complete report without editing either repository during review.
+4. Independently verify every surviving finding.
+5. Start a new Codex session only for verified repairs, then rerun the required paper and implementation validation.
