@@ -1,15 +1,18 @@
 # UPI--TRM paper handoff
 
-Date: 2026-08-07
+Date: 2026-08-11
 
 ## Resume point
 
 - Repository: `https://github.com/buiksat/UPI_TRM.git`
 - Branch: `iclr-evidence-aligned-revision`
+- Synchronized implementation repository: `https://github.com/gopeshh/trm_bellman.git`
+- Synchronized implementation branch: `full-implementation`
+- Synchronized implementation commit: `d9ccad73fb58998ccaed609b5e957d29b7878da6` (`Bind confirmatory runs to sealed runtime artifacts`).
 - Paper-theory anchor used by the implementation synchronization: `2107125 Tighten UPI-TRM theory and pseudocode`.
 - Resolve and record the actual branch `HEAD` before review. Prompt and handoff maintenance may be newer than the paper-theory anchor.
 - Canonical paper directory: `UPI_TRM_ICLR/`
-- Current task state: the paper revision and repository cleanup are complete. The next step is an independent ChatGPT Pro review of both the canonical paper and the synchronized implementation, followed by a new Codex editing session only for independently verified repairs.
+- Current task state: the paper revision, repository cleanup, implementation parity repairs, and sealed-runtime provenance repair are complete. The next step is an independent ChatGPT Pro review of both repositories. Make new edits only for independently verified findings.
 
 On a new machine:
 
@@ -65,7 +68,7 @@ Last validated artifact before this handoff:
 
 - page count: 38 pages;
 - file size: 561,399 bytes;
-- SHA-256: `b5c639f0d01c4f0e8b10b801c610c632d1d4dd3c0ed6eb9590f1bd1157a8c805`;
+- SHA-256: `0efe7e71726744a98cd27553045da07dec76bfe1a92834c5677349550a04c133`;
 - no missing inputs;
 - no undefined references or citations;
 - no duplicate labels;
@@ -81,6 +84,25 @@ git status --short
 ```
 
 Inspect the complete diff before committing. Do not edit `main.pdf` directly.
+
+The synchronized implementation commit `d9ccad73fb58998ccaed609b5e957d29b7878da6`
+was validated with these gates:
+
+- required 13-target Buck runtime gate: 285 passed, 0 failed;
+- required six-target type gate: 6 passed, 0 failed;
+- launcher library and binary type targets: 2 passed, 0 failed;
+- built training PAR SHA-256: `f3db77e159e530fcb317911c69fe38c3d4649b924ddeac49edddb9614952dbf2`;
+- real launcher `--confirmatory --help`: exit 0, with no private unpack directory left behind;
+- wrong-digest and direct-PAR confirmatory invocations failed closed;
+- producer manifest matched all 79 behavior-source entries;
+- 46 shell scripts passed `bash -n`;
+- 625 JSON files and 96 YAML files parsed successfully;
+- `git diff --check` passed.
+
+An optional broad `upi_trm_train` type target still reports unrelated historical
+typing debt. The required changed-surface type gates above passed. The GPT Pro
+review must rerun the required gates at the current branch heads rather than
+treating these recorded results as current evidence.
 
 ## Latest paper changes
 
@@ -105,6 +127,30 @@ The current branch through `2107125` contains these important mathematical chang
    \frac{M(1-\gamma)}{\gamma(\Delta_g-M)}.
    \]
 5. **Repository cleanup.** Historical experiment outputs, reports, build snapshots, review archives, ZIP files, unused figures, scripts, and handoff bundles were removed. Do not restore them as part of the theory-paper work.
+
+## Latest implementation synchronization
+
+Commit `d9ccad73fb58998ccaed609b5e957d29b7878da6` closes the three findings from
+the 2026-08-11 review update:
+
+1. Confirmatory source-tree execution is no longer an authorized evidence path.
+   A standard-library launcher verifies the complete packaged runtime before
+   behavior imports, copies the verified bytes into a sealed anonymous file,
+   supervises execution of that descriptor, and uses a fresh private unpack
+   directory that is removed after success or startup failure.
+2. The packaged entry point independently verifies descriptor identity, file
+   seals, whole-artifact SHA-256, module origin, and private-unpack ownership
+   before importing project model or RL modules. The runtime digest is bound to
+   current effective configuration, evidence identity, confirmatory lock,
+   checkpoint save, and resume contracts.
+3. The stale trainer section-number comment was removed. The ablation generator
+   now labels its outputs as legacy, non-theorem-facing feature ablations and
+   sets the legacy protocol explicitly.
+
+Review these as claims to challenge, not accepted facts. In particular, test
+path replacement, same-inode mutation, archive duplication, unsafe members,
+bytecode injection, environment override hooks, descriptor tampering, child
+startup failure, and cleanup.
 
 The following central constants were intentionally preserved:
 
@@ -161,7 +207,7 @@ Preserve these points in every future revision:
 
 ## ChatGPT Pro cross-repository review workflow
 
-Use the tracked implementation file `reports/CHATGPT_PRO_CODE_AND_PAPER_REVIEW_PROMPT.md` for a new ChatGPT Pro session. It requires direct review of both repositories, an exact-source paper build, complete implementation dependency tracing, adversarial verification, and a written report. It keeps the work theory- and parity-focused and prohibits experiments.
+Use the tracked implementation file `reports/CHATGPT_PRO_CODE_AND_PAPER_REVIEW_PROMPT.md` at commit `d9ccad73fb58998ccaed609b5e957d29b7878da6` for a new ChatGPT Pro session. It requires direct review of both repositories, an exact-source paper build, complete implementation dependency tracing, sealed-runtime adversarial checks, and a written report. It keeps the work theory- and parity-focused and prohibits experiments.
 
 Give ChatGPT Pro direct read access to these branches:
 
@@ -179,6 +225,7 @@ The prompt requires a blind pass before ChatGPT Pro reads prior review reports. 
 Relevant commits, newest first:
 
 ```text
+bb11de7 Replace paper-only review prompts
 2107125 Tighten UPI-TRM theory and pseudocode
 1ff4624 Add cross-machine paper handoff
 8165170 Add GPT Pro theory review prompt
