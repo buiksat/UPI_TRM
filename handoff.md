@@ -1,6 +1,6 @@
 # UPI--TRM paper handoff
 
-Date: 2026-08-11
+Date: 2026-08-12
 
 ## Resume point
 
@@ -8,11 +8,14 @@ Date: 2026-08-11
 - Branch: `iclr-evidence-aligned-revision`
 - Synchronized implementation repository: `https://github.com/gopeshh/trm_bellman.git`
 - Synchronized implementation branch: `full-implementation`
-- Synchronized implementation commit: `d9ccad73fb58998ccaed609b5e957d29b7878da6` (`Bind confirmatory runs to sealed runtime artifacts`).
+- Synchronized implementation commit: `e4edcb2107c0f3e7ac0e691bd9dc828c5c6f38a0` (`Harden confirmatory unpack and archive validation`).
+- Synchronized implementation parent: `d9ccad73fb58998ccaed609b5e957d29b7878da6` (`Bind confirmatory runs to sealed runtime artifacts`).
 - Paper-theory anchor used by the implementation synchronization: `2107125 Tighten UPI-TRM theory and pseudocode`.
 - Resolve and record the actual branch `HEAD` before review. Prompt and handoff maintenance may be newer than the paper-theory anchor.
 - Canonical paper directory: `UPI_TRM_ICLR/`
-- Current task state: the paper revision, repository cleanup, implementation parity repairs, and sealed-runtime provenance repair are complete. The next step is an independent ChatGPT Pro review of both repositories. Make new edits only for independently verified findings.
+- Current task state: the paper revision and theory source are unchanged. The
+  implementation has repaired the three findings from the latest GPT Pro
+  review, rerun its required gates, and committed the validated repair state.
 
 On a new machine:
 
@@ -85,13 +88,13 @@ git status --short
 
 Inspect the complete diff before committing. Do not edit `main.pdf` directly.
 
-The synchronized implementation commit `d9ccad73fb58998ccaed609b5e957d29b7878da6`
-was validated with these gates:
+The synchronized implementation commit
+`e4edcb2107c0f3e7ac0e691bd9dc828c5c6f38a0` was validated with these gates:
 
-- required 13-target Buck runtime gate: 285 passed, 0 failed;
+- required 13-target Buck runtime gate: 289 passed, 0 failed;
 - required six-target type gate: 6 passed, 0 failed;
 - launcher library and binary type targets: 2 passed, 0 failed;
-- built training PAR SHA-256: `f3db77e159e530fcb317911c69fe38c3d4649b924ddeac49edddb9614952dbf2`;
+- built training PAR SHA-256: `c03ab186add45656079c550d5d84224e332e0370ad2e966802d9c18ef5a985c1`;
 - real launcher `--confirmatory --help`: exit 0, with no private unpack directory left behind;
 - wrong-digest and direct-PAR confirmatory invocations failed closed;
 - producer manifest matched all 79 behavior-source entries;
@@ -152,6 +155,24 @@ path replacement, same-inode mutation, archive duplication, unsafe members,
 bytecode injection, environment override hooks, descriptor tampering, child
 startup failure, and cleanup.
 
+The synchronized implementation additionally addresses `UPITRM-UPD-004` through
+`UPITRM-UPD-006`:
+
+1. The launcher opens the private unpack root as a directory descriptor and
+   passes `/proc/self/fd/<dirfd>` to the PAR bootstrap. The entrypoint verifies
+   the inherited descriptor before project imports. Path replacement after
+   descriptor acquisition cannot redirect extraction.
+2. Archive validation rejects root aliases, noncanonical directory names,
+   canonical member aliases, and file/directory prefix collisions.
+3. Implementation validation documents now record 289 runtime tests, the
+   separate 6/6 and 2/2 type gates, 79 manifest entries, and the current PAR
+   digest.
+
+The launcher is not a sandbox against the external trust root. The operating
+system, host namespace, other same-UID processes, launcher executable, and
+initial launcher environment remain trusted. Cleanup is best effort if that
+trusted namespace mutates after descriptor acquisition.
+
 The following central constants were intentionally preserved:
 
 \[
@@ -207,7 +228,13 @@ Preserve these points in every future revision:
 
 ## ChatGPT Pro cross-repository review workflow
 
-Use the tracked implementation file `reports/CHATGPT_PRO_CODE_AND_PAPER_REVIEW_PROMPT.md` at commit `d9ccad73fb58998ccaed609b5e957d29b7878da6` for a new ChatGPT Pro session. It requires direct review of both repositories, an exact-source paper build, complete implementation dependency tracing, sealed-runtime adversarial checks, and a written report. It keeps the work theory- and parity-focused and prohibits experiments.
+Use the implementation's tracked file
+`reports/CHATGPT_PRO_CODE_AND_PAPER_REVIEW_PROMPT.md` at commit
+`e4edcb2107c0f3e7ac0e691bd9dc828c5c6f38a0` for a new ChatGPT Pro
+session. It requires direct review of both repositories, an exact-source paper
+build, complete implementation dependency tracing, sealed-runtime adversarial
+checks, and a written report. It keeps the work theory- and parity-focused and
+prohibits experiments.
 
 Give ChatGPT Pro direct read access to these branches:
 
@@ -237,7 +264,9 @@ c2168d2 Strengthen contraction theory and prune stale artifacts
 Next action:
 
 1. Confirm both named branches are current and record their exact commit SHAs.
-2. Start a new ChatGPT Pro session with direct access to both repositories and use `reports/CHATGPT_PRO_CODE_AND_PAPER_REVIEW_PROMPT.md` from the implementation repository.
-3. Save ChatGPT Pro's complete report without editing either repository during review.
-4. Independently verify every surviving finding.
-5. Start a new Codex session only for verified repairs, then rerun the required paper and implementation validation.
+2. Start a new ChatGPT Pro session with direct access to both repositories and
+   use `reports/CHATGPT_PRO_CODE_AND_PAPER_REVIEW_PROMPT.md` from the
+   implementation repository.
+3. Save ChatGPT Pro's complete report without editing either repository during
+   review.
+4. Independently verify every surviving finding before starting another repair.
