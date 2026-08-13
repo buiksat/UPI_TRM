@@ -55,7 +55,9 @@ UPI_TRM_ICLR/
 
 The current cross-repository review prompt lives in the implementation repository at `reports/CHATGPT_PRO_CODE_AND_PAPER_REVIEW_PROMPT.md`. It is intentionally outside the canonical paper source tree.
 
-`main.tex` and `trm_rl.bib` are tracked. `main.pdf` is intentionally ignored by `UPI_TRM_ICLR/.gitignore`, so a fresh clone will not contain the current PDF. Rebuild it locally.
+`main.tex`, `trm_rl.bib`, and the validated `main.pdf` are tracked. A fresh
+clone contains the inspected PDF. After any paper-source edit, rebuild and
+commit the updated PDF with the source rather than editing the PDF directly.
 
 The other top-level paper directories, including `UPI_TRM_ICLR_RSI/`, `UPI_TRM_ICML/`, and `UPI_TRM_NIPS/`, are outside the current task. Do not edit them unless the user explicitly changes scope.
 
