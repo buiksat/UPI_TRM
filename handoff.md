@@ -1,6 +1,6 @@
 # UPI--TRM paper handoff
 
-Date: 2026-08-12
+Date: 2026-08-13
 
 ## Resume point
 
@@ -8,16 +8,18 @@ Date: 2026-08-12
 - Branch: `iclr-evidence-aligned-revision`
 - Synchronized implementation repository: `https://github.com/gopeshh/trm_bellman.git`
 - Synchronized implementation branch: `full-implementation`
-- Synchronized implementation source commit: `f86bddb607adcd24eba65fd5869af58f91742a52` (`Close adversarial parity and provenance gaps`).
-- Synchronized implementation parent: `e4edcb2107c0f3e7ac0e691bd9dc828c5c6f38a0` (`Harden confirmatory unpack and archive validation`).
+- Synchronized implementation source commit: `980f6ede14717e87ad68ceb32acc111bdd7fca1b` (`Bind Phase 4 publication evidence`).
+- Synchronized implementation parent: `86ec7363103b3d6a6a36fb25094ec1991cefd48e` (documentation head after the previous source repair).
+- Previous implementation behavior anchor: `f86bddb607adcd24eba65fd5869af58f91742a52` (`Close adversarial parity and provenance gaps`).
 - Paper source anchor used by the implementation synchronization: `5253692fea5e77cfde3a130c50351183dc0268e3` (`Tighten finite-reference value premise`).
 - Resolve and record the actual branch `HEAD` before review. Prompt and handoff maintenance may be newer than the paper-theory anchor.
 - Canonical paper directory: `UPI_TRM_ICLR/`
 - Current task state: the paper finite-reference theorem now states the
   bounded one-step reward premise needed to identify the block fixed point
   with the ordinary discounted policy value. The implementation has repaired
-  the surviving provenance, evidence-schema, Phase 4 reporting, CleanRL, and
-  stochastic-test findings and committed the validated source state.
+  the surviving Phase 4 metric-semantics, full-checkpoint, diagnostic-input,
+  and evaluator-runtime provenance findings and committed the validated source
+  state. The paper source itself is unchanged.
 
 On a new machine:
 
@@ -72,8 +74,8 @@ make pdf
 Last validated artifact before this handoff:
 
 - page count: 38 pages;
-- file size: 601,498 bytes;
-- SHA-256: `387ccc5613914f5e2de44f2439de409f984932e8ad8f0250f4f636fae37ab6d6`;
+- file size: 544,004 bytes;
+- SHA-256: `2b5a930136b7c81d2f3e8cc59ea7aa27ab837c913cf7cd2d07200b26a940a534`;
 - no missing inputs;
 - no undefined references or citations;
 - no duplicate labels;
@@ -91,24 +93,27 @@ git status --short
 Inspect the complete diff before committing. Do not edit `main.pdf` directly.
 
 The synchronized implementation source commit
-`f86bddb607adcd24eba65fd5869af58f91742a52` was validated with these gates:
+`980f6ede14717e87ad68ceb32acc111bdd7fca1b` was validated with these gates:
 
-- 14-target Buck runtime gate, including the new Phase 4 reporting target: 308 passed, 0 failed;
-- required six-target type gate: 6 passed, 0 failed;
-- launcher library and binary type targets: 2 passed, 0 failed;
-- repair-specific Phase 4 and CleanRL type targets: 6 passed, 0 failed;
-- built training PAR SHA-256: `bd10dda2afc422bd07751a02e1ed39ef164adf0d6a4241220db2b94f95e5cb67`;
+- 14-target Buck runtime gate, including the expanded Phase 4 and source-identity regressions: 338 passed, 0 failed;
+- complete changed-surface type gate: 24 targets passed, 0 failed;
+- built training PAR SHA-256: `1a01d06695200a48b160b10d81fa7160750c3499a133b6cfcdda9b110a5ba577`;
 - real launcher `--confirmatory --help`: exit 0, with no private unpack directory left behind;
-- wrong-digest, uppercase-digest, and direct-PAR confirmatory invocations failed closed;
+- wrong-digest, uppercase-digest, malformed-digest, and direct-PAR confirmatory invocations failed closed;
 - producer manifest matched all 79 behavior-source entries;
+- rebuilt evaluator, audit, and figure PARs matched their complete committed
+  Phase 4 source profiles after a stale pre-rebuild artifact was detected and
+  rejected;
 - 46 shell scripts passed `bash -n`;
 - 625 JSON files and 96 YAML files parsed successfully;
+- 246 tracked Python files passed source compilation;
 - `git diff --check` passed.
 
-An optional broad `upi_trm_train` type target still reports unrelated historical
-typing debt. The required changed-surface type gates above passed. The GPT Pro
-review must rerun the required gates at the current branch heads rather than
-treating these recorded results as current evidence.
+The optional repository-wide Buck package pattern is not claimed green because
+the prior diagnostic included unrelated historical type debt outside the
+changed surface. The required changed-surface type gates above passed. The GPT
+Pro review must rerun the required gates at the current branch heads rather
+than treating these recorded results as current evidence.
 
 ## Latest paper changes
 
@@ -144,25 +149,31 @@ The current branch through `5253692` contains these important mathematical chang
 
 ## Latest implementation synchronization
 
-Commit `f86bddb607adcd24eba65fd5869af58f91742a52` closes the findings from the
-2026-08-12 adversarial review:
+Commit `980f6ede14717e87ad68ceb32acc111bdd7fca1b` closes the three Phase 4
+findings from the 2026-08-13 adversarial review and one follow-up provenance
+gap:
 
-1. Both archive-validation layers reject any ZIP entry whose raw member name
-   differs from the effective `ZipInfo.filename`, including Info-ZIP Unicode
-   Path extra-field rewrites on nonbehavior members.
-2. The schema-v5 public checkpoint writer accepts only current effective-config
-   schema 4. Historical schemas remain readable but cannot create new
-   digest-less schema-v5 evidence.
-3. Phase 4 reporting no longer emits placeholder success, loss, or NaN-history
-   values. Publication schema 2 requires the exact four-condition by
-   three-seed design, fixed condition toggles, and aggregates recomputed from
-   all 12 measured runs. Audit and figure consumers fail closed on legacy or
-   incomplete summaries.
-4. CleanRL scripts use the owned `cleanrl_runner` Buck target. Dispatcher tests
-   cover PPO, A2C, CartPole DQN, Sudoku DQN, unsupported Sudoku n-step, and
-   unknown algorithms.
-5. The stochastic trainer smoke test collects until replay contains a full
-   update batch instead of assuming one episode is sufficient.
+1. `L_preproj` now measures the exact plan-conditioned production recurrence
+   before projection and divides by the actual joint Euclidean perturbation
+   norm. Empty or nonfinite sample sets fail closed.
+2. Policy stability calls the production `policy_dist` path at absolute depths
+   2, 4, and 8, using `z_H` and the exact task action mask. It no longer calls
+   the policy head directly on unmasked `z_L`.
+3. Publication schema 3 binds each record to a strict schema-4 full checkpoint,
+   checkpoint and model-state SHA-256 values, exact model/RL/config identity,
+   condition, seed, step, replay and optimizer state, diagnostic input bytes,
+   and producer identity. Audit and figure consumers reopen and revalidate all
+   12 checkpoints and the exact ordered diagnostic population.
+4. The evaluator records a canonical source-manifest digest. Evaluator, audit,
+   and figure PARs compare their runtime source members with the explicit
+   checkout, the complete Git `HEAD` inventory, safe index flags, and
+   HEAD-identical worktree bytes. Stale artifacts, ignored Python additions,
+   hidden deletions, `skip-worktree`, `assume-unchanged`, bytecode substitution,
+   and archive-name ambiguity fail closed.
+
+The prior raw/effective ZIP-name, checkpoint-schema, CleanRL dispatcher,
+stochastic replay-readiness, and bibliography repairs from `f86bddb` remain in
+place.
 
 The commit retains the descriptor-bound unpack root, sealed complete-runtime
 authentication, canonical archive-path checks, environment sanitization, and
@@ -237,7 +248,7 @@ Preserve these points in every future revision:
 Use the implementation's tracked file
 `reports/CHATGPT_PRO_CODE_AND_PAPER_REVIEW_PROMPT.md` at the current
 implementation branch head for a new ChatGPT Pro session. The frozen behavior
-source anchor is `f86bddb607adcd24eba65fd5869af58f91742a52`; later commits may update
+source anchor is `980f6ede14717e87ad68ceb32acc111bdd7fca1b`; later commits may update
 only `README.md`, `reports/**`, or other handoff documentation. The prompt
 requires direct review of both
 repositories, an exact-source paper build, complete implementation dependency
