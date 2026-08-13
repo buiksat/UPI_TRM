@@ -418,7 +418,10 @@ Let $\mathcal C$ be a measurable state set with its trace $\sigma$-algebra,
 let $P_\pi$ be a Markov kernel satisfying
 $P_\pi(\mathcal C\mid s)=1$ for every $s\in\mathcal C$, and fix
 $\gamma\in[0,1)$ and an integer $K\ge1$. If an initial law is used, assume
-$\rho(\mathcal C)=1$. Assume the $K$-step expected reward
+$\rho(\mathcal C)=1$. Assume the one-step reward is uniformly bounded and
+its fixed-policy conditional mean
+$r^\pi(s):=\E_s^\pi[r_0]$ is measurable on $\mathcal C$. Then the $K$-step
+expected reward
 \begin{equation}
 r_K^\pi(s)
 :=
@@ -2991,7 +2994,16 @@ $V,W\in B_b(\mathcal C)$,
 \|\mathcal T_K^\pi V-\mathcal T_K^\pi W\|_\infty
 \le\gamma^K\|V-W\|_\infty.
 \]
-Completeness and Banach's theorem give the unique fixed point $V^\pi$.
+The bounded-reward premise makes the ordinary discounted policy value
+well defined, bounded, and measurable, with the uniformly convergent
+representation
+\[
+V^\pi=\sum_{t=0}^\infty \gamma^t P_\pi^t r^\pi.
+\]
+Splitting this series after $K$ terms gives
+$V^\pi=\mathcal T_K^\pi V^\pi$. Completeness and Banach's theorem then
+identify this policy value as the unique fixed point of
+$\mathcal T_K^\pi$.
 Thus
 \begin{align*}
 \|U_m-V^\pi\|_\infty
