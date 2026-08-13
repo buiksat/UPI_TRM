@@ -8,14 +8,16 @@ Date: 2026-08-12
 - Branch: `iclr-evidence-aligned-revision`
 - Synchronized implementation repository: `https://github.com/gopeshh/trm_bellman.git`
 - Synchronized implementation branch: `full-implementation`
-- Synchronized implementation commit: `e4edcb2107c0f3e7ac0e691bd9dc828c5c6f38a0` (`Harden confirmatory unpack and archive validation`).
-- Synchronized implementation parent: `d9ccad73fb58998ccaed609b5e957d29b7878da6` (`Bind confirmatory runs to sealed runtime artifacts`).
-- Paper-theory anchor used by the implementation synchronization: `2107125 Tighten UPI-TRM theory and pseudocode`.
+- Synchronized implementation source commit: `f86bddb607adcd24eba65fd5869af58f91742a52` (`Close adversarial parity and provenance gaps`).
+- Synchronized implementation parent: `e4edcb2107c0f3e7ac0e691bd9dc828c5c6f38a0` (`Harden confirmatory unpack and archive validation`).
+- Paper source anchor used by the implementation synchronization: `5253692fea5e77cfde3a130c50351183dc0268e3` (`Tighten finite-reference value premise`).
 - Resolve and record the actual branch `HEAD` before review. Prompt and handoff maintenance may be newer than the paper-theory anchor.
 - Canonical paper directory: `UPI_TRM_ICLR/`
-- Current task state: the paper revision and theory source are unchanged. The
-  implementation has repaired the three findings from the latest GPT Pro
-  review, rerun its required gates, and committed the validated repair state.
+- Current task state: the paper finite-reference theorem now states the
+  bounded one-step reward premise needed to identify the block fixed point
+  with the ordinary discounted policy value. The implementation has repaired
+  the surviving provenance, evidence-schema, Phase 4 reporting, CleanRL, and
+  stochastic-test findings and committed the validated source state.
 
 On a new machine:
 
@@ -70,8 +72,8 @@ make pdf
 Last validated artifact before this handoff:
 
 - page count: 38 pages;
-- file size: 561,399 bytes;
-- SHA-256: `0efe7e71726744a98cd27553045da07dec76bfe1a92834c5677349550a04c133`;
+- file size: 601,498 bytes;
+- SHA-256: `387ccc5613914f5e2de44f2439de409f984932e8ad8f0250f4f636fae37ab6d6`;
 - no missing inputs;
 - no undefined references or citations;
 - no duplicate labels;
@@ -88,15 +90,16 @@ git status --short
 
 Inspect the complete diff before committing. Do not edit `main.pdf` directly.
 
-The synchronized implementation commit
-`e4edcb2107c0f3e7ac0e691bd9dc828c5c6f38a0` was validated with these gates:
+The synchronized implementation source commit
+`f86bddb607adcd24eba65fd5869af58f91742a52` was validated with these gates:
 
-- required 13-target Buck runtime gate: 289 passed, 0 failed;
+- 14-target Buck runtime gate, including the new Phase 4 reporting target: 308 passed, 0 failed;
 - required six-target type gate: 6 passed, 0 failed;
 - launcher library and binary type targets: 2 passed, 0 failed;
-- built training PAR SHA-256: `c03ab186add45656079c550d5d84224e332e0370ad2e966802d9c18ef5a985c1`;
+- repair-specific Phase 4 and CleanRL type targets: 6 passed, 0 failed;
+- built training PAR SHA-256: `bd10dda2afc422bd07751a02e1ed39ef164adf0d6a4241220db2b94f95e5cb67`;
 - real launcher `--confirmatory --help`: exit 0, with no private unpack directory left behind;
-- wrong-digest and direct-PAR confirmatory invocations failed closed;
+- wrong-digest, uppercase-digest, and direct-PAR confirmatory invocations failed closed;
 - producer manifest matched all 79 behavior-source entries;
 - 46 shell scripts passed `bash -n`;
 - 625 JSON files and 96 YAML files parsed successfully;
@@ -109,14 +112,22 @@ treating these recorded results as current evidence.
 
 ## Latest paper changes
 
-The current branch through `2107125` contains these important mathematical changes:
+The current branch through `5253692` contains these important mathematical changes:
 
-1. **Domain-relative recurrent contraction.** Assumption “Domain-relative forward-invariant contraction” now fixes a declared nonabsorbing domain `\(\mathcal D^\circ\)`. Invariance, contraction, initialization, and input-specific fixed-point claims use that same domain. A global condition over all input pairs is only a sufficient special case.
-2. **Projection specialization.** “Projection-induced contraction on a saturated annulus” binds `\(x\)` and `\(y\)` through `\(s\in\mathcal C^\circ\)` and concludes contraction only on that domain. It preserves
+1. **Finite-reference policy value.** The theorem now assumes a uniformly
+   bounded measurable one-step reward under the fixed policy. Its proof first
+   constructs the ordinary discounted policy value by uniform convergence,
+   then identifies that value as the unique fixed point of the `\(K\)`-step
+   Bellman operator. This rules out conditionally cancelling block rewards
+   whose ordinary discounted return diverges.
+2. **Citation rendering.** Four maintained arXiv references now include stable
+   URLs so the tracked bibliography style renders an external locator.
+3. **Domain-relative recurrent contraction.** Assumption “Domain-relative forward-invariant contraction” now fixes a declared nonabsorbing domain `\(\mathcal D^\circ\)`. Invariance, contraction, initialization, and input-specific fixed-point claims use that same domain. A global condition over all input pairs is only a sufficient special case.
+4. **Projection specialization.** “Projection-induced contraction on a saturated annulus” binds `\(x\)` and `\(y\)` through `\(s\in\mathcal C^\circ\)` and concludes contraction only on that domain. It preserves
    \[
    L_z\le \frac{R}{\rho_R}L_z^{\mathrm{pre}}(R).
    \]
-3. **Target-network bridge.** The paper distinguishes the target-network population residual from the self-bootstrap Bellman residual and proves
+5. **Target-network bridge.** The paper distinguishes the target-network population residual from the self-bootstrap Bellman residual and proves
    \[
    \|U_n-\mathcal T_K^\pi U_n\|_\infty
    \le
@@ -124,49 +135,44 @@ The current branch through `2107125` contains these important mathematical chang
    +\gamma^K\|\bar V-U_n\|_\infty.
    \]
    It explicitly says finite-batch or mean-square regression diagnostics do not establish the required sup-norm quantities.
-4. **Safe exact-mixture step.** On the common policy-pair domain `\(\mathcal C_{\mathrm{pair}}\)`, the branch `\(\gamma>0\)` and `\(0<M<\gamma\Delta_g\)` now uses the nonredundant threshold
+6. **Safe exact-mixture step.** On the common policy-pair domain `\(\mathcal C_{\mathrm{pair}}\)`, the branch `\(\gamma>0\)` and `\(0<M<\gamma\Delta_g\)` now uses the nonredundant threshold
    \[
    \alpha\le
    \frac{M(1-\gamma)}{\gamma(\Delta_g-M)}.
    \]
-5. **Repository cleanup.** Historical experiment outputs, reports, build snapshots, review archives, ZIP files, unused figures, scripts, and handoff bundles were removed. Do not restore them as part of the theory-paper work.
+7. **Repository cleanup.** Historical experiment outputs, reports, build snapshots, review archives, ZIP files, unused figures, scripts, and handoff bundles were removed. Do not restore them as part of the theory-paper work.
 
 ## Latest implementation synchronization
 
-Commit `d9ccad73fb58998ccaed609b5e957d29b7878da6` closes the three findings from
-the 2026-08-11 review update:
+Commit `f86bddb607adcd24eba65fd5869af58f91742a52` closes the findings from the
+2026-08-12 adversarial review:
 
-1. Confirmatory source-tree execution is no longer an authorized evidence path.
-   A standard-library launcher verifies the complete packaged runtime before
-   behavior imports, copies the verified bytes into a sealed anonymous file,
-   supervises execution of that descriptor, and uses a fresh private unpack
-   directory that is removed after success or startup failure.
-2. The packaged entry point independently verifies descriptor identity, file
-   seals, whole-artifact SHA-256, module origin, and private-unpack ownership
-   before importing project model or RL modules. The runtime digest is bound to
-   current effective configuration, evidence identity, confirmatory lock,
-   checkpoint save, and resume contracts.
-3. The stale trainer section-number comment was removed. The ablation generator
-   now labels its outputs as legacy, non-theorem-facing feature ablations and
-   sets the legacy protocol explicitly.
+1. Both archive-validation layers reject any ZIP entry whose raw member name
+   differs from the effective `ZipInfo.filename`, including Info-ZIP Unicode
+   Path extra-field rewrites on nonbehavior members.
+2. The schema-v5 public checkpoint writer accepts only current effective-config
+   schema 4. Historical schemas remain readable but cannot create new
+   digest-less schema-v5 evidence.
+3. Phase 4 reporting no longer emits placeholder success, loss, or NaN-history
+   values. Publication schema 2 requires the exact four-condition by
+   three-seed design, fixed condition toggles, and aggregates recomputed from
+   all 12 measured runs. Audit and figure consumers fail closed on legacy or
+   incomplete summaries.
+4. CleanRL scripts use the owned `cleanrl_runner` Buck target. Dispatcher tests
+   cover PPO, A2C, CartPole DQN, Sudoku DQN, unsupported Sudoku n-step, and
+   unknown algorithms.
+5. The stochastic trainer smoke test collects until replay contains a full
+   update batch instead of assuming one episode is sufficient.
+
+The commit retains the descriptor-bound unpack root, sealed complete-runtime
+authentication, canonical archive-path checks, environment sanitization, and
+runtime-digest evidence binding from `d9ccad7` and `e4edcb2`.
 
 Review these as claims to challenge, not accepted facts. In particular, test
-path replacement, same-inode mutation, archive duplication, unsafe members,
-bytecode injection, environment override hooks, descriptor tampering, child
-startup failure, and cleanup.
-
-The synchronized implementation additionally addresses `UPITRM-UPD-004` through
-`UPITRM-UPD-006`:
-
-1. The launcher opens the private unpack root as a directory descriptor and
-   passes `/proc/self/fd/<dirfd>` to the PAR bootstrap. The entrypoint verifies
-   the inherited descriptor before project imports. Path replacement after
-   descriptor acquisition cannot redirect extraction.
-2. Archive validation rejects root aliases, noncanonical directory names,
-   canonical member aliases, and file/directory prefix collisions.
-3. Implementation validation documents now record 289 runtime tests, the
-   separate 6/6 and 2/2 type gates, 79 manifest entries, and the current PAR
-   digest.
+raw versus effective ZIP names, path replacement, same-inode mutation, archive
+duplication, unsafe members, bytecode injection, environment override hooks,
+descriptor tampering, child startup failure, evidence-schema downgrade, and
+cleanup.
 
 The launcher is not a sandbox against the external trust root. The operating
 system, host namespace, other same-UID processes, launcher executable, and
@@ -229,12 +235,14 @@ Preserve these points in every future revision:
 ## ChatGPT Pro cross-repository review workflow
 
 Use the implementation's tracked file
-`reports/CHATGPT_PRO_CODE_AND_PAPER_REVIEW_PROMPT.md` at commit
-`e4edcb2107c0f3e7ac0e691bd9dc828c5c6f38a0` for a new ChatGPT Pro
-session. It requires direct review of both repositories, an exact-source paper
-build, complete implementation dependency tracing, sealed-runtime adversarial
-checks, and a written report. It keeps the work theory- and parity-focused and
-prohibits experiments.
+`reports/CHATGPT_PRO_CODE_AND_PAPER_REVIEW_PROMPT.md` at the current
+implementation branch head for a new ChatGPT Pro session. The frozen behavior
+source anchor is `f86bddb607adcd24eba65fd5869af58f91742a52`; later commits may update
+only `README.md`, `reports/**`, or other handoff documentation. The prompt
+requires direct review of both
+repositories, an exact-source paper build, complete implementation dependency
+tracing, sealed-runtime adversarial checks, and a written report. It keeps the
+work theory- and parity-focused and prohibits experiments.
 
 Give ChatGPT Pro direct read access to these branches:
 
@@ -252,6 +260,7 @@ The prompt requires a blind pass before ChatGPT Pro reads prior review reports. 
 Relevant commits, newest first:
 
 ```text
+5253692 Tighten finite-reference value premise
 bb11de7 Replace paper-only review prompts
 2107125 Tighten UPI-TRM theory and pseudocode
 1ff4624 Add cross-machine paper handoff
