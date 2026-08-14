@@ -8,9 +8,9 @@ Date: 2026-08-13
 - Branch: `iclr-evidence-aligned-revision`
 - Synchronized implementation repository: `https://github.com/gopeshh/trm_bellman.git`
 - Synchronized implementation branch: `full-implementation`
-- Synchronized implementation source commit: `980f6ede14717e87ad68ceb32acc111bdd7fca1b` (`Bind Phase 4 publication evidence`).
-- Synchronized implementation parent: `86ec7363103b3d6a6a36fb25094ec1991cefd48e` (documentation head after the previous source repair).
-- Previous implementation behavior anchor: `f86bddb607adcd24eba65fd5869af58f91742a52` (`Close adversarial parity and provenance gaps`).
+- Synchronized implementation source commit: `de013fd3fcaae8bc80d124c0c868c7c8611aeede` (`Close Phase 4 publication validation gaps`).
+- Synchronized implementation parent: `12fa350951c31e8635ee51747f6de25295c07333` (`Authenticate Phase 4 publication runtimes`).
+- Previous implementation behavior anchor: `980f6ede14717e87ad68ceb32acc111bdd7fca1b` (`Bind Phase 4 publication evidence`).
 - Paper source anchor used by the implementation synchronization: `5253692fea5e77cfde3a130c50351183dc0268e3` (`Tighten finite-reference value premise`).
 - Resolve and record the actual branch `HEAD` before review. Prompt and handoff maintenance may be newer than the paper-theory anchor.
 - Canonical paper directory: `UPI_TRM_ICLR/`
@@ -19,7 +19,10 @@ Date: 2026-08-13
   with the ordinary discounted policy value. The implementation has repaired
   the surviving Phase 4 metric-semantics, full-checkpoint, diagnostic-input,
   and evaluator-runtime provenance findings and committed the validated source
-  state. The paper source itself is unchanged.
+  state. Phase 4 now authenticates sealed runtime bytes before behavior imports,
+  independently verifies training-producer source, and replays retained
+  transitions through the registered environment during checkpoint audit. The
+  paper source itself is unchanged.
 
 On a new machine:
 
@@ -77,7 +80,7 @@ Last validated artifact before this handoff:
 
 - page count: 38 pages;
 - file size: 544,004 bytes;
-- SHA-256: `2b5a930136b7c81d2f3e8cc59ea7aa27ab837c913cf7cd2d07200b26a940a534`;
+- SHA-256: `de4fde697f7c835ef2827884569a5a44a12cca473758f91b4fd7dea6d298961d`;
 - no missing inputs;
 - no undefined references or citations;
 - no duplicate labels;
@@ -95,20 +98,22 @@ git status --short
 Inspect the complete diff before committing. Do not edit `main.pdf` directly.
 
 The synchronized implementation source commit
-`980f6ede14717e87ad68ceb32acc111bdd7fca1b` was validated with these gates:
+`de013fd3fcaae8bc80d124c0c868c7c8611aeede` was validated with these gates:
 
-- 14-target Buck runtime gate, including the expanded Phase 4 and source-identity regressions: 338 passed, 0 failed;
-- complete changed-surface type gate: 24 targets passed, 0 failed;
-- built training PAR SHA-256: `1a01d06695200a48b160b10d81fa7160750c3499a133b6cfcdda9b110a5ba577`;
+- 15-target Buck runtime gate, including the expanded Phase 4 runtime,
+  checkpoint, environment-replay, and source-identity regressions: 366 passed,
+  0 failed;
+- complete changed-surface type gate: 30 targets built successfully;
+- built training PAR SHA-256: `cafabc3314730f09f6251144a2d2d06c329d7f93f5431a59f252f71f8b6e708e`;
 - real launcher `--confirmatory --help`: exit 0, with no private unpack directory left behind;
 - wrong-digest, uppercase-digest, malformed-digest, and direct-PAR confirmatory invocations failed closed;
-- producer manifest matched all 79 behavior-source entries;
+- producer manifest matched all 80 behavior-source entries;
 - rebuilt evaluator, audit, and figure PARs matched their complete committed
   Phase 4 source profiles after a stale pre-rebuild artifact was detected and
   rejected;
 - 46 shell scripts passed `bash -n`;
 - 625 JSON files and 96 YAML files parsed successfully;
-- 246 tracked Python files passed source compilation;
+- 251 tracked Python files passed source compilation;
 - `git diff --check` passed.
 
 The optional repository-wide Buck package pattern is not claimed green because
@@ -151,27 +156,38 @@ The current branch through `5253692` contains these important mathematical chang
 
 ## Latest implementation synchronization
 
-Commit `980f6ede14717e87ad68ceb32acc111bdd7fca1b` closes the three Phase 4
-findings from the 2026-08-13 adversarial review and one follow-up provenance
-gap:
+Commits `12fa350951c31e8635ee51747f6de25295c07333` and
+`de013fd3fcaae8bc80d124c0c868c7c8611aeede` close the Phase 4 runtime and
+producer-provenance findings plus the adversarial follow-up gaps:
 
-1. `L_preproj` now measures the exact plan-conditioned production recurrence
-   before projection and divides by the actual joint Euclidean perturbation
-   norm. Empty or nonfinite sample sets fail closed.
-2. Policy stability calls the production `policy_dist` path at absolute depths
-   2, 4, and 8, using `z_H` and the exact task action mask. It no longer calls
-   the policy head directly on unmasked `z_L`.
-3. Publication schema 3 binds each record to a strict schema-4 full checkpoint,
-   checkpoint and model-state SHA-256 values, exact model/RL/config identity,
-   condition, seed, step, replay and optimizer state, diagnostic input bytes,
-   and producer identity. Audit and figure consumers reopen and revalidate all
-   12 checkpoints and the exact ordered diagnostic population.
-4. The evaluator records a canonical source-manifest digest. Evaluator, audit,
-   and figure PARs compare their runtime source members with the explicit
-   checkout, the complete Git `HEAD` inventory, safe index flags, and
-   HEAD-identical worktree bytes. Stale artifacts, ignored Python additions,
-   hidden deletions, `skip-worktree`, `assume-unchanged`, bytecode substitution,
-   and archive-name ambiguity fail closed.
+1. A standard-library launcher authenticates the complete training, evaluator,
+   audit, or figure PAR before behavior imports, copies it to a sealed memfd,
+   and executes that descriptor. The entrypoint rechecks digest, seals, role,
+   module origin, and descriptor-bound unpack directory before importing the
+   behavior modules.
+2. Audit and figure consumers independently resolve the authorized producer
+   commit and manifest. Each of the 12 records binds one externally authorized
+   training-PAR SHA-256, and all records must use the same runtime.
+3. Strict schema-4 checkpoint loading reconstructs the exact model, optimizers,
+   schedulers, RNG, counters, replay, collector, environment, dataset, and
+   diagnostic identities. Missing, unexpected, swapped, or fabricated state
+   fails closed.
+4. Every retained replay transition is run through the exact registered
+   `PlanEditEnv`. The audit checks the production action mask, successor state,
+   reward, terminal flag, and terminal reason, so impossible replay cannot be
+   accepted as resumable evidence.
+5. The authenticated consumer source closure includes every imported
+   `dataset/*.py` file as well as model, RL, utility, root, and Phase 4 sources.
+   Tampered source and bytecode fail before execution.
+6. Figure outputs are staged privately, identities are revalidated, and only
+   then are publication files replaced. Launcher-owned options cannot be
+   overridden by child arguments or `--name=value` aliases.
+7. The registered dummy-data builder supplies a deterministic editable cell
+   and clue for every Phase 4 record. Training checks action support before the
+   first update, and audit regenerates the exact seeded records.
+
+The earlier `L_preproj`, masked policy stability, and complete checkpoint/data
+identity repairs from `980f6ede` remain in place.
 
 The prior raw/effective ZIP-name, checkpoint-schema, CleanRL dispatcher,
 stochastic replay-readiness, and bibliography repairs from `f86bddb` remain in
@@ -250,7 +266,7 @@ Preserve these points in every future revision:
 Use the implementation's tracked file
 `reports/CHATGPT_PRO_CODE_AND_PAPER_REVIEW_PROMPT.md` at the current
 implementation branch head for a new ChatGPT Pro session. The frozen behavior
-source anchor is `980f6ede14717e87ad68ceb32acc111bdd7fca1b`; later commits may update
+source anchor is `de013fd3fcaae8bc80d124c0c868c7c8611aeede`; later commits may update
 only `README.md`, `reports/**`, or other handoff documentation. The prompt
 requires direct review of both
 repositories, an exact-source paper build, complete implementation dependency
