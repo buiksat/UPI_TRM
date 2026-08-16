@@ -1,310 +1,243 @@
-# UPI--TRM paper handoff
+# UPI-TRM machine-transfer handoff
 
-Date: 2026-08-13
+Date: 2026-08-16
 
-## Resume point
+## Current repository heads
 
-- Repository: `https://github.com/buiksat/UPI_TRM.git`
-- Branch: `iclr-evidence-aligned-revision`
-- Synchronized implementation repository: `https://github.com/gopeshh/trm_bellman.git`
-- Synchronized implementation branch: `full-implementation`
-- Synchronized implementation source commit: `de013fd3fcaae8bc80d124c0c868c7c8611aeede` (`Close Phase 4 publication validation gaps`).
-- Synchronized implementation parent: `12fa350951c31e8635ee51747f6de25295c07333` (`Authenticate Phase 4 publication runtimes`).
-- Previous implementation behavior anchor: `980f6ede14717e87ad68ceb32acc111bdd7fca1b` (`Bind Phase 4 publication evidence`).
-- Paper source anchor used by the implementation synchronization: `5253692fea5e77cfde3a130c50351183dc0268e3` (`Tighten finite-reference value premise`).
-- Resolve and record the actual branch `HEAD` before review. Prompt and handoff maintenance may be newer than the paper-theory anchor.
-- Canonical paper directory: `UPI_TRM_ICLR/`
-- Current task state: the paper finite-reference theorem now states the
-  bounded one-step reward premise needed to identify the block fixed point
-  with the ordinary discounted policy value. The implementation has repaired
-  the surviving Phase 4 metric-semantics, full-checkpoint, diagnostic-input,
-  and evaluator-runtime provenance findings and committed the validated source
-  state. Phase 4 now authenticates sealed runtime bytes before behavior imports,
-  independently verifies training-producer source, and replays retained
-  transitions through the registered environment during checkpoint audit. The
-  paper source itself is unchanged.
+Paper:
 
-On a new machine:
+- path: `/home/buiksat/UPI_TRM`
+- branch: `iclr-evidence-aligned-revision`
+- source/PDF commit: `a539e6f75e6da1ca7a09deade2e014f9d2d253b5`
+  (`Keep deployment proof QED with final display`)
+- this handoff will be the next documentation-only commit
 
-```bash
-git clone https://github.com/buiksat/UPI_TRM.git
-cd UPI_TRM
-git switch iclr-evidence-aligned-revision
-git pull --ff-only
-```
+Implementation:
 
-Do not resume work from `main` or from an older archive.
+- path: `/home/buiksat/trm_bellman`
+- branch: `full-implementation`
+- current head: `859f2ca` (`Keep policy audit output canonical`)
+- parent: `5e8801b` (`Preserve GPU kernels in policy audit runtimes`)
+- smoke producer commit: `2d43263f394e98c62a2167bde0a3e55e217898d0`
+  (`Bind successful retries to authenticated failure history`)
 
-## Canonical files
+Both branches contain local commits that were not pushed during this session.
+Push them or transfer the repositories before discarding this machine.
 
-The active paper uses these files:
+## Completed repair commits
 
-```text
-UPI_TRM_ICLR/
-├── .gitattributes
-├── .gitignore
-├── Makefile
-├── algorithm.sty
-├── algorithmic.sty
-├── fancyhdr.sty
-├── figures/
-│   └── trm_to_mdp_bridge.tex
-├── iclr2026_conference.bst
-├── iclr2026_conference.sty
-├── main.tex
-├── main.pdf
-└── trm_rl.bib
-```
+Implementation commits created during this repair:
 
-The current cross-repository review prompt lives in the implementation repository at `reports/CHATGPT_PRO_CODE_AND_PAPER_REVIEW_PROMPT.md`. It is intentionally outside the canonical paper source tree.
+1. `2bd5615` - atomic Phase 4 generation-directory publication and tests.
+2. `a3ca1ca` - exact float64 finite-MDP sanity suite.
+3. `7317d7011c31ac622c0723d22cf9f4bb0571bdf1` - registered
+   `policy_improvement_v1` protocol, schemas, registry, smoke and fail-closed
+   full-runtime infrastructure.
+4. `74d5b4932501c266ab69ddd74015e3124885914e` - frozen dataset identities.
+5. `3fbba51e3525d74503591af17ab5d23e07b6c740` - fixed Stage 0 trainer
+   identity serialization.
+6. `c67bea28b16b8260925e979ff2f6fd9d5d00129c` - bound the Stage 0 exact
+   baseline checker.
+7. `2d43263f394e98c62a2167bde0a3e55e217898d0` - bound successful retries
+   to authenticated failed-attempt history and closed Git replacement-ref
+   substitution.
+8. `5e8801b1fe546fdc1c33b1d066cedde212fddfa8` - retained CUDA kernel
+   sections in the audit and analysis PARs.
+9. `859f2ca` - suppressed checkpoint progress output during audit restores so
+   the audit emits one canonical JSON document on stdout.
 
-`main.tex`, `trm_rl.bib`, and the validated `main.pdf` are tracked. A fresh
-clone contains the inspected PDF. After any paper-source edit, rebuild and
-commit the updated PDF with the source rather than editing the PDF directly.
+Paper commit:
 
-The other top-level paper directories, including `UPI_TRM_ICLR_RSI/`, `UPI_TRM_ICML/`, and `UPI_TRM_NIPS/`, are outside the current task. Do not edit them unless the user explicitly changes scope.
+- `a539e6f75e6da1ca7a09deade2e014f9d2d253b5` - adds `\qedhere` to the
+  final Theorem F.5 display and regenerates the tracked PDF.
 
-## Build and validation
+The theorem text, constants, domains, Algorithms 1-2, checkpoint semantics,
+replay semantics, and exact-mixture semantics were not changed.
 
-Run the canonical build from the paper directory:
+## Canonical paper artifact
 
-```bash
-cd UPI_TRM_ICLR
-make clean
-make pdf
-```
+- source: `UPI_TRM_ICLR/main.tex`
+- PDF: `UPI_TRM_ICLR/main.pdf`
+- pages: 38
+- bytes: 544,294
+- PDF SHA-256:
+  `9d59bc486b975c08a055e2393d057bbf11f9eb7b06826edfeeecbf1aed4857ae`
+- `main.tex` Git blob: `9fcaa6aa199223708e91b39a89d62c137f072a95`
+- `trm_rl.bib` Git blob: `38c36ecc9021c5d072a9723acb0c247460c4ea9c`
+- `main.pdf` Git blob: `c6a55aa7500ded84972e9599dbca05cd527804bd`
 
-`make pdf` runs `pdflatex`, `bibtex`, and three additional `pdflatex` passes. The local style, bibliography style, algorithm styles, and TeX figure source are present, so the build does not depend on files elsewhere in the repository.
+The QED marker is attached to the final display on page 26. Page 27 starts
+with Remark F.6. The paper still makes no learned-task performance claim.
 
-Last validated artifact before this handoff:
+## Deterministic validation already completed
 
-- page count: 38 pages;
-- file size: 544,004 bytes;
-- SHA-256: `de4fde697f7c835ef2827884569a5a44a12cca473758f91b4fd7dea6d298961d`;
-- no missing inputs;
-- no undefined references or citations;
-- no duplicate labels;
-- no LaTeX warnings in the final pass;
-- anonymous authorship and submission-mode comments preserved;
-- complete PDF inspected, including appendices, proofs, algorithms, figure, references, limitations, and final page.
+- exact finite-MDP suite: 212/212 checks passed;
+  maximum numerical violation `2.6645352591003757e-15`.
+- retry/provenance focused Python tests: 32/32 passed.
+- affected Buck regression gate after the replacement-ref repair: 143 passed,
+  0 failed, 0 timed out, 0 fatal, 0 infrastructure failures, 0 build failures.
+- expanded policy-improvement type gate: 25/25 targets passed.
+- stdout-suppression regression at implementation head `859f2ca`: 1 passed,
+  0 failed.
+- replacement-ref attack and hostile inherited `GIT_*` variants were rejected.
+- current implementation producer manifest SHA-256 at `859f2ca`:
+  `c1a37a92dba62139fca75bfdc6d0ac4667d091b7093ff0383a40b1c7851eeaaf`.
 
-After any source edit, rebuild until references stabilize, inspect every page, then run:
+The complete final runtime/type/static gate must be rerun at `859f2ca`. Do not
+quote the earlier counts as current final evidence.
 
-```bash
-git diff --check
-git status --short
-```
+## Registered experiment identities
 
-Inspect the complete diff before committing. Do not edit `main.pdf` directly.
+- protocol ID: `policy-improvement-v1-20260814`
+- canonical protocol SHA-256:
+  `583e99828d877f9a33503e84af58f1ccb8aa643f7ecc5baa826d6662de6a48b2`
+- raw protocol SHA-256:
+  `be986854e39776513e3cd6891ced583efd361a79ce5f1f194f5cc8af7c3c87c3`
+- registry raw SHA-256:
+  `db8d4198409c94fda3174faffe56ba0d37b9b01f98319f217127342658be3ed4`
+- registry rows: 157 total, 4 smoke and 153 full.
+- dataset top manifest:
+  `2572bb79faeec976dc83cb75b8520e59691a7c9dc3f8fe252554fc29bfe90ccd`
+- records: 1,024 train, 256 validation, 512 test.
 
-The synchronized implementation source commit
-`de013fd3fcaae8bc80d124c0c868c7c8611aeede` was validated with these gates:
+`RUN_UPITRM_FULL_EXPERIMENTS` was unset. No Stage 1-3 run was launched. The
+full runtime remains intentionally fail-closed because the production
+non-smoke backend is not connected.
 
-- 15-target Buck runtime gate, including the expanded Phase 4 runtime,
-  checkpoint, environment-replay, and source-identity regressions: 366 passed,
-  0 failed;
-- complete changed-surface type gate: 30 targets built successfully;
-- built training PAR SHA-256: `cafabc3314730f09f6251144a2d2d06c329d7f93f5431a59f252f71f8b6e708e`;
-- real launcher `--confirmatory --help`: exit 0, with no private unpack directory left behind;
-- wrong-digest, uppercase-digest, malformed-digest, and direct-PAR confirmatory invocations failed closed;
-- producer manifest matched all 80 behavior-source entries;
-- rebuilt evaluator, audit, and figure PARs matched their complete committed
-  Phase 4 source profiles after a stale pre-rebuild artifact was detected and
-  rejected;
-- 46 shell scripts passed `bash -n`;
-- 625 JSON files and 96 YAML files parsed successfully;
-- 251 tracked Python files passed source compilation;
-- `git diff --check` passed.
+## Fresh authenticated Stage 0 smoke
 
-The optional repository-wide Buck package pattern is not claimed green because
-the prior diagnostic included unrelated historical type debt outside the
-changed surface. The required changed-surface type gates above passed. The GPT
-Pro review must rerun the required gates at the current branch heads rather
-than treating these recorded results as current evidence.
+The four-method smoke completed successfully at producer commit `2d43263`.
+Every method used seed `1257297357`, validation records 0-7, and the registered
+16/32 interaction prepare/resume schedule. The test split was never opened.
 
-## Latest paper changes
+Durations:
 
-The current branch through `5253692` contains these important mathematical changes:
+| Method | Prepare | Resume |
+| --- | ---: | ---: |
+| fixed-base exact persistent-z | 503.065 s | 849.867 s |
+| fixed-base exact episodic-z | 474.176 s | 855.066 s |
+| legacy parameter interpolation | 661.621 s | 1,218.135 s |
+| matched PPO | 294.813 s | 329.632 s |
 
-1. **Finite-reference policy value.** The theorem now assumes a uniformly
-   bounded measurable one-step reward under the fixed policy. Its proof first
-   constructs the ordinary discounted policy value by uniform convergence,
-   then identifies that value as the unique fixed point of the `\(K\)`-step
-   Bellman operator. This rules out conditionally cancelling block rewards
-   whose ordinary discounted return diverges.
-2. **Citation rendering.** Four maintained arXiv references now include stable
-   URLs so the tracked bibliography style renders an external locator.
-3. **Domain-relative recurrent contraction.** Assumption “Domain-relative forward-invariant contraction” now fixes a declared nonabsorbing domain `\(\mathcal D^\circ\)`. Invariance, contraction, initialization, and input-specific fixed-point claims use that same domain. A global condition over all input pairs is only a sufficient special case.
-4. **Projection specialization.** “Projection-induced contraction on a saturated annulus” binds `\(x\)` and `\(y\)` through `\(s\in\mathcal C^\circ\)` and concludes contraction only on that domain. It preserves
-   \[
-   L_z\le \frac{R}{\rho_R}L_z^{\mathrm{pre}}(R).
-   \]
-5. **Target-network bridge.** The paper distinguishes the target-network population residual from the self-bootstrap Bellman residual and proves
-   \[
-   \|U_n-\mathcal T_K^\pi U_n\|_\infty
-   \le
-   \varepsilon_{\mathrm{targ},n}
-   +\gamma^K\|\bar V-U_n\|_\infty.
-   \]
-   It explicitly says finite-batch or mean-square regression diagnostics do not establish the required sup-norm quantities.
-6. **Safe exact-mixture step.** On the common policy-pair domain `\(\mathcal C_{\mathrm{pair}}\)`, the branch `\(\gamma>0\)` and `\(0<M<\gamma\Delta_g\)` now uses the nonredundant threshold
-   \[
-   \alpha\le
-   \frac{M(1-\gamma)}{\gamma(\Delta_g-M)}.
-   \]
-7. **Repository cleanup.** Historical experiment outputs, reports, build snapshots, review archives, ZIP files, unused figures, scripts, and handoff bundles were removed. Do not restore them as part of the theory-paper work.
+Smoke runtime identities:
 
-## Latest implementation synchronization
+- launcher SHA-256:
+  `8e73d60512934705f8a295fb67845f5a90b8c6f3006e1ea6ebcb373881c76d6a`
+- training PAR SHA-256:
+  `8c0bed3e3e8230f1b5294938a7523b6ec3c9dcd17be3da752e8c0b780255d28b`
+- producer manifest SHA-256 at `2d43263`:
+  `8da0a8be7e2728d900c105e5e36009598c65419dce0681b6010c3cc2f82d1163`
+- runtime authorization SHA-256:
+  `04ba5dd28509e1c7c51a2b6a49e4d8814c8f162a95560376671ad79071e76e75`
+- smoke-plan SHA-256:
+  `2037cb53e8f0825f7bc10a48ee221e81e223ebedf0d117e2459d1cada5446ad8`
 
-Commits `12fa350951c31e8635ee51747f6de25295c07333` and
-`de013fd3fcaae8bc80d124c0c868c7c8611aeede` close the Phase 4 runtime and
-producer-provenance findings plus the adversarial follow-up gaps:
+Each final segment is schema 2 and commits its exact
+`prior_failed_attempts` inventory. The new evidence root contains no failed
+attempts. Persistent-z was independently checked byte-for-byte: exact file
+inventories, hashes, checkpoint lineage, authorization, source identity, and
+test isolation all passed.
 
-1. A standard-library launcher authenticates the complete training, evaluator,
-   audit, or figure PAR before behavior imports, copies it to a sealed memfd,
-   and executes that descriptor. The entrypoint rechecks digest, seals, role,
-   module origin, and descriptor-bound unpack directory before importing the
-   behavior modules.
-2. Audit and figure consumers independently resolve the authorized producer
-   commit and manifest. Each of the 12 records binds one externally authorized
-   training-PAR SHA-256, and all records must use the same runtime.
-3. Strict schema-4 checkpoint loading reconstructs the exact model, optimizers,
-   schedulers, RNG, counters, replay, collector, environment, dataset, and
-   diagnostic identities. Missing, unexpected, swapped, or fabricated state
-   fails closed.
-4. Every retained replay transition is run through the exact registered
-   `PlanEditEnv`. The audit checks the production action mask, successor state,
-   reward, terminal flag, and terminal reason, so impossible replay cannot be
-   accepted as resumable evidence.
-5. The authenticated consumer source closure includes every imported
-   `dataset/*.py` file as well as model, RL, utility, root, and Phase 4 sources.
-   Tampered source and bytecode fail before execution.
-6. Figure outputs are staged privately, identities are revalidated, and only
-   then are publication files replaced. Launcher-owned options cannot be
-   overridden by child arguments or `--name=value` aliases.
-7. The registered dummy-data builder supplies a deterministic editable cell
-   and clue for every Phase 4 record. Training checks action support before the
-   first update, and audit regenerates the exact seeded records.
+## External artifacts that are not in Git
 
-The earlier `L_preproj`, masked policy stability, and complete checkpoint/data
-identity repairs from `980f6ede` remain in place.
-
-The prior raw/effective ZIP-name, checkpoint-schema, CleanRL dispatcher,
-stochastic replay-readiness, and bibliography repairs from `f86bddb` remain in
-place.
-
-The commit retains the descriptor-bound unpack root, sealed complete-runtime
-authentication, canonical archive-path checks, environment sanitization, and
-runtime-digest evidence binding from `d9ccad7` and `e4edcb2`.
-
-Review these as claims to challenge, not accepted facts. In particular, test
-raw versus effective ZIP names, path replacement, same-inode mutation, archive
-duplication, unsafe members, bytecode injection, environment override hooks,
-descriptor tampering, child startup failure, evidence-schema downgrade, and
-cleanup.
-
-The launcher is not a sandbox against the external trust root. The operating
-system, host namespace, other same-UID processes, launcher executable, and
-initial launcher environment remain trusted. Cleanup is best effort if that
-trusted namespace mutates after descriptor acquisition.
-
-The following central constants were intentionally preserved:
-
-\[
-\operatorname{TV}(d_{\pi_\alpha},d_\pi)
-\le
-\frac{\gamma\alpha}{1-\gamma+\gamma\alpha},
-\]
-
-\[
-\frac{\gamma\alpha^2\Delta_g}
-{(1-\gamma)(1-\gamma+\gamma\alpha)},
-\qquad
-\frac{2\varepsilon_{\mathrm{CPI}}\gamma\alpha^2}
-{(1-\gamma)(1-\gamma+\gamma\alpha)},
-\]
-
-\[
-2\gamma\delta_V\tau(s),
-\qquad
-2\gamma^K\delta_V\tau(s),
-\]
-
-and
-
-\[
-\frac{\Delta_r\delta_{\mathrm{dep}}}
-{(1-\gamma)(1-\gamma+\gamma\delta_{\mathrm{dep}})}.
-\]
-
-Do not restore either older loose `\((1-\gamma)^{-2}\)` penalty.
-
-## Theory scope and semantic constraints
-
-Preserve these points in every future revision:
-
-- The work is theory-only. Experiments are deferred to a later task.
-- Review algorithms for mathematical correctness, but do not add experiments or empirical claims.
-- The scope remains one fixed MDP, one fixed current/candidate policy pair, one fixed parameter snapshot, and one shared frozen recurrent map when both policies are compared in the same augmented MDP.
-- Persistent state is `\((x,y,z,h)\)`, where `\(z\)` is the carried pre-unroll latent. The post-unroll latent is carried after a nonterminal transition.
-- Exact mixing is the pointwise probability mixture
-  \[
-  \pi_\alpha=(1-\alpha)\pi+\alpha\pi_{\mathrm{cand}}.
-  \]
-  Parameter, logit, hidden-state interpolation, and distillation are different policies unless a deployment discrepancy is proved.
-- Value domains include the absorber. Latent-path suprema use nonabsorbing domains and do not invent an absorbing latent.
-- Bellman arguments use the value-function fixed point `\(V^\pi\)`. The primary finite-reference argument does not require a recurrent latent fixed point. Do not call the full analysis “fixed-point-free.”
-- Projection gives forward invariance and nonexpansiveness. It gives strict contraction only when the proved product modulus is below one.
-- Uniform theorem premises are not consequences of finite-batch diagnostics.
-- Folded terminal rewards, zero or common terminal bootstrap, and the absorbing boundary must count the terminal contribution exactly once.
-- Exact-mixture occupancy uses `\(1-(1-\alpha)^t\)` because occupancy is measured before decision `\(t\)`. Deployment reward mismatch uses `\(1-(1-\delta_{\mathrm{dep}})^{t+1}\)` because reward `\(r_t\)` follows decision `\(t\)`.
-- Preserve `\(\operatorname{TV}(p,q)=\tfrac12\|p-q\|_1\)` in finite or countable settings and do not add an extra factor of two to span-TV inequalities.
-- Keep novelty claims conservative. The contribution is a domain-specific synthesis and composition, not priority claims for standard Bellman, Banach, occupancy, or coupling tools.
-
-## ChatGPT Pro cross-repository review workflow
-
-Use the implementation's tracked file
-`reports/CHATGPT_PRO_CODE_AND_PAPER_REVIEW_PROMPT.md` at the current
-implementation branch head for a new ChatGPT Pro session. The frozen behavior
-source anchor is `de013fd3fcaae8bc80d124c0c868c7c8611aeede`; later commits may update
-only `README.md`, `reports/**`, or other handoff documentation. The prompt
-requires direct review of both
-repositories, an exact-source paper build, complete implementation dependency
-tracing, sealed-runtime adversarial checks, and a written report. It keeps the
-work theory- and parity-focused and prohibits experiments.
-
-Give ChatGPT Pro direct read access to these branches:
+Copy these directories before changing machines if the smoke evidence should
+be retained:
 
 ```text
-/home/buiksat/trm_bellman  branch full-implementation
-/home/buiksat/UPI_TRM     branch iclr-evidence-aligned-revision
+/home/buiksat/upi-trm-policy-evidence-2d43263f.Erh9bSVz/
+/home/buiksat/upi-trm-policy-auth-2d43263f.MjSzspvD/
+/home/buiksat/upi-trm-policy-auth-5e8801b1.bAjbAlMP/
 ```
 
-If the review environment cannot access those paths, clone the two remotes into a temporary directory and check out the named branches. If only file uploads are available, export both exact commits outside either repository and upload the complete clean trees plus the new prompt. Do not commit generated ZIP files or review bundles.
-
-The prompt requires a blind pass before ChatGPT Pro reads prior review reports. Treat every prior finding and verdict as a hypothesis. When ChatGPT Pro returns its report, re-derive each proposed repair against the current repositories before editing anything.
-
-## Git history and next action
-
-Relevant commits, newest first:
+The detached producer checkout can be recreated, but its current path is:
 
 ```text
-5253692 Tighten finite-reference value premise
-bb11de7 Replace paper-only review prompts
-2107125 Tighten UPI-TRM theory and pseudocode
-1ff4624 Add cross-machine paper handoff
-8165170 Add GPT Pro theory review prompt
-e222885 update (removed the remaining historical handoff bundles)
-c2168d2 Strengthen contraction theory and prune stale artifacts
-6f58dda Fix safe-step domain and refresh GPT Pro review bundle
+/home/buiksat/upi-trm-producer-2d43263/
 ```
 
-Next action:
+It is clean at `2d43263` and contains an exact copy of the frozen dataset.
 
-1. Confirm both named branches are current and record their exact commit SHAs.
-2. Start a new ChatGPT Pro session with direct access to both repositories and
-   use `reports/CHATGPT_PRO_CODE_AND_PAPER_REVIEW_PROMPT.md` from the
-   implementation repository.
-3. Save ChatGPT Pro's complete report without editing either repository during
-   review.
-4. Independently verify every surviving finding before starting another repair.
+Do not commit the smoke evidence or authorization directories to either source
+repository.
+
+## Audit history and current resume point
+
+1. The first authenticated audit used an audit PAR without retained GPU
+   sections. It failed at PPO optimizer validation with
+   `cudaErrorInvalidKernelImage`.
+2. Commit `5e8801b` adds `keep_gpu_sections = True` to the audit and analysis
+   PARs.
+3. The next retry correctly rejected reconstruction from the wrong checkout.
+   A clean detached `2d43263` producer checkout was then supplied.
+4. The repaired audit semantically passed:
+   - schema `policy_improvement_audit_v5`;
+   - 4 expected and 4 complete rows;
+   - 0 failed rows;
+   - 10 per-instance artifacts;
+   - 8 semantic checkpoint validations;
+   - test-open verification `false`.
+5. That audit stdout also contained 12 checkpoint progress lines before the
+   canonical JSON. It is not a publishable JSON artifact. Commit `859f2ca`
+   suppresses those messages for audit restores, and its focused Buck test
+   passed.
+
+The noncanonical semantic-pass file is retained only for debugging:
+
+```text
+/home/buiksat/upi-trm-policy-auth-5e8801b1.bAjbAlMP/stage0-audit.json
+SHA-256: 54b9b96f37253e29cbbb5a121efe91adef96e3bb35945d56641a06aa0757f22b
+```
+
+Do not publish or treat that file as canonical JSON.
+
+## First actions on the new machine
+
+1. Materialize both repositories at the exact committed heads and confirm
+   clean worktrees.
+2. Restore the three external evidence/authorization directories, or rerun the
+   Stage 0 smoke if they were not transferred.
+3. Recreate a clean detached checkout at `2d43263` and copy the frozen dataset
+   under its registered relative path.
+4. From `/data/users/buiksat/fbsource`, confirm
+   `fbcode/buiksat_trm` resolves to the implementation repository.
+5. Run `buck2 kill` before building because the repository is symlinked into
+   the Buck workspace.
+6. Build and hash at `859f2ca`:
+
+```bash
+buck2 build --local-only @fbcode//mode/opt --show-output \
+  fbcode//buiksat_trm:phase4_runtime_launcher \
+  fbcode//buiksat_trm:upi_trm_train \
+  fbcode//buiksat_trm:policy_improvement_audit \
+  fbcode//buiksat_trm:policy_improvement_analysis
+```
+
+7. Create a new runtime authorization for `859f2ca` using the new artifact
+   hashes. Keep the `2d43263` authorization as a historical authorization.
+8. Rerun the Stage 0 audit through `phase4_runtime_launcher` with:
+   - current audit source/authorization at `859f2ca`;
+   - `--historical-runtime-authorization` naming the `2d43263` authorization;
+   - child `--project-root` and `--dataset-root` pointing at the clean detached
+     `2d43263` checkout;
+   - the four final result paths and ten per-instance paths from the external
+     evidence root.
+9. Require stdout to parse as one JSON document with no prefix lines and the
+   semantic counts listed above.
+10. Run the complete user-prescribed Buck runtime gate, type gate, launcher
+    negatives, manifest/static gates, paper build, and visual inspection.
+11. Create
+    `reports/CODEX_REPAIR_AND_EXPERIMENT_REPORT.md` and refresh both GPT Pro
+    review prompts. These documentation deliverables were not completed before
+    the machine transfer.
+
+## Final status at transfer
+
+- repair source status: implemented and committed;
+- Stage 0 smoke: complete;
+- semantic audit: passed once, but canonical-output rerun still required at
+  `859f2ca`;
+- full learned experiments: not authorized and not executable;
+- paper learned-task claims: unchanged, none added;
+- final repair verdict: `REPAIRS INCOMPLETE` until the canonical audit rerun
+  and full final validation gates pass;
+- experiment status: `INCOMPLETE`.
