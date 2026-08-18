@@ -1,243 +1,318 @@
-# UPI-TRM machine-transfer handoff
+# UPI-TRM implementation and audit handoff
 
-Date: 2026-08-16
+Date: 2026-08-17
 
-## Current repository heads
+## Repository heads
 
-Paper:
+Paper repository:
 
 - path: `/home/buiksat/UPI_TRM`
 - branch: `iclr-evidence-aligned-revision`
-- source/PDF commit: `a539e6f75e6da1ca7a09deade2e014f9d2d253b5`
-  (`Keep deployment proof QED with final display`)
-- this handoff will be the next documentation-only commit
+- head before this handoff update:
+  `265771ca48355e97b8e8611cc260d51e921ac691`
+- only `handoff.md` changed; paper source and PDF were not edited
 
-Implementation:
+Implementation repository:
 
 - path: `/home/buiksat/trm_bellman`
 - branch: `full-implementation`
-- current head: `859f2ca` (`Keep policy audit output canonical`)
-- parent: `5e8801b` (`Preserve GPU kernels in policy audit runtimes`)
-- smoke producer commit: `2d43263f394e98c62a2167bde0a3e55e217898d0`
-  (`Bind successful retries to authenticated failure history`)
+- head: `75a157cff500abce0f9afe142c33ff10d4775c48`
+  (`Harden policy improvement evidence loading`)
+- parent: `88e4cf1be1bd9ecceb0ec9ba19ae468851e69a0a`
+  (`Add authenticated full run and theory bridge`)
+- implementation worktree: clean
+- tree: `b1c1e63d9e7e5b01429899ba1664b24eac4619f0`
 
-Both branches contain local commits that were not pushed during this session.
-Push them or transfer the repositories before discarding this machine.
+The paper and implementation remain separate Git repositories. Do not move the
+implementation into the paper repository during this evidence cycle. Source
+authorization binds the implementation repository root and Git commit.
 
-## Completed repair commits
+## Paper status
 
-Implementation commits created during this repair:
-
-1. `2bd5615` - atomic Phase 4 generation-directory publication and tests.
-2. `a3ca1ca` - exact float64 finite-MDP sanity suite.
-3. `7317d7011c31ac622c0723d22cf9f4bb0571bdf1` - registered
-   `policy_improvement_v1` protocol, schemas, registry, smoke and fail-closed
-   full-runtime infrastructure.
-4. `74d5b4932501c266ab69ddd74015e3124885914e` - frozen dataset identities.
-5. `3fbba51e3525d74503591af17ab5d23e07b6c740` - fixed Stage 0 trainer
-   identity serialization.
-6. `c67bea28b16b8260925e979ff2f6fd9d5d00129c` - bound the Stage 0 exact
-   baseline checker.
-7. `2d43263f394e98c62a2167bde0a3e55e217898d0` - bound successful retries
-   to authenticated failed-attempt history and closed Git replacement-ref
-   substitution.
-8. `5e8801b1fe546fdc1c33b1d066cedde212fddfa8` - retained CUDA kernel
-   sections in the audit and analysis PARs.
-9. `859f2ca` - suppressed checkpoint progress output during audit restores so
-   the audit emits one canonical JSON document on stdout.
-
-Paper commit:
-
-- `a539e6f75e6da1ca7a09deade2e014f9d2d253b5` - adds `\qedhere` to the
-  final Theorem F.5 display and regenerates the tracked PDF.
-
-The theorem text, constants, domains, Algorithms 1-2, checkpoint semantics,
-replay semantics, and exact-mixture semantics were not changed.
-
-## Canonical paper artifact
+The paper source, PDF, theorem statements, algorithms, bibliography, and claims
+were not changed.
 
 - source: `UPI_TRM_ICLR/main.tex`
 - PDF: `UPI_TRM_ICLR/main.pdf`
-- pages: 38
-- bytes: 544,294
 - PDF SHA-256:
   `9d59bc486b975c08a055e2393d057bbf11f9eb7b06826edfeeecbf1aed4857ae`
-- `main.tex` Git blob: `9fcaa6aa199223708e91b39a89d62c137f072a95`
-- `trm_rl.bib` Git blob: `38c36ecc9021c5d072a9723acb0c247460c4ea9c`
-- `main.pdf` Git blob: `c6a55aa7500ded84972e9599dbca05cd527804bd`
 
-The QED marker is attached to the final display on page 26. Page 27 starts
-with Remark F.6. The paper still makes no learned-task performance claim.
+No Stage 1-3 outcome, learned-task result, or empirical claim was produced.
 
-## Deterministic validation already completed
+## Implementation history
 
-- exact finite-MDP suite: 212/212 checks passed;
-  maximum numerical violation `2.6645352591003757e-15`.
-- retry/provenance focused Python tests: 32/32 passed.
-- affected Buck regression gate after the replacement-ref repair: 143 passed,
-  0 failed, 0 timed out, 0 fatal, 0 infrastructure failures, 0 build failures.
-- expanded policy-improvement type gate: 25/25 targets passed.
-- stdout-suppression regression at implementation head `859f2ca`: 1 passed,
-  0 failed.
-- replacement-ref attack and hostile inherited `GIT_*` variants were rejected.
-- current implementation producer manifest SHA-256 at `859f2ca`:
-  `c1a37a92dba62139fca75bfdc6d0ac4667d091b7093ff0383a40b1c7851eeaaf`.
+Commit `88e4cf1` added the authenticated full-run backend, theory bridge,
+pre-outcome amendment, non-smoke checkpoint resume and evaluation, immutable
+publication, retry history, and owned Buck targets.
 
-The complete final runtime/type/static gate must be rerun at `859f2ca`. Do not
-quote the earlier counts as current final evidence.
+Commit `75a157c` adds the checkpoint evidence security boundary:
 
-## Registered experiment identities
+1. Authenticated checkpoint bytes are copied into write-sealed memfds only
+   after the complete generation, result, manifest, model-state, validation,
+   lineage, amendment, and `TEST_OPEN` metadata have authenticated.
+2. Semantic validators receive sealed descriptors, not caller-controlled
+   checkpoint paths.
+3. Evidence checkpoint deserialization uses `torch.load(weights_only=True)`.
+4. The dynamic Torch allowlist is isolated to eight reviewed entries during
+   each load. The 74 ambient grants installed by `import torch` are removed for
+   the load and restored afterward.
+5. The compatibility loader supports the two first-party replay dataclasses and
+   exact NumPy array/dtype constructors observed in the pre-cleanup checkpoint
+   corpus.
+6. Producer source manifests are versioned. Historical v1 manifests bind 92
+   sources; current v2 manifests bind 93, including the checkpoint allowlist.
+7. The launcher derives the highest inventory version satisfied by a clean Git
+   tree and rejects manifest downgrades.
+8. The general audit, full runtime, theory evaluator, PPO loader, and UPI loader
+   share the same sealing and data-only deserialization boundary.
 
-- protocol ID: `policy-improvement-v1-20260814`
-- canonical protocol SHA-256:
-  `583e99828d877f9a33503e84af58f1ccb8aa643f7ecc5baa826d6662de6a48b2`
-- raw protocol SHA-256:
-  `be986854e39776513e3cd6891ced583efd361a79ce5f1f194f5cc8af7c3c87c3`
-- registry raw SHA-256:
-  `db8d4198409c94fda3174faffe56ba0d37b9b01f98319f217127342658be3ed4`
-- registry rows: 157 total, 4 smoke and 153 full.
-- dataset top manifest:
-  `2572bb79faeec976dc83cb75b8520e59691a7c9dc3f8fe252554fc29bfe90ccd`
-- records: 1,024 train, 256 validation, 512 test.
+Commit statistics:
 
-`RUN_UPITRM_FULL_EXPERIMENTS` was unset. No Stage 1-3 run was launched. The
-full runtime remains intentionally fail-closed because the production
-non-smoke backend is not connected.
+- 27 files changed
+- 3,794 insertions, 374 deletions
+- four new files:
+  - `policy_improvement_checkpoint_allowlist.py`
+  - `policy_improvement_sealed_evidence.py`
+  - `tests/test_policy_improvement_checkpoint_allowlist_unittest.py`
+  - `tests/test_policy_improvement_sealed_evidence_unittest.py`
+- binary diff SHA-256 against `88e4cf1`:
+  `7d16d37fc6b3ed7207fde87f77d03fc4606ee46c7edcb895b795c1ca5ae743b7`
+- cumulative binary diff SHA-256 against `859f2ca`:
+  `40c3efb02b3f776d10a1a4b3f7a1b035b7b12f8d025bc13cbcf99533b342df3e`
 
-## Fresh authenticated Stage 0 smoke
+## Current-head validation
 
-The four-method smoke completed successfully at producer commit `2d43263`.
-Every method used seed `1257297357`, validation records 0-7, and the registered
-16/32 interaction prepare/resume schedule. The test split was never opened.
+### Runtime gate
 
-Durations:
-
-| Method | Prepare | Resume |
-| --- | ---: | ---: |
-| fixed-base exact persistent-z | 503.065 s | 849.867 s |
-| fixed-base exact episodic-z | 474.176 s | 855.066 s |
-| legacy parameter interpolation | 661.621 s | 1,218.135 s |
-| matched PPO | 294.813 s | 329.632 s |
-
-Smoke runtime identities:
-
-- launcher SHA-256:
-  `8e73d60512934705f8a295fb67845f5a90b8c6f3006e1ea6ebcb373881c76d6a`
-- training PAR SHA-256:
-  `8c0bed3e3e8230f1b5294938a7523b6ec3c9dcd17be3da752e8c0b780255d28b`
-- producer manifest SHA-256 at `2d43263`:
-  `8da0a8be7e2728d900c105e5e36009598c65419dce0681b6010c3cc2f82d1163`
-- runtime authorization SHA-256:
-  `04ba5dd28509e1c7c51a2b6a49e4d8814c8f162a95560376671ad79071e76e75`
-- smoke-plan SHA-256:
-  `2037cb53e8f0825f7bc10a48ee221e81e223ebedf0d117e2459d1cada5446ad8`
-
-Each final segment is schema 2 and commits its exact
-`prior_failed_attempts` inventory. The new evidence root contains no failed
-attempts. Persistent-z was independently checked byte-for-byte: exact file
-inventories, hashes, checkpoint lineage, authorization, source identity, and
-test isolation all passed.
-
-## External artifacts that are not in Git
-
-Copy these directories before changing machines if the smoke evidence should
-be retained:
-
-```text
-/home/buiksat/upi-trm-policy-evidence-2d43263f.Erh9bSVz/
-/home/buiksat/upi-trm-policy-auth-2d43263f.MjSzspvD/
-/home/buiksat/upi-trm-policy-auth-5e8801b1.bAjbAlMP/
-```
-
-The detached producer checkout can be recreated, but its current path is:
-
-```text
-/home/buiksat/upi-trm-producer-2d43263/
-```
-
-It is clean at `2d43263` and contains an exact copy of the frozen dataset.
-
-Do not commit the smoke evidence or authorization directories to either source
-repository.
-
-## Audit history and current resume point
-
-1. The first authenticated audit used an audit PAR without retained GPU
-   sections. It failed at PPO optimizer validation with
-   `cudaErrorInvalidKernelImage`.
-2. Commit `5e8801b` adds `keep_gpu_sections = True` to the audit and analysis
-   PARs.
-3. The next retry correctly rejected reconstruction from the wrong checkout.
-   A clean detached `2d43263` producer checkout was then supplied.
-4. The repaired audit semantically passed:
-   - schema `policy_improvement_audit_v5`;
-   - 4 expected and 4 complete rows;
-   - 0 failed rows;
-   - 10 per-instance artifacts;
-   - 8 semantic checkpoint validations;
-   - test-open verification `false`.
-5. That audit stdout also contained 12 checkpoint progress lines before the
-   canonical JSON. It is not a publishable JSON artifact. Commit `859f2ca`
-   suppresses those messages for audit restores, and its focused Buck test
-   passed.
-
-The noncanonical semantic-pass file is retained only for debugging:
-
-```text
-/home/buiksat/upi-trm-policy-auth-5e8801b1.bAjbAlMP/stage0-audit.json
-SHA-256: 54b9b96f37253e29cbbb5a121efe91adef96e3bb35945d56641a06aa0757f22b
-```
-
-Do not publish or treat that file as canonical JSON.
-
-## First actions on the new machine
-
-1. Materialize both repositories at the exact committed heads and confirm
-   clean worktrees.
-2. Restore the three external evidence/authorization directories, or rerun the
-   Stage 0 smoke if they were not transferred.
-3. Recreate a clean detached checkout at `2d43263` and copy the frozen dataset
-   under its registered relative path.
-4. From `/data/users/buiksat/fbsource`, confirm
-   `fbcode/buiksat_trm` resolves to the implementation repository.
-5. Run `buck2 kill` before building because the repository is symlinked into
-   the Buck workspace.
-6. Build and hash at `859f2ca`:
+Command shape:
 
 ```bash
-buck2 build --local-only @fbcode//mode/opt --show-output \
-  fbcode//buiksat_trm:phase4_runtime_launcher \
-  fbcode//buiksat_trm:upi_trm_train \
-  fbcode//buiksat_trm:policy_improvement_audit \
-  fbcode//buiksat_trm:policy_improvement_analysis
+buck2 test --local-only @fbcode//mode/opt \
+  fbcode//buiksat_trm:test_phase4_figure_publication \
+  fbcode//buiksat_trm:test_phase4_reporting \
+  fbcode//buiksat_trm:test_phase4_runtime_launcher \
+  fbcode//buiksat_trm:test_policy_dataset_builder \
+  fbcode//buiksat_trm:test_policy_improvement_audit \
+  fbcode//buiksat_trm:test_policy_improvement_checkpoint_allowlist \
+  fbcode//buiksat_trm:test_policy_improvement_checkpoint_validator \
+  fbcode//buiksat_trm:test_policy_improvement_evidence \
+  fbcode//buiksat_trm:test_policy_improvement_full_backend \
+  fbcode//buiksat_trm:test_policy_improvement_full_runtime \
+  fbcode//buiksat_trm:test_policy_improvement_sealed_evidence \
+  fbcode//buiksat_trm:test_policy_improvement_smoke_checkpoint \
+  fbcode//buiksat_trm:test_policy_improvement_smoke_runtime \
+  fbcode//buiksat_trm:test_policy_improvement_theory_bridge \
+  fbcode//buiksat_trm:test_policy_improvement_v1 \
+  fbcode//buiksat_trm:test_run_identity \
+  fbcode//buiksat_trm:test_upi_trm_logging_smoke \
+  fbcode//buiksat_trm:test_upi_trm_trainer_smoke \
+  -- --env UPI_TRM_HISTORICAL_CHECKPOINT_ROOT=<three pre-cleanup roots> \
+  --env UPI_TRM_HISTORICAL_CHECKPOINT_COUNT=35
 ```
 
-7. Create a new runtime authorization for `859f2ca` using the new artifact
-   hashes. Keep the `2d43263` authorization as a historical authorization.
-8. Rerun the Stage 0 audit through `phase4_runtime_launcher` with:
-   - current audit source/authorization at `859f2ca`;
-   - `--historical-runtime-authorization` naming the `2d43263` authorization;
-   - child `--project-root` and `--dataset-root` pointing at the clean detached
-     `2d43263` checkout;
-   - the four final result paths and ten per-instance paths from the external
-     evidence root.
-9. Require stdout to parse as one JSON document with no prefix lines and the
-   semantic counts listed above.
-10. Run the complete user-prescribed Buck runtime gate, type gate, launcher
-    negatives, manifest/static gates, paper build, and visual inspection.
-11. Create
-    `reports/CODEX_REPAIR_AND_EXPERIMENT_REPORT.md` and refresh both GPT Pro
-    review prompts. These documentation deliverables were not completed before
-    the machine transfer.
+Result:
 
-## Final status at transfer
+- exit code: 0
+- targets: 18
+- passed tests: 464
+- failures, timeouts, fatal errors, skips, infrastructure failures, and build
+  failures: 0
+- test run:
+  `https://www.internalfb.com/intern/testinfra/testrun/14073749025919558`
+- log: `/tmp/codex_final_runtime_gate_rerun2.log`
+- log SHA-256:
+  `55be5ab39757673fc30df4eb8bd62d2b99e4cd6d18246ca66c96e9d167c70ba0`
 
-- repair source status: implemented and committed;
-- Stage 0 smoke: complete;
-- semantic audit: passed once, but canonical-output rerun still required at
-  `859f2ca`;
-- full learned experiments: not authorized and not executable;
-- paper learned-task claims: unchanged, none added;
-- final repair verdict: `REPAIRS INCOMPLETE` until the canonical audit rerun
-  and full final validation gates pass;
-- experiment status: `INCOMPLETE`.
+Before the obsolete evidence directories were deleted, the gate data-only
+loaded all 35 checkpoints that were present across those roots. That was a
+loader-compatibility check only. Those checkpoints came from experiments the
+user has since declared invalid and are no longer retained.
+
+### Type, manifest, and static gates
+
+- affected type gate: 56 targets, exit 0
+- target inventory: `/tmp/upitrm_type_gate_targets.txt`
+- type log: `/tmp/codex_final_type_gate.log`
+- type log SHA-256:
+  `c1dfa8a0c67372dac0403496eeb3328bc223399c5fa7805524457c3330b3a0d1`
+- producer-manifest regeneration: byte-identical after commit, 93 sources
+- `git diff --check`: exit 0 before commit
+- focused Python compilation for the launcher authorization fix: exit 0
+- clean synthetic v1 launcher authorization: exit 0
+- clean synthetic v1 audit source authentication: exit 0
+- clean committed v2 launcher authorization: exit 0
+- direct v1-on-v2 downgrade regression: rejected as required
+
+### Optimized PARs
+
+All six optimized PAR builds exited 0. Build log:
+`/tmp/codex_final_par_build.log`, SHA-256
+`a638cd4420ca6122e4b1146e2eb9efb35241f35b6409764a95031e6c3805b9c0`.
+
+```text
+launcher  d1dffbdf7c64ab07ca3f55b5514e3d40ad14db09c2edb9ae17f0caa9f8004baa
+training  dccc93b577fde350a26071613124ec884bbffc550cfabf760e1759462e3cdb31
+full      97f238bec61ef32cf7421fba27bf8fca2dd475e3f2130309f8c70cfd744fb9ea
+theory    d2ef328fd5f1190b3467fcb244ad3119b248420d07fec8832256e69ffd1cb715
+audit     b6c6464dfebbc8b649868023b62360d005462c59acad9387d14769de9905977a
+analysis  518ead315392db7bdbc872e66fbf17f530bc4be068ef039c9269964ebc191501
+```
+
+## Current source identities
+
+Producer manifest:
+
+- schema: v2
+- sources: 93
+- raw/authenticated SHA-256:
+  `6a1aef8e48d6ff4e0cfae243bb108a389bee0228f1d7266492983af275400c5f`
+
+Source profiles:
+
+```text
+full      127347cdb8257a414ab12953687625ca85c28805f197060f2b2f176e5b63a97a  100 paths
+theory    6b77831569d87786a923f5abd1407e8f6917ea57aa5d57995c5fdd976dcfbf24  102 paths
+audit     27f845bcacc0c8166e3772cce8736f87e0a24a78a5f0d46c4722566052af671f  105 paths
+analysis  4055d6e6b78a67ca84f3e8967fdb304528dfd152175845c6d40a8238fa0a0fc7  106 paths
+```
+
+Canonical registered identities remain:
+
+```text
+protocol          583e99828d877f9a33503e84af58f1ccb8aa643f7ecc5baa826d6662de6a48b2
+base registry     6f618e6f3db0b60079ffc41d37982b781a9ff22a2ddab512c36e44db84a162f6
+theory amendment  6127ec9cdf5a774bd5b05248d2804cbecc6c847c851d339ea593ca5f3d40bd6c
+```
+
+Every previous current-head runtime authorization is obsolete because the Git
+commit, producer manifest, source profiles, and PAR hashes changed. No new
+authorization directory was created during this final fix.
+
+## Experiment evidence status
+
+The paper changed, and the user declared the old experiments incorrect and no
+longer relevant. Their producer checkouts, authorizations, evidence packages,
+reconstructed audit package, and old logs were therefore removed. They must not
+be cited, audited, or used as a baseline for the revised paper.
+
+No canonical Stage 0 package exists for the revised experiment. The next
+experiment cycle must start from commit `75a157c`, a new runtime authorization,
+and newly generated Stage 0 smoke evidence.
+
+## Removed external directories
+
+The following eight obsolete directories were permanently deleted at the
+user's request. They are not recoverable from Trash.
+
+```text
+/home/buiksat/upi-trm-policy-audit-859f2ca.myImeqnx
+/home/buiksat/upi-trm-policy-auth-2d43263f.MjSzspvD
+/home/buiksat/upi-trm-policy-auth-5e8801b1.bAjbAlMP
+/home/buiksat/upi-trm-policy-authorizations
+/home/buiksat/upi-trm-policy-evidence-2d43263f.Erh9bSVz
+/home/buiksat/upi-trm-policy-evidence-owner
+/home/buiksat/upi-trm-producer-2d43263
+/home/buiksat/upi-trm-producer-c67bea28
+```
+
+Approximately 2.7 GB was reclaimed. `/home/buiksat/UPI_TRM` and
+`/home/buiksat/trm_bellman` were not deleted or moved.
+
+## Test-split disclosure
+
+An old, now-retired audit attempt eagerly opened local test arrays before
+`TEST_OPEN`. No values were manually inspected or reported. That evidence was
+deleted with the invalid experiment artifacts.
+
+Current code authenticates test metadata without opening files below the test
+directory until an authenticated `TEST_OPEN` record exists. Do not claim the
+entire repair session avoided opening the test split. Do claim only that the
+committed implementation prevents the premature open.
+
+## Remaining blockers and debt
+
+1. Generate a new runtime authorization for commit `75a157c` before launching
+   any policy role for the revised experiment.
+2. Generate fresh Stage 0 smoke evidence under the selected current runtime.
+   Do not reconstruct or reuse the deleted experiments.
+3. The eight-entry data-only allowlist remains a standing compatibility grant.
+   A malicious data-only payload can also request excessive tensor or array
+   allocation. File sealing bounds bytes, not expanded memory.
+4. `TEST_OPEN` remains an owner-writable singleton rather than an append-only or
+   WORM ledger. Deletion can erase evidence of an earlier open.
+5. A crash or `SIGKILL` before failed-attempt publication remains
+   indistinguishable from no attempt without an external append-only ledger.
+
+## Required next actions
+
+1. Push or transfer implementation commit `75a157c`.
+2. Generate one runtime authorization naming `75a157c` and the hashes above.
+3. Run a new Stage 0 smoke cycle for the revised experiment. Do not run Stage
+   1-3 or open the test split.
+4. Audit the new Stage 0 package. Require stdout to contain exactly one
+   canonical JSON document, then verify
+   4 expected rows, 4 complete rows, 0 failed rows, 10 per-instance artifacts,
+   8 semantic checkpoint validations, and `test_open=false`.
+5. Do not run Stage 1-3 until that audit is green and the pre-outcome amendment
+   remains committed.
+
+## Claude review prompt
+
+```text
+Review implementation commit 75a157cff500abce0f9afe142c33ff10d4775c48
+in /home/buiksat/trm_bellman against parent
+88e4cf1be1bd9ecceb0ec9ba19ae468851e69a0a. Also inspect the cumulative
+implementation from 859f2cab5e89f30a7a70f1ff4b18567f55cb3252 when needed.
+
+Read /home/buiksat/UPI_TRM/handoff.md. Treat all paper source and PDF files as
+read-only. Do not run Stage 1-3, open the test split, train a learned run, edit
+the paper, or make empirical claims. Review only unless explicitly asked to fix
+a verified blocker.
+
+Use adversarial default-reject verification. Reproduce each candidate and
+report only survivors with file:line anchors. Focus on:
+
+1. Sealed-descriptor ownership and cleanup across every success and exception
+   path.
+2. Complete-generation authentication before any checkpoint loader runs.
+3. Exact isolation and restoration of Torch dynamic safe globals.
+4. Safety and necessity of all eight allowlisted globals, including NumPy
+   object-dtype and resource-expansion cases.
+5. Producer manifest v1/v2 anti-downgrade behavior through the real
+   authorize_phase4_training_source path, not only selector helpers.
+6. Manifest v1 regression compatibility and current v2 source completeness.
+7. Evidence deserialization closure, including import aliases and indirect
+   loader references.
+8. Preservation of runtime authorization, amendment, TEST_OPEN, immutable
+   publication, retry-history, and no-source-fallback contracts.
+
+Validation evidence:
+
+- runtime gate: 18 targets, 464 passed, exit 0;
+- type gate: 56 targets, exit 0;
+- pre-cleanup checkpoint loader compatibility: 35/35;
+- optimized launcher/training/full/theory/audit/analysis PAR builds: exit 0;
+- implementation diff SHA-256 against 88e4cf1:
+  7d16d37fc6b3ed7207fde87f77d03fc4606ee46c7edcb895b795c1ca5ae743b7.
+
+The old experiment evidence was deleted after the user declared it invalid.
+Review the implementation only. Do not quote any old row, artifact, or metric
+counts as evidence for the revised paper.
+
+Return blocking findings first, then concerns checked and cleared, additional
+smoke-only tests, and the safest path forward. Include no experiment results or
+paper claims.
+```
+
+## Current status
+
+- implementation security fix: committed at `75a157c`
+- implementation worktree: clean
+- full learned backend: connected and smoke-tested; no full learned run executed
+- theory bridge: implemented and smoke-tested; no scientific evaluation run
+- pre-outcome amendment: committed
+- Stage 1-3: not run
+- paper claims: unchanged
+- runtime/type gates: green
+- revised-experiment Stage 0: not run
+- experiment status: incomplete
