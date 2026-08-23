@@ -18,6 +18,7 @@
 \usepackage{eso-pic} % used by \AddToShipoutPicture
 \RequirePackage{fancyhdr}
 \RequirePackage{natbib}
+\RequirePackage{iftex}
 
 % modification to natbib citations
 \setcitestyle{authoryear,round,citesep={;},aysep={,},yysep={;}}
@@ -29,7 +30,11 @@
 \newif\ificlrfinal
 \iclrfinalfalse
 \def\iclrfinalcopy{\iclrfinaltrue}
-\font\iclrtenhv  = phvb at 8pt
+\ifPDFTeX
+  \font\iclrtenhv = phvb at 8pt
+\else
+  \font\iclrtenhv = cmssbx10 at 8pt
+\fi
 
 % Specify the dimensions of each page
 
