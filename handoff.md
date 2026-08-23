@@ -315,3 +315,280 @@ The script SHA-256 is
   `3ceddf42baa073f23ea7026e24e11f1f72fdbf2a`
 - paper PDF: built and validated at the paper revision commit
 - this handoff change: documentation only
+
+# Authenticated protocol-v2 Stage 0 execution attempt
+
+Date: 2026-08-23
+
+Execution window: `2026-08-23T19:26:31Z` to `2026-08-23T19:55:40Z`
+
+## Frozen identities
+
+- Paper repository: `/home/buiksat/UPI_TRM`
+- Paper branch: `iclr-evidence-aligned-revision`
+- Starting paper HEAD: `977c7a61d1febeff60429f334fc823fa460af1ac`
+- Frozen paper source and PDF revision at the stop point:
+  `977c7a61d1febeff60429f334fc823fa460af1ac`
+- Implementation repository: `/home/buiksat/trm_bellman`
+- Implementation branch: `full-implementation`
+- Implementation HEAD: `3ceddf42baa073f23ea7026e24e11f1f72fdbf2a`
+- Both worktrees were clean at the start. The implementation worktree remained
+  clean through the stop point. `git replace -l` was empty.
+- Frozen PDF:
+  `/home/buiksat/UPI_TRM/UPI_TRM_ICLR/main.pdf`
+- Frozen PDF SHA-256:
+  `257d4fafd28ee9b32d4ff8272752d79cf225036efa0ab8fe3e046b198eb2cfc1`
+- No paper source or PDF file changed. This handoff update is documentation-only
+  relative to the starting paper commit.
+
+## Execution root and host
+
+- External execution root:
+  `/home/buiksat/upi-trm-stage0-v2-3ceddf42.iAmSeUUl`
+- Root mode: `0700`
+- Filesystem: `btrfs` on
+  `/dev/vda3[/var/localhome/devenvusera2d2]`
+- Host: `devvm8504.hil0.facebook.com`
+- Python: `3.12.13+meta`
+- Buck2: `267acfd7b674f035b00ce9414afaf824027eafe6`
+- CUDA-visible hardware: two NVIDIA A100-PG509-200 devices, 40,960 MiB each,
+  driver `580.126.09`
+- Environment metadata:
+  `/home/buiksat/upi-trm-stage0-v2-3ceddf42.iAmSeUUl/metadata/environment_preflight.json`
+
+## Dataset preflight
+
+The preflight authenticated the registered train content and only metadata for
+validation and test. It did not deserialize validation or test arrays.
+
+- Dataset root:
+  `/home/buiksat/trm_bellman/data/policy-improvement-v1-owner/policy-improvement-hard-4x4-v1`
+- Dataset manifest SHA-256:
+  `2572bb79faeec976dc83cb75b8520e59691a7c9dc3f8fe252554fc29bfe90ccd`
+- Train manifest SHA-256:
+  `05146037857b1adb42520e80a0c2ab250053a517196c8b8ac95e002aa40c6f74`
+- Train ordered-record SHA-256:
+  `73110263bb388e0f6e0976156d03f499b83541a58d07c39b8b634e94a98ad446`
+- Train count: `1024`
+- Validation manifest SHA-256, metadata only:
+  `a4b1bffb92f9c7c1ebe7baf9dcaaed83191f9c6249bec0887ed8ff7fb6b4a937`
+- Test manifest SHA-256, metadata only:
+  `bf14acfc94e580bb3678102729f88432fda599610b2ca2578949f8c4cbc775bd`
+- Stage 0 indices: `[749, 910, 352, 318, 877, 605, 148, 280]`
+- Stage 0 ordered-record SHA-256:
+  `522a60c5f0b4276c5a66743005ff430800ad0085e020cd4a7403a0f303456033`
+- Stage 0 ordered-input SHA-256:
+  `903e3155d6a728e55dccd3f49e07a3797e0013e2c3cc979d17ba7eaefee584b2`
+- Stage 0 binding SHA-256:
+  `c6350d61eb7c2d3f2b04114bf83017c764172512506477b156b21941ff9ef656`
+- `validation_select` and `validation_bridge` were verified from manifest
+  metadata as disjoint and exhaustive 128-record partitions.
+- Dataset preflight record:
+  `/home/buiksat/upi-trm-stage0-v2-3ceddf42.iAmSeUUl/metadata/dataset_preflight.json`
+  with SHA-256
+  `7dc3aef8882f23ae3c34ddcd3532cba754ddbd4f22e6e4f597a02df7babe3b9c`.
+
+## Current-SHA gates
+
+Focused test command:
+
+```bash
+cd /data/repos/fbsource
+buck2 test --local-only @fbcode//mode/opt \
+  fbcode//buiksat_trm:test_phase4_runtime_launcher \
+  fbcode//buiksat_trm:test_policy_improvement_v1 \
+  fbcode//buiksat_trm:test_policy_improvement_v2 \
+  fbcode//buiksat_trm:test_policy_improvement_runtime_authorization \
+  fbcode//buiksat_trm:test_policy_improvement_audit \
+  fbcode//buiksat_trm:test_policy_improvement_checkpoint_allowlist \
+  fbcode//buiksat_trm:test_policy_improvement_sealed_evidence \
+  fbcode//buiksat_trm:test_policy_improvement_evidence \
+  fbcode//buiksat_trm:test_policy_improvement_full_runtime \
+  fbcode//buiksat_trm:test_policy_improvement_full_backend \
+  fbcode//buiksat_trm:test_policy_improvement_throughput \
+  fbcode//buiksat_trm:test_policy_improvement_theory_bridge_v2 \
+  fbcode//buiksat_trm:test_policy_improvement_smoke_checkpoint \
+  fbcode//buiksat_trm:test_policy_improvement_smoke_runtime \
+  fbcode//buiksat_trm:test_policy_improvement_checkpoint_validator \
+  fbcode//buiksat_trm:test_run_identity \
+  fbcode//buiksat_trm:test_upi_trm_trainer_smoke \
+  fbcode//buiksat_trm:test_algorithm2_boundary_contract \
+  fbcode//buiksat_trm:test_cpi_mixture_policy_smoke \
+  fbcode//buiksat_trm:test_rl_k_step_targets \
+  fbcode//buiksat_trm:test_theory_exact_components \
+  fbcode//buiksat_trm:test_plan_edit_env \
+  fbcode//buiksat_trm:test_rl_k_step_value_update_trainer \
+  fbcode//buiksat_trm:test_config_integrity
+```
+
+Result: 24 targets listed successfully; 477 tests passed, 0 failed, 0 timed
+out, 0 fatal, 1 skipped, 0 omitted, 0 infrastructure failures, and 0 build
+failures. The raw Buck exit code was `64` because
+`test_real_historical_checkpoints_load_data_only` skipped when
+`UPI_TRM_HISTORICAL_CHECKPOINT_ROOT` was absent. That variable was deliberately
+not set because this cycle forbids historical evidence. No test failed.
+
+- Test stdout SHA-256:
+  `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`
+- Test stderr SHA-256:
+  `922983de2b27df57a55c423035017fc872c320c83c013347fa94e77368981064`
+- Test window: `2026-08-23T19:34:07Z` to `2026-08-23T19:46:02Z`
+
+Generated type-check command:
+
+```bash
+cd /data/repos/fbsource
+buck2 build --local-only @fbcode//mode/opt \
+  fbcode//buiksat_trm:policy_improvement_runtime_authorization-type-checking \
+  fbcode//buiksat_trm:policy_improvement_throughput-type-checking \
+  fbcode//buiksat_trm:test_policy_improvement_runtime_authorization-library-type-checking \
+  fbcode//buiksat_trm:test_policy_improvement_throughput-library-type-checking
+```
+
+Result: exit `0`, four targets. Type-check stdout SHA-256 was the empty-file
+digest `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`;
+stderr SHA-256 was
+`44aff66aef62489e6bbd26273fbe495a1a665fb84d2f3c4a8ba4b3f412c4fbcf`.
+
+`git -C /home/buiksat/trm_bellman diff --check` exited `0` with empty stdout
+and stderr.
+
+## Runtime build
+
+Build command:
+
+```bash
+cd /data/repos/fbsource
+buck2 build --local-only @fbcode//mode/opt --show-full-output \
+  fbcode//buiksat_trm:phase4_runtime_launcher \
+  fbcode//buiksat_trm:upi_trm_train \
+  fbcode//buiksat_trm:policy_improvement_full \
+  fbcode//buiksat_trm:policy_improvement_theory_bridge \
+  fbcode//buiksat_trm:policy_improvement_audit \
+  fbcode//buiksat_trm:policy_improvement_analysis \
+  fbcode//buiksat_trm:generate_policy_improvement_runtime_authorization \
+  fbcode//buiksat_trm:policy_improvement_smoke_plan
+```
+
+Result: exit `0`, eight targets, from `2026-08-23T19:47:53Z` to
+`2026-08-23T19:51:00Z`. Build stdout SHA-256 was
+`6a772da5e16ba6799843dd97561db6abbe2d3574806f09bc3381ae048cf64082`;
+stderr SHA-256 was
+`53f40b9ae6f9b06287031f77dcb4003873e2d04377e010f48197c970afa1463c`.
+
+The Buck outputs were copied as separate read-only files into the external
+execution root before hashing and authorization.
+
+| Target | Frozen path | Bytes | SHA-256 |
+| --- | --- | ---: | --- |
+| `phase4_runtime_launcher` | `/home/buiksat/upi-trm-stage0-v2-3ceddf42.iAmSeUUl/build/phase4_runtime_launcher.par` | 840475 | `5f38ddfc12d7d604b8d0f19a635f23e2cf9ed6b6c17687814c7a92a434c7f15f` |
+| `upi_trm_train` | `/home/buiksat/upi-trm-stage0-v2-3ceddf42.iAmSeUUl/build/upi_trm_train.par` | 1460660834 | `5cc289cc9fb7106ea8d0aa82175d171f283a07298e534afa587baae55faf1e1e` |
+| `policy_improvement_full` | `/home/buiksat/upi-trm-stage0-v2-3ceddf42.iAmSeUUl/build/policy_improvement_full.par` | 1460748258 | `b518cbdf837807f6e0c25ac8c7ba0907f102598476ddceb743f9210760817c84` |
+| `policy_improvement_theory_bridge` | `/home/buiksat/upi-trm-stage0-v2-3ceddf42.iAmSeUUl/build/policy_improvement_theory_bridge.par` | 1460852689 | `5710ce96abff7f0ec05354a879aed1b6ef5b6802fd6c350ca2465f1ec7c0ebaf` |
+| `policy_improvement_audit` | `/home/buiksat/upi-trm-stage0-v2-3ceddf42.iAmSeUUl/build/policy_improvement_audit.par` | 1460812190 | `0750924c583036f1d1217123acee563a6a1be46f4c1a5ed6395ebb164b7ca6df` |
+| `policy_improvement_analysis` | `/home/buiksat/upi-trm-stage0-v2-3ceddf42.iAmSeUUl/build/policy_improvement_analysis.par` | 1460815829 | `9a0c7ecfc19aa28cdb2f4f7b43061df98eb2d69cfa77d326d10fbcd93b013d5e` |
+| `generate_policy_improvement_runtime_authorization` | `/home/buiksat/upi-trm-stage0-v2-3ceddf42.iAmSeUUl/build/generate_policy_improvement_runtime_authorization.par` | 1187891 | `6156434628253c16f85a0640bb40e20014411e1276c677d7c7f48b86299839bb` |
+| `policy_improvement_smoke_plan` | `/home/buiksat/upi-trm-stage0-v2-3ceddf42.iAmSeUUl/build/policy_improvement_smoke_plan.par` | 1135384 | `adc00bbf7661ea4b6a5fbbd47981f4fb2f1c976e4d0eade2f8d3f7133df639ba` |
+
+The complete artifact manifest is
+`/home/buiksat/upi-trm-stage0-v2-3ceddf42.iAmSeUUl/metadata/build_artifacts.json`
+with SHA-256
+`a63259f537ca32675abce5307ff32f898d39441d6937ed5031ad749b67a5f9c6`.
+
+## Fail-closed stop at runtime authorization
+
+Authorization command:
+
+```bash
+/home/buiksat/upi-trm-stage0-v2-3ceddf42.iAmSeUUl/build/generate_policy_improvement_runtime_authorization.par \
+  --project-root /home/buiksat/trm_bellman \
+  --expected-git-commit 3ceddf42baa073f23ea7026e24e11f1f72fdbf2a \
+  --authorization-id stage0-v2-3ceddf42-20260823T195343Z \
+  --created-at-utc 2026-08-23T19:53:43Z \
+  --launcher /home/buiksat/upi-trm-stage0-v2-3ceddf42.iAmSeUUl/build/phase4_runtime_launcher.par \
+  --training-runtime /home/buiksat/upi-trm-stage0-v2-3ceddf42.iAmSeUUl/build/upi_trm_train.par \
+  --full-runtime /home/buiksat/upi-trm-stage0-v2-3ceddf42.iAmSeUUl/build/policy_improvement_full.par \
+  --theory-runtime /home/buiksat/upi-trm-stage0-v2-3ceddf42.iAmSeUUl/build/policy_improvement_theory_bridge.par \
+  --audit-runtime /home/buiksat/upi-trm-stage0-v2-3ceddf42.iAmSeUUl/build/policy_improvement_audit.par \
+  --analysis-runtime /home/buiksat/upi-trm-stage0-v2-3ceddf42.iAmSeUUl/build/policy_improvement_analysis.par \
+  --owner-directory /home/buiksat/upi-trm-stage0-v2-3ceddf42.iAmSeUUl/authorization \
+  --output-name runtime_authorization_v3.json
+```
+
+Result: exit `1`. No authorization file was published at
+`/home/buiksat/upi-trm-stage0-v2-3ceddf42.iAmSeUUl/authorization/runtime_authorization_v3.json`.
+The requested ID was `stage0-v2-3ceddf42-20260823T195343Z`, and the expected
+schema was `policy_improvement_runtime_authorization_v3`, version `3`.
+
+The exact error was:
+
+```text
+RuntimeAuthorizationGenerationError: Launcher PAR native runtime support differs.
+```
+
+The launcher member inventory and executable prefix matched the frozen checks.
+The native-support manifest did not:
+
+- expected native-support manifest SHA-256:
+  `4f2d213fe8530f0bbf048de5fc62fd49b8dd1f1dee46cd9d37943440ab29b4ee`
+- actual native-support manifest SHA-256:
+  `974e9a793a853aead172bb80c899ad6004cd57985a8d81e6dc911fd0232f24a9`
+- expected and actual executable prefix: 8215 bytes, SHA-256
+  `87e71b36ae3f0dff3321a09ad2d09f1255ababea6f2e3577419c7f01c8e50f05`
+- native-main member SHA-256:
+  `ae045fa3a8eca8e17289ff5d54bb02997d2d1cde3f2ce2ca6d90f777efef54dc`
+- allocator-preload member SHA-256:
+  `9da817f06e846faa4c8b371b39deebd55f025e20b9093245a88667250526b9a3`
+- Authorization stderr SHA-256:
+  `0265497a49125543fdde2af8c0049a72d5e46c211db4c18999a677a4319edd25`
+- Authorization stdout was empty, SHA-256
+  `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`.
+
+This is consistent with Buck native-runtime support drift relative to the
+source-pinned launcher identity. The smallest safe resolution is to use the
+reviewed Buck bootstrap that reproduces the pinned native-support digest, or to
+review the two changed native members and update the pin in a new implementation
+commit. The latter changes the reviewed source SHA and requires a new review,
+rebuild, source profile, and runtime authorization.
+
+## Unexecuted phases and evidence boundary
+
+- The Stage 0 plan was not rendered.
+- No prepare or resume process started.
+- No checkpoint, result, per-instance record, compute-accounting artifact, or
+  failed-attempt manifest was created.
+- The Stage 0 audit was not run.
+- The theory smoke was not run.
+- Throughput calibration was not run. The 4096 tier was neither authorized nor
+  executed.
+- Stage 1, Stage 2, Stage 3, validation selection, validation bridge, and test
+  evaluation were not run.
+- No validation or test content was opened.
+- No `TEST_OPEN` record was created.
+- No deleted or historical experiment evidence was inspected or used.
+- No task-performance result or claim was generated.
+- Stage 0 and theory-smoke outputs, had they existed, would not be paper
+  evidence. None exists from this attempt.
+- No implementation source or configuration file was modified.
+
+The canonical external execution manifest is
+`/home/buiksat/upi-trm-stage0-v2-3ceddf42.iAmSeUUl/metadata/stage0_execution_manifest.json`
+with SHA-256
+`fb6ff938247d2e0bf9122a01eed93f12d6d69eb09665e52ed7fe94ddbd55c9e8`.
+
+## Remaining blockers after this attempt
+
+### Stage 0
+
+- Runtime authorization is blocked by the launcher native-support digest
+  mismatch above. No authenticated Stage 0 package exists at the frozen
+  implementation SHA.
+
+### Stage 1
+
+- Stage 1 remains blocked by the unavailable authenticated train-only
+  `base_policy_artifact` and its continuation contract.
+
+### Stage 2 and Stage 3
+
+- Both remain unauthorized. No test-opening capability was created.
