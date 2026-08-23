@@ -1,318 +1,317 @@
-# UPI-TRM implementation and audit handoff
+# UPI-TRM ICLR paper revision handoff
 
-Date: 2026-08-17
+Date: 2026-08-23
 
-## Repository heads
+## Repository revisions
 
 Paper repository:
 
 - path: `/home/buiksat/UPI_TRM`
 - branch: `iclr-evidence-aligned-revision`
-- head before this handoff update:
-  `265771ca48355e97b8e8611cc260d51e921ac691`
-- only `handoff.md` changed; paper source and PDF were not edited
+- expected starting SHA: `c40122a6865be964371f93b6d548f2ff9e6c4340`
+- actual starting SHA: `c40122a6865be964371f93b6d548f2ff9e6c4340`
+- starting worktree: clean
+- intervening branch diff: none; the branch had not advanced beyond the
+  expected SHA
+- paper revision commit:
+  `6bf794c01ddc3623522a5c4cdf4a1fe2f623af4d`
+  (`Clarify finite-reference contribution and paper scope`)
 
-Implementation repository:
+Implementation reference:
 
 - path: `/home/buiksat/trm_bellman`
 - branch: `full-implementation`
-- head: `75a157cff500abce0f9afe142c33ff10d4775c48`
-  (`Harden policy improvement evidence loading`)
-- parent: `88e4cf1be1bd9ecceb0ec9ba19ae468851e69a0a`
-  (`Add authenticated full run and theory bridge`)
-- implementation worktree: clean
-- tree: `b1c1e63d9e7e5b01429899ba1664b24eac4619f0`
+- expected reference SHA: `3ceddf42baa073f23ea7026e24e11f1f72fdbf2a`
+- actual reference SHA: `3ceddf42baa073f23ea7026e24e11f1f72fdbf2a`
+- worktree before and after the paper revision: clean
+- use in this task: read-only semantic reference; no implementation file was
+  modified
 
-The paper and implementation remain separate Git repositories. Do not move the
-implementation into the paper repository during this evidence cycle. Source
-authorization binds the implementation repository root and Git commit.
+This handoff update is documentation-only relative to paper revision commit
+`6bf794c01ddc3623522a5c4cdf4a1fe2f623af4d`.
 
-## Paper status
+## Files changed in the paper revision
 
-The paper source, PDF, theorem statements, algorithms, bibliography, and claims
-were not changed.
+Added:
 
-- source: `UPI_TRM_ICLR/main.tex`
-- PDF: `UPI_TRM_ICLR/main.pdf`
-- PDF SHA-256:
-  `9d59bc486b975c08a055e2393d057bbf11f9eb7b06826edfeeecbf1aed4857ae`
+- `README.md`
+- `UPI_TRM_ICLR/figures/persistent_depth_lanes.tex`
+- `UPI_TRM_ICLR/verify_finite_mdp.py`
 
-No Stage 1-3 outcome, learned-task result, or empirical claim was produced.
+Materially changed:
 
-## Implementation history
+- `UPI_TRM_ICLR/main.tex`
+- `UPI_TRM_ICLR/main.pdf`
+- `UPI_TRM_ICLR/Makefile`
+- `UPI_TRM_ICLR/iclr2026_conference.sty`
 
-Commit `88e4cf1` added the authenticated full-run backend, theory bridge,
-pre-outcome amendment, non-smoke checkpoint resume and evaluation, immutable
-publication, retry history, and owned Buck targets.
+Removed: none.
 
-Commit `75a157c` adds the checkpoint evidence security boundary:
+`UPI_TRM_ICLR/trm_rl.bib` was read and checked. No bibliography edit was
+needed because the existing entries covered the primary sources used in the
+new comparison table.
 
-1. Authenticated checkpoint bytes are copied into write-sealed memfds only
-   after the complete generation, result, manifest, model-state, validation,
-   lineage, amendment, and `TEST_OPEN` metadata have authenticated.
-2. Semantic validators receive sealed descriptors, not caller-controlled
-   checkpoint paths.
-3. Evidence checkpoint deserialization uses `torch.load(weights_only=True)`.
-4. The dynamic Torch allowlist is isolated to eight reviewed entries during
-   each load. The 74 ambient grants installed by `import torch` are removed for
-   the load and restored afterward.
-5. The compatibility loader supports the two first-party replay dataclasses and
-   exact NumPy array/dtype constructors observed in the pre-cleanup checkpoint
-   corpus.
-6. Producer source manifests are versioned. Historical v1 manifests bind 92
-   sources; current v2 manifests bind 93, including the checkpoint allowlist.
-7. The launcher derives the highest inventory version satisfied by a clean Git
-   tree and rejects manifest downgrades.
-8. The general audit, full runtime, theory evaluator, PPO loader, and UPI loader
-   share the same sealing and data-only deserialization boundary.
+## Resolution of the eight requested issues
 
-Commit statistics:
+1. **Novelty claim.** The abstract, introduction, related work, contribution
+   list, and conclusion now describe a domain-specific synthesis and semantic
+   interface. They explicitly treat the triangle inequality, Bellman residual
+   bound, Banach contraction, CPI, and occupancy coupling as standard tools.
+   A related-work table compares classical approximate policy iteration, CPI,
+   safe or monotone approximate policy improvement, recurrent reasoning
+   models, and this finite-reference recurrent-evaluator setting.
 
-- 27 files changed
-- 3,794 insertions, 374 deletions
-- four new files:
-  - `policy_improvement_checkpoint_allowlist.py`
-  - `policy_improvement_sealed_evidence.py`
-  - `tests/test_policy_improvement_checkpoint_allowlist_unittest.py`
-  - `tests/test_policy_improvement_sealed_evidence_unittest.py`
-- binary diff SHA-256 against `88e4cf1`:
-  `7d16d37fc6b3ed7207fde87f77d03fc4606ee46c7edcb895b795c1ca5ae743b7`
-- cumulative binary diff SHA-256 against `859f2ca`:
-  `40c3efb02b3f776d10a1a4b3f7a1b035b7b12f8d025bc13cbcf99533b342df3e`
+2. **Finite-MDP nonvacuity.** Section 9 gives the concise calculation and Table
+   6 gives the exact values. Appendix F enumerates the full three-state closure,
+   including the shared absorber, and derives `V^pi`, the endpoint gap, the
+   reference residual, the finite-reference upper bound, the actual value
+   error, both occupancies, the exact mixture, candidate advantage and span,
+   centering and candidate defects, the signed defect, the CPI lower bound, and
+   the exact return. The example uses rational arithmetic, no learned
+   parameters, and no sampling.
 
-## Current-head validation
+3. **Fixed-base scope.** The abstract, introduction, algorithm section,
+   implementation discussion, and conclusion now state that the analyzed
+   object is one proposal against one frozen base policy at one frozen
+   parameter snapshot. They explicitly deny a recursively promoted CPI
+   sequence. Algorithm 1 is captioned as one fixed-base proposal.
 
-### Runtime gate
+4. **Exact centering.** Table 2 distinguishes finite exact summation, exact
+   integration or separately certified numerical error, and sampled or learned
+   baselines. The main text states the cost of finite action enumeration,
+   notes that the current Sudoku implementation can enumerate its masked action
+   set, and routes approximate centering to the signed-defect theorem. No
+   certified quadrature rule is claimed.
 
-Command shape:
+5. **Domains and dependencies.** Tables 4 and 5 map the Bellman,
+   one-deviation, mixture, pair, deployment, and persistent augmented domains,
+   their invariance requirements, path contents, alpha dependence, absorbing
+   restrictions, and theorem uses. The dependency table separates Bellman-only
+   results from assumptions involving head Lipschitzness, recurrent
+   contraction, projection, invariant latent sets, slow drift, exact mixture
+   realization, and deployment TV or KL control.
+
+6. **Deployed depth versus comparison depth.** Figure 2 shows deployment and
+   comparison lanes from the same stored pre-unroll latent. The comparison lane
+   is labeled as endpoint evaluation only, with no action sampling or
+   transition. Its caption states that changing `m` changes neither the stored
+   state, deployed policy, `F_n`, transition kernel, nor replay trajectory.
+
+7. **Theorem density.** The main narrative now follows finite-reference value
+   control, the target-network population-residual bridge, signed exact-mixture
+   CPI, persistent state and deployment realization, then the finite-MDP
+   example. Repeated residual substitutions, fixed-point limits,
+   projection-active specializations, slow-drift results, and boundary-case
+   derivations remain available in the appendix. Existing theorem, equation,
+   and proof labels were preserved; no old label was removed.
+
+8. **Artifact documentation.** The new root `README.md` identifies the
+   canonical paper directory and branch, semantic oracle, read-only
+   implementation reference, Stage 0 systems-only boundary, absence of learned
+   claims, clean PDF build commands, and deterministic finite-MDP verification
+   command. The build files now retain the normal PDFTeX path when the official
+   PSNFSS metrics exist and use an XeLaTeX/OpenType fallback on this host.
+
+## Theorem and proof review
+
+No existing theorem assumption was weakened and no conclusion was broadened.
+The fixed MDP, fixed parameter snapshot, current policy, candidate policy,
+domain invariance, absorbing boundary, exact-mixture, and shared recurrent-map
+quantifiers remain explicit. The main-text persistent statement is the direct
+finite-depth augmented-MDP specialization already proved in Appendix C.
+
+The primary finite-reference result still uses only Bellman contraction and
+finite endpoints. Recurrent contraction, projection, a recurrent fixed point,
+and slow drift remain optional assumptions for separate specializations. The
+target-network bridge still includes propagated target lag before reaching the
+self-bootstrap Bellman residual. Terminal absorbing-tail accounting remains
+single-counted.
+
+No genuine error was found in the pre-existing theorem or proof semantics. The
+new verification script uses `d_{pi_alpha}` for the signed CPI defect, matching
+Theorem 7.3. Its final exact values agree with the paper.
+
+## Final PDF
+
+- path: `UPI_TRM_ICLR/main.pdf`
+- pages: 45
+- bytes: 367272
+- SHA-256:
+  `257d4fafd28ee9b32d4ff8272752d79cf225036efa0ab8fe3e046b198eb2cfc1`
+- submission mode: anonymous ICLR review mode; `\iclrfinalcopy` remains disabled
+
+## Build and validation
+
+The final clean build was run from the exact source committed as
+`6bf794c01ddc3623522a5c4cdf4a1fe2f623af4d`:
 
 ```bash
-buck2 test --local-only @fbcode//mode/opt \
-  fbcode//buiksat_trm:test_phase4_figure_publication \
-  fbcode//buiksat_trm:test_phase4_reporting \
-  fbcode//buiksat_trm:test_phase4_runtime_launcher \
-  fbcode//buiksat_trm:test_policy_dataset_builder \
-  fbcode//buiksat_trm:test_policy_improvement_audit \
-  fbcode//buiksat_trm:test_policy_improvement_checkpoint_allowlist \
-  fbcode//buiksat_trm:test_policy_improvement_checkpoint_validator \
-  fbcode//buiksat_trm:test_policy_improvement_evidence \
-  fbcode//buiksat_trm:test_policy_improvement_full_backend \
-  fbcode//buiksat_trm:test_policy_improvement_full_runtime \
-  fbcode//buiksat_trm:test_policy_improvement_sealed_evidence \
-  fbcode//buiksat_trm:test_policy_improvement_smoke_checkpoint \
-  fbcode//buiksat_trm:test_policy_improvement_smoke_runtime \
-  fbcode//buiksat_trm:test_policy_improvement_theory_bridge \
-  fbcode//buiksat_trm:test_policy_improvement_v1 \
-  fbcode//buiksat_trm:test_run_identity \
-  fbcode//buiksat_trm:test_upi_trm_logging_smoke \
-  fbcode//buiksat_trm:test_upi_trm_trainer_smoke \
-  -- --env UPI_TRM_HISTORICAL_CHECKPOINT_ROOT=<three pre-cleanup roots> \
-  --env UPI_TRM_HISTORICAL_CHECKPOINT_COUNT=35
+cd /home/buiksat/UPI_TRM/UPI_TRM_ICLR
+make clean && make pdf
+```
+
+Result: exit 0. This host lacks `phvb.tfm` and `ptmr8t.tfm`, so the Makefile
+selected XeLaTeX. The target ran XeLaTeX, BibTeX, then three more XeLaTeX
+passes. The final pass produced 45 pages.
+
+Log checks:
+
+```bash
+cd /home/buiksat/UPI_TRM/UPI_TRM_ICLR
+grep -nE 'LaTeX Warning:|Package natbib Warning:|Overfull \\hbox|multiply defined|undefined references|undefined citations' main.log || true
+grep -nE 'Warning|error|Error' main.blg || true
+```
+
+Result: no matches. The remaining layout diagnostics are underfull boxes; no
+overfull box damages readability.
+
+Static label and citation check:
+
+```bash
+cd /home/buiksat/UPI_TRM
+python3 - <<'PY'
+import re
+from collections import Counter
+from pathlib import Path
+
+tex = Path('UPI_TRM_ICLR/main.tex').read_text()
+bib = Path('UPI_TRM_ICLR/trm_rl.bib').read_text()
+labels = re.findall(r'\\label\{([^}]+)\}', tex)
+refs = re.findall(r'\\(?:eq|page|auto|C|c)?ref\{([^}]+)\}', tex)
+cites = sorted({k.strip() for group in re.findall(r'\\cite\w*\{([^}]+)\}', tex)
+                for k in group.split(',')})
+bibkeys = set(re.findall(r'@[^{]+\{\s*([^,\s]+)', bib))
+dups = sorted(k for k, v in Counter(labels).items() if v > 1)
+undef = sorted(set(refs) - set(labels))
+missing = sorted(set(cites) - bibkeys)
+print(f'labels={len(labels)} unique_labels={len(set(labels))} references={len(refs)} cited_keys={len(cites)}')
+print(f'duplicate_labels={dups}')
+print(f'undefined_refs={undef}')
+print(f'missing_citations={missing}')
+if dups or undef or missing:
+    raise SystemExit(1)
+PY
+git diff --check
 ```
 
 Result:
 
-- exit code: 0
-- targets: 18
-- passed tests: 464
-- failures, timeouts, fatal errors, skips, infrastructure failures, and build
-  failures: 0
-- test run:
-  `https://www.internalfb.com/intern/testinfra/testrun/14073749025919558`
-- log: `/tmp/codex_final_runtime_gate_rerun2.log`
-- log SHA-256:
-  `55be5ab39757673fc30df4eb8bd62d2b99e4cd6d18246ca66c96e9d167c70ba0`
-
-Before the obsolete evidence directories were deleted, the gate data-only
-loaded all 35 checkpoints that were present across those roots. That was a
-loader-compatibility check only. Those checkpoints came from experiments the
-user has since declared invalid and are no longer retained.
-
-### Type, manifest, and static gates
-
-- affected type gate: 56 targets, exit 0
-- target inventory: `/tmp/upitrm_type_gate_targets.txt`
-- type log: `/tmp/codex_final_type_gate.log`
-- type log SHA-256:
-  `c1dfa8a0c67372dac0403496eeb3328bc223399c5fa7805524457c3330b3a0d1`
-- producer-manifest regeneration: byte-identical after commit, 93 sources
-- `git diff --check`: exit 0 before commit
-- focused Python compilation for the launcher authorization fix: exit 0
-- clean synthetic v1 launcher authorization: exit 0
-- clean synthetic v1 audit source authentication: exit 0
-- clean committed v2 launcher authorization: exit 0
-- direct v1-on-v2 downgrade regression: rejected as required
-
-### Optimized PARs
-
-All six optimized PAR builds exited 0. Build log:
-`/tmp/codex_final_par_build.log`, SHA-256
-`a638cd4420ca6122e4b1146e2eb9efb35241f35b6409764a95031e6c3805b9c0`.
-
 ```text
-launcher  d1dffbdf7c64ab07ca3f55b5514e3d40ad14db09c2edb9ae17f0caa9f8004baa
-training  dccc93b577fde350a26071613124ec884bbffc550cfabf760e1759462e3cdb31
-full      97f238bec61ef32cf7421fba27bf8fca2dd475e3f2130309f8c70cfd744fb9ea
-theory    d2ef328fd5f1190b3467fcb244ad3119b248420d07fec8832256e69ffd1cb715
-audit     b6c6464dfebbc8b649868023b62360d005462c59acad9387d14769de9905977a
-analysis  518ead315392db7bdbc872e66fbf17f530bc4be068ef039c9269964ebc191501
+labels=233 unique_labels=233 references=271 cited_keys=24
+duplicate_labels=[]
+undefined_refs=[]
+missing_citations=[]
+git diff --check: exit 0
 ```
 
-## Current source identities
+PDF integrity and metadata checks:
 
-Producer manifest:
-
-- schema: v2
-- sources: 93
-- raw/authenticated SHA-256:
-  `6a1aef8e48d6ff4e0cfae243bb108a389bee0228f1d7266492983af275400c5f`
-
-Source profiles:
-
-```text
-full      127347cdb8257a414ab12953687625ca85c28805f197060f2b2f176e5b63a97a  100 paths
-theory    6b77831569d87786a923f5abd1407e8f6917ea57aa5d57995c5fdd976dcfbf24  102 paths
-audit     27f845bcacc0c8166e3772cce8736f87e0a24a78a5f0d46c4722566052af671f  105 paths
-analysis  4055d6e6b78a67ca84f3e8967fdb304528dfd152175845c6d40a8238fa0a0fc7  106 paths
+```bash
+cd /home/buiksat/UPI_TRM/UPI_TRM_ICLR
+gs -q -dNOSAFER -dBATCH -dNOPAUSE -sDEVICE=nullpage main.pdf
+gs -q -dNOSAFER -dNODISPLAY -c '(/home/buiksat/UPI_TRM/UPI_TRM_ICLR/main.pdf) (r) file runpdfbegin pdfpagecount = quit'
+stat -c '%s' main.pdf
+sha256sum main.pdf
 ```
 
-Canonical registered identities remain:
+Result: PDF parse exit 0, 45 pages, 367272 bytes, and the SHA-256 shown above.
 
-```text
-protocol          583e99828d877f9a33503e84af58f1ccb8aa643f7ecc5baa826d6662de6a48b2
-base registry     6f618e6f3db0b60079ffc41d37982b781a9ff22a2ddab512c36e44db84a162f6
-theory amendment  6127ec9cdf5a774bd5b05248d2804cbecc6c847c851d339ea593ca5f3d40bd6c
+The final PDF pages containing the title, related-work table, depth-lane
+diagram, algorithm and centering table, domain and dependency maps,
+persistent/deployment statements, finite-MDP summary, full finite-MDP
+derivation, and final page were rendered with Ghostscript at 110 dpi and
+visually inspected. No clipping, stale reference, figure collision, or
+material readability defect was found.
+
+## Deterministic finite-MDP verification
+
+Command:
+
+```bash
+cd /home/buiksat/UPI_TRM
+python3 UPI_TRM_ICLR/verify_finite_mdp.py
 ```
 
-Every previous current-head runtime authorization is obsolete because the Git
-commit, producer manifest, source profiles, and PAR hashes changed. No new
-authorization directory was created during this final fix.
-
-## Experiment evidence status
-
-The paper changed, and the user declared the old experiments incorrect and no
-longer relevant. Their producer checkouts, authorizations, evidence packages,
-reconstructed audit package, and old logs were therefore removed. They must not
-be cited, audited, or used as a baseline for the revised paper.
-
-No canonical Stage 0 package exists for the revised experiment. The next
-experiment cycle must start from commit `75a157c`, a new runtime authorization,
-and newly generated Stage 0 smoke evidence.
-
-## Removed external directories
-
-The following eight obsolete directories were permanently deleted at the
-user's request. They are not recoverable from Trash.
+Result: exit 0. The script asserted and emitted:
 
 ```text
-/home/buiksat/upi-trm-policy-audit-859f2ca.myImeqnx
-/home/buiksat/upi-trm-policy-auth-2d43263f.MjSzspvD
-/home/buiksat/upi-trm-policy-auth-5e8801b1.bAjbAlMP
-/home/buiksat/upi-trm-policy-authorizations
-/home/buiksat/upi-trm-policy-evidence-2d43263f.Erh9bSVz
-/home/buiksat/upi-trm-policy-evidence-owner
-/home/buiksat/upi-trm-producer-2d43263
-/home/buiksat/upi-trm-producer-c67bea28
+V^pi                         = (0, 0, 0)
+||U_1-U_2||_infinity         = 1/8
+||U_2-T^pi_1 U_2||_infinity = 3/16
+finite-reference bound       = 1/2
+actual ||U_1-V^pi||          = 1/4
+d_pi                         = (1, 0, 0)
+d_pi_alpha                   = (3/4, 1/4, 0)
+g                            = (1, 0, 0)
+span(g)                      = 1
+c                            = (0, 0, 0)
+b                            = (-1/4, -1/4, 0)
+Xi_alpha                     = -1/8
+estimated surrogate          = 3/4
+signed CPI lower bound       = 2/3
+eta(pi_alpha)                = 3/4
 ```
 
-Approximately 2.7 GB was reclaimed. `/home/buiksat/UPI_TRM` and
-`/home/buiksat/trm_bellman` were not deleted or moved.
+The script SHA-256 is
+`e4bf4a3c77ae57738cbd9de37931cfd9600919b17bde1ca0bf4094cbc5409d85`.
 
-## Test-split disclosure
+## Evidence and claim boundary
 
-An old, now-retired audit attempt eagerly opened local test arrays before
-`TEST_OPEN`. No values were manually inspected or reported. That evidence was
-deleted with the invalid experiment artifacts.
+- No learned experiment was run.
+- No learned-task performance result or empirical comparison was added.
+- No deleted historical result, checkpoint, metric, path, or reconstructed
+  artifact was used.
+- Finite-batch and local diagnostics remain labeled as diagnostics, not
+  population certificates.
+- Stage 0 remains systems-only and is not paper evidence.
 
-Current code authenticates test metadata without opening files below the test
-directory until an authenticated `TEST_OPEN` record exists. Do not claim the
-entire repair session avoided opening the test split. Do claim only that the
-committed implementation prevents the premature open.
+## Remaining paper limitations
 
-## Remaining blockers and debt
+- The result certifies one fixed-base proposal at one frozen snapshot, not a
+  recursively promoted policy sequence or an optimization trajectory.
+- The theorem requires population suprema on declared invariant domains.
+  Finite datasets and regression losses do not establish those quantities.
+- Exact statewise centering requires exact finite-action summation or exact
+  integration. The signed-defect theorem is required when centering is
+  approximate.
+- The exact CPI statement applies only to the explicit pointwise
+  probability-space mixture. Distillation and parameter, logit, hidden-state,
+  or network interpolation require a separately established deployment gap.
+- Persistent-state comparisons require the current and candidate policies to
+  share one frozen recurrent transition map.
+- The finite-reference and CPI bounds can be loose or vacuous when residuals,
+  defects, spans, endpoint gaps, or discount denominators are unfavorable.
+- No bridge from training dynamics to the theorem's uniform premises is proved.
 
-1. Generate a new runtime authorization for commit `75a157c` before launching
-   any policy role for the revised experiment.
-2. Generate fresh Stage 0 smoke evidence under the selected current runtime.
-   Do not reconstruct or reuse the deleted experiments.
-3. The eight-entry data-only allowlist remains a standing compatibility grant.
-   A malicious data-only payload can also request excessive tensor or array
-   allocation. File sealing bounds bytes, not expanded memory.
-4. `TEST_OPEN` remains an owner-writable singleton rather than an append-only or
-   WORM ledger. Deletion can erase evidence of an earlier open.
-5. A crash or `SIGKILL` before failed-attempt publication remains
-   indistinguishable from no attempt without an external append-only ledger.
+## Remaining implementation blockers
 
-## Required next actions
+### Stage 0: systems-only
 
-1. Push or transfer implementation commit `75a157c`.
-2. Generate one runtime authorization naming `75a157c` and the hashes above.
-3. Run a new Stage 0 smoke cycle for the revised experiment. Do not run Stage
-   1-3 or open the test split.
-4. Audit the new Stage 0 package. Require stdout to contain exactly one
-   canonical JSON document, then verify
-   4 expected rows, 4 complete rows, 0 failed rows, 10 per-instance artifacts,
-   8 semantic checkpoint validations, and `test_open=false`.
-5. Do not run Stage 1-3 until that audit is green and the pre-outcome amendment
-   remains committed.
+- No fresh Stage 0 package exists for implementation commit
+  `3ceddf42baa073f23ea7026e24e11f1f72fdbf2a`.
+- A new runtime authorization and frozen runtime/source identities must bind
+  that exact commit before the registered Stage 0 rows are run and audited.
+- Stage 0 must use only its registered training records. The test split remains
+  unauthorized, and Stage 0 output must not be cited as paper evidence.
 
-## Claude review prompt
+### Stage 1 and later learned work
 
-```text
-Review implementation commit 75a157cff500abce0f9afe142c33ff10d4775c48
-in /home/buiksat/trm_bellman against parent
-88e4cf1be1bd9ecceb0ec9ba19ae468851e69a0a. Also inspect the cumulative
-implementation from 859f2cab5e89f30a7a70f1ff4b18567f55cb3252 when needed.
+- The v2 protocol leaves `base_policy_artifact` unavailable. Stage 1 must fail
+  closed until an authenticated competent train-only base artifact is bound, or
+  the user explicitly chooses the random-base stress-test interpretation.
+- Any theorem-facing run must use `training_protocol: fixed_base_exact` and the
+  exact pointwise mixture. It still cannot establish the paper's uniform
+  residual, invariance, overlap, centering-defect, or deployment premises from
+  finite data alone.
+- Stage 2 and Stage 3 additionally require their registered prerequisites and a
+  separately authenticated `TEST_OPEN` transaction. None was created or used
+  in this paper-only task.
 
-Read /home/buiksat/UPI_TRM/handoff.md. Treat all paper source and PDF files as
-read-only. Do not run Stage 1-3, open the test split, train a learned run, edit
-the paper, or make empirical claims. Review only unless explicitly asked to fix
-a verified blocker.
+## Final state before the handoff commit
 
-Use adversarial default-reject verification. Reproduce each candidate and
-report only survivors with file:line anchors. Focus on:
-
-1. Sealed-descriptor ownership and cleanup across every success and exception
-   path.
-2. Complete-generation authentication before any checkpoint loader runs.
-3. Exact isolation and restoration of Torch dynamic safe globals.
-4. Safety and necessity of all eight allowlisted globals, including NumPy
-   object-dtype and resource-expansion cases.
-5. Producer manifest v1/v2 anti-downgrade behavior through the real
-   authorize_phase4_training_source path, not only selector helpers.
-6. Manifest v1 regression compatibility and current v2 source completeness.
-7. Evidence deserialization closure, including import aliases and indirect
-   loader references.
-8. Preservation of runtime authorization, amendment, TEST_OPEN, immutable
-   publication, retry-history, and no-source-fallback contracts.
-
-Validation evidence:
-
-- runtime gate: 18 targets, 464 passed, exit 0;
-- type gate: 56 targets, exit 0;
-- pre-cleanup checkpoint loader compatibility: 35/35;
-- optimized launcher/training/full/theory/audit/analysis PAR builds: exit 0;
-- implementation diff SHA-256 against 88e4cf1:
-  7d16d37fc6b3ed7207fde87f77d03fc4606ee46c7edcb895b795c1ca5ae743b7.
-
-The old experiment evidence was deleted after the user declared it invalid.
-Review the implementation only. Do not quote any old row, artifact, or metric
-counts as evidence for the revised paper.
-
-Return blocking findings first, then concerns checked and cleared, additional
-smoke-only tests, and the safest path forward. Include no experiment results or
-paper claims.
-```
-
-## Current status
-
-- implementation security fix: committed at `75a157c`
-- implementation worktree: clean
-- full learned backend: connected and smoke-tested; no full learned run executed
-- theory bridge: implemented and smoke-tested; no scientific evaluation run
-- pre-outcome amendment: committed
-- Stage 1-3: not run
-- paper claims: unchanged
-- runtime/type gates: green
-- revised-experiment Stage 0: not run
-- experiment status: incomplete
+- paper revision: committed at
+  `6bf794c01ddc3623522a5c4cdf4a1fe2f623af4d`
+- implementation reference: unchanged at
+  `3ceddf42baa073f23ea7026e24e11f1f72fdbf2a`
+- paper PDF: built and validated at the paper revision commit
+- this handoff change: documentation only
