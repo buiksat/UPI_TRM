@@ -152,7 +152,7 @@ def main():
         a_hat[state]["b"] - advantage[state]["b"] for state in STATES
     )
     xi_alpha = sum(
-        d_mix[i]
+        d_pi[i]
         * ((1 - ALPHA) * centering_defect[i] + ALPHA * candidate_defect[i])
         for i in range(len(STATES))
     )
