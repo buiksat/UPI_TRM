@@ -592,3 +592,235 @@ with SHA-256
 ### Stage 2 and Stage 3
 
 - Both remain unauthorized. No test-opening capability was created.
+
+# Approximate-DP positioning revision handoff
+
+Date: 2026-08-24
+
+## Repository revisions
+
+Paper repository:
+
+- path: `/home/buiksat/UPI_TRM`
+- branch: `iclr-evidence-aligned-revision`
+- last known SHA supplied for this task:
+  `977c7a61d1febeff60429f334fc823fa460af1ac`
+- actual starting SHA:
+  `500837dc1e2e01a0ece600c1c4fe0c6c9230ca82`
+- starting worktree: clean
+- intervening change: commit `500837dc1e2e01a0ece600c1c4fe0c6c9230ca82`
+  added only the preceding authenticated Stage 0 handoff record; the diff from
+  `977c7a61d1febeff60429f334fc823fa460af1ac` changed only `handoff.md`
+- paper revision commit:
+  `1c482f1c444f0aca9c983431abce2b604ea2cbf0`
+  (`Position finite-reference bounds against approximate DP`)
+
+Implementation reference:
+
+- path: `/home/buiksat/trm_bellman`
+- branch: `full-implementation`
+- expected and actual SHA:
+  `3ceddf42baa073f23ea7026e24e11f1f72fdbf2a`
+- worktree before and after the revision: clean
+- use in this task: read-only terminology and semantic verification
+
+This handoff update is documentation-only relative to paper revision commit
+`1c482f1c444f0aca9c983431abce2b604ea2cbf0`.
+
+## Materially changed files
+
+- `UPI_TRM_ICLR/main.tex`
+- `UPI_TRM_ICLR/trm_rl.bib`
+- `UPI_TRM_ICLR/verify_finite_mdp.py`
+- `UPI_TRM_ICLR/main.pdf`
+- `handoff.md` in this separate documentation commit
+
+No implementation file, conference style file, Makefile, README, figure source,
+or learned-result artifact was changed.
+
+## Primary literature checked
+
+The comparative claims were checked against these primary sources:
+
+1. R\'emi Munos, "Error Bounds for Approximate Policy Iteration," ICML 2003,
+   pages 560-567. The official AAAI paper page and linked paper were used:
+   `https://aaai.org/papers/icml03-074-error-bounds-for-approximate-policy-iteration/`.
+2. R\'emi Munos and Csaba Szepesv\'ari, "Finite-Time Bounds for Fitted Value
+   Iteration," JMLR 9 (2008), pages 815-857. The official JMLR page and PDF
+   were used: `https://www.jmlr.org/papers/volume9/munos08a/munos08a.pdf`.
+3. Sham Kakade and John Langford, "Approximately Optimal Approximate
+   Reinforcement Learning," ICML 2002, pages 267-274. The authors' primary
+   LaTeX source was checked at
+   `https://www.cs.cmu.edu/~jcl/papers/aoarl/Final.tex_back`.
+4. Sham Machandranath Kakade, *On the Sample Complexity of Reinforcement
+   Learning*, University College London doctoral thesis, 2003. The author's
+   thesis PDF was checked at
+   `https://homes.cs.washington.edu/~sham/papers/thesis/sham_thesis.pdf`.
+
+Direct shell downloads were unavailable in this environment, so the primary
+documents were loaded into a private research corpus for inspection. Text
+extraction from the older PDFs did not expose every theorem body reliably.
+The paper therefore makes narrow object-level comparisons and adds no theorem
+numbers, constants, or source-specific concentrability formulas that could not
+be checked directly. The unrelated arXiv record `cs/0105027` was explicitly
+excluded after identity checking showed that it is not the Kakade-Langford CPI
+paper.
+
+## Gap audit and resolved points
+
+| Requested point | Starting status | Resolution |
+| --- | --- | --- |
+| Generic Bellman-residual ancestry | Needed clarification | The abstract, introduction, related work, theorem commentary, contribution list, and conclusion now state that the abstract inequality is the standard fixed-policy a posteriori residual bound followed by a triangle transfer. No new generic AVI/API mechanism is claimed. |
+| Strongest reviewer objection | Missing in explicit form | Related work now concedes that recurrence is irrelevant once the endpoints are arbitrary bounded measurable functions, then identifies where the objection stops: intra-state depth, one-MDP persistent semantics, shared-map ownership, endpoint-only `m`, and logically separate CPI composition. |
+| Munos-style weighted-norm positioning | Materially incomplete | A source-checked comparison paragraph and compact table distinguish recursive API/FVI update sequences, weighted norms, coverage or concentrability terms, inherent Bellman residuals, finite-sample terms, and final policy loss from this paper's conditional one-snapshot sup-norm result. |
+| Content without recurrent contraction | Partly present | New Remark `rem:noncontractive_endpoints` states that the main theorem and finite-path bound survive without a usable global recurrent modulus or with `L_z >= 1`. It records the limits of `D_{n,m}`, gives an oscillatory `F(z)=-z` illustration, and states the assumptions behind three crude endpoint-gap bounds. |
+| Forms of nonstationarity | Needed clarification | New Remark `rem:frozen_schedule_scope` separates a frozen depth-indexed map schedule, an observed clock or mode that belongs in the Markov state, and parameter changes that invalidate the fixed-snapshot theorem. |
+| Weighted `L_p` restatement | Needed a new formal statement | Appendix Proposition `prop:weighted_finite_reference` gives a complete fixed-policy proof with explicit domination, integrability, and density-ratio assumptions. |
+| Learned-operator terminology | Already mostly correct | The new appendix text makes the ownership explicit: `T_K^pi` and `P_pi^K` generate the contraction and resolvent. The learned recurrence determines endpoint functions and, in persistent mode, enters the frozen augmented transition kernel. |
+| Persistent-latent concentrability | Missing | The weighted-result discussion explains graph-supported augmented occupancies, possible singularity relative to product Lebesgue references, the analytical but non-operational choice `mu=d_rho^{pi,K}`, and why finite-population diagnostics do not establish a continuous-state density ratio. |
+| Projection and certification limits | Needed strengthening | The conclusion now states that compactness does not compute a useful supremum, projection need not bound external state, whole-ball interval bounds and global norm products may be vacuous, and residual certification must cover rewards, policies, masks, successors, terminals, and expectations. |
+| Credible future certification route | Needed clarification | The conclusion proposes finite external enumeration, state- or clock-dependent reachable latent enclosures, relational endpoint bounds, direct residual certification, and branch-and-bound or abstract interpretation. It is labeled proposed methodology, not an established verifier. |
+| Kakade distribution mismatch | Needed clarification | Text after the exact-mixture occupancy lemma now states that its coefficient is local to one current-policy mixture. It does not provide comparator-policy coverage, global convergence, or near-optimality. |
+
+The paper required material positioning revisions, but the primary
+finite-reference theorem itself did not require a semantic weakening or a
+change to its bound.
+
+## New weighted-Lp proposition
+
+For one fixed current policy on the invariant Bellman domain, let
+`beta = gamma^K`, `P = P_pi^K`, and
+`r_m = U_m - T_K^pi U_m`. For probability measures `rho` and `mu`, bounded
+measurable endpoints, and `1 <= p < infinity`, define
+
+```text
+d_rho^{pi,K} = (1-beta) sum_{t>=0} beta^t rho P^t.
+```
+
+If `d_rho^{pi,K} << mu` and
+
+```text
+C_{rho,mu}^{pi,K}
+  = || d d_rho^{pi,K} / d mu ||_{infinity,mu} < infinity,
+```
+
+then Proposition `prop:weighted_finite_reference` proves
+
+```text
+||U_n - V^pi||_{p,rho}
+  <= ||U_n-U_m||_{p,rho}
+   + (C_{rho,mu}^{pi,K})^(1/p) / (1-gamma^K)
+     ||U_m - T_K^pi U_m||_{p,mu}.
+```
+
+If also `rho << mu` with finite
+`C_{rho,mu}^{(0)} = ||d rho/d mu||_{infinity,mu}`, the first endpoint term may
+be replaced by
+`(C_{rho,mu}^{(0)})^(1/p) ||U_n-U_m||_{p,mu}`.
+
+The proof uses the resolvent identity
+`e_m = r_m + beta P e_m`, positivity of the fixed Markov kernel, Jensen's
+inequality, and change of measure. This is an a posteriori one-policy result.
+It has no policy-sequence supremum, function-class inherent Bellman error,
+sampling term, or regression-to-population guarantee.
+
+## Other theorem-facing changes
+
+- The central theorem's assumptions, quantifiers, domains, factors of
+  `gamma^K`, and conclusion are unchanged.
+- The new noncontractive remark makes clear that a small endpoint gap alone is
+  insufficient and that no monotonicity in recurrent depth follows.
+- The new frozen-schedule remark does not broaden the result to SGD, TD, BPTT,
+  or adaptive training dynamics.
+- The exact-mixture occupancy bound is explicitly limited to one local
+  fixed-base comparison.
+- The conclusion removes an unproved suggestion of a Wasserstein analysis and
+  retains only the requirement for explicit kernel and reward discrepancies
+  plus sufficient propagation regularity.
+- `verify_finite_mdp.py` previously evaluated the signed theorem defect
+  `Xi_alpha` under `d_{pi_alpha}`. The theorem defines it under `d_pi`, so the
+  script now uses `d_pi`. In this enumerated example the per-state candidate
+  defect is constant on the active states, so the exact reported value remains
+  `-1/8`; no table value or claimed bound changed.
+
+## Build and validation
+
+The final source revision was validated with:
+
+```bash
+cd /home/buiksat/UPI_TRM/UPI_TRM_ICLR
+python3 verify_finite_mdp.py \
+  > /tmp/upi-trm-adp-audit.wFMPLwtR/verify-final.json
+make clean
+make pdf
+```
+
+Results:
+
+- deterministic verifier exit: `0`
+- exact finite-reference values: endpoint gap `1/8`, reference residual
+  `3/16`, upper bound `1/2`, actual error `1/4`
+- exact signed CPI values: `Xi_alpha=-1/8`, lower bound `2/3`, exact mixture
+  return `3/4`
+- clean PDF build exit: `0`
+- build sequence: XeLaTeX, BibTeX, and stabilizing XeLaTeX passes through the
+  repository Makefile
+- anonymous mode: `\commentsfalse`; no `\iclrfinalcopy`
+
+Additional checks:
+
+```bash
+cd /home/buiksat/UPI_TRM
+git diff --check
+
+cd /home/buiksat/UPI_TRM/UPI_TRM_ICLR
+rg -n 'LaTeX Warning:|Package natbib Warning:|Overfull \\hbox|multiply defined|undefined references|undefined citations' main.log
+rg -n 'Warning|warning|Error|error' main.blg
+gs -q -dNOSAFER -dBATCH -dNOPAUSE -sDEVICE=nullpage main.pdf
+```
+
+Results:
+
+- `git diff --check`: exit `0`
+- LaTeX warning scan: no matches
+- BibTeX result: `warning$ -- 0`; no errors
+- static source audit: 248 labels, 248 unique labels, 281 references, 27
+  cited keys, and 47 bibliography keys; no duplicate labels, undefined
+  references, missing citations, or duplicate bibliography keys
+- Ghostscript full-PDF parse: exit `0`
+- visual inspection covered the abstract, revised related-work table,
+  noncontractive discussion, weighted proposition and proof, conclusion,
+  references, and final appendix page; no clipping or malformed table was
+  found
+- material overfull boxes: none
+- implementation checkout after validation: exact reference SHA and clean
+
+Verifier identities:
+
+- `UPI_TRM_ICLR/verify_finite_mdp.py` SHA-256:
+  `6a9ef3d0ad7bdd85589d6deecfaef53b81815d4140d13363bc801aa2f74e9e73`
+- canonical verifier output SHA-256:
+  `468f85c23efd6e5f72bfb02da749110a6b975646bf69925bd082ea285b063b39`
+
+## Final PDF
+
+- path: `/home/buiksat/UPI_TRM/UPI_TRM_ICLR/main.pdf`
+- pages: 47
+- bytes: 384275
+- SHA-256:
+  `a4f77b4eded395f4ca25df7203ce350132f5c69e43b0cd351831fbde3d5b0733`
+
+## Remaining limitations and evidence boundary
+
+- The primary result remains conditional on population suprema. It does not
+  turn finite batches or regression loss into a certificate.
+- The weighted result can be vacuous or inapplicable when the chosen reference
+  measure does not dominate the persistent augmented occupancy.
+- Projection and compactness do not by themselves provide computable endpoint
+  or Bellman-residual suprema.
+- The paper gives no global convergence, comparator-policy coverage,
+  near-optimality, training-dynamics, or learned-task result.
+- No learned experiment was run, no empirical claim was added, and no Stage 0
+  artifact was used as paper evidence.
+- No deleted or historical experiment evidence was inspected or used.
+- No implementation file was changed.
