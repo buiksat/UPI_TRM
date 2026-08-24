@@ -824,3 +824,239 @@ Verifier identities:
   artifact was used as paper evidence.
 - No deleted or historical experiment evidence was inspected or used.
 - No implementation file was changed.
+
+# Launcher runtime-authorization repair audit, stopped fail-closed
+
+Date: 2026-08-24
+
+Window: `2026-08-24T17:37:11Z` to `2026-08-24T18:14:21Z`
+
+This cycle was an implementation-only repair audit of the launcher
+runtime-authorization blocker recorded in the preceding authenticated Stage 0
+attempt. It stopped fail-closed during the repair phase. No implementation
+source or configuration file was changed, and no Stage 0 process ran.
+
+## Starting state
+
+- Implementation repository: `/home/buiksat/trm_bellman`, branch
+  `full-implementation`, HEAD `3ceddf42baa073f23ea7026e24e11f1f72fdbf2a`,
+  worktree clean with `--untracked-files=all`, `git replace -l` empty. No
+  tracked file has been modified since `2026-08-21T01:06:10Z`, well before the
+  prior failure at `2026-08-23T19:53:43Z`.
+- Paper repository at the start of this cycle: branch
+  `iclr-evidence-aligned-revision`, HEAD
+  `500837dc1e2e01a0ece600c1c4fe0c6c9230ca82`, worktree clean, PDF SHA-256
+  `257d4fafd28ee9b32d4ff8272752d79cf225036efa0ab8fe3e046b198eb2cfc1`. All
+  starting invariants held.
+- The paper branch then advanced during this cycle through the concurrent
+  approximate-DP positioning revision recorded above
+  (`1c482f1c444f0aca9c983431abce2b604ea2cbf0` and
+  `bdf8d18772999984ee97049300cd84a32f27be31`). That work is preserved. This
+  cycle did not build, modify, or revert any paper source or PDF file, and the
+  current PDF SHA-256 `a4f77b4eded395f4ca25df7203ce350132f5c69e43b0cd351831fbde3d5b0733`
+  is the product of that separate paper revision, not of this cycle.
+- Host: `devvm8504.hil0.facebook.com`, Python `3.12.13+meta`, Buck2
+  `267acfd7b674f035b00ce9414afaf824027eafe6`, fbsource checkout `9c664fadec8d`
+  dated `2026-08-21 06:00 -0700`, two NVIDIA A100-PG509-200 devices.
+- Private diagnostic root, created with `umask 077` and mode `0700`:
+  `/home/buiksat/upi-trm-stage0-v3-diag.gotJM0D7`. The prior root
+  `/home/buiksat/upi-trm-stage0-v2-3ceddf42.iAmSeUUl` was read only and is
+  preserved unmodified; its manifest still hashes to
+  `fb6ff938247d2e0bf9122a01eed93f12d6d69eb09665e52ed7fe94ddbd55c9e8`.
+
+## Reproducibility of the launcher artifact
+
+The launcher PAR was rebuilt twice from the unchanged starting SHA:
+
+```bash
+cd /data/repos/fbsource
+buck2 build --local-only @fbcode//mode/opt --show-full-output \
+  fbcode//buiksat_trm:phase4_runtime_launcher
+
+buck2 --isolation-dir=upitrm-diag-cold build --local-only @fbcode//mode/opt \
+  --show-full-output fbcode//buiksat_trm:phase4_runtime_launcher
+```
+
+The second build used a separate isolation directory, a cold daemon, and a
+separate `buck-out`, so it re-executed the packaging action rather than
+rematerializing a cached one. Both fresh artifacts and the preserved
+`2026-08-23` artifact are byte-identical:
+
+- size: 840475 bytes
+- SHA-256:
+  `5f38ddfc12d7d604b8d0f19a635f23e2cf9ed6b6c17687814c7a92a434c7f15f`
+- 65 members, identical across every per-member ZIP field, including
+  compression method, CRC, timestamp, external attributes, header offset, and
+  content digest
+
+The mismatch is therefore not nondeterministic Buck output.
+
+## Root cause
+
+Five distinct checks in the checked-in launcher identity boundary disagree with
+the artifact that the repository's own documented Buck command produces. Only
+the first of the five was reached in the prior cycle, because the validator
+short-circuits.
+
+| Check | Result | Reached on 2026-08-23 |
+| --- | --- | --- |
+| executable prefix, 8215 bytes | pass | yes |
+| `BUILDSTAMP` archive binding | pass | yes |
+| `runtime/` member inventory | pass | yes |
+| native-support manifest digest | fail | yes, this stopped the prior cycle |
+| pinned-support manifest digest | fail | no |
+| startup-loader normalized digest | fail | no |
+| pinned startup-function set | fail | no |
+| pinned target-label pattern | fail | no |
+| pinned executable closure | fail | no |
+
+Two of the failures are stale digests with an accounted-for Meta-owned cause.
+
+- Native support. The normalized identity is the canonical JSON object mapping
+  `runtime/bin/phase4_runtime_launcher#native-main#platform-runtime#python#py_version_3_12`
+  to `ae045fa3a8eca8e17289ff5d54bb02997d2d1cde3f2ce2ca6d90f777efef54dc` and
+  `runtime/lib/__python_generated_allocator_preload` to
+  `9da817f06e846faa4c8b371b39deebd55f025e20b9093245a88667250526b9a3`, which
+  hashes to `974e9a793a853aead172bb80c899ad6004cd57985a8d81e6dc911fd0232f24a9`
+  against the pinned `4f2d213fe8530f0bbf048de5fc62fd49b8dd1f1dee46cd9d37943440ab29b4ee`.
+  Both members are ELF artifacts that Buck links for platform010: the native
+  CPython 3.12 main and the Buck-generated
+  `fbcode//buiksat_trm:phase4_runtime_launcher-allocator-preload`. fbsource
+  updated `llvm-fb/21/platform010` at `2026-08-20 15:22 -0700` and
+  `llvm-fb/19/platform010` at `2026-08-20 15:53 -0700`, roughly two hours after
+  the pins were committed at `2026-08-20 12:53` to `13:05 -0700`. Relinking
+  under the new toolchain changes both member digests.
+- Pinned support. Seven of the 44 pinned members were modified upstream before
+  the current checkout revision: `fbvscode/bootstrapping.py`
+  (`39b94855953d`, `2026-08-18`), `clifoundation/lib/py/error/typing.py`
+  (`12642c219533`, `2026-08-18`), and the five `python/debuggers` modules
+  (`e48eb0cde99d`, `2026-08-19`). All 44 members are Meta-owned: 33 are
+  byte-identical to checked-in fbsource sources, 9 are empty namespace
+  `__init__.py` files, and 2 are generated by the Meta buck2 prelude
+  `make_par` tooling. None is unaccounted for.
+
+The remaining three failures are not drift. They are properties of the fbcode
+Python macro layer that predate the pins, so the checked-in boundary was never
+satisfiable by a launcher built with this repository's documented command.
+
+- The PAR carries ten executable members the pinned closure does not admit:
+  `python/imports_monitor/{__init__,check_jk,imports_monitor,monitor_base,scribe_cat,scuba,scubadata}.py`
+  and `cli/py/{__init__,usage/__init__}.py` plus `cli/__init__.py`. They enter
+  through `fbcode//python/imports_monitor:imports_monitor`, which
+  `tools/build_defs/fbcode_macros/build_defs/lib/python_common.bzl` adds by
+  default to every fbcode Linux `python_binary`. That default has been in place
+  since `2025-08-04`, with the current install form since `2026-05-14`.
+- The executable manifest declares three startup functions, not the single
+  pinned `00_STATIC_EXTENSION_FINDER`. The extra
+  `00_MULTIPROCESSING_FORK_DEFAULT` hook comes from
+  `python.set_multiprocessing_fork_default(enabled = True)` in `fbcode/PACKAGE`,
+  in effect since `2026-03-03`. The extra `01_PYTHON_IMPORTS_MONITOR` hook runs
+  `python.imports_monitor.imports_monitor:install(...)` at interpreter startup.
+  Because the startup-loader digest is taken over the loader body with only the
+  `VARS` line normalized away, the extra hooks also change that digest.
+- The pinned label pattern requires a configuration name ending in `-no-san`.
+  The built target is configured as
+  `opt-linux-x86_64-fbcode-platform010-clang21-no-san-opt-by-default#8b1a31e17a6261c4`.
+  The `opt-by-default` python modifier has applied since `2025-04-09`.
+
+## Why no repair was committed
+
+Refreshing the native-support digest alone does not unblock authorization; it
+moves the failure to the next check. Making the whole boundary pass requires
+admitting those ten Meta-owned members and the two additional startup hooks
+into the launcher's pre-authentication trusted closure and relaxing the target
+label pattern. The launcher's contract is that nothing but the pinned support,
+the two dynamic support members, and the authorized profile sources executes
+inside the launcher PAR before the runtime is authenticated. Widening that set
+by ten members, one of which installs import-time telemetry before
+`phase4_runtime_launcher.main` runs, is a reviewed security-boundary decision
+rather than a minimal identity refresh, and this cycle is not authorized to
+weaken authentication to make the run pass. No source change was made, no
+commit was created, and the implementation SHA remains
+`3ceddf42baa073f23ea7026e24e11f1f72fdbf2a`.
+
+The current tests do not catch this. Every launcher pin is replaced with
+`mock.patch.object` in
+`tests/test_policy_improvement_runtime_authorization_unittest.py`, and the test
+PARs are synthesized in-process, so no test compares the checked-in identity
+against a real Buck artifact.
+
+## Smallest safe next step
+
+The implementation owner needs to choose the launcher closure policy, and then
+one reviewed cycle should implement that choice.
+
+- Option A: accept the standard fbcode `python_binary` surface. Regenerate all
+  five launcher identity values from a freshly built launcher, pin the exact
+  three startup functions and the exact configuration label, and add a test
+  that derives the identity from a real Buck artifact instead of mocking it.
+  This records that the imports monitor and the fork-default hook run inside
+  the authenticated launcher.
+- Option B: keep the narrow closure. Set `imports_monitor = False` on the
+  `phase4_runtime_launcher` target, which removes all ten extra members using
+  existing Meta-owned Buck metadata. The `00_MULTIPROCESSING_FORK_DEFAULT` hook
+  and the `-opt-by-default` label suffix still require explicit pin updates.
+
+Either option must also regenerate the pinned-support and native-support
+digests from the freshly built launcher and record in the reviewed commit that
+the identity was rebound at the current fbsource toolchain.
+
+## Gates and phases in this cycle
+
+- Freeze and inspect: complete, all invariants held.
+- Native-support diagnosis: complete.
+- Reviewed repair: stopped fail-closed. No source change.
+- Fresh static, test, type-check, and build gate: not run. There is no repaired
+  commit to run it at, so no test, type-check, or build result in this document
+  is claimed for any revision.
+- Dataset preflight: not run. The registered dataset identities are unchanged
+  from the preceding attempt and were not re-verified in this cycle.
+- Runtime authorization, Stage 0 plan, prepare and resume execution, evidence
+  inventory, audit, theory smoke, and throughput calibration: not run. No
+  execution root, authorization file, plan, checkpoint, result, per-instance
+  record, compute-accounting artifact, theory request, theory result, or
+  throughput document was created.
+- Failed-attempt inventory: zero. No learned execution was attempted.
+
+## Evidence boundary
+
+- No validation content was opened.
+- No test content was opened.
+- No `TEST_OPEN` was created.
+- No historical experiment evidence, result, or checkpoint was inspected,
+  reconstructed, or used.
+- Stage 0 and theory-smoke outputs are not paper evidence. None exists from
+  this cycle.
+- Throughput calibration is an engineering measurement only. It was not run,
+  and the 4096-interaction tier was neither authorized nor executed.
+- No task-performance result or claim was generated.
+- No Python library was compiled or installed. No `pip`, `uv`, Poetry, Conda,
+  `setup.py`, wheel, virtual environment, or third-party build path was used.
+  Every build used Buck2 from the Meta checkout, and every dependency in the
+  launcher graph resolves to an existing Meta-owned Buck target.
+- No implementation source or configuration file was modified. Both worktrees
+  are clean.
+
+The canonical external manifest for this cycle is
+`/home/buiksat/upi-trm-stage0-v3-diag.gotJM0D7/metadata/stage0_execution_manifest.json`
+with SHA-256
+`30d5f426be5262079f606c6ec361d1fabfc431ccfef62c21a89084da2b115578`.
+
+## Remaining blockers after this cycle
+
+### Stage 0
+
+- Runtime authorization remains blocked. The launcher identity boundary in
+  `scripts/policy_improvement_runtime_authorization.py` does not describe the
+  artifact that `fbcode//buiksat_trm:phase4_runtime_launcher` produces, and
+  rebinding it requires the reviewed closure decision above. No authenticated
+  Stage 0 package exists at any implementation SHA.
+
+### Stage 1
+
+- Stage 1 remains blocked by the unavailable authenticated train-only
+  `base_policy_artifact` and its continuation contract.
+
+### Stage 2 and Stage 3
+
+- Both remain unauthorized. No test-opening capability was created.
