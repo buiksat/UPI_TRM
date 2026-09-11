@@ -1,36 +1,40 @@
 \begin{tikzpicture}[
   >=Stealth,
-  font=\scriptsize,
-  state/.style={draw, rounded corners=2pt, fill=gray!8, align=center, minimum height=0.7cm, text width=2.35cm},
-  op/.style={draw, rounded corners=2pt, fill=blue!8, align=center, minimum height=0.7cm, text width=1.35cm},
-  eval/.style={draw, rounded corners=2pt, fill=orange!10, align=center, minimum height=0.7cm, text width=1.65cm},
+  font=\small,
+  box/.style={draw, rounded corners=2pt, align=center, minimum height=1.0cm, inner sep=5pt},
+  state/.style={box, fill=gray!8, text width=2.65cm},
+  op/.style={box, fill=blue!8, text width=2.05cm},
+  eval/.style={box, fill=orange!10, text width=2.50cm},
   flow/.style={->, thick},
-  noflow/.style={->, thick, dashed, gray!75}
+  compare/.style={->, thick, dashed, gray!75}
 ]
 
-\node[font=\bfseries] at (-5.15,0.85) {Deployment lane};
-\node[state] (storedn) at (-3.45,0.85) {stored pre-unroll\\$\bar s_t=(x,y_t,z_t,h_t)$};
-\node[op] (fn) at (-0.85,0.85) {$F_n$};
-\node[eval] (postn) at (1.30,0.85) {post-unroll\\$z_t^{(n)}$};
-\node[eval] (policy) at (3.65,0.85) {policy / action\\$a_t\sim\pi(\cdot\mid y_t,z_t^{(n)},x)$};
-\node[state] (next) at (6.55,0.85) {environment transition\\carry $z_t^{(n)}$ to successor};
-
+\node[font=\bfseries\small, anchor=west] at (-1.50,1.75)
+  {Deployment: act and advance the MDP};
+\node[state] (storedn) at (0,0.85)
+  {stored pre-unroll state\\$\bar s_t=(x,y_t,z_t,h_t)$};
+\node[op] (fn) at (3.25,0.85)
+  {$F_n$\\$z_t\mapsto z_t^{(n)}$};
+\node[eval] (policy) at (6.40,0.85)
+  {sample edit\\$a_t\sim\pi(\cdot\mid y_t,z_t^{(n)},x)$};
+\node[state, text width=3.00cm] (next) at (10.0,0.85)
+  {nonterminal successor:\\carry $z_t^{(n)}$, set $h_{t+1}=h_t-1$\\terminal: $s_{\mathrm{abs}}$};
 \draw[flow] (storedn) -- (fn);
-\draw[flow] (fn) -- (postn);
-\draw[flow] (postn) -- (policy);
+\draw[flow] (fn) -- (policy);
 \draw[flow] (policy) -- (next);
 
-\node[font=\bfseries] at (-5.15,-1.05) {Comparison lane};
-\node[state] (storedm) at (-3.45,-1.05) {the same stored pre-unroll\\$\bar s_t=(x,y_t,z_t,h_t)$};
-\node[op] (fm) at (-0.85,-1.05) {$F_m$};
-\node[eval] (postm) at (1.30,-1.05) {comparison endpoint\\$z_t^{(m)}$};
-\node[eval] (um) at (3.65,-1.05) {$\widetilde U_m(\bar s_t)$};
-\node[state, fill=red!5, text width=2.65cm] (note) at (6.55,-1.05) {endpoint evaluation only:\\no action sampling and no transition};
-
-\draw[noflow] (storedm) -- (fm);
-\draw[noflow] (fm) -- (postm);
-\draw[noflow] (postm) -- (um);
-\draw[noflow] (um) -- (note);
-
+\node[font=\bfseries\small, anchor=west] at (-1.50,-0.30)
+  {Comparison: read another endpoint only};
+\node[state] (storedm) at (0,-1.25)
+  {same stored input\\$\bar s_t=(x,y_t,z_t,h_t)$};
+\node[op] (fm) at (3.25,-1.25)
+  {$F_m$\\$z_t\mapsto z_t^{(m)}$};
+\node[eval] (um) at (6.40,-1.25)
+  {value readout\\$\widetilde U_m(\bar s_t)$};
+\node[state, text width=3.00cm] (stop) at (10.0,-1.25)
+  {stop here:\\no action sampling\\no successor or latent carry};
+\draw[compare] (storedm) -- (fm);
+\draw[compare] (fm) -- (um);
+\draw[compare] (um) -- (stop);
 \draw[dotted, gray!70] (storedn.south) -- (storedm.north);
 \end{tikzpicture}

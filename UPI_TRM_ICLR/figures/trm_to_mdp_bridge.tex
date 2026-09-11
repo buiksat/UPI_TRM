@@ -46,7 +46,7 @@ Edit: $y_{t+1}=\mathrm{edit}(y_t,a_t;x)$\\
 Clock: $h_{t+1}=h_t-1$
 };
 
-\draw[flow] (eval.south) -- node[right, note] {policy uses\\finite-depth value} (mdp.north);
+\draw[flow] (eval.south) -- node[right, note] {latent drives\\edit policy} (mdp.north);
 
 \draw[map] (inner.east) -- node[above, note] {inner loop\\$\mapsto$ evaluator depth} (eval.west);
 \draw[map] (outer.east) -- node[below, note] {outer refinement\\$\mapsto$ edit MDP} (mdp.west);
