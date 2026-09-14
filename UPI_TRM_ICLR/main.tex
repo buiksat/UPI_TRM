@@ -125,8 +125,14 @@ target-network lag from deployment mismatch. For persistent latents, the
 clock-complete augmented state and one shared frozen recurrent map keep both
 endpoints in the same MDP. An exact calculation on two nonabsorbing states
 plus a shared absorber gives a nonvacuous value radius and a positive CPI
-lower bound. The guarantees concern one candidate against a frozen base at
-a fixed parameter snapshot.
+lower bound. In an eight-seed learned-evaluator diagnostic on a fixed
+128-state census, the finite-reference proxy is smaller than the direct-residual
+proxy for every seed, with mean signed difference $14.2487$ and a seed-bootstrap
+interval $[12.1852,16.7398]$. A separate per-state replay reproduces the eight
+differences bitwise. This diagnostic is conditional on one common base
+initialization and one census; it is not a task-performance result or a uniform
+certificate. The guarantees concern one candidate against a frozen base at a
+fixed parameter snapshot.
 
 \end{abstract}
 
@@ -180,8 +186,10 @@ The contributions are a finite-reference recurrent certificate
 target-network connection (Proposition~\ref{prop:target_network_bridge} and
 Theorem~\ref{thm:monotone_with_error}), and persistent-state Markovization
 with a shared frozen map (Corollary~\ref{cor:persistent_cpi_augmented}).
-An exact finite-MDP calculation and an implementation-level account of targets and replay complete the analysis. The proofs use established residual and CPI arguments
-at one fixed parameter snapshot.
+An exact finite-MDP calculation, a finite-census learned-evaluator diagnostic,
+and an implementation-level account of targets and replay complete the
+analysis. The proofs use established residual and CPI arguments at one fixed
+parameter snapshot.
 
 \section{Related Work}
 \label{sec:related_work}
@@ -927,6 +935,24 @@ Both bounds are valid, but only the signed-span version certifies improvement
 over $\eta(\pi)=0$. Appendix~\ref{app:finite_mdp_derivation} derives every
 quantity; \texttt{verify\_finite\_mdp.py} reproduces the rational calculation.
 
+\paragraph{Finite-census learned-evaluator diagnostic.}
+Eight candidate-training seeds, each stopped after 10,000 environment
+interactions, share one recorded base initialization and one 128-state census.
+For $n=2$, $m=8$, $K=1$, $\gamma=0.99$, and $\alpha=0.1$, the
+finite-reference proxy is smaller than the direct-residual proxy for every
+seed. The mean signed difference is $14.248703798855473$; resampling seeds for
+10,000 replicates gives the nominal 95\% interval
+$[12.185185177643433,16.739775084598428]$. Seeds are the bootstrap units, so
+this interval is conditional on the common base and fixed census. It gives no
+finite-sample coverage guarantee or independent evidence across datasets or
+base-policy preparations. Aggregate scratch diagnostics informed a numerical
+parity amendment before run5. The amendment is post-diagnostic, is bound by
+canonical digest, and uses an empirical factor-of-four margin. A per-state
+replay from the sealed checkpoints reproduced all eight gaps bitwise. This is
+measurement reproduction, not historical-execution proof or independent
+training replication. Appendix~\ref{app:exp1b_diagnostic} gives the equation,
+per-seed values, numerical disclosure, and audit details.
+
 \section{Discussion, Limitations, and Conclusion}
 \label{sec:conclusion}
 
@@ -937,9 +963,11 @@ and a shared frozen map. Recurrent convergence is unnecessary.
 
 These conditional guarantees concern one fixed-base proposal; training
 convergence and learned-task improvement remain open. The exact MDP checks
-nonvacuity. Finite-batch residuals, centering checks, and deployment
-measurements are diagnostics and do not establish the uniform premises of
-the bounds. Ethics, reproducibility, and AI-use statements follow.
+nonvacuity. The learned run5 result compares two proxy radii on one finite
+census and supports no monotonic depth, convergence, CPI, or task-performance
+claim. Finite-batch residuals, centering checks, and deployment measurements
+are diagnostics and do not establish the uniform premises of the bounds.
+Ethics, reproducibility, and AI-use statements follow.
 \label{sec:main_text_end}
 
 
@@ -959,6 +987,12 @@ Appendix~\ref{app:finite_mdp_derivation} gives the full rational calculation
 for Table~\ref{tab:finite_mdp_summary}; the standard-library script
 \texttt{verify\_finite\_mdp.py} reproduces its quantities.
 Appendix~\ref{app:implementation} specifies the implementation semantics.
+The accompanying additive run5 audit bundle separates recovered Stage A
+manifests from Stage B payloads, records the replay build identities and
+per-state exports, and includes a repository-independent standard-library
+checker. The checker recomputes all 35 digest-chain links, all eight gaps, the
+mean, the stored-replicate interval, and the numerical parity bound. It passes
+under \texttt{python3 -O} and fails on a recorded one-byte result mutation.
 
 \section*{Ethics and Broader Impact}
 \label{app:ethics_broader}
@@ -2560,6 +2594,80 @@ Summing from $j=n$ through $m-1$ yields~\eqref{eq:finite_reference_contracting}.
 \end{align*}
 Taking $m\to\infty$ therefore proves~\eqref{eq:epsV_dials}.
 \end{proof}
+
+\section{Run5 finite-census diagnostic record}
+\label{app:exp1b_diagnostic}
+
+Experiment 1B run5 evaluates the finite-census quantity
+\begin{equation}
+G_j=
+\frac{\varepsilon_{n,j}}{1-\gamma}
+-\left(D_j+\frac{\varepsilon_{m,j}}{1-\gamma}\right)
+\label{eq:exp1b_gap}
+\end{equation}
+for eight registered training seeds, with $n=2$, $m=8$, $K=1$,
+$\gamma=0.99$, $\alpha=0.1$, and 128 fixed validation-bridge records.
+Table~\ref{tab:exp1b_run5} reports the signed proxy-radius difference and two
+centering diagnostics. The constructed-centering roundoff ranges from
+$1.3344159524586459\times10^{-16}$ to
+$4.903119502940478\times10^{-16}$.
+
+\begin{table}[htbp]
+\caption{Run5 finite-census diagnostics in registered seed order. The last
+two columns are maximum absolute errors over the 128-state census.}
+\label{tab:exp1b_run5}
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}rrrr@{}}
+\toprule
+Seed & $G_j$ & Trainer centering defect & Parity error \\
+\midrule
+2081976412 & 21.880301018232558 & $3.156856\times10^{-7}$ & $1.277353\times10^{-6}$ \\
+781025396  & 12.585726740108612 & $1.428112\times10^{-7}$ & $1.385260\times10^{-6}$ \\
+1148619853 & 10.658699265691894 & $7.030317\times10^{-8}$ & $1.328253\times10^{-6}$ \\
+913535362  & 13.393999128162932 & $3.000817\times10^{-7}$ & $1.413822\times10^{-6}$ \\
+2143253519 & 17.061289531923650 & $4.780728\times10^{-8}$ & $1.507580\times10^{-6}$ \\
+2279379379 & 11.247952346485135 & $1.714248\times10^{-7}$ & $1.468691\times10^{-6}$ \\
+402312153  & 13.701769789184710 & $2.211111\times10^{-7}$ & $1.328038\times10^{-6}$ \\
+2736405725 & 13.459892571054297 & $1.098139\times10^{-7}$ & $1.375904\times10^{-6}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The equal-weight mean is $14.248703798855473$. The interval
+$[12.185185177643433,16.739775084598428]$ is obtained by applying
+Hyndman--Fan type-7 quantiles at 0.025 and 0.975 to 10,000 stored
+seed-resampling replicate means. It is a nominal interval conditional on the
+single recorded base initialization and fixed census.
+
+The centering amendment retains the inherited absolute tolerance $10^{-6}$
+and adds four float32 epsilons scaled by the registered advantage clip of 10:
+\[
+10^{-6}+4(2^{-23})(10)=5.76837158203125\times10^{-6}.
+\]
+All eight observed parity errors exceed the old absolute-only tolerance and
+fall below the amended threshold. A one-epsilon allowance would be
+$2.1920928955078122\times10^{-6}$ and would accept the largest observation
+with 1.45x headroom. The factor of four is unnecessary for these observations
+and has no derived operation-level guarantee.
+
+Scratch diagnostic output was inspected before this amendment was finalized.
+The amendment was fixed before run5 and is identified by canonical SHA-256
+\texttt{6e3c22a3...a8b3092} (the audit note records the full digest).
+Its \texttt{outcome\_evidence\_inspected: false} field concerns run5 outcome evidence;
+the validation/test no-inspection fields concern access to examples for
+selection or tuning. None of those fields states that earlier aggregate
+scratch diagnostics were unseen.
+
+The audit recovered all eight Stage A manifests, verified checkpoint bytes,
+matched the production PAR source to commit \texttt{2a14eb6}, and replayed
+every census state through a separately identified read-only binary. A separate
+consumer completed 108,648 exact deterministic comparisons and reproduced all
+gaps, their mean, and
+the interval bitwise. This supports finite-census measurement reproduction
+from existing checkpoints. It is not independent training replication or
+proof that the historical process executed exactly as recorded.
 
 \section{Implementation}
 \label{app:implementation}

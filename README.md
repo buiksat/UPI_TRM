@@ -1,7 +1,6 @@
 # UPI-TRM paper artifact
 
-The canonical paper is in `UPI_TRM_ICLR/` on branch
-`iclr-evidence-aligned-revision`. Its semantic oracle is
+The canonical paper is in `UPI_TRM_ICLR/` on branch `main`. Its semantic oracle is
 `UPI_TRM_ICLR/main.tex`; theorem-facing terminology and implementation claims
 must agree with that file.
 
@@ -11,9 +10,20 @@ paper describes one fixed-base candidate proposal at one frozen parameter
 snapshot. It does not certify a recursively promoted CPI sequence.
 
 The current implementation protocol distinguishes systems-only Stage 0 smoke
-checks from later learned studies. Stage 0 is not paper evidence. This paper
-contains no learned-task performance claim and does not use deleted historical
-results.
+checks from later learned studies. Stage 0 is not paper evidence. Experiment 1B
+run5 is the published learned-evaluator diagnostic: eight signed proxy-radius
+differences on one fixed 128-state census, with mean `14.248703798855473` and
+nominal seed-bootstrap interval
+`[12.185185177643433, 16.739775084598428]`.
+
+The later verification recovered the Stage A manifests, checked all 35 digest
+links, replayed each census state from the sealed checkpoints, and ran an
+independent checker against the additive audit bundle. Those checks reproduce
+the finite-census measurement. They do not independently replicate training or
+prove historical execution. The interval is conditional on one common base
+initialization and the fixed census. The paper makes no learned-task
+performance, uniform-certificate, monotonic-depth, convergence, or CPI claim
+from run5 and does not use deleted historical results.
 
 Build the anonymous ICLR PDF from a clean auxiliary-file state:
 
