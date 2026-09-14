@@ -102,6 +102,15 @@ def _q(value, state, action):
     return reward + GAMMA * value[STATES.index(successor)]
 
 
+def _self_bootstrap_residual(value):
+    return tuple(
+        value[i] - sum(
+            PI[state][action] * _q(value, state, action) for action in ACTIONS
+        )
+        for i, state in enumerate(STATES)
+    )
+
+
 def _fraction(value):
     return str(value.numerator) if value.denominator == 1 else str(value)
 
@@ -124,6 +133,34 @@ def main():
     residual_norm = max(abs(x) for x in residual)
     finite_reference_bound = endpoint_gap + residual_norm / (1 - GAMMA**K)
     actual_value_error = max(abs(x - y) for x, y in zip(u_n, value_pi))
+
+    # Compare the same deployed U_1 with its own residual, the optional
+    # contractive limit, and deeper finite references. No policy changes.
+    eps_res_1 = max(abs(x) for x in _self_bootstrap_residual(u_n))
+    direct_bound = eps_res_1 / (1 - GAMMA)
+    l_z = Fraction(1, 2)
+    l_v = Fraction(1)
+    c_z = max(abs(x) for x in u)  # First increment from z^(0)=0.
+    invariant_interval = (Fraction(-1, 2), Fraction(1, 2))
+    # Each map is affine; interval endpoint images verify invariance.
+    assert all(
+        invariant_interval[0] <= u_i - l_z * z <= invariant_interval[1]
+        for u_i in u[:len(ACTIVE_STATES)] for z in invariant_interval
+    )
+    u_star = tuple(u_i / (1 + l_z) for u_i in u)
+    assert all(u_i - l_z * z == z for u_i, z in zip(u, u_star))
+    eps_star = max(abs(x) for x in _self_bootstrap_residual(u_star))
+    geometric_path_bound = l_v * l_z**N * c_z / (1 - l_z)
+    fixed_point_bound = eps_star / (1 - GAMMA) + geometric_path_bound
+
+    u_3 = tuple(u_i - l_z * z for u_i, z in zip(u, u_m))
+    u_4 = tuple(u_i - l_z * z for u_i, z in zip(u, u_3))
+    gap_3 = max(abs(x - y) for x, y in zip(u_n, u_3))
+    gap_4 = max(abs(x - y) for x, y in zip(u_n, u_4))
+    eps_3 = max(abs(x) for x in _self_bootstrap_residual(u_3))
+    eps_4 = max(abs(x) for x in _self_bootstrap_residual(u_4))
+    reference_bound_3 = gap_3 + eps_3 / (1 - GAMMA)
+    reference_bound_4 = gap_4 + eps_4 / (1 - GAMMA)
 
     advantage = {
         state: {
@@ -171,6 +208,17 @@ def main():
         estimated_surrogate - xi_alpha / (1 - GAMMA) - occupancy_penalty
     )
     eta_mix = sum(RHO[i] * value_mix[i] for i in range(len(STATES)))
+    candidate_bias = max(abs(x) for x in candidate_defect)
+    epsilon_cpi = max(abs(x) for x in g)
+    absolute_evaluation_penalty = ALPHA * candidate_bias / (1 - GAMMA)
+    absolute_occupancy_penalty = (
+        2 * epsilon_cpi * GAMMA * ALPHA**2
+        / ((1 - GAMMA) * (1 - GAMMA + GAMMA * ALPHA))
+    )
+    absolute_cpi_lower_bound = (
+        estimated_surrogate - absolute_evaluation_penalty
+        - absolute_occupancy_penalty
+    )
 
     assert value_pi == (0, 0, 0)
     assert u_n == (Fraction(1, 4), Fraction(-1, 4), Fraction(0))
@@ -197,12 +245,59 @@ def main():
     assert signed_cpi_lower_bound == Fraction(2, 3)
     assert eta_mix == Fraction(3, 4)
 
+    assert eps_res_1 == Fraction(3, 8)
+    assert direct_bound == Fraction(3, 4)
+    assert u_star == (Fraction(1, 6), Fraction(-1, 6), Fraction(0))
+    assert eps_star == Fraction(1, 4)
+    assert c_z == Fraction(1, 4)
+    assert geometric_path_bound == Fraction(1, 4)
+    assert fixed_point_bound == Fraction(3, 4)
+    assert u_3 == (Fraction(3, 16), Fraction(-3, 16), Fraction(0))
+    assert u_4 == (Fraction(5, 32), Fraction(-5, 32), Fraction(0))
+    assert gap_3 == Fraction(1, 16)
+    assert gap_4 == Fraction(3, 32)
+    assert eps_3 == Fraction(9, 32)
+    assert eps_4 == Fraction(15, 64)
+    assert reference_bound_3 == Fraction(5, 8)
+    assert reference_bound_4 == Fraction(9, 16)
+    assert absolute_evaluation_penalty == Fraction(1, 4)
+    assert absolute_occupancy_penalty == Fraction(2, 3)
+    assert absolute_cpi_lower_bound == Fraction(-1, 6)
+
     result = {
         "certificate": {
             "actual_value_error": _fraction(actual_value_error),
             "endpoint_gap": _fraction(endpoint_gap),
             "finite_reference_upper_bound": _fraction(finite_reference_bound),
             "reference_residual": _fraction(residual_norm),
+            "direct_depth_1": {
+                "residual": _fraction(eps_res_1),
+                "upper_bound": _fraction(direct_bound),
+            },
+            "fixed_point": {
+                "value": [_fraction(x) for x in u_star],
+                "residual": _fraction(eps_star),
+                "invariant_interval": [_fraction(x) for x in invariant_interval],
+                "L_z": _fraction(l_z),
+                "L_V": _fraction(l_v),
+                "C_z": _fraction(c_z),
+                "geometric_path_bound": _fraction(geometric_path_bound),
+                "upper_bound": _fraction(fixed_point_bound),
+            },
+            "deeper_finite_references": {
+                "3": {
+                    "value": [_fraction(x) for x in u_3],
+                    "endpoint_gap": _fraction(gap_3),
+                    "residual": _fraction(eps_3),
+                    "upper_bound": _fraction(reference_bound_3),
+                },
+                "4": {
+                    "value": [_fraction(x) for x in u_4],
+                    "endpoint_gap": _fraction(gap_4),
+                    "residual": _fraction(eps_4),
+                    "upper_bound": _fraction(reference_bound_4),
+                },
+            },
         },
         "cpi": {
             "candidate_defect": [_fraction(x) for x in candidate_defect],
@@ -213,6 +308,9 @@ def main():
             "eta_pi_alpha": _fraction(eta_mix),
             "estimated_surrogate": _fraction(estimated_surrogate),
             "signed_cpi_lower_bound": _fraction(signed_cpi_lower_bound),
+            "absolute_cpi_lower_bound": _fraction(absolute_cpi_lower_bound),
+            "absolute_evaluation_penalty": _fraction(absolute_evaluation_penalty),
+            "absolute_occupancy_penalty": _fraction(absolute_occupancy_penalty),
             "span": _fraction(span_g),
             "xi_alpha": _fraction(xi_alpha),
         },

@@ -180,8 +180,7 @@ The contributions are a finite-reference recurrent certificate
 target-network connection (Proposition~\ref{prop:target_network_bridge} and
 Theorem~\ref{thm:monotone_with_error}), and persistent-state Markovization
 with a shared frozen map (Corollary~\ref{cor:persistent_cpi_augmented}).
-An exact finite-MDP calculation and explicit implementation correspondence
-complete the analysis. The proofs use established residual and CPI arguments
+An exact finite-MDP calculation and an implementation-level account of targets and replay complete the analysis. The proofs use established residual and CPI arguments
 at one fixed parameter snapshot.
 
 \section{Related Work}
@@ -218,6 +217,7 @@ remaining, the episodic state and nonterminal successor are
 s_t=(x,y_t,h_t),\qquad
 s_{t+1}=\bigl(x,\mathrm{edit}(y_t,a_t;x),h_t-1\bigr).
 \]
+We call a state clock-complete when it carries the remaining budget $h$.
 Solving, terminal STOP, or budget exhaustion sends the process to the shared
 absorber $s_{\mathrm{abs}}$. A bounded checker score $c(x,y)$ supplies
 reward, optionally shaped as $r=r_0+\gamma\Phi(s')-\Phi(s)$ with
@@ -380,9 +380,6 @@ $0\le n<m$,
 \label{eq:finite_reference_depth}
 \end{align}
 
-Under the recurrent hypotheses of Corollary~\ref{cor:recurrent_endpoint_path},
-an $L_V$-Lipschitz head bounds the discrepancy by $L_V$ times the latent
-path length between depths $n$ and $m$.
 \end{theorem}
 
 The discrepancy measures sensitivity to additional computation; the residual
@@ -475,9 +472,9 @@ uses this candidate bias in an improvement bound. In particular, under the
 exact-mixture and centering hypotheses of Theorem~\ref{thm:monotone_with_error},
 the finite-reference radius gives
 \begin{equation}
-\eta(\pi_{\mathrm{new}})
+\eta(\pi_\alpha)
 \ge
-\widehat L_\pi(\pi_{\mathrm{new}})
+\widehat L_\pi(\pi_\alpha)
 -\frac{2\alpha\gamma\tau_\infty}{1-\gamma}B_{n,m}
 -\frac{2\varepsilon_{\mathrm{CPI}}\gamma\alpha^2}
 {(1-\gamma)(1-\gamma+\gamma\alpha)}.
@@ -727,8 +724,15 @@ V_\psi(\widetilde f_\theta^{\circ q}(z,y,x),x,y),
 \widetilde U_q(s_{\mathrm{abs}}):=-C_{\max}.
 \label{eq:persistent_un_value}
 \end{equation}
-Changing $q$ leaves $F_n$,
-both policies, and the transition kernel fixed. Appendix~\ref{sec:persistent_augmented_cpi}
+\begin{equation}
+\bar\pi(a\mid\bar s):=\pi_\phi(a\mid y,F_n(x,y,z),x),
+\qquad
+\bar\pi_{\mathrm{cand}}(a\mid\bar s):=\pi_{\mathrm{cand}}(a\mid y,F_n(x,y,z),x),
+\label{eq:augmented_policies_main}
+\end{equation}
+and let $\bar{\mathcal T}^{\bar\pi}_K$ denote the $K$-step Bellman operator of this augmented MDP, whose transitions use the deployed $F_n$.
+
+Changing $q$ leaves $F_n$, both policies in Eq.~\eqref{eq:augmented_policies_main}, and the transition kernel fixed. Appendix~\ref{sec:persistent_augmented_cpi}
 and Figure~\ref{fig:persistent_depth_lanes} give the construction.
 
 \begin{corollary}[Persistent-state evaluation and improvement]
@@ -895,6 +899,14 @@ Signed CPI lower bound; actual $\eta(\pi_{1/2})$
 
 The finite-reference radius $B_{1,2}=1/2$ is twice the actual error $1/4$;
 it uses two finite endpoints rather than a recurrent limit.
+For comparison, the self-bootstrap bound at depth $1$
+(Corollary~\ref{cor:finite_depth_residual_certificate}) gives
+$\varepsilon_{\mathrm{res},1}/(1-\gamma)=(3/8)/(1/2)=3/4$.
+The fixed-point specialization Eq.~\eqref{eq:epsV_dials} applies with
+$\mathcal Z_{\mathrm{inv}}=[-1/2,1/2]$, $L_z=1/2$, $C_z=1/4$, and
+$L_V=1$; it gives
+$\varepsilon_{\mathrm{res}}^*/(1-\gamma)+L_VL_z^nC_z/(1-L_z)=1/2+1/4=3/4$.
+Deeper references are not monotone: $m=3$ gives $5/8$ and $m=4$ gives $9/16$.
 
 The policy calculation illustrates why signs and spans matter. The estimator
 understates candidate advantage: $b(s_0)=-1/4$ and
@@ -933,19 +945,15 @@ the bounds. Ethics, reproducibility, and AI-use statements follow.
 \clearpage
 \section*{AI Use Statement}
 \label{sec:ai_use}
-Generative AI tools assisted with literature search, revision of the manuscript's
-exposition, interpretation of the exact finite-MDP example, figure editing,
-LaTeX reorganization, and preparation of formatting, cross-reference, and
-exact-arithmetic validation checks. This statement records assistance in
-manuscript preparation; responsibility for the submission remains with the authors.
+In this work, we used generative AI tools for [required-disclosure tasks used: e.g., assisting the writing of proofs, formulating or refining mathematical claims, interpreting the exact example]. We have not used generative AI tools for [required-disclosure tasks not used], and [remaining required tasks] are not applicable to this work. Additionally, we used generative AI tools for literature search, editing the manuscript for readability, LaTeX reorganization, figure editing, and preparing cross-reference and exact-arithmetic validation checks. We have reviewed all AI-assisted work: [verification the authors performed, e.g., every proof was checked line by line by the authors and the exact example is reproduced by a standard-library script]. We take responsibility for the final content of this work.
 % AUTHOR ACTION BEFORE SUBMISSION: reconcile this statement with all research-stage
 % AI use and the OpenReview form. Do not infer that unlisted uses did not occur.
 % In particular confirm theory/proof, methodology, implementation, and analysis use.
 
 \section*{Reproducibility Statement}
 \label{sec:reproducibility}
-The assumptions are stated with each result, and all proofs appear in
-Appendix~\ref{app:proofs}.
+The assumptions are stated with each result, and proofs appear in
+Appendices~\ref{app:proofs} and~\ref{app:proof_banach}.
 Appendix~\ref{app:finite_mdp_derivation} gives the full rational calculation
 for Table~\ref{tab:finite_mdp_summary}; the standard-library script
 \texttt{verify\_finite\_mdp.py} reproduces its quantities.
@@ -1001,6 +1009,7 @@ R\,\dfrac{z}{\|z\|_2}, & \|z\|_2 > R.
 \end{equation}
 The projection $\Pi_R$ is nonexpansive and leaves $B_R$ invariant.
 It does not by itself give contraction.
+The first-increment constant used by the contraction specialization is
 \begin{equation}
 C_z := \sup_{s\in\mathcal C^\circ}
 \bigl\|\widetilde f_\theta(z_{\mathrm{init}}(x(s),y(s)),y(s),x(s))
@@ -1009,7 +1018,7 @@ C_z := \sup_{s\in\mathcal C^\circ}
 \end{equation}
 
 \begin{table}[t]
-\caption{Symbols used in statements and main text}
+\caption{Symbols used in statements}
 \label{tab:notation}
 \begin{center}
 \begin{tabularx}{\linewidth}{@{}lX@{}}
@@ -1031,7 +1040,6 @@ $d_\rho^{\pi,K}$ & Discounted occupancy of the fixed $K$-step current-policy ske
 $C_{\rho,\mu}^{\pi,K}$, $C_{\rho,\mu}^{(0)}$ & Fixed-kernel occupancy / initial-law density-ratio bounds for the weighted-$L_p$ restatement \\
 $\bar\varepsilon_{\mathrm{res},n}$ & Persistent augmented-state finite-depth residual \\
 $\varepsilon_A$, $\bar\varepsilon_A$ & Episodic / augmented advantage error bounds \\
-$\varepsilon_{A,\mathrm{cand}}$, $\bar\varepsilon_{A,\mathrm{cand}}$ & Episodic / augmented candidate-defect suprema \\
 $\varepsilon_{\mathrm{res}}^*$ & Architectural residual at $U_*$ \\
 $g$, $\Delta_g$ & Candidate expected advantage / span on the declared mixture or pair domain \\
 $\widehat g$, $\overline{\beta}_d$, $M_d$ & Estimated candidate slope / one-sided signed-defect bound / certified slope \\
@@ -1361,7 +1369,7 @@ MDP construction, which permits a continuous carried latent $z\in\mathbb R^d$.
 Fix $n$, $(\theta,\psi)$, the policy parameters, and all environment kernels. Let $h\in\{1,2,\ldots,H\}$ be the number of edits remaining before the current action. Define
 \begin{equation}
 F_n(x,y,z):=T_{x,y}^{\circ n}(z)=\widetilde f_\theta^{\circ n}(z,y,x),
-\qquad \bar s=(x,y,z,h),
+\qquad \bar s=(x,y,z,h).
 \label{eq:persistent_hn}
 \end{equation}
 For a nonabsorbing state, first compute $F_n$ and sample an action. If the environment transition terminates for any reason (including a solution or terminal STOP), or if $h=1$, the successor is the shared atom $s_{\mathrm{abs}}$; budget exhaustion is terminal. Otherwise the clock-complete successor is
@@ -1369,12 +1377,7 @@ For a nonabsorbing state, first compute $F_n$ and sample an action. If the envir
 \bar s'=\bigl(x,\mathrm{edit}(y,a;x),F_n(x,y,z),h-1\bigr).
 \]
 The state stores the pre-unroll carried latent $z$, the policy uses the post-unroll latent $F_n(x,y,z)$, and a nonterminal successor carries that post-unroll latent.
-The current and candidate action kernels share this same frozen $F_n$ and hence the same augmented MDP:
-\[
-\bar\pi(a\mid\bar s)=\pi_\phi(a\mid y,F_n(x,y,z),x),
-\qquad
-\bar\pi_{\mathrm{cand}}(a\mid\bar s)=\pi_{\mathrm{cand}}(a\mid y,F_n(x,y,z),x).
-\]
+The current and candidate action kernels share this same frozen $F_n$ and hence the same augmented MDP, as in Eq.~\eqref{eq:augmented_policies_main}.
 Changing the recurrent map between these two policies would change the transition kernel and is outside ordinary CPI.
 \begin{remark}[Why the recurrent map is shared]
 \label{rem:shared_map_impossibility}
@@ -1540,7 +1543,6 @@ $\alpha\in[0,1]$. Let $\widetilde\pi$ be a deployed stochastic kernel in the
 same fixed MDP as $\pi_\alpha$, with the same initial law $\rho$. Assume the
 state and action spaces are standard Borel, and let
 $\mathsf K(dr,ds'\mid s,a)$ be the measurable joint reward-transition
-kernel. The policy kernels then admit a measurable statewise maximal-coupling
 kernel.
 
 Let $\mathcal D_{\mathrm{dep}}$ be measurable with
@@ -1660,7 +1662,7 @@ Proof in Appendix~\ref{app:proof_combined_deployment}.
 \subsection{Finite-reference value bound}
 \label{app:proof_finite_reference}
 
-\begin{proof}
+\begin{proof}[Proof of Theorem~\ref{thm:finite_reference_depth}]
 Write $\|\cdot\|_\infty$ for the ordinary sup-norm on
 $\mathcal C$. Invariance and the Markov-kernel measurability property imply
 $P_\pi^K V\in B_b(\mathcal C)$ whenever $V\in B_b(\mathcal C)$; bounded
@@ -1708,8 +1710,7 @@ still requires the reference endpoint's Bellman residual.
 
 \begin{corollary}[Recurrent endpoint path bound]
 \label{cor:recurrent_endpoint_path}
-Under Theorem~\ref{thm:finite_reference_depth}, the recurrent specialization is as follows.
-For the recurrent specialization, take
+Under Theorem~\ref{thm:finite_reference_depth}, take
 $\mathcal C=\mathcal R_{\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}$ and
 $\mathcal C^\circ=\mathcal C\setminus\{s_{\mathrm{abs}}\}$. On
 $\mathcal C^\circ$, fix a jointly measurable recurrent map
@@ -1741,7 +1742,7 @@ If $\mathcal C^\circ$ is empty, the nonnegative latent suprema in this
 chain are defined to be zero.
 \end{corollary}
 
-\begin{proof}
+\begin{proof}[Proof of Corollary~\ref{cor:recurrent_endpoint_path}]
 For every nonabsorbing $s$, Lipschitzness of the scalar head and the telescoping latent path give
 \begin{align*}
 |U_n(s)-U_m(s)|
@@ -1771,7 +1772,7 @@ $\pi(da\mid s)$- and $\pi_{\mathrm{cand}}(da\mid s)$-almost every $a$,
 \]
 \end{lemma}
 
-\begin{proof}
+\begin{proof}[Proof of Lemma~\ref{lem:A_error_app}]
 For any $(s,a)$,
 \[
 \widehat Q_V(s,a) - Q^\pi(s,a)
@@ -1818,7 +1819,7 @@ $\lambda$-return or GAE-style estimators lie outside the displayed bridge unless
 \subsection{Proof of Corollary~\ref{cor:candidate_overlap}}
 \label{app:proof_candidate_overlap}
 
-\begin{proof}
+\begin{proof}[Proof of Corollary~\ref{cor:candidate_overlap}]
 Let $q_e(s,a)=\gamma\E[e(S')\mid s,a]$. Exact centering gives
 $b(s)=\E_{\pi_{\mathrm{cand}}}q_e-\E_\pi q_e$. By
 Definition~\ref{def:adv_closure}, there is a common action set of full
@@ -1835,7 +1836,7 @@ range $[-\gamma^K\delta_V,\gamma^K\delta_V]$.
 \subsection{Target-network residuals}
 \label{app:proof_target_network_bridge}
 
-\begin{proof}
+\begin{proof}[Proof of Proposition~\ref{prop:target_network_bridge}]
 Add and subtract the target-network population backup:
 \[
 U_q-\mathcal T_K^\pi U_q
@@ -1857,7 +1858,7 @@ nonexpansiveness gives $R_{\mathrm{targ},q}^{P}\le R_{\mathrm{targ},q}^{\sup}$.
 \subsection{Proof of Lemma~\ref{lem:exact_mixture_occupancy}}
 \label{app:proof_mixture_occupancy}
 
-\begin{proof}
+\begin{proof}[Proof of Lemma~\ref{lem:exact_mixture_occupancy}]
 Realize each mixture decision with an independent Bernoulli selector. The
 event that decisions $0,\ldots,t-1$ all select the current-policy component
 has probability $(1-\alpha)^t$ and, conditional on that event, produces the
@@ -1923,7 +1924,7 @@ An occupancy-averaged absolute choice is
 \begin{equation}
 B_\alpha
 =(1-\alpha)\E_{d_\pi}|c(s)|
-+\alpha\E_{d_\pi}|b(s)|.
++\alpha\E_{d_\pi}|b(s)|,
 \label{eq:Balpha_abs}
 \end{equation}
 which upper-bounds $\Xi_\alpha$; substituting it in
@@ -2104,7 +2105,7 @@ the listed boundary cases.
 \subsection{Persistent-state evaluation and improvement}
 \label{app:proof_persistent}
 
-\begin{proof}
+\begin{proof}[Proof of Corollary~\ref{cor:persistent_cpi_augmented}]
 The clock-complete state, frozen shared map $F_n$, and specified initial law define one augmented MDP for both action kernels. On its bounded measurable functions, $\bar{\mathcal T}^{\bar\pi}_K$ is a $\gamma^K$-contraction in the augmented closure norm. In this proof, $\|\cdot\|_{\infty}^{\mathrm{adv}}$ abbreviates $\|\cdot\|_{\infty,\bar\pi,\bar\pi_{\mathrm{cand}}}^{\mathrm{adv}}$. Thus
 \begin{align*}
 \|\widetilde U_n-V^{\bar\pi}\|_{\infty}^{\mathrm{adv}}
@@ -2126,7 +2127,7 @@ barred substitution while keeping $F_n$ and the deployed kernel fixed.
 \subsection{Weighted-\texorpdfstring{$L_p$}{Lp} bound}
 \label{app:proof_weighted_lp}
 
-\begin{proof}
+\begin{proof}[Proof of Proposition~\ref{prop:weighted_finite_reference}]
 Let $e_m:=U_m-V^\pi$. Subtracting the fixed-point identity
 $V^\pi=\mathcal T_K^\pi V^\pi$ from the definition of $r_m$ gives
 \begin{equation}
@@ -2175,26 +2176,33 @@ which proves Eq.~\eqref{eq:weighted_finite_reference_common_measure}.
 \subsection{Deployment perturbation}
 \label{app:proof_deployment}
 
-\begin{proof}
-Couple the two processes from the same initial state. Whenever their states
-agree at decision $t$, use a measurable maximal coupling of
-$\pi_\alpha(\cdot\mid s_t)$ and $\widetilde\pi(\cdot\mid s_t)$. Conditional
-on a matched history, their actions agree with probability at least
-$1-\delta_{\mathrm{dep}}$. When the actions agree, draw one shared reward and
-successor state from $\mathsf K(\cdot\mid s_t,a_t)$. After the first action
-mismatch, use any measurable coupling.
+\begin{proof}[Proof of Theorem~\ref{thm:deployment_perturbation}]
+Let $\mu_t^\alpha,\widetilde\mu_t$ be the state laws and set
+$d_t=\operatorname{TV}(\widetilde\mu_t,\mu_t^\alpha)$. Their common
+submeasure $\lambda_t=\widetilde\mu_t\wedge\mu_t^\alpha$ has mass
+$1-d_t$; each remaining measure has mass $d_t$. Appending the common
+reward-transition kernel $\mathsf K$ to the two action laws at a state
+cannot increase total variation. Their joint action-reward-successor laws
+therefore differ by at most $\delta_{\mathrm{dep}}$.
 
-Let $E_t$ be the event that the actions agree at every decision
-$0,\ldots,t$. Iterated conditioning gives
+Write $J_t^\alpha,\widetilde J_t$ for the full joint laws of state, action,
+reward, and successor. Integrating the statewise bound over $\lambda_t$
+and bounding the residual components by their mass gives
 \[
-\Pr(E_t)\ge(1-\delta_{\mathrm{dep}})^{t+1}.
+\operatorname{TV}(\widetilde J_t,J_t^\alpha)
+\le d_t+(1-d_t)\delta_{\mathrm{dep}}.
+\]
+Marginalization gives the same bound for $d_{t+1}$. Since $d_0=0$,
+induction yields $d_t\le1-(1-\delta_{\mathrm{dep}})^t$ and
+\[
+\operatorname{TV}(\widetilde J_t,J_t^\alpha)
+\le1-(1-\delta_{\mathrm{dep}})^{t+1}.
 \]
 The exponent is $t+1$ because the reward at time $t$ follows decision $t$.
-On $E_t$, the two rewards at time $t$ are identical. Since both rewards lie
-in an interval of width $\Delta_r$,
+Both rewards lie in an interval of width $\Delta_r$, so
 \[
 \left|\E[\widetilde r_t]-\E[r_t^\alpha]\right|
-\le\Delta_r\Pr(E_t^c)
+\le\Delta_r\operatorname{TV}(\widetilde J_t,J_t^\alpha)
 \le\Delta_r\left[1-(1-\delta_{\mathrm{dep}})^{t+1}\right].
 \]
 Sum these reward differences for $t=0,\ldots,H-1$ and let $H\to\infty$.
@@ -2214,7 +2222,7 @@ Bounded rewards justify the limit, and
 \subsection{Uniform-KL deployment bound}
 \label{app:proof_deployment_kl}
 
-\begin{proof}
+\begin{proof}[Proof of Corollary~\ref{cor:deployment_pinsker}]
 Pinsker's inequality in either direction and $\operatorname{TV}\le1$ show
 that the actual uniform TV discrepancy is at most $\bar\delta_\kappa$. Apply
 Theorem~\ref{thm:deployment_perturbation} with
@@ -2228,80 +2236,16 @@ established directly.
 \subsection{CPI with deployment discrepancy}
 \label{app:proof_combined_deployment}
 
-\begin{proof}
+\begin{proof}[Proof of Corollary~\ref{cor:combined_cpi_deployment}]
 Lower-bound $\eta(\widetilde\pi)$ by $\eta(\pi_\alpha)$ minus
 Eq.~\eqref{eq:deployment_tv_bound}, then apply
 Eq.~\eqref{eq:main_theorem_occupancy} with $\Xi_\alpha\le B_\alpha$.
 \end{proof}
 
-\subsection{Optional recurrent contraction}
-\label{app:proof_banach}
-
-\begin{proof}
-For each $s\in\mathcal D^\circ$, Assumption~\ref{ass:Lip} makes $T_s$ a
-contraction on the complete space $\mathcal Z_{\mathrm{inv}}$.
-Banach's theorem gives its unique fixed point and
-Eq.~\eqref{eq:linear_convergence}.
-
-Under the additional measurability premises in
-Eq.~\eqref{eq:joint_measurable_recurrence}, the iterates are measurable by
-induction. Indeed, if $z^{(j)}$ is measurable, then
-$s\mapsto(s,z^{(j)}(s))$ is measurable into the product space, so
-$z^{(j+1)}(s)=T(s,z^{(j)}(s))$ is measurable. Banach convergence gives
-$z^{(j)}(s)\to z^*(s)$ pointwise. For every nonempty closed
-$F\subseteq\mathcal Z_{\mathrm{inv}}$, continuity of distance and pointwise
-convergence give
-\[
-d(z^*(s),F)=\lim_{j\to\infty}d(z^{(j)}(s),F).
-\]
-The right side is a pointwise limit of measurable real functions, and
-\[
-\{s:z^*(s)\in F\}=\{s:d(z^*(s),F)=0\}.
-\]
-The empty closed set has empty preimage. Since closed sets generate the Borel
-$\sigma$-algebra, $z^*$ is measurable.
-
-For the finite-unrolling bound, specialize to
-$\mathcal D^\circ=\mathcal C^\circ$ and take
-$z^{(0)}(s)=z_{\mathrm{init}}(x(s),y(s))$:
-\[
-z^*(s) - z^{(n)}(s)
-= \sum_{k=n}^{\infty}(z^{(k+1)}(s) - z^{(k)}(s)).
-\]
-Contraction gives
-$\|z^{(k+1)}(s)-z^{(k)}(s)\|
-\le L_z^k\|z^{(1)}(s)-z^{(0)}(s)\|$, so
-\[
-\|z^*(s)-z^{(n)}(s)\|
-\le \|z^{(1)}(s)-z^{(0)}(s)\| \sum_{k=n}^{\infty} L_z^k
-= \frac{L_z^n}{1-L_z}\|z^{(1)}(s)-z^{(0)}(s)\|.
-\]
-Equation~\eqref{eq:Cz_def} bounds the first increment by $C_z$, giving
-Eq.~\eqref{eq:finite_unrolling_bias}.
-\end{proof}
-
-
-\begin{proof}
-Under the $\mathcal D^\circ=\mathcal C^\circ$ invocation of
-Assumption~\ref{ass:Lip},
-\[
-\|z^{(j+1)}(s)-z^{(j)}(s)\|
-\le L_z^j\|z^{(1)}(s)-z^{(0)}(s)\|
-\le L_z^j C_z.
-\]
-Summing from $j=n$ through $m-1$ yields~\eqref{eq:finite_reference_contracting}. Proposition~\ref{prop:banach} and the Lipschitz head give $\|U_m-U_*\|_\infty\to0$. Moreover,
-\begin{align*}
-\big|\|U_m-\mathcal T_K^\pi U_m\|_\infty
--\|U_*-\mathcal T_K^\pi U_*\|_\infty\big|
-&\le (1+\gamma^K)\|U_m-U_*\|_\infty \to 0.
-\end{align*}
-Taking $m\to\infty$ therefore proves~\eqref{eq:epsV_dials}.
-\end{proof}
-
 \subsection{Residual-to-CPI substitutions}
 \label{app:proof_residual_substitutions}
 
-\begin{proof}
+\begin{proof}[Proof of Corollary~\ref{cor:finite_depth_residual_certificate}]
 Apply Eq.~\eqref{eq:boundA} to $V=U_n$ to obtain
 Eq.~\eqref{eq:finite_depth_residual_certificate}.
 Lemma~\ref{lem:A_error_app} yields~\eqref{eq:finite_depth_residual_adv}, and
@@ -2470,7 +2414,7 @@ of the residual norm. Taking $m\to\infty$ recovers
 \label{eq:epsV_dials}
 \end{align}
 
-Proof in Appendix~\ref{app:proof_banach}.
+Proofs of Proposition~\ref{prop:banach} and Eqs.~\eqref{eq:finite_reference_contracting} and~\eqref{eq:epsV_dials} appear in Appendix~\ref{app:proof_banach}.
 
 \subsection{A weighted-\texorpdfstring{$L_p$}{Lp} fixed-policy restatement}
 \label{app:weighted_lp}
@@ -2552,6 +2496,70 @@ graphs of zero mass under a product reference measure, so that measure need
 not dominate them. Choosing $\mu=d_\rho^{\pi,K}$ makes the coefficient one,
 but an exogenous training distribution need not have that coverage.
 
+\subsection{Optional recurrent contraction}
+\label{app:proof_banach}
+
+\begin{proof}[Proof of Proposition~\ref{prop:banach}]
+For each $s\in\mathcal D^\circ$, Assumption~\ref{ass:Lip} makes $T_s$ a
+contraction on the complete space $\mathcal Z_{\mathrm{inv}}$.
+Banach's theorem gives its unique fixed point and
+Eq.~\eqref{eq:linear_convergence}.
+
+Under the additional measurability premises in
+Eq.~\eqref{eq:joint_measurable_recurrence}, the iterates are measurable by
+induction. Indeed, if $z^{(j)}$ is measurable, then
+$s\mapsto(s,z^{(j)}(s))$ is measurable into the product space, so
+$z^{(j+1)}(s)=T(s,z^{(j)}(s))$ is measurable. Banach convergence gives
+$z^{(j)}(s)\to z^*(s)$ pointwise. For every nonempty closed
+$F\subseteq\mathcal Z_{\mathrm{inv}}$, continuity of distance and pointwise
+convergence give
+\[
+d(z^*(s),F)=\lim_{j\to\infty}d(z^{(j)}(s),F).
+\]
+The right side is a pointwise limit of measurable real functions, and
+\[
+\{s:z^*(s)\in F\}=\{s:d(z^*(s),F)=0\}.
+\]
+The empty closed set has empty preimage. Since closed sets generate the Borel
+$\sigma$-algebra, $z^*$ is measurable.
+
+For the finite-unrolling bound, specialize to
+$\mathcal D^\circ=\mathcal C^\circ$ and take
+$z^{(0)}(s)=z_{\mathrm{init}}(x(s),y(s))$:
+\[
+z^*(s) - z^{(n)}(s)
+= \sum_{k=n}^{\infty}(z^{(k+1)}(s) - z^{(k)}(s)).
+\]
+Contraction gives
+$\|z^{(k+1)}(s)-z^{(k)}(s)\|
+\le L_z^k\|z^{(1)}(s)-z^{(0)}(s)\|$, so
+\[
+\|z^*(s)-z^{(n)}(s)\|
+\le \|z^{(1)}(s)-z^{(0)}(s)\| \sum_{k=n}^{\infty} L_z^k
+= \frac{L_z^n}{1-L_z}\|z^{(1)}(s)-z^{(0)}(s)\|.
+\]
+Equation~\eqref{eq:Cz_def} bounds the first increment by $C_z$, giving
+Eq.~\eqref{eq:finite_unrolling_bias}.
+\end{proof}
+
+
+\begin{proof}[Proof of Eqs.~\eqref{eq:finite_reference_contracting} and~\eqref{eq:epsV_dials}]
+Under the $\mathcal D^\circ=\mathcal C^\circ$ invocation of
+Assumption~\ref{ass:Lip},
+\[
+\|z^{(j+1)}(s)-z^{(j)}(s)\|
+\le L_z^j\|z^{(1)}(s)-z^{(0)}(s)\|
+\le L_z^j C_z.
+\]
+Summing from $j=n$ through $m-1$ yields~\eqref{eq:finite_reference_contracting}. Proposition~\ref{prop:banach} and the Lipschitz head give $\|U_m-U_*\|_\infty\to0$. Moreover,
+\begin{align*}
+\big|\|U_m-\mathcal T_K^\pi U_m\|_\infty
+-\|U_*-\mathcal T_K^\pi U_*\|_\infty\big|
+&\le (1+\gamma^K)\|U_m-U_*\|_\infty \to 0.
+\end{align*}
+Taking $m\to\infty$ therefore proves~\eqref{eq:epsV_dials}.
+\end{proof}
+
 \section{Implementation}
 \label{app:implementation}
 
@@ -2586,11 +2594,7 @@ Under frozen-base collection the conditional population target is
 $r_K^\pi+\gamma^K P_\pi^K\bar V$, or its full augmented-state counterpart.
 Proposition~\ref{prop:target_network_bridge} accounts for propagated target lag.
 
-The reference implementation stores the carried input and successor latents,
-the remaining-edit clock, terminal cause, terminal mask, and behavior log
-probability in replay. On terminal records the reward already includes the
-common absorbing tail; a nonfinite-safe selection zeros the successor-value
-contribution, so serialized terminal tensors are never bootstrapped. Only
+Replay records the carried input and successor latents, the remaining-edit clock, the terminal cause and mask, and the behavior log probability. Terminal records carry the folded absorbing tail in the reward and are never bootstrapped. Only
 nonterminal transitions carry the post-unroll latent. Exact baseline evaluation
 uses Eq.~\eqref{eq:Ahat_def_app} conditional on the full stored state.
 
@@ -2601,17 +2605,7 @@ bounds assumed by the theorems.
 \section{Mapping to the original TRM}
 \label{app:trm_mapping}
 
-\begin{figure}[htbp]
-\centering
-\resizebox{0.82\linewidth}{!}{\input{figures/trm_to_mdp_bridge.tex}}
-\caption{Internal computation and external decisions. TRM refines a latent
-and then its answer representation~\citep{TRM2025}. UPI-TRM uses the inner
-recurrence to evaluate a plan and replaces the outer answer update with a
-checker-rewarded edit. The $n$ recurrent steps occur within one state
-assessment; each edit advances the environment clock. Carrying the latent
-between edits changes the Markov state from $(x,y,h)$ to $(x,y,z,h)$.}
-\label{fig:trm_architecture}
-\end{figure}
+
 
 The key differences:
 \begin{enumerate}
@@ -2619,7 +2613,7 @@ The key differences:
 loss; the analyzed UPI-TRM object uses checker-based rewards to construct one
 fixed-base candidate proposal and exact mixture.
 \item \textbf{Episodic-$z$ vs.\ persistent-$z$}: We analyze both; the original TRM is persistent-$z$.
-\item \textbf{Halting}: The original TRM uses an adaptive halting mechanism; our analysis fixes $n$ for tractability and treats $n$ as an analysis parameter rather than a learned quantity.
+\item \textbf{Halting}: The original TRM halts adaptively across its outer improvement steps; in the edit MDP that role belongs to the STOP action and the remaining budget $h$. The inner depth $n$ is fixed in both settings and is treated here as an analysis parameter.
 \end{enumerate}
 
 
