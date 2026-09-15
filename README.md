@@ -21,9 +21,11 @@ links, replayed each census state from the sealed checkpoints, and ran an
 independent checker against the additive audit bundle. Those checks reproduce
 the finite-census measurement. They do not independently replicate training or
 prove historical execution. The interval is conditional on one common base
-initialization and the fixed census. The paper makes no learned-task
-performance, uniform-certificate, monotonic-depth, convergence, or CPI claim
-from run5 and does not use deleted historical results.
+initialization and the fixed census. Seeds, not census records, are the
+resampling units; the interval establishes neither finite-sample coverage nor
+independence across datasets or base-policy preparations. The paper makes no
+learned-task performance, uniform-certificate, monotonic-depth, convergence,
+or CPI claim from run5 and does not use deleted historical results.
 
 Build the anonymous ICLR PDF from a clean auxiliary-file state:
 

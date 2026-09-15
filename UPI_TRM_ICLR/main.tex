@@ -128,11 +128,13 @@ plus a shared absorber gives a nonvacuous value radius and a positive CPI
 lower bound. In an eight-seed learned-evaluator diagnostic on a fixed
 128-state census, the finite-reference proxy is smaller than the direct-residual
 proxy for every seed, with mean signed difference $14.2487$ and a seed-bootstrap
-interval $[12.1852,16.7398]$. A separate per-state replay reproduces the eight
-differences bitwise. This diagnostic is conditional on one common base
-initialization and one census; it is not a task-performance result or a uniform
-certificate. The guarantees concern one candidate against a frozen base at a
-fixed parameter snapshot.
+interval $[12.1852,16.7398]$. Seeds, not census records, are the resampling
+units. The interval is conditional on one common base initialization and one
+census; it establishes neither finite-sample coverage nor independence across
+datasets or base-policy preparations. A separate per-state replay reproduces
+the eight differences bitwise. This diagnostic is not a task-performance result
+or a uniform certificate. The guarantees concern one candidate against a
+frozen base at a fixed parameter snapshot.
 
 \end{abstract}
 
@@ -2598,6 +2600,29 @@ Taking $m\to\infty$ therefore proves~\eqref{eq:epsV_dials}.
 \section{Run5 finite-census diagnostic record}
 \label{app:exp1b_diagnostic}
 
+Let $\mathcal S_B$ be the registered census of 128 full clock-complete
+augmented states (bars and tildes suppressed). For seed $j$ and
+$q\in\{n,m\}$, let $U_{q,j}$ be the restored endpoint, $r_f$ the folded reward, and
+$\mathbf 1_{\mathrm{nt}}$ the nonterminal indicator. The one-step
+self-bootstrap exactly enumerates every valid action and its deterministic
+transition under the frozen base policy $\bar\pi$ and gives
+\[
+\begin{aligned}
+D_j&:=\max_{s\in\mathcal S_B}|U_{n,j}(s)-U_{m,j}(s)|,\\
+\varepsilon_{q,j}:=\max_{s\in\mathcal S_B}
+\left|U_{q,j}(s)-\sum_{a\in\mathcal A(s)}
+\bar\pi(a\mid s)\left[r_f(s,a)
++\gamma\mathbf 1_{\mathrm{nt}}U_{q,j}(s')\right]\right|.
+\end{aligned}
+\]
+Here $r_f$ already includes the absorbing tail on terminal
+transitions, which receive no bootstrap. Both endpoints use the same base law
+at deployed depth $n$, environment transition, and persistent successor latent
+produced by the actual deployed mixture at depth $n$; $m$ changes only endpoint
+evaluation. The separately computed maxima may have different witnesses and
+are not a maximum of recordwise sums. They are finite-census diagnostics, not
+uniform bounds on a theorem domain.
+
 Experiment 1B run5 evaluates the finite-census quantity
 \begin{equation}
 G_j=
@@ -2639,7 +2664,10 @@ The equal-weight mean is $14.248703798855473$. The interval
 $[12.185185177643433,16.739775084598428]$ is obtained by applying
 Hyndman--Fan type-7 quantiles at 0.025 and 0.975 to 10,000 stored
 seed-resampling replicate means. It is a nominal interval conditional on the
-single recorded base initialization and fixed census.
+single recorded base initialization and fixed census. Seeds, not census
+records, are the resampling units; the interval establishes neither
+finite-sample coverage nor independence across datasets or base-policy
+preparations.
 
 The centering amendment retains the inherited absolute tolerance $10^{-6}$
 and adds four float32 epsilons scaled by the registered advantage clip of 10:
