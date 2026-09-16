@@ -990,9 +990,11 @@ for Table~\ref{tab:finite_mdp_summary}; the standard-library script
 \texttt{verify\_finite\_mdp.py} reproduces its quantities.
 Appendix~\ref{app:implementation} specifies the implementation semantics.
 The accompanying additive run5 audit bundle separates recovered Stage A
-manifests from Stage B payloads, records the replay build identities and
-per-state exports, and includes a repository-independent standard-library
-checker. The checker recomputes all 35 digest-chain links, all eight gaps, the
+manifests from Stage B payloads, records the replay build identities and the
+digests and sizes of the per-state exports, and includes a
+repository-independent standard-library checker. The exports themselves are
+held externally rather than in the bundle, so reproducing the per-state
+comparison requires them in addition to the committed files. The checker recomputes all 35 digest-chain links, all eight gaps, the
 mean, the stored-replicate interval, and the numerical parity bound. It passes
 under \texttt{python3 -O} and fails on a recorded one-byte result mutation.
 
@@ -1392,8 +1394,8 @@ $\varepsilon_{\mathrm{CPI}}=1$, producing
 \frac34-\frac14-\frac23=-\frac16.
 \]
 This valid but vacuous bound shows why the signed defect and the advantage
-span matter. Run \texttt{python3 UPI\_TRM\_ICLR/verify\_finite\_mdp.py} from
-the repository root to reproduce the calculation.
+span matter. The standard-library script \texttt{verify\_finite\_mdp.py}
+reproduces this calculation.
 \section{Persistent latents on the augmented MDP}
 \label{app:persistent_latent}
 
@@ -2609,7 +2611,7 @@ transition under the frozen base policy $\bar\pi$ and gives
 \[
 \begin{aligned}
 D_j&:=\max_{s\in\mathcal S_B}|U_{n,j}(s)-U_{m,j}(s)|,\\
-\varepsilon_{q,j}:=\max_{s\in\mathcal S_B}
+\varepsilon_{q,j}&:=\max_{s\in\mathcal S_B}
 \left|U_{q,j}(s)-\sum_{a\in\mathcal A(s)}
 \bar\pi(a\mid s)\left[r_f(s,a)
 +\gamma\mathbf 1_{\mathrm{nt}}U_{q,j}(s')\right]\right|.
@@ -2689,8 +2691,8 @@ selection or tuning. None of those fields states that earlier aggregate
 scratch diagnostics were unseen.
 
 The audit recovered all eight Stage A manifests, verified checkpoint bytes,
-matched the production PAR source to commit \texttt{2a14eb6}, and replayed
-every census state through a separately identified read-only binary. A separate
+matched the production PAR source to the recorded production revision, and
+replayed every census state through a separately identified read-only binary. A separate
 consumer completed 108,648 exact deterministic comparisons and reproduced all
 gaps, their mean, and
 the interval bitwise. This supports finite-census measurement reproduction
