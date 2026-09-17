@@ -114,45 +114,41 @@
 
 \maketitle
 \begin{abstract}
-Recurrent evaluators used in policy improvement stop after a finite number
-of internal steps, even when their computation remains transient. We compare
-the deployed depth-$n$ value with a deeper finite endpoint at depth $m$.
-The value error is bounded by the endpoint discrepancy plus the reference
-endpoint's self-bootstrap Bellman residual divided by $1-\gamma^K$.
-We carry this radius through exact advantage centering into conservative
-policy improvement with signed evaluation error, and separate propagated
-target-network lag from deployment mismatch. For persistent latents, the
+A recurrent value evaluator is used after $n$ internal steps even when its
+latent computation is still changing, so a fixed-point reference may be
+unavailable. We compare the deployed value $U_n$ with a finite reference:
+the same evaluator at a deeper depth $m$. For a fixed policy, the triangle
+inequality and standard Bellman-residual estimate bound its value error by
+the endpoint discrepancy plus the reference's self-bootstrap $K$-step
+residual divided by $1-\gamma^K$. No recurrent convergence is needed. The
+finite reference improves on the direct depth-$n$ residual bound only when
+the residual reduction offsets the discrepancy. With a carried latent, a
 clock-complete augmented state and one shared frozen recurrent map keep both
-endpoints in the same MDP. An exact calculation on two nonabsorbing states
-plus a shared absorber gives a nonvacuous value radius and a positive CPI
-lower bound. In an eight-seed learned-evaluator diagnostic on a fixed
-128-state census, the finite-reference proxy is smaller than the direct-residual
-proxy for every seed, with mean signed difference $14.2487$ and a seed-bootstrap
-interval $[12.1852,16.7398]$. Seeds, not census records, are the resampling
-units. The interval is conditional on one common base initialization and one
-census; it establishes neither finite-sample coverage nor independence across
-datasets or base-policy preparations. A separate per-state replay reproduces
-the eight differences bitwise. This diagnostic is not a task-performance result
-or a uniform certificate. The guarantees concern one candidate against a
-frozen base at a fixed parameter snapshot.
+endpoints in one deployed MDP; changing $m$ changes evaluation only. The
+radius enters conservative policy improvement (CPI) through exactly centered
+advantages with signed evaluation error, while target lag and approximate
+deployment require separate corrections. An exact three-state example gives
+a nonvacuous radius and a CPI lower bound above the base return. Across eight
+training seeds sharing one base initialization and one fixed 128-state census,
+the finite-reference proxy is smaller than the direct proxy for every seed.
+These measurements are neither uniform certificates nor task-performance
+results. The guarantees concern one exact probability mixture of a candidate
+with a frozen base at a fixed parameter snapshot.
 
 \end{abstract}
 
 \section{Introduction}
 \label{sec:intro}
 
+Policy improvement can depend on a value estimate read after only $n$
+recurrent steps. Useful latent computation may remain transient, so a
+converged reference can be unavailable. We compare finite evaluator endpoints.
+
 Tiny Recursive Models (TRMs) refine an internal representation before
 producing an answer~\citep{TRM2025}. Unrolled Policy Iteration with TRMs
-(UPI-TRM) uses this inner computation to evaluate plans in a checker-rewarded
-edit MDP: a value head supplies approximate advantages, a candidate policy
-chooses edits, and each edit advances the environment.
-
-The evaluator is deployed after $n$ recurrent steps, even when its internal
-computation is still changing. Comparing its output $U_n$ with a converged
-recurrence requires a latent fixed point and control of the distance to it.
-Useful learned computation can instead be transient. We bound the error of
-the deployed finite-depth evaluator by comparing it with another finite
-endpoint, without assuming recurrent convergence.
+(UPI-TRM) uses this computation to derive advantages for plan edits rewarded
+by a checker. Each edit advances the environment. Despite its name, we analyze
+one candidate proposal against a frozen base, not a policy-iteration sequence.
 
 \paragraph{A finite reference.}
 Fix the policy $\pi$ and compare $U_n$ with the same evaluator at a deeper
@@ -165,16 +161,18 @@ Standard Bellman-residual analysis bounds the latter by
 $\|U_m-\mathcal T_K^\pi U_m\|_\infty/(1-\gamma^K)$, using a $K$-step
 current-policy backup that self-bootstraps from $U_m$.
 Theorem~\ref{thm:finite_reference_depth} gives the full conditions.
-A deeper reference helps only when its residual compensates for the endpoint
-discrepancy; depth alone does not guarantee a tighter bound.
+The direct alternative applies the same estimate to $U_n$, giving
+$\|U_n-\mathcal T_K^\pi U_n\|_\infty/(1-\gamma^K)$ on the same domain.
+A deeper reference helps only when its residual reduction compensates for the
+endpoint discrepancy; depth alone does not guarantee a tighter bound.
 
 \paragraph{Two depths in one MDP.}
-The Bellman argument treats the endpoints as bounded functions. Recurrence
-matters when interpreting them as two computation depths of the same deployed
-evaluator. With persistent latents, the depth-$n$ map determines what is
-carried into the successor state. Substituting a depth-$m$ transition would
-change the MDP. We instead keep the policy and transition kernel fixed and
-vary only the endpoint used for evaluation.
+The Bellman argument treats endpoints as bounded functions. Recurrence
+matters when they represent two depths of the same deployed evaluator.
+With a carried latent, $F_n$ determines the successor latent and is part of
+the transition kernel. Since that kernel defines $V^\pi$, replacing it with
+$F_m$ would target the value of a different MDP. We keep the policy and
+kernel fixed and vary only endpoint evaluation.
 
 \paragraph{From evaluation to improvement.}
 The value radius controls advantage error, which enters an exact
@@ -183,15 +181,14 @@ removes the base-policy component of evaluation error; signed defects retain
 information lost by absolute worst-case bounds. Target-network lag and
 approximate deployment are separate corrections.
 
-The contributions are a finite-reference recurrent certificate
-(Theorem~\ref{thm:finite_reference_depth}), its advantage/CPI and
-target-network connection (Proposition~\ref{prop:target_network_bridge} and
-Theorem~\ref{thm:monotone_with_error}), and persistent-state Markovization
-with a shared frozen map (Corollary~\ref{cor:persistent_cpi_augmented}).
-An exact finite-MDP calculation, a finite-census learned-evaluator diagnostic,
-and an implementation-level account of targets and replay complete the
-analysis. The proofs use established residual and CPI arguments at one fixed
-parameter snapshot.
+Contributions: (i) finite recurrent references for standard residual bounds
+(Theorem~\ref{thm:finite_reference_depth}); (ii) centered-advantage and
+signed-CPI composition with target lag
+(Proposition~\ref{prop:target_network_bridge} and
+Theorem~\ref{thm:monotone_with_error}); (iii) one augmented MDP for carried
+latents (Corollary~\ref{cor:persistent_cpi_augmented}).
+An exact MDP shows nonvacuity; eight learned evaluators have smaller
+finite-reference census proxies. Guarantees concern one frozen-snapshot proposal.
 
 \section{Related Work}
 \label{sec:related_work}
@@ -318,8 +315,7 @@ folded targets and replay details. Exact baseline enumeration ensures
 statewise centering; approximate integration instead contributes the signed
 defect in Theorem~\ref{thm:monotone_with_error}.
 One depth-$n$ unroll per action term over $T$ states costs
-$O(T|\mathcal A|n)$ recurrent-map applications. Interpolating weights,
-logits, or hidden states, or distilling the mixture, generally changes its law.
+$O(T|\mathcal A|n)$ recurrent-map applications.
 
 \section{Finite-Reference Evaluation and Advantage Error}
 \label{sec:error_bounds}
@@ -576,9 +572,8 @@ for every $s\in\mathcal C_\pi$ and for $\pi(da\mid s)$- and
 $\pi_{\mathrm{cand}}(da\mid s)$-almost every $a$.
 \end{assumption}
 
-Write
-$d_\pi=(1-\gamma)\sum_{t\ge0}\gamma^t\rho P_\pi^t$ and
-define the true and estimated CPI surrogates
+Using the normalized discounted occupancy $d_\pi$ defined above, the true
+and estimated surrogates are
 \begin{align*}
 L_\pi(\pi')
 &:=\eta(\pi)+\frac{1}{1-\gamma}
@@ -854,7 +849,7 @@ uniform KL control supplies a TV radius (Corollary~\ref{cor:deployment_pinsker})
 Persistent policies must share the recurrent transition map; changing it
 requires a different-MDP analysis.
 
-\section{An exact example}
+\section{Exact example and learned-evaluator diagnostic}
 \label{sec:finite_mdp_example}
 
 Exact enumeration gives a nonvacuous value radius and signed CPI bound,
@@ -938,38 +933,34 @@ over $\eta(\pi)=0$. Appendix~\ref{app:finite_mdp_derivation} derives every
 quantity; \texttt{verify\_finite\_mdp.py} reproduces the rational calculation.
 
 \paragraph{Finite-census learned-evaluator diagnostic.}
-Eight candidate-training seeds, each stopped after 10,000 environment
-interactions, share one recorded base initialization and one 128-state census.
-For $n=2$, $m=8$, $K=1$, $\gamma=0.99$, and $\alpha=0.1$, the
-finite-reference proxy is smaller than the direct-residual proxy for every
-seed. The mean signed difference is $14.248703798855473$; resampling seeds for
-10,000 replicates gives the nominal 95\% interval
-$[12.185185177643433,16.739775084598428]$. Seeds are the bootstrap units, so
-this interval is conditional on the common base and fixed census. It gives no
-finite-sample coverage guarantee or independent evidence across datasets or
-base-policy preparations. Aggregate scratch diagnostics informed a numerical
-parity amendment before run5. The amendment is post-diagnostic, is bound by
-canonical digest, and uses an empirical factor-of-four margin. A per-state
-replay from the sealed checkpoints reproduced all eight gaps bitwise. This is
-measurement reproduction, not historical-execution proof or independent
-training replication. Appendix~\ref{app:exp1b_diagnostic} gives the equation,
-per-seed values, numerical disclosure, and audit details.
+At fixed learned snapshots, we compare the direct proxy
+$\varepsilon_{n,j}/(1-\gamma)$ with the finite-reference proxy
+$D_j+\varepsilon_{m,j}/(1-\gamma)$, using separate census maxima for
+discrepancy and residual (Eq.~\eqref{eq:exp1b_gap}). Eight training seeds
+share one base initialization and one 128-state census; each run stops at
+10,000 environment interactions. With $n=2$, $m=8$, $K=1$, $\gamma=0.99$,
+and $\alpha=0.1$, the finite-reference proxy is smaller for every seed. The mean gap is
+$14.25$; 10,000 seed-bootstrap replicates give a nominal 95\% interval
+$[12.19,16.74]$, conditional on that base and census. Before these measurements,
+inspection of earlier aggregate output led to a wider float32
+centering-consistency tolerance with an empirical four-epsilon allowance. Replaying
+existing checkpoints reproduced all eight gaps bitwise; this reproduces
+measurements, not training or historical execution.
+Appendix~\ref{app:exp1b_diagnostic} gives the full-precision results and
+numerical checks.
 
 \section{Discussion, Limitations, and Conclusion}
 \label{sec:conclusion}
 
-A finite reference separates endpoint discrepancy from self-bootstrap residual
-and supplies a value radius for one-proposal CPI. Target lag and deployment
-mismatch require separate corrections; persistent state requires the clock
-and a shared frozen map. Recurrent convergence is unnecessary.
+A finite reference separates endpoint discrepancy from Bellman residual
+before entering a one-proposal CPI bound. Carried latents require a shared
+frozen recurrent map; target lag and deployment mismatch enter separately.
 
-These conditional guarantees concern one fixed-base proposal; training
-convergence and learned-task improvement remain open. The exact MDP checks
-nonvacuity. The learned run5 result compares two proxy radii on one finite
-census and supports no monotonic depth, convergence, CPI, or task-performance
-claim. Finite-batch residuals, centering checks, and deployment measurements
-are diagnostics and do not establish the uniform premises of the bounds.
-Ethics, reproducibility, and AI-use statements follow.
+The exact example establishes nonvacuity. The learned diagnostic compares
+finite-census proxy radii, not uniform certificates or task performance.
+It establishes neither monotone depth benefits nor training convergence or
+policy improvement. Its uncertainty is conditional on one base initialization
+and one census.
 \label{sec:main_text_end}
 
 
@@ -1004,14 +995,9 @@ Appendix~\ref{app:finite_mdp_derivation} gives the full rational calculation
 for Table~\ref{tab:finite_mdp_summary}; the standard-library script
 \texttt{verify\_finite\_mdp.py} reproduces its quantities.
 Appendix~\ref{app:implementation} specifies the implementation semantics.
-The accompanying additive run5 audit bundle separates recovered Stage A
-manifests from Stage B payloads, records the replay build identities and the
-digests and sizes of the per-state exports, and includes a
-repository-independent standard-library checker. The exports themselves are
-held externally rather than in the bundle, so reproducing the per-state
-comparison requires them in addition to the committed files. The checker recomputes all 35 digest-chain links, all eight gaps, the
-mean, the stored-replicate interval, and the numerical parity bound. It passes
-under \texttt{python3 -O} and fails on a recorded one-byte result mutation.
+Appendix~\ref{app:exp1b_diagnostic} documents the census, statistical analysis,
+numerical checks, and measurement reproduction. Reproducing the per-state
+comparison also requires the exports held separately from the source files.
 
 \section*{Ethics and Broader Impact}
 \label{app:ethics_broader}
@@ -1038,7 +1024,7 @@ The methodological contribution is to separate internal evaluator depth from out
 \label{app:notation}
 The definitions below separate value evaluation, one-deviation advantage
 estimation, repeated mixture decisions, and deployment. Table~\ref{tab:notation}
-lists the surviving notation.
+lists the notation.
 
 \begin{assumption}[Bounded rewards]
 \label{ass:bounded}
@@ -2614,10 +2600,10 @@ Summing from $j=n$ through $m-1$ yields~\eqref{eq:finite_reference_contracting}.
 Taking $m\to\infty$ therefore proves~\eqref{eq:epsV_dials}.
 \end{proof}
 
-\section{Run5 finite-census diagnostic record}
+\section{Finite-census learned-evaluator diagnostic}
 \label{app:exp1b_diagnostic}
 
-Let $\mathcal S_B$ be the registered census of 128 full clock-complete
+Let $\mathcal S_B$ be the fixed census of 128 full clock-complete
 augmented states (bars and tildes suppressed). For seed $j$ and
 $q\in\{n,m\}$, let $U_{q,j}$ be the restored endpoint, $r_f$ the folded reward, and
 $\mathbf 1_{\mathrm{nt}}$ the nonterminal indicator. The one-step
@@ -2632,22 +2618,21 @@ D_j&:=\max_{s\in\mathcal S_B}|U_{n,j}(s)-U_{m,j}(s)|,\\
 +\gamma\mathbf 1_{\mathrm{nt}}U_{q,j}(s')\right]\right|.
 \end{aligned}
 \]
-Here $r_f$ already includes the absorbing tail on terminal
-transitions, which receive no bootstrap. Both endpoints use the same base law
-at deployed depth $n$, environment transition, and persistent successor latent
-produced by the actual deployed mixture at depth $n$; $m$ changes only endpoint
-evaluation. The separately computed maxima may have different witnesses and
-are not a maximum of recordwise sums. They are finite-census diagnostics, not
-uniform bounds on a theorem domain.
+The folded reward $r_f$ includes the absorbing tail; terminal transitions
+receive no bootstrap. Both endpoints share the depth-$n$ base law,
+environment transition, and persistent successor latent from the depth-$n$
+deployed mixture. Only endpoint evaluation uses $m$. The separate maxima may
+have different witnesses; their sum is not a maximum of recordwise sums.
+These census quantities do not uniformly bound a theorem domain.
 
-Experiment 1B run5 evaluates the finite-census quantity
+The diagnostic evaluates the finite-census quantity
 \begin{equation}
 G_j=
 \frac{\varepsilon_{n,j}}{1-\gamma}
 -\left(D_j+\frac{\varepsilon_{m,j}}{1-\gamma}\right)
 \label{eq:exp1b_gap}
 \end{equation}
-for eight registered training seeds, with $n=2$, $m=8$, $K=1$,
+for eight training seeds, with $n=2$, $m=8$, $K=1$,
 $\gamma=0.99$, $\alpha=0.1$, and 128 fixed validation-bridge records.
 Table~\ref{tab:exp1b_run5} reports the signed proxy-radius difference and two
 centering diagnostics. The constructed-centering roundoff ranges from
@@ -2655,7 +2640,7 @@ $1.3344159524586459\times10^{-16}$ to
 $4.903119502940478\times10^{-16}$.
 
 \begin{table}[htbp]
-\caption{Run5 finite-census diagnostics in registered seed order. The last
+\caption{Finite-census diagnostics in the listed seed order. The last
 two columns are maximum absolute errors over the 128-state census.}
 \label{tab:exp1b_run5}
 \centering
@@ -2677,42 +2662,44 @@ Seed & $G_j$ & Trainer centering defect & Parity error \\
 \end{tabular}
 \end{table}
 
-The equal-weight mean is $14.248703798855473$. The interval
-$[12.185185177643433,16.739775084598428]$ is obtained by applying
-Hyndman--Fan type-7 quantiles at 0.025 and 0.975 to 10,000 stored
-seed-resampling replicate means. It is a nominal interval conditional on the
-single recorded base initialization and fixed census. Seeds, not census
-records, are the resampling units; the interval establishes neither
-finite-sample coverage nor independence across datasets or base-policy
-preparations.
+The equal-weight mean is $14.248703798855473$. Hyndman--Fan type-7
+quantiles at 0.025 and 0.975 of 10,000 stored seed-resampling replicate means
+give the nominal interval $[12.185185177643433,16.739775084598428]$.
+Seeds, not census records, are resampled. The interval is conditional on the
+single recorded base initialization and fixed census; it establishes neither
+finite-sample coverage nor independence across datasets or base-policy preparations.
 
-The centering amendment retains the inherited absolute tolerance $10^{-6}$
-and adds four float32 epsilons scaled by the registered advantage clip of 10:
+The revised centering-consistency check retains the inherited absolute tolerance $10^{-6}$
+and adds four float32 epsilons scaled by the advantage clip of 10:
 \[
 10^{-6}+4(2^{-23})(10)=5.76837158203125\times10^{-6}.
 \]
-All eight observed parity errors exceed the old absolute-only tolerance and
-fall below the amended threshold. A one-epsilon allowance would be
-$2.1920928955078122\times10^{-6}$ and would accept the largest observation
-with 1.45x headroom. The factor of four is unnecessary for these observations
-and has no derived operation-level guarantee.
+All eight parity errors exceed the old tolerance and fall below the revised
+threshold. A one-epsilon allowance, $2.1920928955078122\times10^{-6}$,
+would accept the largest error with 1.45x headroom. Four epsilons are
+unnecessary for these observations and have no derived operation-level guarantee.
 
-Scratch diagnostic output was inspected before this amendment was finalized.
-The amendment was fixed before run5 and is identified by canonical SHA-256
-\texttt{6e3c22a3...a8b3092} (the audit note records the full digest).
-Its \texttt{outcome\_evidence\_inspected: false} field concerns run5 outcome evidence;
-the validation/test no-inspection fields concern access to examples for
-selection or tuning. None of those fields states that earlier aggregate
-scratch diagnostics were unseen.
+Earlier aggregate diagnostic output was inspected before the revised
+tolerance was fixed for the reported measurements. Its canonical digest is
+recorded in the audit documentation. The outcome no-inspection declaration
+concerns those measurements; the validation/test declarations concern access
+to examples for selection or tuning, not the earlier aggregate output.
 
-The audit recovered all eight Stage A manifests, verified checkpoint bytes,
-matched the production PAR source to the recorded production revision, and
-replayed every census state through a separately identified read-only binary. A separate
-consumer completed 108,648 exact deterministic comparisons and reproduced all
-gaps, their mean, and
-the interval bitwise. This supports finite-census measurement reproduction
-from existing checkpoints. It is not independent training replication or
-proof that the historical process executed exactly as recorded.
+The audit recovered eight training manifests, verified checkpoint bytes, and
+matched the training executable's source to its recorded revision. An
+identified read-only executable replayed every census state. A separate
+consumer made 108,648 exact deterministic comparisons and reproduced all
+eight gaps, their mean, and the interval bitwise from exported values,
+without reevaluating every nonterminal action value. These checks reproduce
+measurements from existing checkpoints; they neither independently replicate
+training nor prove historical execution.
+
+The audit separates training manifests from measurement payloads and records
+build identities, export digests and sizes; reproduction requires the external
+per-state exports. A repository-independent standard-library checker
+recomputes all 35 digest-chain links, eight gaps, mean, stored-replicate
+interval, and numerical parity bound. It passes under \texttt{python3 -O}
+and rejects a recorded one-byte result mutation.
 
 \section{Implementation}
 \label{app:implementation}
@@ -2761,7 +2748,7 @@ bounds assumed by the theorems.
 
 
 
-The key differences:
+The edit-MDP formulation differs from the original TRM as follows:
 \begin{enumerate}
 \item \textbf{Training signal}: The original TRM is trained with a supervised
 loss; the analyzed UPI-TRM object uses checker-based rewards to construct one
