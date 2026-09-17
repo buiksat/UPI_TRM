@@ -114,23 +114,24 @@
 
 \maketitle
 \begin{abstract}
-A recurrent value evaluator is used after $n$ internal steps even when its
+A recurrent value evaluator is read after $n$ internal steps, even when its
 latent computation is still changing, so a fixed-point reference may be
 unavailable. We compare the deployed value $U_n$ with a finite reference:
 the same evaluator at a deeper depth $m$. For a fixed policy, the triangle
-inequality and standard Bellman-residual estimate bound its value error by
-the endpoint discrepancy plus the reference's self-bootstrap $K$-step
-residual divided by $1-\gamma^K$. No recurrent convergence is needed. The
-finite reference improves on the direct depth-$n$ residual bound only when
-the residual reduction offsets the discrepancy. With a carried latent, a
-clock-complete augmented state and one shared frozen recurrent map keep both
-endpoints in one deployed MDP; changing $m$ changes evaluation only. The
-radius enters conservative policy improvement (CPI) through exactly centered
-advantages with signed evaluation error, while target lag and approximate
-deployment require separate corrections. An exact three-state example gives
-a nonvacuous radius and a CPI lower bound above the base return. Across eight
-training seeds sharing one base initialization and one fixed 128-state census,
-the finite-reference proxy is smaller than the direct proxy for every seed.
+inequality and the standard Bellman-residual estimate bound the error of
+$U_n$ by the endpoint discrepancy $\|U_n-U_m\|_\infty$ plus the reference's
+self-bootstrap $K$-step residual divided by $1-\gamma^K$. No recurrent
+convergence is needed. The finite reference improves on the direct depth-$n$
+residual bound exactly when the residual falls by more than $1-\gamma^K$
+times the discrepancy. With a carried latent, a clock-complete augmented
+state and one shared frozen recurrent map keep both endpoints in one deployed
+MDP; changing $m$ changes evaluation only. The radius enters conservative
+policy improvement (CPI) through exactly centered advantages with signed
+evaluation error, while target lag and approximate deployment require
+separate corrections. An exact three-state example gives a nonvacuous radius
+and a CPI lower bound above the base return. Across eight training seeds
+sharing one base initialization and one fixed 128-state census, the
+finite-reference proxy is smaller than the direct proxy for every seed.
 These measurements are neither uniform certificates nor task-performance
 results. The guarantees concern one exact probability mixture of a candidate
 with a frozen base at a fixed parameter snapshot.
@@ -140,55 +141,87 @@ with a frozen base at a fixed parameter snapshot.
 \section{Introduction}
 \label{sec:intro}
 
-Policy improvement can depend on a value estimate read after only $n$
-recurrent steps. Useful latent computation may remain transient, so a
-converged reference can be unavailable. We compare finite evaluator endpoints.
+Some value functions are computed by iterating a learned recurrent map and
+reading a value head after $n$ steps; Tiny Recursive Models (TRMs) refine a
+latent state this way before producing an answer~\citep{TRM2025}. When such
+an evaluator drives policy improvement, what matters is the error of its
+depth-$n$ output $U_n$ relative to the value $V^\pi$ of the policy being
+improved. The natural reference for a recurrent computation is its limit,
+but using it requires a latent fixed point and control of the distance to it.
+A learned recurrence guarantees neither, and useful computation can still be
+transient at the depth where it is read.
 
-Tiny Recursive Models (TRMs) refine an internal representation before
-producing an answer~\citep{TRM2025}. Unrolled Policy Iteration with TRMs
-(UPI-TRM) uses this computation to derive advantages for plan edits rewarded
-by a checker. Each edit advances the environment. Despite its name, we analyze
-one candidate proposal against a frozen base, not a policy-iteration sequence.
+We ask what finitely many recurrent steps can certify about $U_n$. Our
+setting is Unrolled Policy Iteration with TRMs (UPI-TRM), in which a TRM value
+head supplies advantages for plan edits rewarded by a checker. Despite the
+name, we analyze one step: a single candidate policy mixed with a frozen base
+policy at a fixed parameter snapshot.
 
 \paragraph{A finite reference.}
-Fix the policy $\pi$ and compare $U_n$ with the same evaluator at a deeper
-finite depth $m>n$. The identity
+Fix the policy $\pi$ and let $U_m$ be the same evaluator read at a deeper
+finite depth $m>n$. With $\mathcal T_K^\pi$ the $K$-step Bellman operator of
+$\pi$ and $\varepsilon_{\mathrm{res},q}:=\|U_q-\mathcal T_K^\pi U_q\|_\infty$
+the self-bootstrap residual at depth $q$,
 \[
-U_n-V^\pi=(U_n-U_m)+(U_m-V^\pi)
+\|U_n-V^\pi\|_\infty
+\le
+\|U_n-U_m\|_\infty+\frac{\varepsilon_{\mathrm{res},m}}{1-\gamma^K}.
 \]
-separates sensitivity to additional computation from reference accuracy.
-Standard Bellman-residual analysis bounds the latter by
-$\|U_m-\mathcal T_K^\pi U_m\|_\infty/(1-\gamma^K)$, using a $K$-step
-current-policy backup that self-bootstraps from $U_m$.
-Theorem~\ref{thm:finite_reference_depth} gives the full conditions.
-The direct alternative applies the same estimate to $U_n$, giving
-$\|U_n-\mathcal T_K^\pi U_n\|_\infty/(1-\gamma^K)$ on the same domain.
-A deeper reference helps only when its residual reduction compensates for the
-endpoint discrepancy; depth alone does not guarantee a tighter bound.
+This is the triangle inequality followed by the standard Bellman-residual
+bound~\citep{Puterman1994,SuttonBarto2018} applied to the reference;
+Theorem~\ref{thm:finite_reference_depth} states the conditions. Both terms
+involve only finite-depth outputs of the same evaluator, and neither requires
+recurrent convergence. The direct alternative applies the residual bound to $U_n$
+itself and gives $\varepsilon_{\mathrm{res},n}/(1-\gamma^K)$. Rearranging,
+the finite reference is tighter exactly when
+$(1-\gamma^K)\|U_n-U_m\|_\infty<\varepsilon_{\mathrm{res},n}-\varepsilon_{\mathrm{res},m}$:
+the residual must fall by more than $1-\gamma^K$ times the discrepancy. Depth
+alone guarantees nothing. In the exact example of
+Section~\ref{sec:finite_mdp_example}, $m=2$ tightens the direct bound from
+$3/4$ to $1/2$, and deeper references are not monotone.
 
 \paragraph{Two depths in one MDP.}
-The Bellman argument treats endpoints as bounded functions. Recurrence
-matters when they represent two depths of the same deployed evaluator.
-With a carried latent, $F_n$ determines the successor latent and is part of
-the transition kernel. Since that kernel defines $V^\pi$, replacing it with
-$F_m$ would target the value of a different MDP. We keep the policy and
-kernel fixed and vary only endpoint evaluation.
+The inequality treats $U_n$ and $U_m$ as bounded functions. The
+recurrent-specific question is whether both can be read in the same MDP. With
+a latent that is reset at every environment step, this is immediate. With a
+carried latent, the depth-$n$ unroll $F_n$ produces the latent stored in the
+successor state, so $F_n$ is part of the transition kernel that defines
+$V^\pi$; using $F_m$ there would target the value of a different MDP. We keep
+the deployed policy and kernel fixed and vary only the depth at which the
+value head is read (Figure~\ref{fig:persistent_depth_lanes}), on a state that
+holds the stored latent and the remaining edit budget
+(Section~\ref{sec:persistent_deployment_main}).
 
-\paragraph{From evaluation to improvement.}
-The value radius controls advantage error, which enters an exact
-probability-mixture CPI bound~\citep{KakadeLangford2002}. Exact centering
-removes the base-policy component of evaluation error; signed defects retain
-information lost by absolute worst-case bounds. Target-network lag and
-approximate deployment are separate corrections.
+\begin{figure}[t]
+\centering
+\resizebox{0.92\linewidth}{!}{\input{figures/persistent_depth_lanes.tex}}
+\caption{A deeper comparison is not a deeper deployment. Both lanes start
+from the same stored state $\bar s_t$ (instance $x$, plan $y_t$, pre-unroll
+latent $z_t$, remaining budget $h_t$). The upper lane applies $F_n$, samples
+an edit, and carries the new latent only after a nonterminal transition. The
+lower lane applies $F_m$, reads $\widetilde U_m$, and stops. Changing $m$
+leaves the deployed MDP and trajectory unchanged.}
+\label{fig:persistent_depth_lanes}
+\end{figure}
 
-Contributions: (i) finite recurrent references for standard residual bounds
-(Theorem~\ref{thm:finite_reference_depth}); (ii) centered-advantage and
-signed-CPI composition with target lag
-(Proposition~\ref{prop:target_network_bridge} and
-Theorem~\ref{thm:monotone_with_error}); (iii) one augmented MDP for carried
-latents (Corollary~\ref{cor:persistent_cpi_augmented}).
-An exact MDP shows nonvacuity; eight learned evaluators have smaller
-finite-reference census proxies. Guarantees concern one frozen-snapshot proposal.
+\paragraph{Contributions.}
+The residual bound, the triangle inequality, and the CPI
+argument~\citep{KakadeLangford2002} are standard. We contribute
+(i) a finite-reference certificate for a recurrent evaluator read at depth
+$n$, with the condition under which it improves on the direct residual bound
+(Theorem~\ref{thm:finite_reference_depth},
+Eq.~\eqref{eq:finite_reference_gain});
+(ii) its composition with exactly centered advantages and a signed CPI bound
+for an exact probability mixture, with target-network lag and approximate
+deployment as separate corrections (Corollary~\ref{cor:candidate_overlap},
+Proposition~\ref{prop:target_network_bridge},
+Theorem~\ref{thm:monotone_with_error}); and
+(iii) a clock-complete augmented MDP with one shared frozen recurrent map, in
+which changing $m$ changes evaluation only
+(Corollary~\ref{cor:persistent_cpi_augmented}).
+An exact three-state example shows that the radius and the signed CPI bound
+can be nonvacuous. In a diagnostic on eight learned evaluators, the
+finite-reference proxy is smaller than the direct proxy for every seed.
 
 \section{Related Work}
 \label{sec:related_work}
@@ -196,22 +229,19 @@ finite-reference census proxies. Guarantees concern one frozen-snapshot proposal
 TRMs and HRMs use recurrent latent refinement for structured prediction
 \citep{TRM2025,HRM2025}; deep equilibrium models use an equilibrium
 representation~\citep{Bai2019DEQ}. Here the evaluator is read at finite depth,
-with contraction needed only for the optional fixed-point specialization.
+and contraction is needed only for the optional fixed-point specialization.
 Classical approximate dynamic programming controls value error and its
 propagation through policy or value updates
-\citep{BertsekasTsitsiklis1996,Munos2003API,MunosSzepesvari2008,Scherrer2014}.
-Our primary result instead uses a fixed-policy, population sup-norm residual;
-Appendix~\ref{app:weighted_lp} states the coverage condition for its
-weighted-norm version.
-
+\citep{BertsekasTsitsiklis1996,Munos2003API,MunosSzepesvari2008,Scherrer2014};
+our primary result uses a fixed-policy, population sup-norm residual.
 CPI and safe policy iteration control occupancy shift and approximate
-improvement~\citep{KakadeLangford2002,Kakade2003Thesis,Pirotta2013SafePI,Metelli2021SafePI}.
-We supply the evaluation term for one exact probability mixture from two
-finite recurrent endpoints. Learning to search casts structured prediction as
-sequential decisions~\citep{Daume2009SEARN,Ross2011DAgger,Chang2015LOLS};
-verifiable-reward systems use automatic correctness signals~\citep{DeepSeekR1}.
+improvement~\citep{KakadeLangford2002,Kakade2003Thesis,Pirotta2013SafePI,Metelli2021SafePI};
+we supply the evaluation term for one exact probability mixture from two
+finite recurrent endpoints. The edit-MDP setting follows learning to
+search~\citep{Daume2009SEARN,Ross2011DAgger,Chang2015LOLS} and
+verifiable-reward systems~\citep{DeepSeekR1}.
 Our inner depth $n$ is computation within one evaluation, distinct from
-planning over transitions~\citep{Tamar2016VIN} or the Bellman horizon $K$.
+planning over transitions~\citep{Tamar2016VIN} and from the Bellman horizon $K$.
 
 
 \section{Background and Setup}
@@ -244,17 +274,18 @@ U_n(s)=V_\psi(z^{(n)},x,y).
 Depth $n$ counts internal computation; the Bellman horizon $K\ge1$ counts
 environment transitions. Here $\widetilde f_\theta=\mathsf P_{\mathrm{rec}}\circ
 f_\theta$, where $\mathsf P_{\mathrm{rec}}=\Pi_R$ is Euclidean projection
-onto a radius-$R>0$ ball, or the identity when disabled. The projection is defined in Eq.~\eqref{eq:projection}. The implemented head
-reads $(z,x,y)$, not $h$, but rewards, termination, and successors need the clock.
+onto a radius-$R>0$ ball (Eq.~\eqref{eq:projection}), or the identity when disabled. The head reads
+$(z,x,y)$ and not $h$; rewards, termination, and successors need the clock.
 
 \paragraph{Reset or carried latent state.}
 Resetting $z$ at each edit makes $(x,y,h)$ Markov. Carrying it requires
 $\bar s=(x,y,z,h)$, since different latents can produce different decisions.
 The state stores the \emph{pre-unroll} latent; deployment computes
-$F_n(x,y,z)=\widetilde f_\theta^{\circ n}(z,y,x)$, uses its output for action
-selection, and carries it only on nonterminal transitions. Both CPI policies
-share this frozen map. The comparison endpoint $\widetilde U_m$ starts
-from stored $z$ without changing $F_n$, action sampling, or successors.
+$F_n(x,y,z)=\widetilde f_\theta^{\circ n}(z,y,x)$, selects actions from its
+output, and carries it only on nonterminal transitions. Both CPI policies
+share this frozen map. The comparison endpoint $\widetilde U_m$ starts from
+stored $z$ and changes neither $F_n$, action sampling, nor successors
+(Figure~\ref{fig:persistent_depth_lanes}).
 
 
 
@@ -273,8 +304,8 @@ Appendix~\ref{app:adv_closure_full} gives all domain definitions.
 Algorithm~\ref{alg:upi} freezes the base edit policy and recurrent map before
 collection. Checker rewards and $K$-step targets fit the value head;
 $U_n$-derived centered advantages fit one candidate policy head. The proposal
-mixes action probabilities: $\pi_\alpha=(1-\alpha)\pi+\alpha\pi_{\mathrm{cand}}$.
-Optimizer steps fit this proposal without replacing the base.
+mixes action probabilities, $\pi_\alpha=(1-\alpha)\pi+\alpha\pi_{\mathrm{cand}}$;
+the base is never replaced.
 
 For a bounded value function $V$, define the exact one-step estimator
 \begin{align}
@@ -284,8 +315,7 @@ For a bounded value function $V$, define the exact one-step estimator
 \label{eq:Ahat_def_app}
 \end{align}
 The candidate uses $V=U_n$.
-For persistent latents, condition on the full $\bar s$. The theorems analyze
-the fitted heads at one frozen snapshot. Approximating the mixture by a
+For persistent latents, condition on the full $\bar s$. Approximating the mixture by a
 single network requires the separate deployment correction in
 Section~\ref{sec:persistent_deployment_main}.
 
@@ -309,9 +339,8 @@ Section~\ref{sec:persistent_deployment_main}.
 \end{algorithmic}
 \end{algorithm}
 
-Only nonterminal transitions carry a latent; every terminal cause ends
-collection after its final record. Appendix~\ref{app:implementation} gives
-folded targets and replay details. Exact baseline enumeration ensures
+Appendix~\ref{app:implementation} gives folded targets and replay details.
+Exact baseline enumeration ensures
 statewise centering; approximate integration instead contributes the signed
 defect in Theorem~\ref{thm:monotone_with_error}.
 One depth-$n$ unroll per action term over $T$ states costs
@@ -325,17 +354,13 @@ applies the same argument on the fixed augmented MDP.
 
 \subsection{The finite-reference value certificate}
 \label{sec:value_error_bounds}
-The triangle inequality splits $\|U_n-V^\pi\|_\infty$ into endpoint
-discrepancy and reference error. Bellman contraction controls the latter
-through its self-bootstrap residual~\citep{Puterman1994,SuttonBarto2018}.
-
-For later advantage estimation, let $\mathcal C_\pi$ carry the initial law
+We state the bound of Section~\ref{sec:intro} on the domain that advantage
+estimation will need. Let $\mathcal C_\pi$ carry the initial law
 and be invariant under $\pi$. Write
 $\mathcal C=\mathcal R^{\mathrm{adv}}_{\pi,\pi_{\mathrm{cand}}}$ for a
 measurable set containing $\mathcal C_\pi$, the absorber, and successors of
 one current or candidate action, followed by any current-policy continuation
-(Definition~\ref{def:adv_closure}). Define
-$\mathcal C^\circ=\mathcal C\setminus\{s_{\mathrm{abs}}\}$ and
+(Definition~\ref{def:adv_closure}), and
 $\|f\|_{\infty,\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}
 =\sup_{s\in\mathcal C}|f(s)|$. On this invariant domain the residual bound
 is
@@ -390,11 +415,25 @@ $0\le n<m$,
 
 The discrepancy measures sensitivity to additional computation; the residual
 measures agreement with the frozen policy's value equation. Both endpoints
-use the same policy and kernel as $V^\pi$. Appendix~\ref{app:proof_finite_reference}
+use the same policy and kernel as $V^\pi$. For comparison, Eq.~\eqref{eq:boundA}
+applied to $U_n$ gives the direct bound
+$\varepsilon_{\mathrm{res},n}/(1-\gamma^K)$
+(Corollary~\ref{cor:finite_depth_residual_certificate}). With
+$\varepsilon_{\mathrm{res},q}$ the residual norm of $U_q$ on the same domain,
+the finite-reference bound is strictly smaller than the direct bound if and
+only if
+\begin{equation}
+(1-\gamma^K)\,\|U_n-U_m\|_\infty
+<\varepsilon_{\mathrm{res},n}-\varepsilon_{\mathrm{res},m}.
+\label{eq:finite_reference_gain}
+\end{equation}
+Both bounds stay valid when Eq.~\eqref{eq:finite_reference_gain} fails, and
+either can be vacuous when its residual is large relative to the value range.
+Appendix~\ref{app:proof_finite_reference}
 gives the proof and a nonconvergent endpoint example; Corollary~\ref{cor:recurrent_endpoint_path}
-gives the latent-path inequalities. Uniform recurrent contraction gives the
-optional geometric $L_z^n$ limit in Appendix~\ref{app:contractive_specializations}.
-The weighted-$L_p$ version in Appendix~\ref{app:weighted_lp} requires explicit
+gives the latent-path inequalities. Appendix~\ref{app:contractive_specializations} gives the optional
+contraction specialization with its geometric $L_z^n$ limit, and
+Appendix~\ref{app:weighted_lp} a weighted-$L_p$ version, which requires
 domination of the fixed-policy occupancy by the reference measure.
 
 \subsection{From value error to candidate advantage error}
@@ -415,8 +454,8 @@ the signed candidate defect, and $\varepsilon_{A,\mathrm{cand}}=
 scalar absorbing boundary $b$. The normalized discounted occupancy is
 $d_\pi=(1-\gamma)\sum_{t\ge0}\gamma^t\rho P_\pi^t$.
 
-Value error is controlled on $\mathcal C$, advantage error on $\mathcal C_\pi$.
-The check is post-candidate because $\mathcal C$ contains candidate successors.
+Value error is controlled on $\mathcal C$, advantage error on $\mathcal C_\pi$;
+the check is post-candidate, as $\mathcal C$ holds candidate successors.
 
 \begin{corollary}[Advantage-error bridge]
 \label{cor:epsA_dials}
@@ -469,8 +508,7 @@ $\pi$, replace $\gamma$ by $\gamma^K$. The fallback
 $2\gamma\delta_V$ follows from $\tau\le1$.
 \end{corollary}
 
-Proof in Appendix~\ref{app:proof_candidate_overlap}.
-
+Appendix~\ref{app:proof_candidate_overlap} gives the proof.
 Exact centering cancels the shared part of the two action laws, so
 $2\gamma\delta_V\tau(s)$ can be much smaller than the worst-case
 $2\gamma\delta_V$, and is zero when the policies agree. Section~\ref{sec:cpi}
@@ -489,9 +527,8 @@ the finite-reference radius gives
 Here $\widehat L_\pi$ is the estimated CPI surrogate and
 $\varepsilon_{\mathrm{CPI}}$ bounds the magnitude of the candidate's expected
 true advantage on the mixture domain; both are defined in
-Section~\ref{sec:cpi}. For centered $K$-step estimators the
-advantage factor becomes $2\gamma^K$; other estimators, including GAE,
-need their own error bound (Remark~\ref{rem:A_error_kstep_app}).
+Section~\ref{sec:cpi}. Estimators outside Corollary~\ref{cor:candidate_overlap},
+including GAE, need their own error bound (Remark~\ref{rem:A_error_kstep_app}).
 
 \section{Target-network residuals}
 \label{sec:contraction}
@@ -541,8 +578,7 @@ terminal-transition reward and mask the terminal bootstrap to zero, but it
 must not add the absorbing tail again.
 \end{proposition}
 
-Proof in Appendix~\ref{app:proof_target_network_bridge}.
-The ordinary sup-lag form
+Appendix~\ref{app:proof_target_network_bridge} gives the proof. The ordinary sup-lag form
 $R_{\mathrm{targ},q}^{\sup}:=\varepsilon_{\mathrm{targ},q}
 +\gamma^K\|\bar V-U_q\|_{\infty,\mathcal E}$ is the nonexpansive fallback:
 $R_{\mathrm{targ},q}^{P}\le R_{\mathrm{targ},q}^{\sup}$.
@@ -558,9 +594,9 @@ can select its base or candidate component with a Bernoulli draw at each
 decision. CPI corrects the base-policy surrogate for advantage error and
 occupancy shift~\citep{KakadeLangford2002}; we keep signed error and bound
 shift using this selector. Error uses $\mathcal C_\pi$; occupancy needs
-$\mathcal C_{\mathrm{mix}}$ to contain full trajectories under both policies,
-not just one deviation (Definition~\ref{def:mixture_deployment_domains}). The uniform-error assumption below suffices
-for the scalar specialization but is not needed for the signed bound.
+$\mathcal C_{\mathrm{mix}}$ to contain full trajectories under both policies
+(Definition~\ref{def:mixture_deployment_domains}).
+Only the scalar specialization needs the next assumption.
 
 \begin{assumption}[Uniform advantage error on $\mathcal C_\pi$]
 \label{ass:Ahat_error_bound}
@@ -604,13 +640,12 @@ $\operatorname{TV}(p,q)=\tfrac12\|p-q\|_1$,
 \end{equation}
 \end{lemma}
 
-Proof in Appendix~\ref{app:proof_mixture_occupancy}.
-
+Appendix~\ref{app:proof_mixture_occupancy} gives the proof.
 The order-$\alpha$ occupancy shift multiplies the candidate's
 order-$\alpha$ surrogate contribution. The resulting correction is
 $O(\alpha^2)$ for a fixed domain and advantage span. The evaluation
 correction combines base-policy centering defect $c(s)$ and candidate bias
-$b(s)$ under $d_\pi$, the surrogate's occupancy.
+$b(s)$ under $d_\pi$.
 
 \begin{theorem}[CPI with signed evaluation error]
 \label{thm:monotone_with_error}
@@ -697,18 +732,15 @@ $\varepsilon_{\mathrm{CPI}}:=
 \end{equation}
 \end{theorem}
 
-Exact centering leaves candidate bias scaled by $\alpha/(1-\gamma)$.
-Occupancy shift uses $\Delta_g$ and the exact denominator
-$1-\gamma+\gamma\alpha$. A negative defect credits underestimated advantage;
+A negative defect credits underestimated advantage;
 an absolute bound loses that credit (Section~\ref{sec:finite_mdp_example}).
 For example, $B_\alpha=(1-\alpha)\E_{d_\pi}|c(s)|+\alpha\E_{d_\pi}|b(s)|$
 upper-bounds $\Xi_\alpha$. Sampled or learned baselines contribute $c(s)$.
-Proof in Appendix~\ref{app:cpi_derivation}.
-
-The domain and span may depend on $\alpha$. A common-domain safe-step
-extension appears in Corollary~\ref{cor:one_step_improvement_condition}
-(Appendix~\ref{app:safe_step_statement}); Appendix~\ref{app:safe_step_boundaries}
-gives its proof and boundaries. Assumption~\ref{ass:Ahat_error_bound} implies
+Appendix~\ref{app:cpi_derivation} gives the proof.
+The domain and span may depend on $\alpha$;
+Corollary~\ref{cor:one_step_improvement_condition}
+(Appendix~\ref{app:safe_step_statement}) gives a common-domain safe-step
+extension, with proof and boundary cases in Appendix~\ref{app:safe_step_boundaries}. Assumption~\ref{ass:Ahat_error_bound} implies
 $\varepsilon_{A,\mathrm{cand}}\le\varepsilon_A$, but the signed theorem
 does not require it.
 
@@ -736,10 +768,10 @@ The deployed policies are
 \bar\pi_{\mathrm{cand}}(a\mid\bar s):=\pi_{\mathrm{cand}}(a\mid y,F_n(x,y,z),x),
 \label{eq:augmented_policies_main}
 \end{equation}
-and let $\bar{\mathcal T}^{\bar\pi}_K$ denote the $K$-step Bellman operator of this augmented MDP, whose transitions use the deployed $F_n$.
+with $\bar{\mathcal T}^{\bar\pi}_K$ the $K$-step Bellman operator of this augmented MDP, whose transitions use $F_n$.
 
-Changing $q$ leaves $F_n$, both policies in Eq.~\eqref{eq:augmented_policies_main}, and the transition kernel fixed. Appendix~\ref{sec:persistent_augmented_cpi}
-and Figure~\ref{fig:persistent_depth_lanes} give the construction.
+Changing $q$ leaves $F_n$, both policies in Eq.~\eqref{eq:augmented_policies_main}, and the transition kernel fixed
+(Figure~\ref{fig:persistent_depth_lanes}, Appendix~\ref{sec:persistent_augmented_cpi}).
 
 \begin{corollary}[Persistent-state evaluation and improvement]
 \label{cor:persistent_cpi_augmented}
@@ -818,7 +850,8 @@ All corresponding domain and exact-mixture hypotheses remain in force.
 \end{corollary}
 
 For finite $0\le n<m$ and $\widetilde U_n,\widetilde U_m\in B_b(\bar{\mathcal C})$
-with the common boundary, the same-MDP finite-reference bound is
+with the common boundary, the same-MDP finite-reference bound
+(Appendix~\ref{app:proof_persistent}) is
 \begin{equation}
 \|\widetilde U_n-V^{\bar\pi}\|_\infty
 \le
@@ -827,7 +860,6 @@ with the common boundary, the same-MDP finite-reference bound is
 \bar{\mathcal T}^{\bar\pi}_K\widetilde U_m\|_\infty}{1-\gamma^K}.
 \label{eq:persistent_finite_reference_main}
 \end{equation}
-Proof in Appendix~\ref{app:proof_persistent}.
 
 
 \paragraph{Approximating the mixture at deployment.}
@@ -844,40 +876,36 @@ Theorem~\ref{thm:deployment_perturbation},
 {(1-\gamma)(1-\gamma+\gamma\delta_{\mathrm{dep}})}.
 \label{eq:deployment_summary_main}
 \end{equation}
-The first-mismatch penalty vanishes for exact realization. Either-direction
-uniform KL control supplies a TV radius (Corollary~\ref{cor:deployment_pinsker}).
+Either-direction uniform KL control supplies a TV radius (Corollary~\ref{cor:deployment_pinsker}).
 Persistent policies must share the recurrent transition map; changing it
 requires a different-MDP analysis.
 
 \section{Exact example and learned-evaluator diagnostic}
 \label{sec:finite_mdp_example}
 
-Exact enumeration gives a nonvacuous value radius and signed CPI bound,
-but a vacuous absolute specialization. Nothing is sampled or learned.
+\paragraph{Exact example.}
+Can the radius and the CPI bound be nonvacuous, and can a finite reference
+beat the direct bound? In this exact example both answers are yes, although
+the absolute specialization of the CPI bound is vacuous. Nothing is sampled
+or learned.
 
 Consider two nonabsorbing states and a shared absorber,
-$\mathcal S=\{s_0,s_1,s_{\mathrm{abs}}\}$, actions $\{a,b\}$, initial law
+$\mathcal S=\{s_0,s_1,s_{\mathrm{abs}}\}$, actions $\{a_0,a_1\}$, initial law
 $\rho=\delta_{s_0}$, $\gamma=1/2$, and $K=1$. The current policy always
-chooses $a$ and the candidate always chooses $b$. Deterministic
-reward-successor pairs are
-\[
-(s_0,a):(0,s_0),\quad (s_0,b):(1,s_1),\quad
-(s_1,a):(0,s_0),\quad (s_1,b):(0,s_1),
-\]
-and both absorber actions return $(0,s_{\mathrm{abs}})$.
-The complete domains are
-$\mathcal C_\pi=\{s_0,s_{\mathrm{abs}}\}$ and
-$\mathcal R_{\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}
-=\mathcal C_{\mathrm{mix}}=\mathcal C_{\mathrm{pair}}
-=\mathcal D_{\mathrm{dep}}=\mathcal S$.
+chooses $a_0$ and the candidate always chooses $a_1$. The deterministic
+reward-successor pairs are $(s_0,a_0):(0,s_0)$, $(s_0,a_1):(1,s_1)$,
+$(s_1,a_0):(0,s_0)$, and $(s_1,a_1):(0,s_1)$; both absorber actions return
+$(0,s_{\mathrm{abs}})$. Here
+$\mathcal C_\pi=\{s_0,s_{\mathrm{abs}}\}$ and every other domain is
+$\mathcal S$ (Appendix~\ref{app:finite_mdp_derivation}).
 For the scalar recurrence, set $z^{(0)}=0$,
 $T_s(z)=u_s-z/2$, $(u_{s_0},u_{s_1})=(1/4,-1/4)$, and
 $u_{s_{\mathrm{abs}}}=0$, with $V_\psi(z,s)=z$. Use deployed depth $n=1$, comparison depth $m=2$, and
-$\alpha=1/2$. Table~\ref{tab:finite_mdp_summary} reports the exact result.
+$\alpha=1/2$ (Table~\ref{tab:finite_mdp_summary}).
 
 \begin{table}[htbp]
 \caption{Exact two-nonabsorbing-state calculation. State vectors are ordered
-$(s_0,s_1,s_{\mathrm{abs}})$. No quantity is sampled or learned.}
+$(s_0,s_1,s_{\mathrm{abs}})$.}
 \label{tab:finite_mdp_summary}
 \centering
 \small
@@ -891,9 +919,9 @@ $\|U_1-U_2\|_\infty$; $\|U_2-\mathcal T_1^\pi U_2\|_\infty$
 & $1/8$; $3/16$ \\
 Finite-reference upper bound; actual $\|U_1-V^\pi\|_\infty$
 & $1/2$; $1/4$ \\
-$d_\pi$; $d_{\pi_{1/2}}$; $\pi_{1/2}(a\mid s),\pi_{1/2}(b\mid s)$
+$d_\pi$; $d_{\pi_{1/2}}$; $\pi_{1/2}(a_0\mid s),\pi_{1/2}(a_1\mid s)$
 & $(1,0,0)$; $(3/4,1/4,0)$; $(1/2,1/2)$ at every state \\
-$g$; $\Delta_g$; $c$; $b$
+$g$; $\Delta_g$; $c(s)$; $b(s)$
 & $(1,0,0)$; $1$; $(0,0,0)$; $(-1/4,-1/4,0)$ \\
 $\widehat L_\pi(\pi_{1/2})$; $\Xi_{1/2}$
 & $3/4$; $-1/8$ \\
@@ -905,62 +933,62 @@ Signed CPI lower bound; actual $\eta(\pi_{1/2})$
 
 The finite-reference radius $B_{1,2}=1/2$ is twice the actual error $1/4$;
 it uses two finite endpoints rather than a recurrent limit.
-For comparison, the self-bootstrap bound at depth $1$
+For comparison, the direct bound at depth $1$
 (Corollary~\ref{cor:finite_depth_residual_certificate}) gives
-$\varepsilon_{\mathrm{res},1}/(1-\gamma)=(3/8)/(1/2)=3/4$.
-The fixed-point specialization Eq.~\eqref{eq:epsV_dials} applies with
-$\mathcal Z_{\mathrm{inv}}=[-1/2,1/2]$, $L_z=1/2$, $C_z=1/4$, and
-$L_V=1$; it gives
-$\varepsilon_{\mathrm{res}}^*/(1-\gamma)+L_VL_z^nC_z/(1-L_z)=1/2+1/4=3/4$.
+$\varepsilon_{\mathrm{res},1}/(1-\gamma)=(3/8)/(1/2)=3/4$, and
+Eq.~\eqref{eq:finite_reference_gain} holds:
+$(1-\gamma)\|U_1-U_2\|_\infty=1/16<3/16
+=\varepsilon_{\mathrm{res},1}-\varepsilon_{\mathrm{res},2}$.
+The fixed-point specialization Eq.~\eqref{eq:epsV_dials} also gives $3/4$
+(Appendix~\ref{app:finite_mdp_derivation}).
 Deeper references are not monotone: $m=3$ gives $5/8$ and $m=4$ gives $9/16$.
 
 The policy calculation illustrates why signs and spans matter. The estimator
 understates candidate advantage: $b(s_0)=-1/4$ and
 $\Xi_{1/2}=-1/8$. Correcting the surrogate $3/4$ therefore \emph{adds}
 $1/4$. The exact-span occupancy penalty is $1/3$, so
-\[
-\eta(\pi_{1/2})\ge\frac34+\frac14-\frac13=\frac23,
-\qquad \eta(\pi_{1/2})=\frac34.
-\]
-The absolute uniform specialization instead subtracts $1/4$ for evaluation
+$\eta(\pi_{1/2})\ge 3/4+1/4-1/3=2/3$, against the actual
+$\eta(\pi_{1/2})=3/4$. The absolute uniform specialization instead subtracts $1/4$ for evaluation
 error and replaces the span $\Delta_g=1$ by
-$2\varepsilon_{\mathrm{CPI}}=2$, doubling the occupancy penalty:
-\[
-\frac34-\frac14-\frac23=-\frac16.
-\]
-Both bounds are valid, but only the signed-span version certifies improvement
+$2\varepsilon_{\mathrm{CPI}}=2$, doubling the occupancy penalty and giving
+$3/4-1/4-2/3=-1/6$. Both bounds are valid, but only the signed-span version certifies improvement
 over $\eta(\pi)=0$. Appendix~\ref{app:finite_mdp_derivation} derives every
-quantity; \texttt{verify\_finite\_mdp.py} reproduces the rational calculation.
+quantity, and \texttt{verify\_finite\_mdp.py} reproduces them.
 
 \paragraph{Finite-census learned-evaluator diagnostic.}
-At fixed learned snapshots, we compare the direct proxy
-$\varepsilon_{n,j}/(1-\gamma)$ with the finite-reference proxy
-$D_j+\varepsilon_{m,j}/(1-\gamma)$, using separate census maxima for
-discrepancy and residual (Eq.~\eqref{eq:exp1b_gap}). Eight training seeds
-share one base initialization and one 128-state census; each run stops at
-10,000 environment interactions. With $n=2$, $m=8$, $K=1$, $\gamma=0.99$,
-and $\alpha=0.1$, the finite-reference proxy is smaller for every seed. The mean gap is
-$14.25$; 10,000 seed-bootstrap replicates give a nominal 95\% interval
-$[12.19,16.74]$, conditional on that base and census. Before these measurements,
-inspection of earlier aggregate output led to a wider float32
-centering-consistency tolerance with an empirical four-epsilon allowance. Replaying
-existing checkpoints reproduced all eight gaps bitwise; this reproduces
-measurements, not training or historical execution.
-Appendix~\ref{app:exp1b_diagnostic} gives the full-precision results and
-numerical checks.
+Does Eq.~\eqref{eq:finite_reference_gain} hold for learned evaluators? We
+test its sign on a finite census, with census maxima in place of the uniform
+norms. For seed $j$, the direct proxy is
+$\varepsilon_{n,j}/(1-\gamma)$ and the finite-reference proxy is
+$D_j+\varepsilon_{m,j}/(1-\gamma)$, where $D_j$ and $\varepsilon_{q,j}$ are
+the census maxima of the endpoint discrepancy and the one-step residual
+(Eq.~\eqref{eq:exp1b_gap}). Eight training seeds share one base
+initialization and one fixed 128-state census; each run stops after 10,000
+environment interactions. With $n=2$, $m=8$, $K=1$, $\gamma=0.99$, and
+$\alpha=0.1$, the finite-reference proxy is smaller for every seed. The mean
+gap is $14.25$, with nominal 95\% seed-bootstrap interval $[12.19,16.74]$,
+conditional on that base and census. Replaying the existing checkpoints
+reproduced all eight gaps bitwise; this reproduces the measurements and
+neither the training nor its history.
+Appendix~\ref{app:exp1b_diagnostic} gives full-precision results and
+numerical checks, including a float32 tolerance widened after inspection of
+earlier aggregate output and before these measurements.
 
-\section{Discussion, Limitations, and Conclusion}
+\section{Conclusion and Limitations}
 \label{sec:conclusion}
 
-A finite reference separates endpoint discrepancy from Bellman residual
-before entering a one-proposal CPI bound. Carried latents require a shared
-frozen recurrent map; target lag and deployment mismatch enter separately.
-
-The exact example establishes nonvacuity. The learned diagnostic compares
-finite-census proxy radii, not uniform certificates or task performance.
-It establishes neither monotone depth benefits nor training convergence or
-policy improvement. Its uncertainty is conditional on one base initialization
-and one census.
+A value evaluator read at finite recurrent depth can be certified against a
+deeper finite reading of itself, without recurrent convergence, and the
+certificate beats the direct residual bound exactly under
+Eq.~\eqref{eq:finite_reference_gain}. A carried latent requires one shared
+frozen recurrent map so that both readings belong to one deployed MDP; the
+radius then enters a signed CPI bound for one proposal.
+The guarantees are conditional on uniform residual, centering, and domain
+premises at one frozen snapshot. Training convergence, repeated improvement,
+and learned-task performance remain open. The learned diagnostic measures
+finite-census proxies under one base initialization and one census; it
+supports the sign of Eq.~\eqref{eq:finite_reference_gain} and no uniform
+certificate, monotone depth benefit, or policy improvement.
 \label{sec:main_text_end}
 
 
@@ -1049,6 +1077,8 @@ R\,\dfrac{z}{\|z\|_2}, & \|z\|_2 > R.
 \end{equation}
 The projection $\Pi_R$ is nonexpansive and leaves $B_R$ invariant.
 It does not by itself give contraction.
+Write $\mathcal C^\circ=\mathcal C\setminus\{s_{\mathrm{abs}}\}$ for the
+nonabsorbing part of a value domain.
 The first-increment constant used by the contraction specialization is
 \begin{equation}
 C_z := \sup_{s\in\mathcal C^\circ}
@@ -1268,16 +1298,16 @@ state and action definitions are
 \toprule
 State & Action & $(r,S')$ \\
 \midrule
-$s_0$ & $a$ & $(0,s_0)$ \\
-$s_0$ & $b$ & $(1,s_1)$ \\
-$s_1$ & $a$ & $(0,s_0)$ \\
-$s_1$ & $b$ & $(0,s_1)$ \\
-$s_{\mathrm{abs}}$ & $a$ or $b$ & $(0,s_{\mathrm{abs}})$ \\
+$s_0$ & $a_0$ & $(0,s_0)$ \\
+$s_0$ & $a_1$ & $(1,s_1)$ \\
+$s_1$ & $a_0$ & $(0,s_0)$ \\
+$s_1$ & $a_1$ & $(0,s_1)$ \\
+$s_{\mathrm{abs}}$ & $a_0$ or $a_1$ & $(0,s_{\mathrm{abs}})$ \\
 \bottomrule
 \end{tabular}
 \end{center}
-The current policy is $\pi(a\mid s)=1$, the candidate is
-$\pi_{\mathrm{cand}}(b\mid s)=1$, and $\rho=\delta_{s_0}$. These definitions
+The current policy is $\pi(a_0\mid s)=1$, the candidate is
+$\pi_{\mathrm{cand}}(a_1\mid s)=1$, and $\rho=\delta_{s_0}$. These definitions
 also apply at the absorber, where both actions induce the same zero-reward
 self-loop. Thus
 \[
@@ -1324,11 +1354,20 @@ Consequently,
 \end{align*}
 The certificate gives the finite error radius $1/2$ without a recurrent
 fixed-point argument. It is not tight: the actual error is smaller by a factor
-of two.
+of two. For comparison, the direct bound at depth $1$
+(Corollary~\ref{cor:finite_depth_residual_certificate}) is
+$\varepsilon_{\mathrm{res},1}/(1-\gamma)=(3/8)/(1/2)=3/4$, and
+Eq.~\eqref{eq:finite_reference_gain} holds because
+$(1-\gamma)\|U_1-U_2\|_\infty=1/16<3/16
+=\varepsilon_{\mathrm{res},1}-\varepsilon_{\mathrm{res},2}$.
+The fixed-point specialization Eq.~\eqref{eq:epsV_dials} applies with
+$\mathcal Z_{\mathrm{inv}}=[-1/2,1/2]$, $L_z=1/2$, $C_z=1/4$, and
+$L_V=1$; it gives
+$\varepsilon_{\mathrm{res}}^*/(1-\gamma)+L_VL_z^nC_z/(1-L_z)=1/2+1/4=3/4$.
 
 \paragraph{Exact mixture and occupancies.}
 Take $\alpha=1/2$. At every state,
-$\pi_{1/2}(a\mid s)=\pi_{1/2}(b\mid s)=1/2$. On the two nonabsorbing states,
+$\pi_{1/2}(a_0\mid s)=\pi_{1/2}(a_1\mid s)=1/2$. On the two nonabsorbing states,
 \[
 P_{\pi_{1/2}}
 =\begin{pmatrix}1/2&1/2\\1/2&1/2\end{pmatrix},
@@ -1356,11 +1395,11 @@ values on $(s_0,s_1)$ are
 \widehat Q_{U_1}
 =\begin{pmatrix}1/8&7/8\\1/8&-1/8\end{pmatrix},
 \]
-with columns $(a,b)$. Exact centering under the deterministic current policy
+with columns $(a_0,a_1)$. Exact centering under the deterministic current policy
 subtracts the first column. Including the absorber gives
 \[
-\widehat A(a)=(0,0,0),\qquad
-\widehat A(b)=\left(\frac34,-\frac14,0\right).
+\widehat A(\cdot,a_0)=(0,0,0),\qquad
+\widehat A(\cdot,a_1)=\left(\frac34,-\frac14,0\right).
 \]
 Thus the centering defect and candidate defect from
 Eq.~\eqref{eq:signed_defects} are
@@ -1452,17 +1491,8 @@ Eq.~\eqref{eq:persistent_un_value}. The direct residual and surrogate are
 Eqs.~\eqref{eq:persistent_direct_residual} and~\eqref{eq:persistent_surrogate},
 with discounted return measured from $\bar\rho$.
 
-\begin{figure}[H]
-\centering
-\resizebox{0.98\linewidth}{!}{\input{figures/persistent_depth_lanes.tex}}
-\caption{A deeper comparison is not a deeper deployment. Both lanes start
-from the same stored pre-unroll state. The upper lane uses $F_n$ to choose
-an action and carries its output only after a nonterminal transition. The
-lower lane reads another value endpoint and stops: it neither samples an
-action nor changes the successor. Changing $m$ leaves the deployed
-MDP and trajectory unchanged.}
-\label{fig:persistent_depth_lanes}
-\end{figure}
+Figure~\ref{fig:persistent_depth_lanes} shows the deployment lane and the
+comparison lane.
 Comparison with a memoryless fixed-point reference would require a drift
 assumption that this paper does not make.
 
@@ -2712,7 +2742,7 @@ recurrent map. Value fitting changes the policy-independent value head;
 candidate fitting changes one policy head. In episodic mode the evaluator
 reinitializes $z$ at each edit; persistent updates consume the stored
 pre-unroll latent. A target-head update uses
-$\bar\psi^+=\tau\bar\psi+(1-\tau)\psi^+$, where $\tau\in[0,1]$ retains
+$\bar\psi^+=\omega\bar\psi+(1-\omega)\psi^+$, where $\omega\in[0,1]$ retains
 the old target.
 For a collected segment of length $\ell\le K$, let $d_{\mathrm{seg}}$ indicate
 that its final transition terminates. The folded-reward implementation target is

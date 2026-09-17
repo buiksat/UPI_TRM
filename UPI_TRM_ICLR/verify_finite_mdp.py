@@ -11,6 +11,7 @@ import json
 
 ACTIVE_STATES = ("s0", "s1")
 STATES = ACTIVE_STATES + ("s_abs",)
+# "a" and "b" are the actions written a_0 and a_1 in main.tex.
 ACTIONS = ("a", "b")
 GAMMA = Fraction(1, 2)
 ALPHA = Fraction(1, 2)
