@@ -114,27 +114,27 @@
 
 \maketitle
 \begin{abstract}
-A recurrent value evaluator is read after $n$ internal steps, even when its
-latent computation is still changing, so a fixed-point reference may be
-unavailable. We compare the deployed value $U_n$ with a finite reference:
-the same evaluator at a deeper depth $m$. For a fixed policy, the triangle
-inequality and the standard Bellman-residual estimate bound the error of
-$U_n$ by the endpoint discrepancy $\|U_n-U_m\|_\infty$ plus the reference's
-self-bootstrap $K$-step residual divided by $1-\gamma^K$. No recurrent
-convergence is needed. The finite reference improves on the direct depth-$n$
-residual bound exactly when the residual falls by more than $1-\gamma^K$
-times the discrepancy. With a carried latent, a clock-complete augmented
-state and one shared frozen recurrent map keep both endpoints in one deployed
-MDP; changing $m$ changes evaluation only. The radius enters conservative
-policy improvement (CPI) through exactly centered advantages with signed
-evaluation error, while target lag and approximate deployment require
-separate corrections. An exact three-state example gives a nonvacuous radius
-and a CPI lower bound above the base return. Across eight training seeds
-sharing one base initialization and one fixed 128-state census, the
-finite-reference proxy is smaller than the direct proxy for every seed, by
-$0.9$ to $1.9\%$. These measurements are neither uniform certificates nor
-task-performance results. The guarantees concern one exact probability mixture of a candidate
-with a frozen base at a fixed parameter snapshot.
+Policy improvement guarantees need a bound on value error. When values come
+from a recurrent network read after $n$ internal steps, the natural reference
+is a fixed point that a learned recurrence need not have. We use a finite
+reference instead: the same network read at a deeper depth $m$. For a fixed
+policy, the triangle inequality and the standard Bellman-residual bound
+control the error of the deployed value $U_n$ by $\|U_n-U_m\|_\infty$ plus the
+$K$-step residual of $U_m$ divided by $1-\gamma^K$, with no recurrent
+convergence. This beats the direct residual bound on $U_n$ exactly when the
+deeper residual is smaller by more than $1-\gamma^K$ times the discrepancy;
+depth alone guarantees nothing. When the latent state is carried across
+environment steps, the depth-$n$ computation is part of the transition
+kernel; one shared frozen recurrent map keeps both depths in a single MDP, so
+changing $m$ changes only the evaluation. The radius then
+enters a conservative policy improvement (CPI) bound with signed evaluation
+error. An exact three-state example gives a nonvacuous radius and a CPI bound
+that certifies improvement. On a fixed 128-state census, proxies of the two
+bounds favor the finite reference for all eight learned evaluators, but only
+by $0.9$ to $1.9\%$ and at levels too large to be informative; this
+diagnostic is neither a uniform certificate nor a task-performance result.
+All guarantees concern one candidate mixed exactly with a frozen base policy
+at a fixed parameter snapshot.
 
 \end{abstract}
 
