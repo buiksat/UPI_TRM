@@ -131,9 +131,9 @@ evaluation error, while target lag and approximate deployment require
 separate corrections. An exact three-state example gives a nonvacuous radius
 and a CPI lower bound above the base return. Across eight training seeds
 sharing one base initialization and one fixed 128-state census, the
-finite-reference proxy is smaller than the direct proxy for every seed.
-These measurements are neither uniform certificates nor task-performance
-results. The guarantees concern one exact probability mixture of a candidate
+finite-reference proxy is smaller than the direct proxy for every seed, by
+$0.9$ to $1.9\%$. These measurements are neither uniform certificates nor
+task-performance results. The guarantees concern one exact probability mixture of a candidate
 with a frozen base at a fixed parameter snapshot.
 
 \end{abstract}
@@ -221,7 +221,9 @@ which changing $m$ changes evaluation only
 (Corollary~\ref{cor:persistent_cpi_augmented}).
 An exact three-state example shows that the radius and the signed CPI bound
 can be nonvacuous. In a diagnostic on eight learned evaluators, the
-finite-reference proxy is smaller than the direct proxy for every seed.
+finite-reference proxy is smaller than the direct proxy for every seed, by
+$0.9$ to $1.9\%$, at a scale where neither proxy is yet an informative
+radius.
 
 \section{Related Work}
 \label{sec:related_work}
@@ -963,13 +965,16 @@ $\varepsilon_{n,j}/(1-\gamma)$ and the finite-reference proxy is
 $D_j+\varepsilon_{m,j}/(1-\gamma)$, where $D_j$ and $\varepsilon_{q,j}$ are
 the census maxima of the endpoint discrepancy and the one-step residual
 (Eq.~\eqref{eq:exp1b_gap}). Eight training seeds share one base
-initialization and one fixed 128-state census; each run stops after 10,000
-environment interactions. With $n=2$, $m=8$, $K=1$, $\gamma=0.99$, and
+initialization and one fixed 128-state census of a Sudoku plan-editing task
+with $C_{\max}=16$. With $n=2$, $m=8$, $K=1$, $\gamma=0.99$, and
 $\alpha=0.1$, the finite-reference proxy is smaller for every seed. The mean
 gap is $14.25$, with nominal 95\% seed-bootstrap interval $[12.19,16.74]$,
-conditional on that base and census. Replaying the existing checkpoints
-reproduced all eight gaps bitwise; this reproduces the measurements and
-neither the training nor its history.
+conditional on that base and census. Both proxies are near $1.1\times10^3$,
+about $70$ times $C_{\max}$, so the gap is $0.9$ to $1.9\%$ of the direct
+proxy and neither proxy is an informative radius at these snapshots; the
+diagnostic supports the sign of the comparison only. Replaying the existing
+checkpoints reproduced all eight gaps bitwise; this reproduces the
+measurements and neither the training nor its history.
 Appendix~\ref{app:exp1b_diagnostic} gives full-precision results and
 numerical checks, including a float32 tolerance widened after inspection of
 earlier aggregate output and before these measurements.
@@ -2663,7 +2668,10 @@ G_j=
 \label{eq:exp1b_gap}
 \end{equation}
 for eight training seeds, with $n=2$, $m=8$, $K=1$,
-$\gamma=0.99$, $\alpha=0.1$, and 128 fixed validation-bridge records.
+$\gamma=0.99$, $\alpha=0.1$, and 128 fixed validation-bridge records. The
+task is Sudoku plan editing with checker scale $C_{\max}=16$, a budget of 16
+edits, and shaped rewards; each training run stops after 10,000 environment
+interactions.
 Table~\ref{tab:exp1b_run5} reports the signed proxy-radius difference and two
 centering diagnostics. The constructed-centering roundoff ranges from
 $1.3344159524586459\times10^{-16}$ to
@@ -2692,7 +2700,42 @@ Seed & $G_j$ & Trainer centering defect & Parity error \\
 \end{tabular}
 \end{table}
 
-The equal-weight mean is $14.248703798855473$. Hyndman--Fan type-7
+Table~\ref{tab:exp1b_levels} reports the components of $G_j$ from the same
+result record. The direct proxy ranges from $1096.60$ to $1179.66$ and the
+finite-reference proxy from $1083.21$ to $1157.78$, so $G_j$ is $0.94\%$ to
+$1.85\%$ of the direct proxy. In every seed one census state attains both
+residual maxima. With residuals near $11$ against $C_{\max}=16$ and
+$1/(1-\gamma)=100$, both proxies are about $70$ times $C_{\max}$: at these
+snapshots neither is an informative value radius, and the diagnostic speaks
+only to the sign of $G_j$.
+
+\begin{table}[htbp]
+\caption{Components of $G_j$ over the 128-state census, rounded. The direct
+proxy is $\varepsilon_{n,j}/(1-\gamma)$ and the finite-reference proxy is
+$D_j+\varepsilon_{m,j}/(1-\gamma)$; their difference is $G_j$ in
+Table~\ref{tab:exp1b_run5}.}
+\label{tab:exp1b_levels}
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}rrrrrrr@{}}
+\toprule
+Seed & $D_j$ & $\varepsilon_{n,j}$ & $\varepsilon_{m,j}$ & Direct proxy
+& Finite-ref.\ proxy & $G_j$/direct (\%) \\
+\midrule
+2081976412 & 0.6770 & 11.7966 & 11.5710 & 1179.66 & 1157.78 & 1.85 \\
+781025396  & 0.4689 & 11.1513 & 11.0207 & 1115.13 & 1102.54 & 1.13 \\
+1148619853 & 0.3171 & 11.2987 & 11.1890 & 1129.87 & 1119.21 & 0.94 \\
+913535362  & 0.5873 & 10.9660 & 10.8262 & 1096.60 & 1083.21 & 1.22 \\
+2143253519 & 0.4760 & 11.4423 & 11.2669 & 1144.23 & 1127.17 & 1.49 \\
+2279379379 & 0.4479 & 11.2946 & 11.1777 & 1129.46 & 1118.21 & 1.00 \\
+402312153  & 0.5830 & 11.1187 & 10.9758 & 1111.87 & 1098.17 & 1.23 \\
+2736405725 & 0.6017 & 11.2345 & 11.0939 & 1123.45 & 1109.99 & 1.20 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The equal-weight mean of $G_j$ is $14.248703798855473$. Hyndman--Fan type-7
 quantiles at 0.025 and 0.975 of 10,000 stored seed-resampling replicate means
 give the nominal interval $[12.185185177643433,16.739775084598428]$.
 Seeds, not census records, are resampled. The interval is conditional on the
