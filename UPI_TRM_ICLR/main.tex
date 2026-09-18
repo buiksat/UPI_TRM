@@ -64,7 +64,6 @@
 \newtheorem*{theorem*}{Theorem}
 \newtheorem*{proposition*}{Proposition}
 \newtheorem*{lemma*}{Lemma}
-\newtheorem*{corollary*}{Corollary}
 \newtheorem{example}[theorem]{Example}
 
 
@@ -116,16 +115,16 @@
 \maketitle
 \begin{abstract}
 In conservative policy improvement (CPI), value-error bounds control the
- evaluation penalty. When values come from a recurrent network read after
+evaluation penalty. When values come from a recurrent network read after
 $n$ internal steps, the natural reference is a fixed point that a learned
 recurrence need not have. We use a finite reference instead: the same
 network read at a deeper depth $m$. For a fixed policy, the triangle
 inequality and the standard Bellman-residual bound control the error of
- the deployed value $U_n$ by $\|U_n-U_m\|_\infty$ plus the $K$-step residual
+the deployed value $U_n$ by $\|U_n-U_m\|_\infty$ plus the $K$-step residual
 of $U_m$ divided by $1-\gamma^K$, with no recurrent convergence. This beats
- the direct residual bound on $U_n$ exactly when the deeper residual is
+the direct residual bound on $U_n$ exactly when the deeper residual is
 smaller by more than $1-\gamma^K$ times the discrepancy; depth alone
- guarantees nothing. With carried latents, both endpoints use one augmented
+guarantees nothing. With carried latents, both endpoints use one augmented
 MDP: states include the latent and remaining budget, while the deployed
 policy and shared depth-$n$ transition map stay fixed; $m$ changes only
 endpoint evaluation. Through exactly centered advantages, the radius
@@ -135,7 +134,7 @@ certifies improvement. On one fixed 128-state Sudoku census,
 finite-reference proxies are $0.9$ to $1.9\%$ smaller than direct proxies
 across eight training seeds sharing one base. Both remain uninformative
 as radii, at roughly 70 times the checker scale; this diagnostic is neither
- a uniform certificate nor a task-performance result. We analyze one
+a uniform certificate nor a task-performance result. We analyze one
 candidate's exact statewise probability mixture with a frozen base at a
 fixed parameter snapshot.
 
@@ -1121,6 +1120,7 @@ $\varepsilon_A$, $\bar\varepsilon_A$ & Episodic / augmented advantage error boun
 $\varepsilon_{\mathrm{res}}^*$ & Architectural residual at $U_*$ \\
 $g$, $\Delta_g$ & Candidate expected advantage / span on the declared mixture or pair domain \\
 $\widehat g$, $\overline{\beta}_d$, $M_d$ & Estimated candidate slope / one-sided signed-defect bound / certified slope \\
+$\mathcal C_{\mathrm{pair}}$ & Common $\pi$/$\pi_{\mathrm{cand}}$-invariant domain for step intervals \\
 $c$, $b(s)$, $\Xi_\alpha$ & Signed centering and candidate estimator defects \\
 $\tau(s)$, $\delta_{\mathrm{dep}}$ & Policy overlap / deployment TV radius \\
 $\varepsilon_{\mathrm{CPI}}$ & Uniform scalar bound on $|g|$ \\
@@ -1864,7 +1864,7 @@ $|\widehat Q_V(s,a)-Q^\pi(s,a)|\le \gamma\delta_V$.
 
 Similarly,
 \[
-\Bigl|\E_{b\sim\pi(\cdot|s)}\widehat Q_V(s,b)-\E_{b\sim\pi(\cdot|s)}Q^\pi(s,b)\Bigr|
+\Bigl|\E_{b\sim\pi(\cdot\mid s)}\widehat Q_V(s,b)-\E_{b\sim\pi(\cdot\mid s)}Q^\pi(s,b)\Bigr|
 \le \gamma\delta_V,
 \]
 since $b\sim\pi(\cdot|s)$ and the same almost-sure closure condition applies.
@@ -2183,14 +2183,14 @@ the listed boundary cases.
 \label{app:proof_persistent}
 
 \begin{proof}[Proof of Corollary~\ref{cor:persistent_cpi_augmented}]
-The clock-complete state, frozen shared map $F_n$, and specified initial law define one augmented MDP for both action kernels. On its bounded measurable functions, $\bar{\mathcal T}^{\bar\pi}_K$ is a $\gamma^K$-contraction in the augmented closure norm. In this proof, $\|\cdot\|_\infty^{\mathrm{adv}}$ abbreviates $\|\cdot\|_{\infty,\bar\pi,\bar\pi_{\mathrm{cand}}}^{\mathrm{adv}}$. Thus
+The clock-complete state, frozen shared map $F_n$, and specified initial law define one augmented MDP for both action kernels. On its bounded measurable functions, $\bar{\mathcal T}^{\bar\pi}_K$ is a $\gamma^K$-contraction in the augmented closure norm. In this proof, $\|\cdot\|_{\infty}^{\mathrm{adv}}$ abbreviates $\|\cdot\|_{\infty,\bar\pi,\bar\pi_{\mathrm{cand}}}^{\mathrm{adv}}$. Thus
 \begin{align*}
-\|\widetilde U_n-V^{\bar\pi}\|_\infty^{\mathrm{adv}}
+\|\widetilde U_n-V^{\bar\pi}\|_{\infty}^{\mathrm{adv}}
 &\le
-\|\widetilde U_n-\bar{\mathcal T}^{\bar\pi}_K\widetilde U_n\|_\infty^{\mathrm{adv}}
-+\|\bar{\mathcal T}^{\bar\pi}_K\widetilde U_n-\bar{\mathcal T}^{\bar\pi}_K V^{\bar\pi}\|_\infty^{\mathrm{adv}}\\
+\|\widetilde U_n-\bar{\mathcal T}^{\bar\pi}_K\widetilde U_n\|_{\infty}^{\mathrm{adv}}
++\|\bar{\mathcal T}^{\bar\pi}_K\widetilde U_n-\bar{\mathcal T}^{\bar\pi}_K V^{\bar\pi}\|_{\infty}^{\mathrm{adv}}\\
 &\le \bar\varepsilon_{\mathrm{res},n}
-+\gamma^K\|\widetilde U_n-V^{\bar\pi}\|_\infty^{\mathrm{adv}}.
++\gamma^K\|\widetilde U_n-V^{\bar\pi}\|_{\infty}^{\mathrm{adv}}.
 \end{align*}
 Rearrangement proves~\eqref{eq:persistent_augmented_value}. Lemma~\ref{lem:A_error_app}, applied on the augmented closure with exact centering conditional on $\bar s$, gives~\eqref{eq:persistent_augmented_adv}. Corollary~\ref{cor:candidate_overlap} supplies the $\bar\tau_\infty$ refinement. Under the exact pointwise mixture, substitution into Theorem~\ref{thm:monotone_with_error} proves~\eqref{eq:persistent_augmented_cpi}.
 
@@ -2521,7 +2521,7 @@ r_m:=U_m-\mathcal T_K^\pi U_m,
 and define the discounted occupancy of the $K$-step skeleton by
 \begin{equation}
 d_\rho^{\pi,K}
-:=(1-\beta)\sum_{t\ge0}\beta^t\rho P^t.
+:=(1-\beta)\sum_{t=0}^{\infty}\beta^t\rho P^t.
 \label{eq:k_skeleton_occupancy}
 \end{equation}
 This is a probability measure on $\mathcal C$. Suppose
@@ -2595,10 +2595,11 @@ d(z^*(s),F)=\lim_{j\to\infty}d(z^{(j)}(s),F).
 \]
 The right side is a pointwise limit of measurable real functions, and
 \[
-\{s:d(z^*(s),F)=0\}=\{s:z^*(s)\in F\}.
+\{s:z^*(s)\in F\}=\{s:d(z^*(s),F)=0\}.
 \]
 The empty closed set has empty preimage. Since closed sets generate the Borel
 $\sigma$-algebra, $z^*$ is measurable.
+
 For the finite-unrolling bound, specialize to
 $\mathcal D^\circ=\mathcal C^\circ$ and take
 $z^{(0)}(s)=z_{\mathrm{init}}(x(s),y(s))$:
@@ -2607,7 +2608,8 @@ z^*(s) - z^{(n)}(s)
 = \sum_{k=n}^{\infty}(z^{(k+1)}(s) - z^{(k)}(s)).
 \]
 Contraction gives
-$\|z^{(k+1)}(s)-z^{(k)}(s)\|\le L_z^k\|z^{(1)}(s)-z^{(0)}(s)\|$, so
+$\|z^{(k+1)}(s)-z^{(k)}(s)\|
+\le L_z^k\|z^{(1)}(s)-z^{(0)}(s)\|$, so
 \[
 \|z^*(s)-z^{(n)}(s)\|
 \le \|z^{(1)}(s)-z^{(0)}(s)\| \sum_{k=n}^{\infty} L_z^k
@@ -2628,8 +2630,8 @@ Assumption~\ref{ass:Lip},
 \]
 Summing from $j=n$ through $m-1$ yields~\eqref{eq:finite_reference_contracting}. Proposition~\ref{prop:banach} and the Lipschitz head give $\|U_m-U_*\|_\infty\to0$. Moreover,
 \begin{align*}
-\bigl|\|U_m-\mathcal T_K^\pi U_m\|_\infty
--\|U_*-\mathcal T_K^\pi U_*\|_\infty\bigr|
+\big|\|U_m-\mathcal T_K^\pi U_m\|_\infty
+-\|U_*-\mathcal T_K^\pi U_*\|_\infty\big|
 &\le (1+\gamma^K)\|U_m-U_*\|_\infty \to 0.
 \end{align*}
 Taking $m\to\infty$ therefore proves~\eqref{eq:epsV_dials}.
