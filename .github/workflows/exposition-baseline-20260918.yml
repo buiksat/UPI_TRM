@@ -1,0 +1,61 @@
+name: One-time exposition baseline build
+on:
+  push:
+    branches: [tmp/exposition-baseline-20260918]
+permissions:
+  contents: read
+jobs:
+  baseline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          sparse-checkout: UPI_TRM_ICLR
+      - name: Authenticate and export source delta only
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import base64,difflib,gzip,hashlib,json,subprocess
+          from pathlib import Path
+          start='1a5f04f6f574e4f8e4bd873b67a8d3373b8e97df'
+          old='311466420c06b7705109e1362d7fd71bb2b1844c'
+          for p in ['AGENTS.md','UPI_TRM_ICLR/AGENTS.md']:
+              x=subprocess.run(['git','show',start+':'+p],capture_output=True)
+              print('AGENT_INSTRUCTIONS',p, x.stdout.decode() if x.returncode==0 else 'absent')
+          for name in ['main.tex','verify_finite_mdp.py']:
+              path='UPI_TRM_ICLR/'+name
+              a=subprocess.check_output(['git','show',old+':'+path]); b=subprocess.check_output(['git','show',start+':'+path])
+              assert Path(path).read_bytes()==b
+              ops=[]
+              for tag,i,j,k,l in difflib.SequenceMatcher(None,a.splitlines(keepends=True),b.splitlines(keepends=True),autojunk=False).get_opcodes():
+                  if tag=='equal': ops.append([i,j])
+                  else: ops.append(b''.join(b.splitlines(keepends=True)[k:l]).decode())
+              d={'file':name,'old_sha256':hashlib.sha256(a).hexdigest(),'new_sha256':hashlib.sha256(b).hexdigest(),'ops':ops}
+              print('SOURCE_DELTA_'+name+'='+base64.b64encode(gzip.compress(json.dumps(d).encode(),mtime=0)).decode())
+          print('SOURCE_MANIFEST='+json.dumps({str(p.relative_to('UPI_TRM_ICLR')):{'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'git_blob':hashlib.sha1(b'blob '+str(p.stat().st_size).encode()+b'\0'+p.read_bytes()).hexdigest()} for p in Path('UPI_TRM_ICLR').rglob('*') if p.is_file()},sort_keys=True))
+          print(Path('UPI_TRM_ICLR/Makefile').read_text())
+          PY
+      - name: Build baseline and compare tracked PDF
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq > /tmp/install.log 2>&1
+          sudo apt-get install -y --no-install-recommends texlive-latex-extra texlive-fonts-recommended poppler-utils qpdf >> /tmp/install.log 2>&1
+          cp UPI_TRM_ICLR/main.pdf /tmp/tracked.pdf
+          pdftotext -layout /tmp/tracked.pdf /tmp/tracked.txt
+          make -C UPI_TRM_ICLR clean
+          make -C UPI_TRM_ICLR LATEX='pdflatex -no-shell-escape -interaction=nonstopmode -halt-on-error -file-line-error' pdf > /tmp/build.log 2>&1 || { cat /tmp/build.log; exit 1; }
+          python3 -B UPI_TRM_ICLR/verify_finite_mdp.py
+          qpdf --check UPI_TRM_ICLR/main.pdf
+          pdfinfo UPI_TRM_ICLR/main.pdf
+          pdftotext -layout UPI_TRM_ICLR/main.pdf /tmp/built.txt
+          python3 - <<'PY'
+          import re,json,hashlib
+          from pathlib import Path
+          log=Path('UPI_TRM_ICLR/main.log').read_text(); aux=Path('UPI_TRM_ICLR/main.aux').read_text()
+          def page(label): return int(re.search(r'\\newlabel\{'+re.escape(label)+r'\}\{\{.*?\}\{(\d+)\}',aux)[1])
+          print('BASELINE_RESULT='+json.dumps({'main_end':page('sec:main_text_end'),'appendix_start':page('app:supplementary'),'pages':len([p for p in Path('/tmp/built.txt').read_text().split('\f') if p.strip()]),'tracked_text_matches':Path('/tmp/tracked.txt').read_text()==Path('/tmp/built.txt').read_text(),'underfull_hbox':log.count('Underfull \\hbox'),'overfull':log.count('Overfull'),'warnings':re.findall(r'(?:Package|LaTeX)[^\n]*Warning[^\n]*',log),'tracked_sha256':hashlib.sha256(Path('/tmp/tracked.pdf').read_bytes()).hexdigest()}))
+          print('BASELINE_LABELS='+base64.b64encode(b'').decode() if False else '\n'.join(x for x in aux.splitlines() if x.startswith('\\newlabel')))
+          PY
