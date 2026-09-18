@@ -140,56 +140,55 @@ fixed parameter snapshot.
 \section{Introduction}
 \label{sec:intro}
 
-Some value functions are computed by iterating a learned recurrent map and
-reading a value head after $n$ steps; Tiny Recursive Models (TRMs) refine a
-latent state this way before producing an answer~\citep{TRM2025}. When such
-an evaluator drives policy improvement, what matters is the error of its
-depth-$n$ output $U_n$ relative to the value $V^\pi$ of the policy being
-improved. The natural reference for a recurrent computation is its limit,
-but using it requires a latent fixed point and control of the distance to it.
-A learned recurrence guarantees neither, and useful computation can still be
-transient at the depth where it is read.
+We study value error for recurrent evaluators read after a fixed number
+$n$ of internal steps. When the output $U_n$ is used to estimate
+advantages, its error relative to the base-policy value $V^\pi$ contributes
+to the policy-improvement penalty. We ask when a deeper finite endpoint
+gives a tighter error bound without assuming recurrent convergence.
+Our setting uses Tiny Recursive Models (TRMs)~\citep{TRM2025} for
+checker-rewarded plan editing, in Unrolled Policy Iteration with TRMs
+(UPI-TRM). We analyze one candidate's exact probability mixture with a
+frozen base policy at a fixed parameter snapshot.
 
-We ask what finitely many recurrent steps can certify about $U_n$. Our
-setting is Unrolled Policy Iteration with TRMs (UPI-TRM), in which a TRM value
-head supplies advantages for plan edits rewarded by a checker. Despite the
-name, we analyze one step: a single candidate policy mixed with a frozen base
-policy at a fixed parameter snapshot.
+\paragraph{The direct bound and a finite reference.}
+Let $\mathcal T_K^\pi$ be the $K$-step Bellman operator for the fixed policy,
+with discount $\gamma\in[0,1)$ and integer $K\ge1$, and write
+$\varepsilon_{\mathrm{res},q}:=\|U_q-\mathcal T_K^\pi U_q\|_\infty$.
+All norms below use the same policy-invariant domain under the conditions
+of Theorem~\ref{thm:finite_reference_depth}. Standard residual
+analysis~\citep{Puterman1994,SuttonBarto2018} gives the direct bound
+$\|U_n-V^\pi\|_\infty\le\varepsilon_{\mathrm{res},n}/(1-\gamma^K)$.
+It already needs no recurrent fixed point, but can be loose.
 
-\paragraph{A finite reference.}
-Fix the policy $\pi$ and let $U_m$ be the same evaluator read at a deeper
-finite depth $m>n$. With $\mathcal T_K^\pi$ the $K$-step Bellman operator of
-$\pi$ and $\varepsilon_{\mathrm{res},q}:=\|U_q-\mathcal T_K^\pi U_q\|_\infty$
-the self-bootstrap residual at depth $q$,
+Instead, compare $U_n$ with the same evaluator read at depth $m>n$.
+Applying the residual bound to $U_m$ and the triangle inequality gives
 \[
 \|U_n-V^\pi\|_\infty
 \le
-\|U_n-U_m\|_\infty+\frac{\varepsilon_{\mathrm{res},m}}{1-\gamma^K}.
+\|U_n-U_m\|_\infty
++\frac{\varepsilon_{\mathrm{res},m}}{1-\gamma^K}.
 \]
-This is the triangle inequality followed by the standard Bellman-residual
-bound~\citep{Puterman1994,SuttonBarto2018} applied to the reference;
-Theorem~\ref{thm:finite_reference_depth} states the conditions. Both terms
-involve only finite-depth outputs of the same evaluator, and neither requires
-recurrent convergence. The direct alternative applies the residual bound to $U_n$
-itself and gives $\varepsilon_{\mathrm{res},n}/(1-\gamma^K)$. Rearranging,
-the finite reference is tighter exactly when
-$(1-\gamma^K)\|U_n-U_m\|_\infty<\varepsilon_{\mathrm{res},n}-\varepsilon_{\mathrm{res},m}$:
-the residual must fall by more than $1-\gamma^K$ times the discrepancy. Depth
-alone guarantees nothing. In the exact example of
-Section~\ref{sec:finite_mdp_example}, $m=2$ tightens the direct bound from
-$3/4$ to $1/2$, and deeper references are not monotone.
+The discrepancy measures sensitivity to additional computation; the
+reference residual measures agreement with the base policy's value
+equation. This radius is strictly smaller than the direct bound exactly
+when
+\[
+(1-\gamma^K)\|U_n-U_m\|_\infty
+<\varepsilon_{\mathrm{res},n}-\varepsilon_{\mathrm{res},m}.
+\]
+The residual reduction must outweigh the discrepancy penalty. Thus a
+deeper reference helps only under this condition, not by depth alone
+(Eq.~\eqref{eq:finite_reference_gain}).
 
-\paragraph{Two depths in one MDP.}
-The inequality treats $U_n$ and $U_m$ as bounded functions. The
-recurrent-specific question is whether both can be read in the same MDP. With
-a latent that is reset at every environment step, this is immediate. With a
-carried latent, the depth-$n$ unroll $F_n$ produces the latent stored in the
-successor state, so $F_n$ is part of the transition kernel that defines
-$V^\pi$; using $F_m$ there would target the value of a different MDP. We keep
-the deployed policy and kernel fixed and vary only the depth at which the
-value head is read (Figure~\ref{fig:persistent_depth_lanes}), on a state that
-holds the stored latent and the remaining edit budget
-(Section~\ref{sec:persistent_deployment_main}).
+\paragraph{Two depths in one deployed MDP.}
+For a carried latent, the depth-$n$ map $F_n$ determines the latent stored
+after a nonterminal transition and is therefore part of the transition
+kernel. Replacing it with $F_m$ would generally change the MDP.
+We include the pre-unroll latent and remaining edit budget in the state;
+both policies share one frozen $F_n$. The comparison starts from the same
+stored state but changes only endpoint evaluation. Varying $m$ leaves
+the deployed policy, action sampling, stored latent, and trajectory
+unchanged (Section~\ref{sec:persistent_deployment_main}).
 
 \begin{figure}[t]
 \centering
@@ -203,26 +202,44 @@ leaves the deployed MDP and trajectory unchanged.}
 \label{fig:persistent_depth_lanes}
 \end{figure}
 
+\paragraph{Standard machinery.}
+\begin{itemize}
+\item The $K$-step Bellman-residual estimate and triangle inequality give
+the displayed value bound.
+\item Conservative policy improvement (CPI) uses the surrogate and
+exact-mixture occupancy argument~\citep{KakadeLangford2002}
+(Lemma~\ref{lem:exact_mixture_occupancy}).
+\end{itemize}
+
 \paragraph{Contributions.}
-The residual bound, the triangle inequality, and the CPI
-argument~\citep{KakadeLangford2002} are standard. We contribute
-(i) a finite-reference certificate for a recurrent evaluator read at depth
-$n$, with the condition under which it improves on the direct residual bound
+\begin{itemize}
+\item A finite-reference formulation of recurrent value error, with an
+explicit comparison against the direct bound
 (Theorem~\ref{thm:finite_reference_depth},
-Eq.~\eqref{eq:finite_reference_gain});
-(ii) its composition with exactly centered advantages and a signed CPI bound
-for an exact probability mixture, with target-network lag and approximate
-deployment as separate corrections (Corollary~\ref{cor:candidate_overlap},
-Proposition~\ref{prop:target_network_bridge},
-Theorem~\ref{thm:monotone_with_error}); and
-(iii) a clock-complete augmented MDP with one shared frozen recurrent map, in
-which changing $m$ changes evaluation only
+Eq.~\eqref{eq:finite_reference_gain}).
+\item A clock-complete augmented MDP with a shared frozen recurrent map,
+so reference depth changes evaluation without changing deployment
 (Corollary~\ref{cor:persistent_cpi_augmented}).
-An exact three-state example shows that the radius and the signed CPI bound
-can be nonvacuous. In a diagnostic on eight learned evaluators, the
-finite-reference proxy is smaller than the direct proxy for every seed, by
-$0.9$ to $1.9\%$, at a scale where neither proxy is yet an informative
-radius.
+\item Composition with exactly centered advantages and signed-error CPI,
+with target-network lag and approximate deployment treated separately
+(Corollary~\ref{cor:candidate_overlap},
+Theorem~\ref{thm:monotone_with_error},
+Proposition~\ref{prop:target_network_bridge},
+Section~\ref{sec:persistent_deployment_main}).
+\item An exact example and a finite-census diagnostic that distinguish
+a tighter comparison from an informative value radius
+(Section~\ref{sec:finite_mdp_example}).
+\end{itemize}
+
+\paragraph{Evidence.}
+The exact three-state example reduces the direct radius from $3/4$ to
+$1/2$ and gives a signed CPI lower bound of $2/3$ above the base return
+of zero. On a fixed 128-state Sudoku census, eight training seeds sharing
+one base yield finite-reference proxies $0.9$ to $1.9\%$ smaller than
+the direct proxies. Both are roughly 70 times the checker scale and
+uninformative as value radii. This diagnostic establishes a finite-census
+comparison, not a uniform certificate or a task-performance result
+(Appendix~\ref{app:exp1b_diagnostic}).
 
 \section{Related Work}
 \label{sec:related_work}
