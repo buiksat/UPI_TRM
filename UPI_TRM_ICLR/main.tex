@@ -115,25 +115,26 @@
 \maketitle
 \begin{abstract}
 We bound value error for finite-depth recurrent evaluators in policy
-improvement without assuming recurrent convergence. We compare the deployed
-endpoint $U_n$ with a deeper finite endpoint $U_m$ of the same evaluator.
-For a fixed policy, the standard Bellman-residual bound and triangle
-inequality give an error radius of $\|U_n-U_m\|_\infty$ plus the $K$-step
-residual of $U_m$ divided by $1-\gamma^K$. It is tighter than the direct
-residual bound exactly when the residual reduction exceeds
-$(1-\gamma^K)\|U_n-U_m\|_\infty$; depth alone does not suffice. With carried
-latents, states include the latent and remaining budget; fixing the deployed
-policy and shared depth-$n$ transition map keeps both endpoints in one MDP
-while $m$ changes only endpoint evaluation. Exactly centered advantages
-connect the radius to a conservative policy improvement lower bound with
-signed evaluation error. An exact three-state example gives a nonvacuous
-radius and certifies improvement over the base. On a fixed 128-state Sudoku
-census, finite-reference proxies are $0.9$ to $1.9\%$ smaller than direct
-proxies across eight training seeds sharing one base. Both remain
-uninformative as radii at roughly 70 times the checker scale; this is
-neither a uniform certificate nor a task-performance result. We analyze one
-exact statewise probability-mixture proposal against a frozen base at a
-fixed parameter snapshot.
+improvement without assuming recurrent convergence. We compare the endpoint
+$U_n$, the value read at the deployed depth $n$, with a deeper finite
+endpoint $U_m$ of the same evaluator. For a fixed policy, the standard
+Bellman-residual bound and triangle inequality give an error radius of
+$\|U_n-U_m\|_\infty$ plus the $K$-step residual of $U_m$ divided by
+$1-\gamma^K$. It is tighter than the direct residual bound on $U_n$ exactly
+when the residual reduction exceeds $(1-\gamma^K)\|U_n-U_m\|_\infty$; depth
+alone does not suffice. When the latent is carried across environment
+steps, the state includes the latent and the remaining edit budget; fixing
+the deployed policy and the shared depth-$n$ recurrent map keeps both
+endpoints in one MDP, so $m$ changes only endpoint evaluation. Exactly
+centered advantages connect the radius to a conservative policy improvement
+lower bound with signed evaluation error. An exact three-state example gives
+a nonvacuous radius and certifies improvement over the base. On a fixed
+128-state Sudoku census, finite-reference proxies are $0.9$ to $1.9\%$
+smaller than direct proxies across eight training seeds sharing one base
+initialization. Both remain uninformative as radii at roughly 70 times the
+task's reward scale; this is neither a uniform certificate nor a
+task-performance result. We analyze one candidate mixed exactly, state by
+state, with a frozen base policy at a fixed parameter snapshot.
 
 \end{abstract}
 
