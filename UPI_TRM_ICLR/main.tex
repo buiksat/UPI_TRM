@@ -145,9 +145,9 @@ $n$ of internal steps. When the output $U_n$ is used to estimate
 advantages, its error relative to the base-policy value $V^\pi$ contributes
 to the policy-improvement penalty. We ask when a deeper finite endpoint
 gives a tighter error bound without assuming recurrent convergence.
-Our setting uses Tiny Recursive Models (TRMs)~\citep{TRM2025} for
-checker-rewarded plan editing, in Unrolled Policy Iteration with TRMs
-(UPI-TRM). We analyze one candidate's exact probability mixture with a
+Our setting is Unrolled Policy Iteration with TRMs (UPI-TRM), in which a
+Tiny Recursive Model (TRM)~\citep{TRM2025} evaluates plan edits rewarded by
+a checker. We analyze one candidate's exact probability mixture with a
 frozen base policy at a fixed parameter snapshot.
 
 \paragraph{The direct bound and a finite reference.}
@@ -176,9 +176,8 @@ when
 (1-\gamma^K)\|U_n-U_m\|_\infty
 <\varepsilon_{\mathrm{res},n}-\varepsilon_{\mathrm{res},m}.
 \]
-The residual reduction must outweigh the discrepancy penalty. Thus a
-deeper reference helps only under this condition, not by depth alone
-(Eq.~\eqref{eq:finite_reference_gain}).
+The residual reduction must outweigh the discrepancy penalty; depth alone
+guarantees nothing (Eq.~\eqref{eq:finite_reference_gain}).
 
 \paragraph{Two depths in one deployed MDP.}
 For a carried latent, the depth-$n$ map $F_n$ determines the latent stored
@@ -207,8 +206,8 @@ leaves the deployed MDP and trajectory unchanged.}
 \item The $K$-step Bellman-residual estimate and triangle inequality give
 the displayed value bound.
 \item Conservative policy improvement (CPI) uses the surrogate and
-exact-mixture occupancy argument~\citep{KakadeLangford2002}
-(Lemma~\ref{lem:exact_mixture_occupancy}).
+exact-mixture occupancy argument of \citet{KakadeLangford2002}, restated
+in Lemma~\ref{lem:exact_mixture_occupancy}.
 \end{itemize}
 
 \paragraph{Contributions.}
@@ -281,7 +280,7 @@ score $c(x,y)$ supplies reward, optionally shaped as
 $r=r_0+\gamma\Phi(s')-\Phi(s)$ with $\Phi=c$~\citep{Ng1999Shaping}. We maximize
 discounted return $\eta(\pi)$ from initial law $\rho$, with
 $\gamma\in[0,1)$. The shaped boundary is
-$V^\pi(s_{\mathrm{abs}})=b=-C_{\max}$; folding its tail into the terminal
+$V^\pi(s_{\mathrm{abs}})=b_{\mathrm{abs}}=-C_{\max}$; folding its tail into the terminal
 reward with zero terminal bootstrap preserves returns
 (Appendices~\ref{app:shaping_convention} and~\ref{app:implementation}).
 
@@ -313,7 +312,7 @@ $z$ and changes neither $F_n$, action sampling, nor successors
 Fix the MDP, recurrence, initialization, value head, and both policies. Policies
 are measurable kernels and endpoints are bounded measurable functions. On
 $\mathcal C$, $\|f\|_\infty=\sup_{s\in\mathcal C}|f(s)|$. Every endpoint equals
-$b$ at the absorber; latent paths exist only off the absorber.
+$b_{\mathrm{abs}}$ at the absorber; latent paths exist only off the absorber.
 Section~\ref{sec:error_bounds} introduces the needed advantage-evaluation
 domain, and Appendix~\ref{app:adv_closure_full} gives the full taxonomy.
 
@@ -330,7 +329,7 @@ For a bounded value function $V$, define the exact one-step estimator
 \begin{align}
 \widehat Q_V(s,a) &= \E_{s'}[r(s,a,s') + \gamma V(s')], \\
 \widehat A_V(s,a) &= \widehat Q_V(s,a) -
-\E_{b\sim\pi(\cdot|s)}[\widehat Q_V(s,b)].
+\E_{a'\sim\pi(\cdot|s)}[\widehat Q_V(s,a')].
 \label{eq:Ahat_def_app}
 \end{align}
 The candidate uses $V=U_n$ and, with persistent latents, conditions on the full
@@ -471,8 +470,7 @@ Define
 \end{equation}
 We use $b(s)=\E_{\pi_{\mathrm{cand}}}[\widehat A(s,a)-A^\pi(s,a)]$ for
 the signed candidate defect, and $\varepsilon_{A,\mathrm{cand}}=
-\sup_{s\in\mathcal C_\pi}|b(s)|$. The function $b(s)$ is distinct from the
-scalar absorbing boundary $b$. The normalized discounted occupancy is
+\sup_{s\in\mathcal C_\pi}|b(s)|$. The normalized discounted occupancy is
 $d_\pi=(1-\gamma)\sum_{t\ge0}\gamma^t\rho P_\pi^t$.
 
 Value error is controlled on $\mathcal C$, while advantage error is evaluated
@@ -592,9 +590,9 @@ R_{\mathrm{targ},q}^{P}.
 \label{eq:target_network_residual_bridge}
 \end{align}
 For the formal absorbing representation, require
-$U_q(s_{\mathrm{abs}})=\bar V(s_{\mathrm{abs}})=b$ and use the same
+$U_q(s_{\mathrm{abs}})=\bar V(s_{\mathrm{abs}})=b_{\mathrm{abs}}$ and use the same
 absorbing reward and boundary in both population operators. The equivalent
-folded implementation may instead fold $\gamma b$ into the
+folded implementation may instead fold $\gamma b_{\mathrm{abs}}$ into the
 terminal-transition reward and mask the terminal bootstrap to zero, but it
 must not add the absorbing tail again.
 \end{proposition}
@@ -620,8 +618,8 @@ correction under $d_\pi$ from the occupancy shift of repeated mixture
 decisions~\citep{KakadeLangford2002}. The first uses $\mathcal C_\pi$; the
 second requires $\mathcal C_{\mathrm{mix}}$ to contain full trajectories
 under both policies (Definition~\ref{def:mixture_deployment_domains}). The
-signed master result allows centering defect; only its scalar specialization
-uses the next uniform assumption.
+signed bound (Theorem~\ref{thm:monotone_with_error}) allows a centering
+defect; only its scalar specialization uses the next uniform assumption.
 
 \begin{assumption}[Uniform advantage error on $\mathcal C_\pi$]
 \label{ass:Ahat_error_bound}
@@ -1087,6 +1085,7 @@ $\mathsf P_{\mathrm{rec}}$ & Declared recurrent projection operator: $\Pi_R$ for
 $\mathcal Z_{\mathrm{bd}}$, $V_{\max}$ & Declared bounded-head latent set / its uniform finite bound \\
 $z^{(j)}(s)$, $s\in\mathcal C^\circ$ & Latent after finite depth $j$ \\
 $U_j$, $U_*$ & Finite-depth value / optional fixed-point value, with scalar boundary \\
+$b_{\mathrm{abs}}$ & Common scalar value of every endpoint at the absorber \\
 $B_{n,m}$ & Endpoint discrepancy plus depth-$m$ residual radius \\
 $\varepsilon_{\mathrm{res},n}$ & Episodic finite-depth Bellman residual \\
 $\varepsilon_{\mathrm{targ},q}$ & Target-network conditional population residual at endpoint depth $q$ \\
@@ -1320,7 +1319,7 @@ U_1=\left(\frac14,-\frac14,0\right),\qquad
 U_2=\left(\frac18,-\frac18,0\right).
 \]
 Under $\pi$, all nonabsorbing rewards are zero and both nonabsorbing states
-move to $s_0$, so $V^\pi=(0,0,0)$. Moreover,
+move to $s_0$, so $V^\pi=(0,0,0)$. Direct computation gives
 \[
 \mathcal T_1^\pi U_2
 =\left(\frac1{16},\frac1{16},0\right),\qquad
@@ -1412,8 +1411,8 @@ Equation~\eqref{eq:main_theorem_occupancy} therefore yields
 \ge \frac34-\frac{-1/8}{1/2}-\frac13
 =\frac23,
 \]
-while the exact return is $3/4$. In contrast, the absolute uniform
-specialization uses $\varepsilon_{A,\mathrm{cand}}=1/4$ and
+while the exact return is $3/4$. The absolute uniform specialization
+instead uses $\varepsilon_{A,\mathrm{cand}}=1/4$ and
 $\varepsilon_{\mathrm{CPI}}=1$, producing
 \[
 \frac34-\frac14-\frac23=-\frac16.
@@ -1455,7 +1454,7 @@ $G_\varepsilon(z)=\varepsilon/2$ and a fixed threshold policy head that
 chooses disjoint actions below and above zero. Then
 $\sup_z\|F_\varepsilon(z)-G_\varepsilon(z)\|=\varepsilon$, but the action
 laws are disjoint and a fixed MDP can have an order-$1/(1-\gamma)$ return
-gap. Moreover,
+gap. The transition kernels are also far apart:
 $\operatorname{TV}(\delta_{F(z)},\delta_{G(z)})=1$ whenever
 $F(z)\ne G(z)$. A different-map theorem therefore needs explicit reward and
 transition-kernel discrepancies and sufficient regularity to propagate them.
@@ -1575,7 +1574,7 @@ All corresponding domain and exact-mixture hypotheses remain in force.
 Use the measurable Bellman domain of Theorem~\ref{thm:finite_reference_depth}
 with $\mathcal C=\mathcal R_{\pi,\pi_{\mathrm{cand}}}^{\mathrm{adv}}$.
 Take $U_n\in B_b(\mathcal C)$ and use the common scalar boundary
-$U_n(s_{\mathrm{abs}})=V^\pi(s_{\mathrm{abs}})=b$. Define
+$U_n(s_{\mathrm{abs}})=V^\pi(s_{\mathrm{abs}})=b_{\mathrm{abs}}$. Define
 \begin{equation}
 \varepsilon_{\mathrm{res},n}
 :=
@@ -1858,7 +1857,7 @@ $\mathcal C^\circ$, fix a jointly measurable recurrent map
 $(s,z)\mapsto T(s,z)$, a common measurable initialization into its declared
 latent domain, and a latent norm, and define $z^{(j)}$ by iterating that map
 and $U_j(s)=V_\psi(z^{(j)}(s),x(s),y(s))$. At the absorber define only the
-common scalar boundary $U_j(s_{\mathrm{abs}})=b$, and assume the two endpoint
+common scalar boundary $U_j(s_{\mathrm{abs}})=b_{\mathrm{abs}}$, and assume the two endpoint
 functions lie in $B_b(\mathcal C)$. If the measurable scalar head is
 $L_V$-Lipschitz in its latent argument uniformly while $(x,y)$ is held fixed,
 then
@@ -1928,10 +1927,10 @@ $|\widehat Q_V(s,a)-Q^\pi(s,a)|\le \gamma\delta_V$.
 
 Similarly,
 \[
-\Bigl|\E_{b\sim\pi(\cdot\mid s)}\widehat Q_V(s,b)-\E_{b\sim\pi(\cdot\mid s)}Q^\pi(s,b)\Bigr|
+\Bigl|\E_{a'\sim\pi(\cdot\mid s)}\widehat Q_V(s,a')-\E_{a'\sim\pi(\cdot\mid s)}Q^\pi(s,a')\Bigr|
 \le \gamma\delta_V,
 \]
-since $b\sim\pi(\cdot|s)$ and the same almost-sure closure condition applies.
+since $a'\sim\pi(\cdot|s)$ and the same almost-sure closure condition applies.
 Subtracting these two bounds yields
 $|\widehat A_V(s,a)-A^\pi(s,a)|\le 2\gamma\delta_V$.
 \end{proof}
@@ -1949,7 +1948,7 @@ If instead one defines a $K$-step action-value estimate
 \E\biggl[\sum_{t=0}^{K-1}\gamma^t r_t + \gamma^K V(s_K) \biggm| s_0=s, a_0=a, \pi\biggr],
 \end{equation*}
 and the corresponding centered advantage
-$\widehat A_V^{(K)}(s,a):=\widehat Q_V^{(K)}(s,a)-\E_{b\sim\pi(\cdot|s)}[\widehat Q_V^{(K)}(s,b)]$
+$\widehat A_V^{(K)}(s,a):=\widehat Q_V^{(K)}(s,a)-\E_{a'\sim\pi(\cdot|s)}[\widehat Q_V^{(K)}(s,a')]$
 (with the baseline computed exactly), then the same argument yields
 \[
 |\widehat A_V^{(K)}(s,a)-A^\pi(s,a)| \le 2\gamma^K\,\delta_V.
@@ -2232,7 +2231,7 @@ Thus $\varphi(0)=0$ and
 $\max_{\alpha\in[0,1]}\varphi(\alpha)=\varphi(1)=\gamma\Delta_g$.
 If $\gamma>0$ and $0<M_d<\gamma\Delta_g$, then
 $M_d<\Delta_g$ because $\gamma<1$, so $\Delta_g-M_d>0$ and the threshold is
-positive. Moreover,
+positive. It is also below one:
 \[
 \frac{M_d(1-\gamma)}{\gamma(\Delta_g-M_d)}<1
 \quad\Longleftrightarrow\quad
@@ -2692,7 +2691,7 @@ Assumption~\ref{ass:Lip},
 \le L_z^j\|z^{(1)}(s)-z^{(0)}(s)\|
 \le L_z^j C_z.
 \]
-Summing from $j=n$ through $m-1$ yields~\eqref{eq:finite_reference_contracting}. Proposition~\ref{prop:banach} and the Lipschitz head give $\|U_m-U_*\|_\infty\to0$. Moreover,
+Summing from $j=n$ through $m-1$ yields~\eqref{eq:finite_reference_contracting}. Proposition~\ref{prop:banach} and the Lipschitz head give $\|U_m-U_*\|_\infty\to0$, and hence
 \begin{align*}
 \big|\|U_m-\mathcal T_K^\pi U_m\|_\infty
 -\|U_*-\mathcal T_K^\pi U_*\|_\infty\big|
@@ -2801,7 +2800,7 @@ Seed & $D_j$ & $\varepsilon_{n,j}$ & $\varepsilon_{m,j}$ & Direct proxy
 \end{tabular}
 \end{table}
 
-The equal-weight mean of $G_j$ is $14.248703798855473$. Hyndman--Fan type-7
+The equal-weight mean of $G_j$ is $14.248703798855473$. Hyndman-Fan type-7
 quantiles at 0.025 and 0.975 of 10,000 stored seed-resampling replicate means
 give the nominal interval $[12.185185177643433,16.739775084598428]$.
 Seeds, not census records, are resampled. The interval is conditional on the
@@ -2865,8 +2864,8 @@ G_{\mathrm{fold}}
 \end{equation}
 Here $d_{\mathrm{seg}}=0$ implies $\ell=K$; early nonterminal segments are not
 admissible exact-$K$ targets. On a terminal segment, the stored final reward is
-the formal terminal-transition reward plus $\gamma b$, where
-$b=V^\pi(s_{\mathrm{abs}})$. The zero padding and zero terminal bootstrap in
+the formal terminal-transition reward plus $\gamma b_{\mathrm{abs}}$, where
+$b_{\mathrm{abs}}=V^\pi(s_{\mathrm{abs}})$. The zero padding and zero terminal bootstrap in
 Eq.~\eqref{eq:G_folded_implementation} are therefore an accounting
 representation of the formal absorbing tail, not an additional self-loop.
 
