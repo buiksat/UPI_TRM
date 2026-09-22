@@ -132,7 +132,7 @@ a nonvacuous radius and certifies improvement over the base. On a fixed
 128-state Sudoku census, finite-reference proxies are $0.9$ to $1.9\%$
 smaller than direct proxies across eight training seeds sharing one base
 initialization. Both remain uninformative as radii at roughly 70 times the
-task's reward scale; this is neither a uniform certificate nor a
+checker scale; this is neither a uniform certificate nor a
 task-performance result. We analyze one candidate mixed exactly, state by
 state, with a frozen base policy at a fixed parameter snapshot.
 
@@ -251,8 +251,9 @@ finite recurrent endpoints. Classical approximate dynamic programming instead
 controls value error and its propagation through policy or value updates
 \citep{BertsekasTsitsiklis1996,Munos2003API,MunosSzepesvari2008,Scherrer2014};
 our radius is a fixed-policy population sup-norm statement, not a policy-sequence
-result. TRMs and HRMs use recurrent latent refinement for structured prediction
-\citep{TRM2025,HRM2025}, while deep equilibrium models analyze equilibrium
+result. TRMs and Hierarchical Reasoning Models (HRMs) use recurrent latent
+refinement for structured prediction~\citep{TRM2025,HRM2025}, while deep
+equilibrium models analyze equilibrium
 representations~\citep{Bai2019DEQ}. We read the evaluator at finite depth and
 reserve contraction for an optional fixed-point specialization. Learning to
 search~\citep{Daume2009SEARN,Ross2011DAgger,Chang2015LOLS}, verifiable-reward
@@ -347,7 +348,9 @@ deployment correction in Section~\ref{sec:persistent_deployment_main}.
 \STATE Use the mode-appropriate state $s_t$: $(x,y_t,h_t)$ in episodic mode, $(x,y_t,z_t,h_t)$ in persistent mode; initialize persistent $z_0$.
 \FOR{$t=0,\ldots,T-1$}
   \STATE Use $z_t=z_{\mathrm{init}}(x,y_t)$ in episodic mode or stored $z_t$ in persistent mode; compute $z_t^{(n)}=\widetilde f_\theta^{\circ n}(z_t,y_t,x)$ and $V_\psi(z_t^{(n)},x,y_t)$.
-  \STATE Sample $a_t\sim\pi_\phi(\cdot\mid y_t,z_t^{(n)},x)$; observe $r_t,y_{t+1},d_t$ and set $h_{t+1}=h_t-1$.
+  \STATE Sample $a_t\sim\pi_\phi(\cdot\mid y_t,z_t^{(n)},x)$;
+  observe $r_t,y_{t+1}$ and termination flag $d_t$;
+  set $h_{t+1}=h_t-1$.
   \STATE Set $s_{t+1}=s_{\mathrm{abs}}$ if $d_t$ or $h_{t+1}=0$; otherwise construct the successor, carrying $z_t^{(n)}$ only in persistent mode.
   \STATE Store $(s_t,a_t,r_t,s_{t+1})$; stop collection immediately if $s_{t+1}=s_{\mathrm{abs}}$.
 \ENDFOR
@@ -368,8 +371,8 @@ $O(T|\mathcal A|n)$ recurrent-map applications.
 \section{Finite-Reference Evaluation and Advantage Error}
 \label{sec:error_bounds}
 
-This section converts two finite endpoint measurements into a value-error
-radius and then an advantage-error bound. We first use episodic notation;
+Domain-wide endpoint discrepancies and Bellman residuals bound value and
+advantage error. We first use episodic notation;
 Section~\ref{sec:persistent_deployment_main} applies the same argument to one
 fixed augmented MDP.
 
@@ -546,8 +549,9 @@ finite-reference radius gives
 \end{equation}
 Section~\ref{sec:cpi} defines the estimated surrogate $\widehat L_\pi$ and the
 candidate-advantage bound $\varepsilon_{\mathrm{CPI}}$. Estimators outside
-Corollary~\ref{cor:candidate_overlap}, including GAE, need a separate error
-bound (Remark~\ref{rem:A_error_kstep_app}).
+Corollary~\ref{cor:candidate_overlap}, including generalized advantage
+estimation (GAE), need a separate error bound
+(Remark~\ref{rem:A_error_kstep_app}).
 
 \section{Target-network residuals}
 \label{sec:contraction}
@@ -558,7 +562,8 @@ self-bootstrap backup of the evaluated endpoint. For a frozen current-policy
 trajectory, the target is
 $G^{(K)}=\sum_{k<K}\gamma^k r_k+\gamma^K\bar V(S_K)$, with loss
 $\mathcal L_{\mathrm{val}}=\E_{S_0\sim\mu}[(U_n(S_0)-\sg(G^{(K)}))^2]$.
-Here $\mu$ selects starting states; the conditional trajectory law is $\pi$.
+Here $\sg$ denotes stop-gradient, $\mu$ selects starting states, and the
+conditional trajectory law is $\pi$.
 A zero target residual can coexist with a nonzero self-bootstrap
 residual. Propagated target lag supplies the required correction:
 
@@ -620,7 +625,8 @@ decisions~\citep{KakadeLangford2002}. The first uses $\mathcal C_\pi$; the
 second requires $\mathcal C_{\mathrm{mix}}$ to contain full trajectories
 under both policies (Definition~\ref{def:mixture_deployment_domains}). The
 signed bound (Theorem~\ref{thm:monotone_with_error}) allows a centering
-defect; only its scalar specialization uses the next uniform assumption.
+defect; the next assumption supplies a sufficient bound on the
+candidate-average error in its scalar specialization.
 
 \begin{assumption}[Uniform advantage error on $\mathcal C_\pi$]
 \label{ass:Ahat_error_bound}
@@ -824,8 +830,8 @@ $\bar\pi_{\mathrm{new}}=(1-\alpha)\bar\pi+
 \alpha\bar\pi_{\mathrm{cand}}$, a common mixture domain, and all remaining
 hypotheses of Theorem~\ref{thm:monotone_with_error}, let
 $\bar\tau_\infty$ be the uniform policy TV distance on the current-policy
-domain and let $\bar\varepsilon_{\mathrm{CPI}}$ bound the candidate's expected
-true advantage on the mixture domain. With
+domain and let $\bar\varepsilon_{\mathrm{CPI}}$ bound the magnitude of the candidate's
+expected true advantage on the mixture domain. With
 $d_{\bar\pi}=(1-\gamma)\sum_{t\ge0}\gamma^t\bar\rho P_{\bar\pi}^t$ and
 $\widehat A=\widehat A_{\widetilde U_n}$, define the full-state surrogate
 \[
